@@ -39,4 +39,8 @@ From some time procdump filtering works on .NET exception names. Each exception 
     [09:03:27] Exception: E0434F4D.System.NullReferenceException ("Object reference not set to an instance of an object.")
     [09:03:28] Exception: E0434F4D.System.NullReferenceException ("Object reference not set to an instance of an object.")
 
-To create a full memory dump when `NullReferenceException` occurs use the following command: **procdump -ma -e 1 -f "E0434F4D.System.NullReferenceException" 8012**.
+To create a full memory dump when `NullReferenceException` occurs use the following command: 
+
+```
+procdump -ma -e 1 -f "E0434F4D.System.NullReferenceException" 8012
+```
