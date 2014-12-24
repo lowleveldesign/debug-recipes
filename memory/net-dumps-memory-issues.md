@@ -38,9 +38,7 @@ Load necessary **plugins**:
 !loadsosex (or .load sosex)
 ```
 
-Build heap index for SOSEX: `!bhi`
-
-SOS commands:
+**SOS commands:**
 
 ```
 !EEHeap [-gc] [-loader]
@@ -64,7 +62,7 @@ SOS commands:
 !DumpObject <address> | !DumpArray <address> | !DumpVC <mt> <address>
 ```
 
-SOSEX commands:
+**SOSEX commands:**
 
 ```
 !bhi (build heap index) !lhi <file> (load heap index) !chi (close heap index)
