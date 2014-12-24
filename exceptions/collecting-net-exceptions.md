@@ -7,7 +7,7 @@ Using procdump
 
 From some time procdump filtering works on .NET exception names. Each exception name is prefixed with CLR exception code (E0434F4D) and contains the full name of the exception type. Look at the example below which does nothing but prints 1st chance exceptions occurring in the process 8012:
 
-    C:\Utils> procdump -e 1 -f &quot;&quot; 8012
+    C:\Utils> procdump -e 1 -f "" 8012
 
     ProcDump v7.1 - Writes process dump files
     Copyright (C) 2009-2014 Mark Russinovich
