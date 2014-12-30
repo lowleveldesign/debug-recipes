@@ -56,8 +56,8 @@ If you need to log exceptions (CLR exceptions with stack and detailed informatio
 
 You may add new keywords and define custom actions for thrown exceptions.
 
-If you would like to create memory dump when a specific exception occurs use:
+If you would like to create a memory dump when a specific exception occurs use:
 
     adplus -c log-and-dump.adplus.config -o c:\dumps [-p <pid> | -sc <process-to-start> | -pn <process-name> ]
 
-The example in the configuration file creates dumps on `System.ArgumentNullException` and `System.InvalidOperationException` so adopt it to your needs.
+The example in the configuration file creates dumps on `System.ArgumentNullException` and `System.InvalidOperationException` so adapt it to your needs.
