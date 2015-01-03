@@ -1,0 +1,444 @@
+From: <http://blogs.msdn.com/b/alejacma/archive/2009/06/30/sos-cheat-sheet-net-2-0-3-0-3-5.aspx>
+
+=======================================================================
+HELP
+=======================================================================
+
+.hh
+  -> Open Debugger.chm.
+!SOS.help
+  -> See all commands in an extension.
+!SOS.help !command
+  -> Get help for one command in an extension.
+
+========================================================================
+PREPARE THE ENVIRONMENT
+========================================================================
+
+---------------
+SET SYMBOL PATH
+---------------
+
+.sympath
+    -> Shows current symbol path.
+.sympath srv*c:\symbols*\\symbols\symbols
+    -> Sets symbol path.
+.sympath+ srv*c:\symbolspub*http://msdl.microsoft.com/downloads/symbols
+    -> Adds path to symbol path.
+
+--------------------
+SET SOURCE CODE PATH
+--------------------
+
+.srcpath
+    -> Shows current source path.
+.srcpath \\dubitgfila04\DevDivServicing\whidbey\50727.42\sources
+    -> Sets source path.
+.srcpath+ C:\path
+    -> Adds path to source path.
+
+----------------
+LOAD EXTENSIONS
+----------------
+
+.chain
+    -> Shows loaded extensions.
+!EEVersion
+    -> Shows .NET version and SOS version.
+.load SOS
+    -> Loads extension.
+sxe ld mscorwks.dll; g; .loadby SOS mscorwks
+sxe -c "" clrn; g; .loadby SOS mscorwks
+sxe -c ".loadby sos mscorwks; g" ld mscorwks.dll
+    -> Loads the right version of SOS when mscorwks.dll gets loaded.
+.unload SOS
+    -> Unloads extension
+
+========================================================================
+SET A BREAKPOINT
+========================================================================
+
+-----------
+FIND METHOD
+-----------
+
+!DumpDomain
+    -> Shows all app domains and their assemblies/modules.
+!DumpAssembly <Assembly>
+    -> Shows assembly info: name, modules...
+!DumpModule -mt <Module>
+    -> Shows Method Tables (types) defined and referenced by a module.
+!DumpMT -md <Method Table>
+    -> Shows Method Descriptors of a Method Table.
+!DumpMD <Method Descriptor>
+    -> Shows Method Descriptor info. We can see Code Address if method
+       is jitted.
+!Name2EE <Module> <NameSpace.Class.Method>
+!Name2EE <Module>!<NameSpace.Class.Method>
+    -> Shows Method Descriptor and jitted Code Address of a method.
+!Name2EE * <NameSpace.Class.Method>
+!Name2EE *!<NameSpace.Class.Method>
+    -> Shows Module, Method Descriptor and jitted Code Address of a
+       method.
+
+--------------
+SET BREAKPOINT
+--------------
+
+!BPMD -md <Method Descriptor>
+    -> Sets breakpoint on method by Method Descriptor.
+bp <Code Address>
+    -> Sets breakpoint on method by jitted Code Address.
+!BPMD <Module> <NameSpace.Class.Method>
+    -> Sets breakpoint on method by module and name.
+bl
+    -> Lists breakpoints.
+bd 0
+bd *
+    -> Disables breakpoints.
+be 1
+    -> Enables breakpoint.
+bc 0
+    -> Removes breakpoints.
+
+-----------------
+STEP THROUGH CODE
+-----------------
+
+l+t
+    -> Enables source code mode. With private symbols and source code,
+       Windbg will open source code files automatically.
+l-t
+    -> Enables assembly mode.
+p
+    -> Steps over (F10).
+t
+    -> Steps into (F11 or F8).
+
+========================================================================
+CALL STACKS
+========================================================================
+
+--------------------------
+INSPECT CURRENT CALL STACK
+--------------------------
+
+k
+    -> Shows unmanaged + managed call stack.
+kp
+    -> Shows unmanaged + managed call stack with unmanaged parameters.
+!DumpStack
+    -> Shows raw call stack with unmanaged + managed calls and managed
+       Method Descriptors.
+!CLRStack
+    -> Shows managed call stack.
+!DumpStack -EE
+    -> Shows managed call stack with Method Descriptors.
+!CLRStack -p
+    -> Shows managed call stack with parameters.
+!CLRStack -l
+    -> Shows managed call stack with locals (we will only see memory
+       addresses in the stack).
+!CLRStack -a
+    -> Shows managed call stack with parameters and locals.
+
+---------------
+INSPECT OBJECTS
+---------------
+
+!DumpObj <Object>
+!do <Object>
+    -> Shows object info: Method Table, EEClass, size, fields...
+!DumpArray <Array>
+!da <Array>
+    -> Shows array info: # of elements, elements, their type...
+
+-------------------
+INSPECT SOURCE CODE
+-------------------
+
+kn
+    -> Shows unmanaged + managed call stack with frame numbers.
+.frame <Frame Number>
+    -> Changes the local context to a specific method frame. With Source
+       Code Mode enabled, private symbols and source code, Windbg will
+       open the source code file automatically.
+
+------------
+INSPECT MSIL
+------------
+
+!IP2MD <Instruction Pointer>
+!CLRStack; !IP2MD <Instruction Pointer>
+!DumpStack -EE
+!IP2MD @eip
+    -> Gets a Method Descriptor that we can use with !DumpIL.
+!DumpIL <Method Descriptor>
+    -> Shows IL of a method. ILDASM.exe and Reflector.exe show the same
+       IL, but also locals.
+
+-------------------
+INSPECT SOURCE CODE
+-------------------
+lm; !SaveModule <Dll start> c:\sample.dll
+    -> Writes a loaded dll to disk.
+
+----------------
+INSPECT ASSEMBLY
+----------------
+
+k
+!DumpMD <Method Descriptor>
+!DumpStack -EE; !DumpMD <Method Descriptor>
+    -> Gets Code Address of an unmanaged or managed jitted method.
+u <Code Address>
+    -> Shows several lines of assembly code at a given Code Address, and
+       source code lines if we have private symbols.
+uf <Code Address>
+    -> Shows all the assembly code of the managed or unmanaged function
+       containing the Code Address, and source code lines if we have
+       private symbols.
+!u <Code Address>
+    -> Shows all the assembly code of the managed method containing the
+       Code Address, and marks that address with ">>>".
+       If address is in unmanaged method and we have private symbols and
+       source code, it shows all the assembly in that method along with
+       the source code itself!
+
+-----------------
+INSPECT REGISTERS
+-----------------
+
+r ecx
+    -> When hitting a breakpoint on a managed function, it shows its
+       first parameter (_fastcall calling convention). First parameter
+       is usually the 'this' pointer.
+r edx
+    -> When hitting a breakpoint on a managed function, it shows its
+       second parameter (_fastcall calling convention).
+r esi
+    -> Typically used to hold the 'this' pointer as copied from ecx.
+
+========================================================================
+THREADS
+========================================================================
+
+-------------------
+INSPECT ALL THREADS
+-------------------
+
+~
+    -> Shows all threads (managed and unmanaged).
+!runaway
+    -> Shows time consumed by each thread.
+~0s
+    -> Switches to thread 0.
+~#s
+    -> Switches to the thread where the debugger broke.
+~*k100
+    -> Shows all unmanaged + managed call stacks in all threads.
+!Threads
+    -> Shows all managed threads.
+~*e !CLRStack
+    -> Shows managed calls in all threads.
+!Threads -special
+    -> Shows all .NET related threads (managed and unmanaged).
+!ThreadPool
+    -> Shows ThreadPool info: number of work requests in the queue,
+       timers and completion port threads.
+
+========================================================================
+THREAD STACKS
+========================================================================
+
+----------------------------
+INSPECT OBJECTS IN THE STACK
+----------------------------
+
+!DumpStackObjects
+!dso
+    -> Shows a list of references to objects that are still on the
+       thread’s stack.
+
+---------------
+INSPECT OBJECTS
+---------------
+
+!do <Object>
+    -> Shows object info: Method Table, EEClass, size, fields...
+!do -nofields <Object>
+    -> Shows object info but not fields. Good to see i.e. Strings.
+!da <Array>
+    -> Shows array info: # of elements, elements, their type...
+!DumpVC <Method Table> <Value Type Address>
+    -> Shows value type structs ('VT = 1' in '!do').
+!DumpClass <EEClass>
+    -> Shows the static fields of an object/class ('Attr = static' in
+       '!do'). These fields are part of the EEClass, a representation of
+       a class created before any method invocations are made on it.
+!DumpClass <EEClass>
+!Name2EE <Module> <NameSpace.Class>; !DumpClass <EEClass>
+    -> Shows the static fields of a class.
+
+========================================================================
+MANAGED HEAP
+========================================================================
+
+------------
+INSPECT HEAP
+------------
+
+!EEVersion
+    -> Shows version of GC heap (server/workstation) and how many GC
+       heaps we have in server mode.
+!EEHeap -gc
+    -> Shows how many GC heaps there are and how much memory is taken by
+       them.
+!Threads
+    -> Shows if Preemptive GC is enabled on a thread.
+
+---------------------------
+INSPECT OBJECTS IN THE HEAP
+---------------------------
+
+!DumpHeap
+    -> Shows all objects in the heap.
+!DumpHeap -stat
+    -> Shows statistics of all objects in the heap: # of objects of
+       a given type/Method Table, etc.
+!DumpHeap -mt <Method Table>
+!Name2EE * <NameSpace.Class.Method>; !DumpHeap -mt <Method Table>
+    -> Shows all objects in the heap of a given type/Method Table.
+!DumpHeap -type <Partial Class Name>
+    -> Shows all objects in the heap which class name contains a text.
+!DumpHeap -min 85000
+!EEHeap -GC; !DumpHeap <LOH begin> <LOH allocated>
+    -> Shows all objects in Large Object Heap (LOH/Gen 3).
+!FinalizeQueue
+    -> Shows which objects are ready for finalization and in general
+       which objects in the heap have a Finalize method.
+!FinalizeQueue; dd <generation 0 begin> <generation 0 end>-4
+    -> Shows all finalizable objects in Gen 0.
+!FinalizeQueue; !DumpHeap -mt <Method Table>
+    -> Shows all finalizable objects of a given Method Table/type.
+!DumpMT -md <Method Table>
+    -> Useful to check if an object/class has Finalize and Dispose
+       methods.
+!FinalizeQueue -detail
+    -> Shows SyncBlocks and RuntimeCallableWrappers (RCW) registered
+       for finalization.
+!GCRoot <Object>
+    -> Shows references to an object.
+!ObjSize <Object>
+    -> Shows the size of an object including its child objects.
+
+------------------------
+TROUBLESHOOT HEAP ISSUES
+------------------------
+
+!TraverseHeap c:\memory.log
+    -> Generates a log file which can be analyzed with CLR Profiler.
+!VerifyHeap
+    -> Checks the heap for signs of corruption.
+
+---------------------------
+TROUBLESHOOT GCHANDLE LEAKS
+---------------------------
+
+!GCHandles
+    -> Shows statistics of GCHandles.
+!GCHandleLeaks
+    -> Tracks down GCHandle leaks.
+!GCHandleLeaks; !DumpObj poi(<GCHandle>)
+    -> Shows the object a GCHandle references.
+
+-------------------------------
+TROUBLESHOOT LOADER HEAP ISSUES
+-------------------------------
+
+!DumpHeap -stat -type Assembly
+    -> Shows the number of assemblies in the heap.
+!DumpDomain
+    -> Shows all assemblies.
+!DumpDomain; !DumpModule <Module>; dc <MetaData start> <MetaData start>+<Metadata size>
+    -> Shows metadata of a module in an assembly.
+!EEHeap -loader
+    -> Shows Loader Heap size and modules.
+
+========================================================================
+BREAK ON AN EXCEPTION
+========================================================================
+
+-----------------------
+BREAK ON CLR EXCEPTIONS
+-----------------------
+
+sxe clr
+sxe 0xe0434f4d
+    -> Break on all CLR exceptions.
+!StopOnException -create <Exception Type> 1
+!soe -create <Exception Type> 1
+    -> Break on a specific CLR exception type.
+!soe -derived -create <Base Exception Type> 1
+    -> Break on all exceptions which derive from a certain type.
+sxn clr
+    -> Stops breaking on CLR exceptions. If we used '!soe' before, we
+       can still see the exception types of the CLR exceptions that we
+       hit, but the debugger won't break on them.
+sxr
+    -> Resets to defaults.
+
+----------------------
+INSPECT CLR EXCEPTIONS
+----------------------
+
+kp; !do <Object from mscorwks!RaiseTheExceptionInternalOnly>
+    -> Shows exception object info.
+!PrintException <Object>
+!pe <Object>
+    -> Shows exception info.
+!pe
+    -> Shows exception info of last exception thrown in current thread.
+!dso; !pe <Object>
+    -> Shows exception info of an exception in the stack of current
+       thread.
+!DumpHeap -type Exception; !DumpHeap -mt <Method Table>; !pe <Object>
+    -> Shows exception info of an exception in the heap.
+.foreach(ex {!DumpHeap -type <Partial Class Name> -short}){!pe ex;.echo}
+    -> Shows exception info of all exceptions of a given type in the
+       heap.
+
+-----------------------------------------
+INSPECT METHOD WHERE WE GOT THE EXCEPTION
+-----------------------------------------
+
+!pe <Object>; !u <Instruction Pointer>; u <Memory Address>
+    -> Shows the line of code where the exception happened.
+
+========================================================================
+LOCKS
+========================================================================
+
+---------------------
+INSPECT MANAGED LOCKS
+---------------------
+
+!SyncBlk
+    -> Shows the Index of the syncblock in the syncblock table, the
+       address of the syncblock, the thread holding it & the object
+       which syncblock we are waiting for. MonitorHeld = 1 for each
+       owner and 2 for each waiter. Used with i.e.
+       System.Threading.Monitor.
+~*kp; ~*e !CLRStack -p; ~*e !dso; !SyncBlk
+    -> Helps to find out which threads are waiting on the syncblock of
+       which object.
+
+-----------------------
+INSPECT UNMANAGED LOCKS
+-----------------------
+
+!locks
+!critsec
+!SIEExt.critlist
+    -> Shows info of a critical sections (unmanaged). Use with i.e.
+       System.Threading.Mutex (not based on syncblocks).
