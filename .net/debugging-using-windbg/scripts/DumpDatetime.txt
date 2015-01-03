@@ -1,0 +1,203 @@
+$$ WinDbg Program to Dump a System.Date...
+$$  requires specifying the DateTime Address
+$$
+$$ Written by: CarlosAg (http://www.carlosag.net/)
+$$
+$$ Run as: $$>a<DumpDate.txt <DateTimeAddress>
+$$
+$$ Example : $$>a<e:\shares\public\AzureUX\scripts\DumpDate.txt 000007fef7411c48
+$$ Uses Pseudo Registers t11-t19
+
+ad/q *
+
+$$ Read the argument
+r$t11=poi(${$arg1});
+
+$$   Now for the Date Time Magic... and fun...
+$$ DateTime stores in a QuadWord Binary format using the last two digits to signal UTC and other flags
+$$ Is UTC? dq & 0x4000000000000000
+$$  so lets get rid of those to get the ticks  dq ... time ... Mask with 0x3FFFFFFFFFFFFFFF
+$$  ticks in one millisecond = 10,0000, that means...
+$$ seconds== ((0n10000) * (0n1000))                            == 0n10000000
+$$ minutes== ((0n10000) * (0n1000) * (0n60))                   == 0n600000000
+$$ hours  == ((0n10000) * (0n1000) * (0n60) * (0n60))          == 0n36000000000
+$$ days   == ((0n10000) * (0n1000) * (0n60) * (0n60) * (0n24)) == 0n864000000000
+$$
+
+$$ First lets get rid of the UTC/Flags stuff to get just the ticks
+r$t11=@$t11&0x3FFFFFFFFFFFFFFF;
+
+$$ Now get the # of Days == day count...
+r$t12=(@$t11/0n864000000000);
+
+$$ Easy... we can get the Hours
+r$t13=(@$t11 % 0n864000000000)/0n36000000000;
+$$ and Minutes
+r$t14=((@$t11 % 0n864000000000) % 0n36000000000)/0n600000000;
+$$ and Seconds
+r$t15=(((@$t11 % 0n864000000000) % 0n36000000000) % 0n600000000)/0n10000000;
+
+$$ Now for the heavy duty of figuring out days...  leap years and more fun
+$$ DaysPerYear = 365
+$$ DaysPer4Years = DaysPerYear * 4 + 1   == 1,461
+$$ DaysPer100Years = DaysPer4Years * 25 - 1 == 36,524
+$$ DaysPer400Years = DaysPer100Years * 4 + 1 == 146,097
+
+$$ t16 will have the Years...
+$$  the following lines will try to get the right number of years
+$$  which is tricky due to leap years and so the math...
+$$  first figure out the # of "400 years" + the "100 years" + "4 years" + "1 years" + 1
+$$ Days... == y400
+r$t16=(@$t12/0n146097);
+$$ n... - diff 400years
+r$t12=@$t12-(@$t16*0n146097);
+
+$$ Days... == y100
+r$t17=(@$t12/0n36524);
+$$ n... - diff 100years
+r$t12=@$t12-(@$t17*0n36524);
+
+$$ Days... == y4
+r$t18=(@$t12/0n1461);
+$$ n... - diff 4years
+r$t12=@$t12-(@$t18*0n1461);
+
+$$ Days... == y1
+r$t19=(@$t12/0n365);
+
+$$ Last year has an extra day, so decrement result if 4
+.if(@$t19==0n4){
+      r$t19=0n3;
+}
+
+$$ Here now we have in t12 the day number in the current year...
+$$ n... - diff 1years
+r$t12=@$t12-(@$t19*0n365);
+
+$$ Finally!!! we know the right year
+r$t16=(@$t16*0n400)+(@$t17*0n100)+(@$t18*0n4)+(@$t19)+1;
+
+$$ Now determine if this is a Leap Year... we'll need that to get the right month/day
+r$t18=0n0;
+.if(@$t19==0n3){
+      .if(@$t18!=0n24){
+            r$t18=0n1;
+      }
+      .if(@$t17==0n3){
+            r$t18=0n1;
+      }
+}
+
+$$ Month and Day ...
+r$t19=0n0;
+.if(@$t18==0n0){
+      $$ .printf "non-leap year";
+      r$t19=12;
+      .if(@$t12<=0n31){
+            r$t19=0n1;
+            r$t12=@$t12-0n0+1;
+      }
+      .elsif(@$t12<=0n59){
+            r$t19=0n2;
+            r$t12=@$t12-0n31+1;
+      }
+      .elsif(@$t12<=0n90){
+            r$t19=0n3;
+            r$t12=@$t12-0n59+1;
+      }
+      .elsif(@$t12<=0n120){
+            r$t19=0n4;
+            r$t12=@$t12-0n90+1;
+      }
+      .elsif(@$t12<=0n151){
+            r$t19=0n5;
+            r$t12=@$t12-0n120+1;
+      }
+      .elsif(@$t12<=0n181){
+            r$t19=0n6;
+            r$t12=@$t12-0n151+1;
+      }
+      .elsif(@$t12<=0n212){
+            r$t19=0n7;
+            r$t12=@$t12-0n181+1;
+      }
+      .elsif(@$t12<=0n243){
+            r$t19=0n8;
+            r$t12=@$t12-0n212+1;
+      }
+      .elsif(@$t12<=0n273){
+            r$t19=0n9;
+            r$t12=@$t12-0n243+1;
+      }
+      .elsif(@$t12<=0n304){
+            r$t19=0n10;
+            r$t12=@$t12-0n273+1;
+      }
+      .elsif(@$t12<=0n334){
+            r$t19=0n11;
+            r$t12=@$t12-0n304+1;
+      }
+}
+.else{
+      $$ .printf "leap year";
+      r$t19=12;
+      .if(@$t12<=0n31){
+            r$t19=0n1;
+            r$t12=@$t12-0n0+1;
+      }
+      .elsif(@$t12<=0n60){
+            r$t19=0n2;
+            r$t12=@$t12-0n31+1;
+      }
+      .elsif(@$t12<=0n91){
+            r$t19=0n3;
+            r$t12=@$t12-0n60+1;
+      }
+      .elsif(@$t12<=0n121){
+            r$t19=0n4;
+            r$t12=@$t12-0n91+1;
+      }
+      .elsif(@$t12<=0n152){
+            r$t19=0n5;
+            r$t12=@$t12-0n121+1;
+      }
+      .elsif(@$t12<=0n182){
+            r$t19=0n6;
+            r$t12=@$t12-0n152+1;
+      }
+      .elsif(@$t12<=0n213){
+            r$t19=0n7;
+            r$t12=@$t12-0n182+1;
+      }
+      .elsif(@$t12<=0n244){
+            r$t19=0n8;
+            r$t12=@$t12-0n213+1;
+      }
+      .elsif(@$t12<=0n274){
+            r$t19=0n9;
+            r$t12=@$t12-0n244+1;
+      }
+      .elsif(@$t12<=0n305){
+            r$t19=0n10;
+            r$t12=@$t12-0n274+1;
+      }
+      .elsif(@$t12<=0n335){
+            r$t19=0n11;
+            r$t12=@$t12-0n305+1;
+      }
+}
+
+$$ Finally we have all the pieces!!! just print them...
+$$ yy-MM-dd Hour:Minute:Second
+.printf"%d-%d-%d %d:%d:%d",@$t16,@$t19,@$t12,@$t13,@$t14,@$t15;
+
+$$ FlagsMask             = 0xC000000000000000
+$$ KindUtc               = 0x4000000000000000;
+$$ KindLocal             = 0x8000000000000000;
+r$t17=poi(${$arg1})&0xC000000000000000;
+.if(@$t17==0x4000000000000000){
+      .printf" (local)";
+}
+.elsif(@$t17==0x8000000000000000){
+      .printf" (UTC);
+}

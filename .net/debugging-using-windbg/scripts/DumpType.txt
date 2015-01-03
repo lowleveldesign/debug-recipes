@@ -1,0 +1,16 @@
+$$ If there's no first argument, there's nothing to do.
+.if(0 != ${/d:$arg1})
+{
+    $$ Get each address of the type into the addr variable.
+    .foreach (addr {!dumpheap -type ${$arg1} -short})
+    {
+        $$ Dump out this address using SOSEX.
+        !mdt addr;
+        $$ Put a line between each item dumped.
+        .echo
+    }
+}
+.else
+{
+    .printf "\nUsage: $$>>a<\DumpType.txt type\n"
+}

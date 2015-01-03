@@ -44,7 +44,7 @@ We can show detail information on each object found in a heap using WinDbg meta 
         nativeFamily:000000b6aaad8f40 (System.IntPtr)
         createDefaultOnFail:false (System.Boolean)
 
-A DumpType.txt script is available in \_scripts folder which automize this process. Example usage:
+A DumpType.txt script is available in \scripts folder which automize this process. Example usage:
 
     0:013> $$>a<c:\junk\DumpType.txt
     Usage: $$>>a<DumpType.txt type
