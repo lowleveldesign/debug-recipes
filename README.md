@@ -6,7 +6,7 @@ This is a repository of my notes collected while debugging various .NET and Wind
 
 Following subjects are available:
 
-- [.NET Debugging](.net)
+- [Debugging .NET](.net)
 
 I hope you will find it useful. Any contribution is welcome.
 
