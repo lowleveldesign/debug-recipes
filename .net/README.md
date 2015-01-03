@@ -7,7 +7,7 @@ This section is dedicated to .NET debugging. You may find here information on ho
 - [memory problems](memory)
 - [exceptions](exceptions)
 
-And information on how to use [mdbg](debugging-using-mdbg\mdbg.exe.md) or [windbg](debugging-using-windbg\windbg-clr-debugging.md).
+And information on how to use [mdbg](debugging-using-mdbg/mdbg.exe.md) or [windbg](debugging-using-windbg/windbg-clr-debugging.md).
 
 Links
 -----
