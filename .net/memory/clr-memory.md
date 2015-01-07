@@ -180,3 +180,4 @@ Links
 - [GC ETW events](http://blogs.msdn.com/b/maoni/archive/2014/12/22/gc-etw-events.aspx)
 - [GC ETW events - 2](http://blogs.msdn.com/b/maoni/archive/2014/12/25/gc-etw-events-2.aspx)
 - [GC ETW Events - 3](http://blogs.msdn.com/b/maoni/archive/2014/12/25/gc-etw-events-3.aspx)
+- [GC ETW Events - 4](http://blogs.msdn.com/b/maoni/archive/2014/12/30/gc-etw-events-4.aspx)
