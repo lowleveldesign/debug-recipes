@@ -1,10 +1,11 @@
 
 Visual Studio debugger configuration
-------------------------------------
+====================================
 
 The next sections contain information which debugger settings you should use to achieve the best exeprience when debugging .NET applications (if an option is not mentioned I assume it has the default value).
 
-### General settings ###
+General settings
+----------------
 
 #### CHECK: Enable address-level debugging ####
 
@@ -28,11 +29,13 @@ It is also worth to check the next two options so you will be able to investigat
 
 I tend to use the Immediate Window as the only source of output information while debugging.
 
-### Symbols ###
+Symbols
+-------
 
-### Finally, learn the best windows arrangement that will suit your needs ###
+Windows arrangement
+-------------------
 
-My debugger looks as follows:
+Finally, learn the best windows arrangement that will suit your needs. My debugger looks as follows:
 
 
 
