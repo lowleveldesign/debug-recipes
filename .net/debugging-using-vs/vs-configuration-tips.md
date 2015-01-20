@@ -41,5 +41,5 @@ Windows arrangement
 
 Finally, learn the best windows arrangement that will suit your needs. My debugger looks as follows:
 
-[!myenv](vs-configuration-myenvironment.png)
+![myenv](vs-configuration-myenvironment.png)
 
