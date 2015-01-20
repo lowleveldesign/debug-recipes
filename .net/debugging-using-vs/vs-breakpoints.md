@@ -7,11 +7,11 @@ Breakpoint locations
 
 You may set a breakpoint on **any .NET function** (assuming Just my code is disabled) - just press Ctrl + B and in the Function text field type the full path to the desired function, eg. `System.Console.WriteLine`. Unfortunately this won't work for anonymouns methods. For generic types use the type you are interested in, eg. `System.Collections.Generic.Dictionary<String, String>.Insert`. Visual Studio might then display a warning that the function was not found, but for now you may skip it. After you start debugging your breakpoint should look as follows:
 
-![valid-break](vs-breakpoints-validbreakpoint.png)
+![valid-break](vs-breakpoints-validbreakpoint.PNG)
 
 When the method is optimized (inlined for instance) or when VS debugger was unable to find the function the breakpoint will be disabled:
 
-![invalid-break](vs-breakpoints-invalidbreakpoint.png)
+![invalid-break](vs-breakpoints-invalidbreakpoint.PNG)
 
 and VS will display an error dialog.
 
