@@ -32,10 +32,14 @@ I tend to use the Immediate Window as the only source of output information whil
 Symbols
 -------
 
+I usually set the `_NT_SYMBOL_PATH` environment variable so that other tools (such as process explorer, windbg etc.) will use the same symbols as Visual Studio. My symbol path includes private .NET symbols and Microsoft's public symbol store, all the files are cached in C:\symbols\dbg folder:
+
+    @setx /M _NT_SYMBOL_PATH SRV*C:\symbols\dbg*http://referencesource.microsoft.com/symbols;SRV*C:\symbols\dbg*http://msdl.microsoft.com/download/symbols
+
 Windows arrangement
 -------------------
 
 Finally, learn the best windows arrangement that will suit your needs. My debugger looks as follows:
 
-
+[!myenv](vs-configuration-myenvironment.png)
 
