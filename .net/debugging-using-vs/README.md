@@ -12,6 +12,10 @@ Which options should be enabled for the best debugging experience in VS.
 
 How to effectively use breakpoints and tracepoints while debugging.
 
+## [Exceptions](vs-exceptions.md) ##
+
+Instructions how to diagnose Exceptions in VS (1st and 2nd chance).
+
 ## [Call stack](vs-call-stack.md) ##
 
 Options available in call stack window. How to decompose the .NET stack and look for local variables and parameters.
