@@ -1,4 +1,4 @@
 
-Diagnosing exceptions in VS
-===========================
+Diagnosing .NET exceptions in VS
+================================
 
