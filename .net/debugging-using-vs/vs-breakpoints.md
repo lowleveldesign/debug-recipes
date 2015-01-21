@@ -29,8 +29,8 @@ I love tracepoints, especially when you are debugging application that do not pr
 
 One example situation when tracepoints are very useful is debugging the duplicate key insert error in a dictionary. The default framework exception does not tell you which key generated the problem. You may then set a tracepoint on `System.Collections.Generic.Dictionary<String, String>.Insert` with **When Hit** set to *Inserted key: {key}* and when the exception occurs Immediate (or Output) window will show you which key caused the problem. As you can imagine tracepoints are another way to diagnose issues with:
 
-- concurrency - you may control which threads executes a given part of code at given time
-- exceptions - as in our example you may dump in the trace all the information required to diagnose the specific problem
+- concurrency - you may control which thread executes a given part of code at any given time
+- exceptions - as in our example you may dump in the trace all the parameter values required to diagnose the specific problem
 - locks - you may dump information who acquired a given lock and when
 - method order execution - setting tracepoints in an application you don't know will help you better understand the code execution flow
 
