@@ -1,3 +1,5 @@
+Offical SOSEX help file - I'm not the author
+
 Quick Ref:
 --------------------------------------------------
 bhi       [filename]                                     BuildHeapIndex - Builds an index file for heap objects.
