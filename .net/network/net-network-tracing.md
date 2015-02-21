@@ -65,7 +65,7 @@ If you are using NLog in your application you may redirect the System.Net trace 
 <system.diagnostics>
     <trace autoflush="true" />
     <sharedListeners>
-      <add name="nlog" type="LowLevelDesign.NLog.NLogTraceListener, LowLevelDesign.NLog.Ext" />
+      <add name="nlog" type="NLog.NLogTraceListener, NLog" />
     </sharedListeners>
     <sources>
       <source name="System.Net.Http" switchValue="Verbose">
