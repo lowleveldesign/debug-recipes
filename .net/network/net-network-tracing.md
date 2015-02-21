@@ -59,12 +59,37 @@ This is a configuration sample which writes network traces to a file:
 </system.diagnostics>
 ```
 
-If you are using NLog in your application you may redirect the System.Net trace output to the `NLogTraceListener` with the following setting:
+If you are using NLog in your application you may redirect the System.Net trace output to the `NLogTraceListener` with the following settings:
 
 ```xml
-<sharedListeners>
-  <add name="nlog" type="LowLevelDesign.NLog.NLogTraceListener, LowLevelDesign.NLog.Ext" />
-</sharedListeners>
+<system.diagnostics>
+    <trace autoflush="true" />
+    <sharedListeners>
+      <add name="nlog" type="LowLevelDesign.NLog.NLogTraceListener, LowLevelDesign.NLog.Ext" />
+    </sharedListeners>
+    <sources>
+      <source name="System.Net.Http" switchValue="Verbose">
+        <listeners>
+          <add name="nlog" />
+        </listeners>
+      </source>
+      <source name="System.Net.HttpListener" switchValue="Verbose">
+        <listeners>
+          <add name="nlog" />
+        </listeners>
+      </source>
+      <source name="System.Net" switchValue="Verbose">
+        <listeners>
+          <add name="nlog" />
+        </listeners>
+      </source>
+      <source name="System.Net.Sockets" switchValue="Verbose">
+        <listeners>
+          <add name="nlog" />
+        </listeners>
+      </source>
+    </sources>
+</system.diagnostics>
 ```
 
 Links
