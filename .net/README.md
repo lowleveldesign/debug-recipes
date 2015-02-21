@@ -6,6 +6,7 @@ This section is dedicated to .NET debugging. You may find here information on ho
 
 - [memory problems](memory)
 - [exceptions](exceptions)
+- [network problems](network)
 
 And information on how to use [mdbg](debugging-using-mdbg/mdbg.exe.md), [windbg](debugging-using-windbg/windbg-clr-debugging.md) or [visual studio](debugging-using-vs/README.md).
 
