@@ -7,6 +7,7 @@ This is a repository of my notes collected while debugging various .NET and Wind
 Following sections are available:
 
 - [Debugging .NET](.net)
+- [Debugging Windows applications](windows)
 
 I hope you will find it useful. Any contribution is welcome.
 
