@@ -36,7 +36,7 @@ WLAN                     : Troubleshoot wireless LAN related issues
 
 To know exactly which providers are enabled in each scenario use `netsh trace show scenario {scenarioname}`. After choosing the right scenario for your diagnosing case start the trace with a command:
 
-```
+```batchfile
 netsh trace start scenario={yourscenario} capture=yes correlation=no report=no tracefile={the-output-etl-file}
 
 Example:
@@ -45,7 +45,7 @@ Example:
 
 After some time (or after performing the faulty network operation) stop the trace with a command:
 
-```
+```batchfile
 netsh trace stop
 ```
 
@@ -56,21 +56,21 @@ Analyze traces
 
 When we have an .etl file with network trace it's time to analyze it. You can open it in [Message Analyzer](http://blogs.technet.com/b/messageanalyzer/), though Message Analyzer consumes a lot of memory to process the .etl file and it just won't work for bigger trace files. That's why I usually prefer to **convert the .etl file to the .cap format** and perform all analysis in [Wireshark](https://www.wireshark.org/). Message Analyzer comes with a very interesting Powershell module named PEF which is a command line interface for this application. To create the .cap file from the .etl file call:
 
-```
+```powershell
 New-PefTraceSession -Path {full-path-to-the-cap-file} -SaveOnStop | Add-PefMessageProvider -Source {full-path-to-the-etl-file} | Start-PefTraceSession
 ```
 
 I created also a function which you may add to your Powershell profile:
 
-```
+```powershell
 function ConvertFrom-EtlToCap([Parameter(Mandatory=$True)][String]$EtlFilePath, [String]$CapFilePath) {
     $EtlFilePath = Resolve-Path $EtlFilePath
     if ([String]::IsNullOrEmpty($CapFilePath)) {
         $CapFilePath = $EtlFilePath.Substring(0, $EtlFilePath.Length - 3) + 'cap'
     }
     New-PefTraceSession -Path $CapFilePath -SaveOnStop | Add-PefMessageProvider -Source $EtlFilePath | Start-PefTraceSession
-```
 }
+```
 
 Links
 -----
