@@ -2,13 +2,35 @@
 Debugging .NET
 ==============
 
-This section is dedicated to .NET debugging. You may find here information on how to debug:
+This section is dedicated to .NET debugging. Paragraphs below contain links to types of issues covered by my notes.
 
-- [memory problems](memory)
-- [exceptions](exceptions)
-- [network problems](network)
+Memory
+------
 
-And information on how to use [mdbg](debugging-using-mdbg/mdbg.exe.md), [windbg](debugging-using-windbg/windbg-clr-debugging.md) or [visual studio](debugging-using-vs/README.md).
+- [CLR Memory model](memory/clr-memory.md)
+- [Investigate memory issues in dumps](memory/analyze-net-memory-dumps.md)
+
+Exceptions
+----------
+
+- [Collecting exception information in production](exceptions/collecting-net-exceptions.md)
+
+Network problems
+----------------
+
+- [Network tracing in .NET](network/net-network-tracing.md)
+
+Tools
+-----
+
+- [Debuging using visual studio](debugging-using-vs/README.md)
+- [Debugging using mdbg](debugging-using-mdbg/mdbg.exe.md)
+- [Debugging using windbg](debugging-using-windbg/windbg-clr-debugging.md)
+
+General
+-------
+
+- [JIT configuration for debugging](jit-configuration-for-debugging.md)
 
 Links
 -----
