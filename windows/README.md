@@ -6,9 +6,9 @@ This section is dedicated to debugging Windows native application. Paragraphs be
 General
 -------
 
-- [Collect process memory dumps](windows-process-memory-dumps.md)
+- [Collect process memory dumps](memory-dumps/windows-process-memory-dumps.md)
 
 Network issues
 --------------
 
-- [Collect and analyze network traces](windows-network-tracing.md)
+- [Collect and analyze network traces](network/windows-network-tracing.md)
