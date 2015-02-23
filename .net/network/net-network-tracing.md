@@ -98,7 +98,7 @@ If you are using NLog in your application you may redirect the System.Net trace 
 Logging application requests in a proxy
 ---------------------------------------
 
-When you make a request in code you should always remember to configure its proxy to the system settings, eg.:
+When you make a request in code you should remember to configure its proxy according to the system settings, eg.:
 
 ```csharp
 var request = WebRequest.Create(url);
