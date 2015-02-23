@@ -2,9 +2,12 @@
 Network tracing in .NET
 =======================
 
+System.Net traces
+-----------------
+
 All classes from `System.Net`, if configured properly, may provide a lot of interesting logs through the default System.Diagnostics mechanisms.
 
-## Available sources ##
+### Available trace sources ###
 
 The below table is copied from <http://msdn.microsoft.com/en-us/library/ty48b824.aspx>
 
@@ -24,7 +27,7 @@ Attribute name|Attribute value
 `maxdatasize`|number that defines the maximum number of bytes of network data included in each line trace. The default value is 1024
 `tracemode`|Set to **includehex** (default) to show protocol traces in hexadecimal and text format. Set to **protocolonly** to show only text.
 
-## Example configuration ##
+### Example configuration ###
 
 This is a configuration sample which writes network traces to a file:
 
@@ -91,6 +94,21 @@ If you are using NLog in your application you may redirect the System.Net trace 
     </sources>
 </system.diagnostics>
 ```
+
+Logging application requests in a proxy
+---------------------------------------
+
+When you make a request in code you should always remember to configure its proxy to the system settings, eg.:
+
+```csharp
+var request = WebRequest.Create(url);
+request.Proxy = WebRequest.GetSystemWebProxy();
+request.Method = "POST";
+request.ContentType = "application/json; charset=utf-8";
+...
+```
+
+Then run [Fiddler](http://www.telerik.com/fiddler) (or any other proxy) and requests data should be logged in the sessions window. Unfortunately this approach won't work for requests to applications served on the local server. A workaround is to use one of the Fiddler's localhost alternatives in the url: `ipv4.fiddler`, `ipv6.fiddler` or `localhost.fiddler` (more [here](http://docs.telerik.com/fiddler/Configure-Fiddler/Tasks/MonitorLocalTraffic)).
 
 Links
 -----
