@@ -13,7 +13,7 @@ Memory
 Exceptions
 ----------
 
-- [Collecting exception information in production](exceptions/collecting-net-exceptions.md)
+- [Collecting exception information in production](exceptions/collecting-net-exceptions/collecting-net-exceptions.md)
 
 Network problems
 ----------------
