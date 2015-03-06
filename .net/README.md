@@ -20,6 +20,12 @@ Network problems
 
 - [Network tracing in .NET](network/net-network-tracing.md)
 
+ADO.NET
+-------
+
+- [ETW tracing in ADO.NET](ado.net/ado.net-etw-tracing.md)
+- [Debugging ADO.NET](ado.net/ado.net-debugging.md)
+
 Tools
 -----
 
