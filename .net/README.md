@@ -19,6 +19,7 @@ Network problems
 ----------------
 
 - [Network tracing in .NET](network/net-network-tracing.md)
+- [Identify network problems in memory dumps](network/net-network-problems-in-dumps.md)
 
 ADO.NET
 -------
