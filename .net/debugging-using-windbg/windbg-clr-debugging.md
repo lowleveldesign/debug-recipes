@@ -215,11 +215,16 @@ Using it makes it really simple to load SOS:
     =========================================================================================
     0:000> !loadsos
 
+Plugins
+-------
+
+- .NET plugin for WinDbg with interesting commands: <http://netext.codeplex.com/>. Some articles about it:
+  - <http://blogs.msdn.com/b/rodneyviana/archive/2013/10/30/hardcore-debugging-for-net-developers-not-for-the-faint-of-heart.aspx>
+  - [Getting started with NetExt](http://blogs.msdn.com/b/rodneyviana/archive/2015/03/10/getting-started-with-netext.aspx)
+
 Links
 -----
 
-- New plugin for WinDbg: <http://netext.codeplex.com/>
-  <http://blogs.msdn.com/b/rodneyviana/archive/2013/10/30/hardcore-debugging-for-net-developers-not-for-the-faint-of-heart.aspx>
 - [Identifying Specific Reference Type Arrays with SOS](http://blogs.microsoft.co.il/sasha/2014/05/01/identifying-specific-reference-type-arrays-sos/)
 - [A Motivating Example of WinDbg Scripting for .NET Developers](http://blogs.microsoft.co.il/sasha/2014/08/05/motivating-example-windbg-scripting-net-developers/)
 - [How to display a DateTime in WinDbg using SOS](http://blogs.iis.net/carlosag/archive/2014/10/24/how-to-display-a-datetime-in-windbg-using-sos.aspx)
