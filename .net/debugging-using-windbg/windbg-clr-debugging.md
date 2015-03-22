@@ -223,6 +223,7 @@ Links
 - [Identifying Specific Reference Type Arrays with SOS](http://blogs.microsoft.co.il/sasha/2014/05/01/identifying-specific-reference-type-arrays-sos/)
 - [A Motivating Example of WinDbg Scripting for .NET Developers](http://blogs.microsoft.co.il/sasha/2014/08/05/motivating-example-windbg-scripting-net-developers/)
 - [How to display a DateTime in WinDbg using SOS](http://blogs.iis.net/carlosag/archive/2014/10/24/how-to-display-a-datetime-in-windbg-using-sos.aspx)
+- [Andrew Richard's onedrive](https://onedrive.live.com/?cid=dae128bd454cf957&id=DAE128BD454CF957!7152&ithint=folder,zip&authkey=!ALq3LqMcfgs8JoM)
 
 ### loading mscordacwks.dll ###
 
