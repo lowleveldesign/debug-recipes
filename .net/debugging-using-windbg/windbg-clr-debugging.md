@@ -221,6 +221,7 @@ Plugins
 - .NET plugin for WinDbg with interesting commands: <http://netext.codeplex.com/>. Some articles about it:
   - <http://blogs.msdn.com/b/rodneyviana/archive/2013/10/30/hardcore-debugging-for-net-developers-not-for-the-faint-of-heart.aspx>
   - [Getting started with NetExt](http://blogs.msdn.com/b/rodneyviana/archive/2015/03/10/getting-started-with-netext.aspx)
+  - [The case of the non-responsive MVC Web Application](http://blogs.msdn.com/b/rodneyviana/archive/2015/03/27/the-case-of-the-non-responsive-mvc-web-application.aspx)
 
 Links
 -----
