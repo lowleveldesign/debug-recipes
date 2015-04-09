@@ -35,7 +35,7 @@ The printed ids corresond to the values of the ID column in `!Threads` output, e
   34    4 1388 05198440     21220 Preemptive  00000000:00000000 050d8b18 0     Ukn
 ```
 
-### Iterate through execution context assigned to threads ###
+### Iterate through execution contexts assigned to threads ###
 
 When debugging locks in code that is using tasks it is often necessary to examine execution contexts assigned to the running threads. I prepared a simple script which lists threads with their execution contexts. You only need (as in previous script) find the MT of the `Thread` class in your appdomain, eg.
 
