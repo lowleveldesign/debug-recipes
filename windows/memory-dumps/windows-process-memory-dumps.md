@@ -74,6 +74,23 @@ The -i option allows you to install procdump as a system post-mortem debugger. I
 Analyzing collected dump files
 ------------------------------
 
+### Show infomation about dump session ###
+
+To display information about the dump session (time when dump was taken) use **vertarget** command, eg.:
+
+    0:012> vertarget
+    Windows 7 Version 7601 (Service Pack 1) MP (8 procs) Free x64
+    Product: Server, suite: TerminalServer SingleUserTS
+    kernel32.dll version: 6.1.7601.18409 (win7sp1_gdr.140303-2144)
+    Machine Name:
+    Debug session time: Thu Apr  9 10:53:08.000 2015 (UTC + 2:00)
+    System Uptime: 1 days 17:37:49.480
+    Process Uptime: 1 days 17:36:49.000
+      Kernel time: 0 days 0:00:05.000
+      User time: 0 days 0:00:37.000
+
+Additionally when dump is loaded into windbg it will print the comment (if any) embedded into it.
+
 ### Show information on what dump contains ###
 
 Great tool to display information about the collected dump is **dmpchk.exe**. Example excerpt of the command output:
