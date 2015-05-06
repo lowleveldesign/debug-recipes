@@ -12,6 +12,14 @@ In order to debug windows kernel you need to configure the `/debug` option durin
     C:\Windows\system32>bcdedit /debug {current} on
     The operation completed successfully.
 
+### Configure Serial port debugging ###
+
+    C:\Windows\system32>bcdedit /debug {current} on
+    The operation completed successfully.
+
+    C:\Windows\system32>bcdedit /dbgsettings SERIAL DEBUGPORT:1 BAUDRATE:115200
+    The operation completed successfully.
+
 ### Local kernel debugging ###
 
 To start a local kernel debugging you may run from the elevated command prompt either:
@@ -19,6 +27,9 @@ To start a local kernel debugging you may run from the elevated command prompt e
     kd -kl
     windbg -kl
     livekd (sysinternals)
+
+Setup kernel debugging on virtual machine
+-----------------------------------------
 
 ### Using VMWare to debug kernel ###
 
@@ -30,3 +41,14 @@ On the client computer you can connect to the VM using windbg by using a given n
     windbg -k com:pipe,port=\\VMHost\pipe\PipeName,resets=0,reconnect (if the VM is running on another machine then the debugger)
 
 In virtualbox remember to always specify the whole path to the named pipe, eg. `\\.\pipe\dbgpipe`.
+
+### Using Hyper-V to debug kernel ###
+
+Enable COM1 debug port configuration.
+
+Add COM1 serial port emulated by a named pipe.
+
+On the host computer you can connect to the VM using windbg by using a given named pipe:
+
+    windbg -k com:pipe,port=\\.\pipe\PipeName,resets=0,reconnect
+
