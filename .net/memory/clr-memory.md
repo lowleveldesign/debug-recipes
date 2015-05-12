@@ -156,11 +156,12 @@ Links
 - [Does Garbage Collection Hurt?](http://geekswithblogs.net/akraus1/archive/2014/02/17/155442.aspx) - PerfView usage to examine GC activities
 - [Identify And Prevent Memory Leaks In Managed Code](http://msdn.microsoft.com/en-us/magazine/cc163491.aspx)
 - [Garbage Collection: Automatic Memory Management in the Microsoft .NET Framework](http://msdn.microsoft.com/en-us/magazine/bb985010.aspx)
-  [Garbage Collectionâ?"Part 2: Automatic Memory Management in the Microsoft .NET Framework](http://msdn.microsoft.com/en-us/magazine/bb985011.aspx)
+  [Garbage Collection Part 2: Automatic Memory Management in the Microsoft .NET Framework](http://msdn.microsoft.com/en-us/magazine/bb985011.aspx)
 - [GC ETW events](http://blogs.msdn.com/b/maoni/archive/2014/12/22/gc-etw-events.aspx)
 - [GC ETW events - 2](http://blogs.msdn.com/b/maoni/archive/2014/12/25/gc-etw-events-2.aspx)
 - [GC ETW Events - 3](http://blogs.msdn.com/b/maoni/archive/2014/12/25/gc-etw-events-3.aspx)
 - [GC ETW Events - 4](http://blogs.msdn.com/b/maoni/archive/2014/12/30/gc-etw-events-4.aspx)
+- [Measure GC Allocations and Collections using TraceEvent](http://naveensrinivasan.com/2015/05/11/measure-gc-allocations-and-collections-using-traceevent/)
 
 ### Troubleshooting ###
 
