@@ -2,6 +2,33 @@
 Debugging kernel
 ================
 
+General information
+-------------------
+
+Common function prefixes:
+
+Prefix | Description
+-------|------------
+Cc | Cache manager
+Cm | Configuration manager
+Ex | Executive support routines
+FsRtl | File system driver run time lib
+Hal | Hardware abstraction layer
+Io | IO manager
+Ke | Kernel
+Lpc | Local procedure call
+Lsa | Local security authority
+Mm | Memory manager
+Nt | System services
+Ob | Object manager
+Po | Power manager
+Pp | PnP manager
+Ps | Process support
+Rtl | Runtime lib
+Se | Security
+Wmi | Windows management instrumentation
+Zw | Kernel version of Nt functions
+
 Gathering machine information
 -----------------------------
 
