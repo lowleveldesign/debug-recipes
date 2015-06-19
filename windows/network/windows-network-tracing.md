@@ -36,6 +36,13 @@ WLAN                     : Troubleshoot wireless LAN related issues
 
 To know exactly which providers are enabled in each scenario use `netsh trace show scenario {scenarioname}`. After choosing the right scenario for your diagnosing case start the trace with a command:
 
+Many interesting capture filters are available, you may use `netsh trace show CaptureFilterHelp` to list them. Most interesting include `CaptureInterface`, `Protocol`, `Ethernet.`, `IPv4.` and `IPv6.` options set.
+
+    netsh trace start scenario=InternetClient capture=yes CaptureInterface="Local Area Connection 2" Protocol=TCP Ethernet.Type=IPv4 maxSize=250 fileMode=circular overwrite=yes traceFile=c:\temp\nettrace.etl
+
+    netsh trace stop
+
+
 ```batchfile
 netsh trace start scenario={yourscenario} capture=yes correlation=no report=no tracefile={the-output-etl-file}
 
