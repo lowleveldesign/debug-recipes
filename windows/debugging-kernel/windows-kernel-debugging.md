@@ -68,7 +68,7 @@ The **!session** extension displays all logon sessions or changes the current se
 Work with processes and threads in the kernel-mode
 --------------------------------------------------
 
-Each time you break into the kernel-mode debugger one of the processes will be active. You may check which one is it by running `!process -1 0` command. If you are going to work with user-mode memory space you need to reload the process modules symbols (otherwise you will see symbols from the last relad). You may do so while switching process context with `.process /i` or `process /r /p` or manually with the command: `.reload /user`.  The first two command allow you to select which process's page directory is used to interpret virtual addresses. After you set the process context, you can use this context in any command that takes addresses.
+Each time you break into the kernel-mode debugger one of the processes will be active. You may check which one is it by running `!process -1 0` command. If you are going to work with user-mode memory space you need to reload the process modules symbols (otherwise you will see symbols from the last reload). You may do so while switching process context with `.process /i` or `.process /r /p` or manually with the command: `.reload /user`.  The first two command allow you to select which process's page directory is used to interpret virtual addresses. After you set the process context, you can use this context in any command that takes addresses.
 
     .process [/i] [/p [/r] ] [/P] [Process]
 
@@ -131,6 +131,62 @@ To display information about a specific thread (with its call stack) use the **!
     FreezeCount 1
         DirBase: dcd75740  ObjectTable: f3db2840  HandleCount: <Data Not Accessible>
         Image: Test.exe
+
+### Breakpoint in user-mode process from the kernel-mode ###
+
+You may set a breakpoint in user space, but you need to be in a valid process context:
+
+```
+kd> !process 0 0 notepad.exe
+PROCESS ffffe0014f80d680
+    SessionId: 2  Cid: 0e44    Peb: 7ff7360ef000  ParentCid: 0aac
+    DirBase: 2d497000  ObjectTable: ffffc00054529240  HandleCount: <Data Not Accessible>
+    Image: notepad.exe
+
+kd> .process /i ffffe0014f80d680
+You need to continue execution (press 'g' <enter>) for the context
+to be switched. When the debugger breaks in again, you will be in
+the new process context.
+
+kd> g
+```
+
+Then when you are in a given process context, set the breakpoint:
+
+```
+kd> .reload /user
+kd> !process -1 0
+PROCESS ffffe0014f80d680
+    SessionId: 2  Cid: 0e44    Peb: 7ff7360ef000  ParentCid: 0aac
+    DirBase: 2d497000  ObjectTable: ffffc00054529240  HandleCount: <Data Not Accessible>
+    Image: notepad.exe
+
+kd> x kernel32!CreateFileW
+00007ffa`d8502508 KERNEL32!CreateFileW (<no parameter info>)
+kd> bp 00007ffa`d8502508
+```
+
+Alternative way (which does not require process context switching) is to use data execution breakpoints, eg.:
+
+```
+kd> !process 0 0 notepad.exe
+PROCESS ffffe0014ca22480
+    SessionId: 2  Cid: 0614    Peb: 7ff73628f000  ParentCid: 0d88
+    DirBase: 5607b000  ObjectTable: ffffc0005c2dfc40  HandleCount: <Data Not Accessible>
+    Image: notepad.exe
+
+kd> .process /r /p ffffe0014ca22480
+Implicit process is now ffffe001`4ca22480
+.cache forcedecodeuser done
+Loading User Symbols
+..........................
+
+kd> x KERNEL32!CreateFileW
+00007ffa`d8502508 KERNEL32!CreateFileW (<no parameter info>)
+kd> ba e1 00007ffa`d8502508
+```
+
+For both those commands you may limit their scope to a particular process using /p switch.
 
 ### Display currently executed code in all threads (!stacks) ###
 
