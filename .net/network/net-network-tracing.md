@@ -108,6 +108,16 @@ request.ContentType = "application/json; charset=utf-8";
 ...
 ```
 
+or in the configuration file:
+
+```xml
+  <system.net>
+    <defaultProxy>
+      <proxy autoDetect="False" proxyaddress="http://127.0.0.1:8888" bypassonlocal="False" usesystemdefault="False" />
+    </defaultProxy>
+  </system.net>
+```
+
 Then run [Fiddler](http://www.telerik.com/fiddler) (or any other proxy) and requests data should be logged in the sessions window. Unfortunately this approach won't work for requests to applications served on the local server. A workaround is to use one of the Fiddler's localhost alternatives in the url: `ipv4.fiddler`, `ipv6.fiddler` or `localhost.fiddler` (more [here](http://docs.telerik.com/fiddler/Configure-Fiddler/Tasks/MonitorLocalTraffic)).
 
 Links
