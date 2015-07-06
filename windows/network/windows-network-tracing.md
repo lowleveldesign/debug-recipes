@@ -5,6 +5,8 @@ Windows network tracing
 Collect traces
 --------------
 
+### ETW traces ###
+
 Starting from Windows 7 (2008 Server) you don't need to install anything (such as WinPcap or Network Monitor) on the server to collect network traces. You can simply use `netsh trace {start|stop}` command which will create an ETW session with the interesting ETW providers enabled. Few diagnostics scenarios are available and you may list them using `netsh trace show scenarios`:
 
 ```
@@ -36,13 +38,6 @@ WLAN                     : Troubleshoot wireless LAN related issues
 
 To know exactly which providers are enabled in each scenario use `netsh trace show scenario {scenarioname}`. After choosing the right scenario for your diagnosing case start the trace with a command:
 
-Many interesting capture filters are available, you may use `netsh trace show CaptureFilterHelp` to list them. Most interesting include `CaptureInterface`, `Protocol`, `Ethernet.`, `IPv4.` and `IPv6.` options set.
-
-    netsh trace start scenario=InternetClient capture=yes CaptureInterface="Local Area Connection 2" Protocol=TCP Ethernet.Type=IPv4 maxSize=250 fileMode=circular overwrite=yes traceFile=c:\temp\nettrace.etl
-
-    netsh trace stop
-
-
 ```batchfile
 netsh trace start scenario={yourscenario} capture=yes correlation=no report=no tracefile={the-output-etl-file}
 
@@ -56,7 +51,17 @@ After some time (or after performing the faulty network operation) stop the trac
 netsh trace stop
 ```
 
-A new .etl file should be created in the output directory (as well as a .cab file with some interesting system logs).
+A new .etl file should be created in the output directory (as well as a .cab file with some interesting system logs). Some ETW providers do not generate information about the processes related to the specific events (for instance WFP provider) - keep this in mind when choosing your own set.
+
+Many interesting capture filters are available, you may use `netsh trace show CaptureFilterHelp` to list them. Most interesting include `CaptureInterface`, `Protocol`, `Ethernet.`, `IPv4.` and `IPv6.` options set, example:
+
+    netsh trace start scenario=InternetClient capture=yes CaptureInterface="Local Area Connection 2" Protocol=TCP Ethernet.Type=IPv4 maxSize=250 fileMode=circular overwrite=yes traceFile=c:\temp\nettrace.etl
+
+    netsh trace stop
+
+### In procmon ###
+
+Procmon network tracing does not collect data sent or received but it will reveal all the network connections opened by processes in the system.
 
 Analyze traces
 --------------
