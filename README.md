@@ -12,12 +12,6 @@ Memory
 ------
 
 - [CLR Memory model](memory/clr-memory.md)
-
-Memory dumps
-------------
-
-- [Collect process memory dumps](dumps/windows-process-memory-dumps.md)
-- [Collect kernel memory dumps](dumps/windows-kernel-memory-dumps.md)
 - [Investigate .NET memory issues in dumps](dumps/analyze-net-memory-dumps.md)
 
 Threading problems
@@ -29,7 +23,7 @@ Network issues
 --------------
 
 - [Collect and analyze network traces](network/network-tracing.md)
-- [Identify network problems in memory dumps](network/net-network-problems-in-dumps.md)
+- [Identify network problems in memory dumps](network/network-problems-in-dumps.md)
 
 Exceptions
 ----------
@@ -47,14 +41,20 @@ General
 
 - [JIT configuration for debugging](jit-configuration-for-debugging.md)
 
-Debugging kernel
+Tools & technics
 ----------------
+
+### Debugging kernel
 
 - [Debugging Windows kernel - setup](debugging-kernel/windows-kernel-debugging-setup.md)
 - [Debugging Windows kernel - basics](debugging-kernel/windows-kernel-debugging.md)
 
-Tools
------
+### Memory dumps
+
+- [Collect process memory dumps](dumps/windows-process-memory-dumps.md)
+- [Collect kernel memory dumps](dumps/windows-kernel-memory-dumps.md)
+
+### Debuggers
 
 - [Debuging using visual studio](debugging-using-vs/README.md)
 - [Debugging using mdbg](debugging-using-mdbg/mdbg.exe.md)
