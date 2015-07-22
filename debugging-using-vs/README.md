@@ -6,7 +6,11 @@ A list of tips & tricks which might be useful when debugging .NET applications. 
 
 ## [General usage notes](vs-usage.md) ##
 
+Common keyboard shortcuts, configuration.
+
 ## [Plugin I use](vs-plugins.md) ##
+
+List of plugins I use.
 
 ## [Debugger configuration tips](vs-configuration-tips.md) ##
 
