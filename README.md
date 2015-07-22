@@ -32,6 +32,8 @@ Exceptions
 - [Analyzing exceptions](exceptions/analyzing-exceptions.md)
 - [Windows Error Reporting](exceptions/wer/wer-usage.md)
 - [Aedebug](exceptions/aedebug/aedebug.md)
+- [Adplus usage](exceptions/adplus/adplus.md)
+- [DebugDiag](exceptions/debugdiag/debugdiag)
 
 ADO.NET
 -------
@@ -43,6 +45,8 @@ General
 -------
 
 - [JIT configuration for debugging](jit-configuration-for-debugging.md)
+- [Windows debugging configuration](windows-debugging-configuration.md)
+- [PDB files](pdb-files.md)
 
 Tracing
 -------
