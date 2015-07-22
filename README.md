@@ -33,7 +33,7 @@ Exceptions
 - [Windows Error Reporting](exceptions/wer/wer-usage.md)
 - [Aedebug](exceptions/aedebug/aedebug.md)
 - [Adplus usage](exceptions/adplus/adplus.md)
-- [DebugDiag](exceptions/debugdiag/debugdiag)
+- [DebugDiag](exceptions/debugdiag/debugdiag.md)
 
 ADO.NET
 -------
