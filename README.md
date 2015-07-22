@@ -66,7 +66,6 @@ Tools & technics
 
 - [Debuging using Visual Studio](debugging-using-vs/README.md)
 - [Debugging using mdbg](debugging-using-mdbg/mdbg.exe.md)
-
 - [Debugging in WinDbg - tips](debugging-using-windbg/windbg-debugging.md)
 - [Debugging .NET apps using windbg](debugging-using-windbg/windbg-clr-debugging.md)
 
