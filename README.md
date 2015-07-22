@@ -29,6 +29,9 @@ Exceptions
 ----------
 
 - [Collecting exception information in production](exceptions/collecting-exceptions-info.md)
+- [Analyzing exceptions](exceptions/analyzing-exceptions.md)
+- [Windows Error Reporting](exceptions/wer/wer-usage.md)
+- [Aedebug](exceptions/aedebug/aedebug.md)
 
 ADO.NET
 -------
@@ -40,6 +43,11 @@ General
 -------
 
 - [JIT configuration for debugging](jit-configuration-for-debugging.md)
+
+Tracing
+-------
+
+- [API hooking in Windws](tracing/api-hooking.md)
 
 Tools & technics
 ----------------
@@ -56,10 +64,11 @@ Tools & technics
 
 ### Debuggers
 
-- [Debuging using visual studio](debugging-using-vs/README.md)
+- [Debuging using Visual Studio](debugging-using-vs/README.md)
 - [Debugging using mdbg](debugging-using-mdbg/mdbg.exe.md)
-- [Debugging using windbg](debugging-using-windbg/windbg-clr-debugging.md)
 
+- [Debugging in WinDbg - tips](debugging-using-windbg/windbg-debugging.md)
+- [Debugging .NET apps using windbg](debugging-using-windbg/windbg-clr-debugging.md)
 
 Links
 -----

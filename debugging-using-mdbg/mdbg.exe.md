@@ -81,7 +81,6 @@ To **show sources** at the current location use `sh[ow] [lines]`, eg:
 The source path can be set using `pa[th] [pathName]`:
 
     [p#:1, t#:4] mdbg> pa
-    path: c:\dev\agora\Trader.Statistics-old\Trader.Statistics.Worker\
 
 After the source path is set the debugger somehow is able to resolve source files relevant paths.
 

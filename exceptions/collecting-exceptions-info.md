@@ -39,6 +39,9 @@ From some time procdump filtering works on .NET exception names. Each exception 
     [09:03:27] Exception: E0434F4D.System.NullReferenceException ("Object reference not set to an instance of an object.")
     [09:03:28] Exception: E0434F4D.System.NullReferenceException ("Object reference not set to an instance of an object.")
 
+We may also observe the logs in procmon. In order to see the procdump log events in **procmon** remember to add procdump.exe and procdump64.exe to the accepted process names in procmon filters.
+
+
 To create a full memory dump when `NullReferenceException` occurs use the following command:
 
 ```
@@ -61,3 +64,4 @@ If you would like to create a memory dump when a specific exception occurs use:
     adplus -c log-and-dump.adplus.config -o c:\dumps [-p <pid> | -sc <process-to-start> | -pn <process-name> ]
 
 The example in the configuration file creates dumps on `System.ArgumentNullException` and `System.InvalidOperationException` so adapt it to your needs.
+

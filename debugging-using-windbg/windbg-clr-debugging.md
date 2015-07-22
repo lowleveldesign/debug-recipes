@@ -13,11 +13,10 @@ This command allows you to save a module from a memory dump to a disk. The base 
 
     0:000> lm
     start    end        module name
-    00400000 0040c000   trader_products_service_host   (deferred)
     00d50000 00d96000   log4net    (deferred)
-    00e70000 00e7e000   Trader_Products_Service   (deferred)
+    00e70000 00e7e000   Products_Service   (deferred)
     ...
-    0:000> !SaveModule 00e70000 c:\temp\Trader.Products.Service.dll
+    0:000> !SaveModule 00e70000 c:\temp\Products.Service.dll
     3 sections in file
     section 0 - VA=2000, VASize=66e4, FileAddr=200, FileSize=6800
     section 1 - VA=a000, VASize=3b0, FileAddr=6a00, FileSize=400
@@ -68,7 +67,7 @@ Break when `NullReferenceException` is thrown:
 
 ### Find a value of a static field ###
 
-SOS does not display the address of the field. Use `!sosex.mdt` instead.
+SOS does not display the address of the field. Use `!sosex.mdt` or netext `!wdo`.
 
     !sosex.mdt windbg_static_test.StaticTest
 
@@ -99,85 +98,75 @@ Work with types
 
 ### Decode a GUID value ###
 
-Copy the output from the dd command to the `Get-GuidFromDwords` powershell command.
-
-An example application and its debugging session:
-
-    public static void Main(String[] args) {
-        Guid g = Guid.NewGuid();
-        Console.WriteLine("GUID created: {0}", g);
-        Console.ReadKey();
-    }
-
-    0:000> !CLRStack -a
-    ...
-    00000000001feae0 000007ff001401b2 Program.Main(System.String[])*** WARNING: Unable to verify checksum for C:\temp\guidtest.exe
-     [c:\temp\guidtest.cs @ 8]
-        PARAMETERS:
-            args (0x00000000001feb60) = 0x0000000002421438
-        LOCALS:
-            0x00000000001feb00 = 0x48da0ccf7d6500fb
-    ...
-
-    // GUID created: 7d6500fb-0ccf-48da-bc3f-58e9febd2653
-
-    0:000> dd 0x00000000001feb00
-    00000000`001feb00  7d6500fb 48da0ccf e9583fbc 5326bdfe
-    ...
-    0:000> dq 0x00000000001feb00
-    00000000`001feb00  48da0ccf`7d6500fb 5326bdfe`e9583fbc
-    ...
-
-Then in powershell:
-
-    PS tabor> Get-GuidFromDwords "7d6500fb 48da0ccf e9583fbc 5326bdfe"
-    7d6500fb-0ccf-48da-bc3f-58e9febd2653
+The `!wdo` command from netext nicely decode Guids. If necessary you may use the `!weval` and `$toguid` function.
 
 ### Decode a DateTime value ###
 
-SQL Parameter `_value` field was set to `09443a74`. After dumping object at this address it appeared that this is a DateTime instance:
+The `!wdo` command from netext prints readable date for fields of date type. If you need to decode a specific DateTime object, dump it:
 
-    0:019> !do 09443a74
-    Name: System.DateTime
-    MethodTable: 79308184
-    EEClass: 790e0564
-    Size: 16(0x10) bytes
-     (C:\WINDOWS\assembly\GAC_32\mscorlib\2.0.0.0__b77a5c561934e089\mscorlib.dll)
-    Fields:
-          MT    Field   Offset                 Type VT     Attr    Value Name
-    79309428  40000f4        4        System.UInt64  1 instance 634915192800000000 dateData
-    79332cc0  40000f0       30       System.Int32[]  0   shared   static DaysToMonth365
-        >> Domain:Value  0015f7c8:01082d10 <<
-    79332cc0  40000f1       34       System.Int32[]  0   shared   static DaysToMonth366
-        >> Domain:Value  0015f7c8:01082d50 <<
-    79308184  40000f2       28      System.DateTime  1   shared   static MinValue
-        >> Domain:Value  0015f7c8:01082cf0 <<
-    79308184  40000f3       2c      System.DateTime  1   shared   static MaxValue
-        >> Domain:Value  0015f7c8:01082d00 <<
+```
+0:019> !do 09443a74
+Name: System.DateTime
+MethodTable: 79308184
+EEClass: 790e0564
+Size: 16(0x10) bytes
+ (C:\WINDOWS\assembly\GAC_32\mscorlib\2.0.0.0__b77a5c561934e089\mscorlib.dll)
+Fields:
+      MT    Field   Offset                 Type VT     Attr    Value Name
+79309428  40000f4        4        System.UInt64  1 instance 634915192800000000 dateData
+79332cc0  40000f0       30       System.Int32[]  0   shared   static DaysToMonth365
+    >> Domain:Value  0015f7c8:01082d10 <<
+79332cc0  40000f1       34       System.Int32[]  0   shared   static DaysToMonth366
+    >> Domain:Value  0015f7c8:01082d50 <<
+79308184  40000f2       28      System.DateTime  1   shared   static MinValue
+    >> Domain:Value  0015f7c8:01082cf0 <<
+79308184  40000f3       2c      System.DateTime  1   shared   static MaxValue
+    >> Domain:Value  0015f7c8:01082d00 <<
+```
 
-When an object has a DateTime property, eg.
+Copy the `dateData` and use `!weval` function:
 
-    0:005> !do 01627c90
-    Name:        Trader.Domiporta.Zolas.Model.AllAds.FlapiSyncStatus
-    MethodTable: 03e2fb54
-    EEClass:     040eb534
-    Size:        56(0x38) bytes
-    File:        C:\TraderPlatform\Trader.Domiporta.Zolas\Trader.Domiporta.Zolas.exe
-    Fields:
-          MT    Field   Offset                 Type VT     Attr    Value Name
-    7376224c  40001db        4        System.String  0 instance 01627310 <EntityName>k__BackingField
-    73752cfc  40001dc        c ...eTime, mscorlib]]  1 instance ! <LastProcessingDate>k__BackingField
-    73752cfc  40001dd       18 ...eTime, mscorlib]]  1 instance 01627ca8 <LastProcessedItemModifyDate>k__BackingField
-    73792dfc  40001de       24 ...Int64, mscorlib]]  1 instance 01627cb4 <LastProcessedItemId>k__BackingField
-    7375813c  40001df        8       System.Boolean  1 instance        1 <IsMigrationFinished>k__BackingField
+```
+0:023> !weval $tickstodatetime(0n634915192800000000)
+calculated: 2012-12-19 13:08:00
+```
 
-we need to use `!DumpVC`, eg. `!DumpVC 73752cfc 01627ca8`.
+or powershell
 
-To decode the datetime value we may use powershell:
+```powershell
+> new-object System.DateTime 634915192800000000
 
-    > new-object System.DateTime 634915192800000000
+19 grudnia 2012 13:08:00
+```
 
-    19 grudnia 2012 13:08:00
+### Decode a timespan value ###
+
+By default netext shows the value of a timespan field when calling `!wdo`, eg.
+
+```
+000007feef993d68               System.Runtime.Caching.ObjectCache +0000                                   _cache 00000000ffb3ab50
+000007fef84d9360                                  System.TimeSpan +0008   <DefaultExpirationTime>k__BackingField -mt 000007FEF84D9360 000000042B700DA0 01:00:00
+000007fef84d9360                                  System.TimeSpan +0010 <DefaultRefreshTresholdTime>k__BackingFi -mt 000007FEF84D9360 000000042B700DA8 00:05:00
+000007fef7e0ccb8 Static  System.Collections.Concurrent.Concurrent +0000                                    Locks 00000001ffb38a10
+```
+
+But if only have the address of the timestamp instance, dump it:
+
+```
+0:023> !wdo -mt 000007fef84d9360 000000042b700da8
+...
+Assembly Name: C:\Windows\Microsoft.Net\assembly\GAC_64\mscorlib\v4.0_4.0.0.0__b77a5c561934e089\mscorlib.dll
+Inherits: System.ValueType System.Object (000007FEF84D3390 000007FEF84D13E8)
+000007fef84eb350                                     System.Int64 +0000                                   _ticks b2d05e00 (0n3000000000)
+...
+```
+
+Copy the value of the `_ticks` field and use `!weval`:
+
+```
+0:023> !weval $tickstotimespan(0xb2d05e00)
+calculated: 00:05:00
+```
 
 CLR debugging setup
 -------------------
