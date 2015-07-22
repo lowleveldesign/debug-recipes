@@ -4,6 +4,10 @@ Debugging .NET using Visual Studio
 
 A list of tips & tricks which might be useful when debugging .NET applications. The documentation is divided into the followings sections:
 
+## [General usage notes](vs-usage.md) ##
+
+## [Plugin I use](vs-plugins.md) ##
+
 ## [Debugger configuration tips](vs-configuration-tips.md) ##
 
 Which options should be enabled for the best debugging experience in VS.
