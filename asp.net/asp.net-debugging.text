@@ -2,7 +2,7 @@
 Debugging ASP.NET
 =================
 
-FIXME
+In the **diag-pages** you may find pages displaying information about the ASP.NET environment. You may copy them to an application folder and verify if the environment is configured accordingly to your specification.
 
 Links
 -----
