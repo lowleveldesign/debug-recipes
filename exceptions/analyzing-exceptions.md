@@ -15,6 +15,32 @@ The  `.ecxr` debugger command instructs the debugger to restore the register con
        +0x014 ExceptionInformation : [15] Uint4B
     0:003> dt ntdll!_CONTEXT
 
+**.lastevent** will also show you information about the last error that occured (if the debugger stopped because of the exception). You may then examine the exception record using the **.exr** command, eg.:
+
+    0:049> .lastevent
+    Last event: 15ae8.133b4: CLR exception - code e0434f4d (first/second chance not available)
+      debugger time: Thu Jul 30 19:23:53.169 2015 (UTC + 2:00)
+    0:049> .exr -1
+    ExceptionAddress: 000007fe9b17f963
+       ExceptionCode: e0434f4d (CLR exception)
+      ExceptionFlags: 00000000
+    NumberParameters: 0
+
+To get the last error value for the current thread you may use the **!gle** command (or **!teb**). An additional **-all** parameter shows the last errors for all the threads, eg.
+
+    0:001> !gle -all
+    Last error for thread 0:
+    LastErrorValue: (Win32) 0 (0) - The operation completed successfully.
+    LastStatusValue: (NTSTATUS) 0xc0000034 - Object Name not found.
+
+    Last error for thread 1:
+    LastErrorValue: (Win32) 0 (0) - The operation completed successfully.
+    LastStatusValue: (NTSTATUS) 0 - STATUS_SUCCESS
+
+Based on <http://blogs.msdn.com/b/friis/archive/2012/09/19/c-compiler-or-visual-basic-net-compilers-fail-with-error-code-1073741502-when-generating-assemblies-for-your-asp-net-site.aspx>
+
+## Exception handlers ##
+
 To list exception handlers for the currently running method use **!exchain** command, eg.:
 
     0072ef74: clr!_except_handler4+0 (744048b9)
@@ -26,6 +52,8 @@ To list exception handlers for the currently running method use **!exchain** com
       CRT scope  1, func:   clr!CallDescrWorkerWithHandler+7e (742715d8)
       CRT scope  0, filter: clr!CallDescrWorkerWithHandler+84 (745b019d)
                     func:   clr!CallDescrWorkerWithHandler+90 (745b01a9)
+
+Managed exception handlers can be listed using the SOS **!EHInfo** - example of how to list ASP.NET MVC exception handlers can be found [on my blog](https://lowleveldesign.wordpress.com/2013/04/26/life-of-exception-in-asp-net/).
 
 ### x86 applications ###
 
@@ -54,19 +82,7 @@ Example session of retrieving the exception handler:
     0072ef84  0072f058
     0072ef88  744064f9
 
-
-To get the last error value for the current thread you may use the **!gle** command (or **!teb**). An additional **-all** parameter shows the last errors for all the threads, eg.
-
-    0:001> !gle -all
-    Last error for thread 0:
-    LastErrorValue: (Win32) 0 (0) - The operation completed successfully.
-    LastStatusValue: (NTSTATUS) 0xc0000034 - Object Name not found.
-
-    Last error for thread 1:
-    LastErrorValue: (Win32) 0 (0) - The operation completed successfully.
-    LastStatusValue: (NTSTATUS) 0 - STATUS_SUCCESS
-
-Based on <http://blogs.msdn.com/b/friis/archive/2012/09/19/c-compiler-or-visual-basic-net-compilers-fail-with-error-code-1073741502-when-generating-assemblies-for-your-asp-net-site.aspx>
+## Decrypting error numbers ##
 
 If you receive an error message with an error number like this:
 
@@ -85,12 +101,14 @@ you can run windbg starting any process you like, eg. `windbg notepad.exe` and g
     Float: low -2.00008 high -1.#QNAN
     Double: -1.#QNAN
 
-Then find an error description using the hex error number:
+Then find an error description using the hex error number and the **!error** command:
 
     0:000> !error c0000142
     Error code: (NTSTATUS) 0xc0000142 (3221225794) - {DLL Initialization Failed} Initialization of the dynamic link library %hs failed. The process is terminating abnormally.
 
-Another way is to lookup errnum message using **net** command:
+More error codes and error messages are served by the Andrew Richards **!pde.err** command from the PDE extension.
+
+On the command line you may use the **net** command:
 
     > net helpmsg 2
 
