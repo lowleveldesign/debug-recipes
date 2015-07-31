@@ -62,3 +62,42 @@ x64:
 ```
 
 Notice that the thread number from the output is a managed thread id and to map it to the windbg thread number you need to use the `!Threads` command.
+
+### List locks ###
+
+You may examine thin locks using **!DumpHeap -thinlocks**.  To find all hard locks (the ones that were created after the object header was full) use **!SyncBlk -all** command.
+
+Using Concurrency Visualizer
+----------------------------
+
+Under the ANALYZE menu in Visual Studio there is a great tool to observe concurrency execution of .NET applications. It allows you to monitor what each thread of the application was doing during a given period of time. By zooming to a particular point in time you may even examine a stack of a waiting thread.
+
+Concurrency Visualizer under the hood uses ETW infrastructure and generates 2 .etl files: user.etl and kernel.etl. You can then merge them:
+
+    xperf -merge user.etl kernel.etl merged.etl
+
+and load the merged.etl file into WPR or XPerfView.
+
+### Command line ###
+
+Launch application:
+
+    PS temp> & 'C:\Program Files (x86)\Microsoft Concurrency Visualizer Collection Tools\CvCollectionCmd.exe' /Launch c:\temp\AsyncGrep1.exe /LaunchArgs c:\temp
+
+Query status:
+
+    PS temp> & 'C:\Program Files (x86)\Microsoft Concurrency Visualizer Collection Tools\CvCollectionCmd.exe' /Query
+    Microsoft (R) Concurrency Visualizer Collection Tool Version 12.0.21005.1
+    Copyright (C) Microsoft Corp. All rights reserved.
+
+    Not collecting, ready to start.
+
+You may as well attach and detach to the currently running process.
+
+Links
+-----
+
+- [Two More Ways for Diagnosing For Which Synchronization Object Your Thread Is Waiting](http://blogs.microsoft.co.il/blogs/sasha/archive/2013/04/24/two-more-ways-for-diagnosing-for-which-synchronization-object-your-thread-is-waiting.aspx?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+sashag+%28All+Your+Base+Are+Belong+To+Us%29)
+- [Interesting problem to diagnose (wait on a context thread)](http://blog.stephencleary.com/2012/07/dont-block-on-async-code.html?m=1)
+- [A case of a deadlock in a .NET application](A case of a deadlock in a .NET application)
+
