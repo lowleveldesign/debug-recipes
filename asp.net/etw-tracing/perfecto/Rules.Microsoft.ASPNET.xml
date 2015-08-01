@@ -1,0 +1,1171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?Copyright (c) Microsoft Corporation. All rights reserved. v1.0.0.12. Feedback: Jose.Reyes@microsoft.com?>
+<Rules>
+  <Group name="$(ASPNETSummary)">
+    <Rule name="$(ASPNETRequestsRule)">
+      <!-- Create the ASP.NET Requests table -->
+      <!-- Create temp table to hold the process and thread ids -->
+      <Step select="/Report/Section[@name='aspnetSection']">
+        <Exists>
+          <Otherwise>
+            <!-- Create the ASP.NET Requests table -->
+            <Insert select="/Report/Section[@name='aspnetSection']">
+              <Node axis="child">
+                <Table name="aspnetRequests" topic="aspnetRequests">
+                  <Header>
+                    <Sort field="startTime" type="number" order="ascending"/>
+                    <Threshold type="top" value="100"/>
+                    <Data name="contextId" class="string" visible="false"/>
+                    <Data name="verb" class="string"/>
+                    <Data name="path" class="string"/>
+                    <Data name="queryString" class="string"/>
+                    <Data name="startTime" class="number" visible="false"/>
+                    <Data name="handlerName" class="string"/>
+                    <Data name="eventName" class="string" visible="false"/>
+                    <Data name="elapsed" class="number" visible="false" format="#,###,###,##0.00"/>
+                    <Data name="endTime" class="number" visible="false"/>
+                    <Data name="duration" class="number" format="#,###,###,##0.00"/>
+                    <Header>
+                      <Sort field="startTime" type="number" order="ascending"/>
+                      <Threshold type="top" value="100"/>
+                      <Data name="stepName" class="string"/>
+                      <Data name="startTime" class="number" visible="false"/>
+                      <Data name="elapsed" class="number" format="#,###,###,##0.00"/>
+                      <Data name="endTime" class="number" visible="false"/>
+                      <Data name="duration" class="number" format="#,###,###,##0.00"/>
+                      <Header>
+                        <Sort field="startTime" type="number" order="ascending"/>
+                        <Threshold type="top" value="100"/>
+                        <Data name="stepName" class="string"/>
+                        <Data name="startTime" class="number" visible="false"/>
+                        <Data name="elapsed" class="number" format="#,###,###,##0.00"/>
+                        <Data name="endTime" class="number" visible="false"/>
+                        <Data name="duration" class="number" format="#,###,###,##0.00"/>
+                      </Header>
+                    </Header>
+                  </Header>
+                </Table>
+              </Node>
+            </Insert>
+            <!-- Create temp table to hold the process and thread ids -->
+            <Insert select="/Report/Section[@name='aspnetSection']">
+              <Node axis="child">
+                <Table name="aspnetProcessThreadIds" topic="aspnetRequests">
+                  <Header>
+                    <Threshold type="top" value="100"/>
+                    <Data name="processId" class="string"/>
+                    <Data name="threadId" class="string"/>
+                    <Data name="connId" class="string"/>
+                    <Data name="contextId" class="string" visible="false"/>
+                  </Header>
+                </Table>
+              </Node>
+            </Insert>
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetStart events (opcode 0) -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetStart']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="verb" expression="Data[@name='verb']" />
+            <Variable name="path" expression="Data[@name='path']" />
+            <Variable name="queryString" expression="Data[@name='queryString']" />
+            <Variable name="startTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="processId" expression="Data[@name='processId']" />
+            <Variable name="threadId" expression="Data[@name='threadId']" />
+            <Variable name="connId" expression="Data[@name='connId']" />
+            <!-- 
+                Is there another start event with this context id? It could happen with child requests.
+                The previous AspNetStart event ends when this one starts.
+            -->
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and @limit='-1']">
+              <Attribute name="limit" value="{startTime}" />
+            </Insert>
+            <!-- Add this item data -->
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']">
+              <Node axis="child">
+                <Item name="{contextId}" closed="false" handler="false" limit="-1">
+                  <Data name="contextId" visible="false">{contextId}</Data>
+                  <Data name="verb">{verb}</Data>
+                  <Data name="path">{path}</Data>
+                  <Data name="queryString">{queryString}</Data>
+                  <Data name="startTime" visible="false">{startTime}</Data>
+                </Item>
+              </Node>
+            </Insert>
+            <!-- 
+                The app domain start events don't have context id, so we add them to a temp table with our process and thread
+                 so those events can find us
+             -->
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetProcessThreadIds']">
+              <Node axis="child">
+                <Item processId="{processId}" threadId="{threadId}" connId="{connId}">
+                  <Data name="processId">{processId}</Data>
+                  <Data name="threadId">{threadId}</Data>
+                  <Data name="connId">{connId}</Data>
+                  <Data name="contextId" visible="false">{contextId}</Data>
+                </Item>
+              </Node>
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!--Process the AspNetStartHandler events (opcode 8)-->
+      <!--
+       The data on this events are not going to a subtable. Instead we will add it to the row created with the AspNetStart events.
+       -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetStartHandler']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="handlerName" expression="Data[@name='handlerName']" />
+            <Variable name="eventName" expression="Data[@name='eventName']" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and @handler='false']">
+              <Node axis="child">
+                <Data name="handlerName">{handlerName}</Data>
+                <Data name="eventName" visible="false">{eventName}</Data>
+              </Node>
+            </Insert>
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and @handler='false']">
+              <Attribute name="handler" value="true" />
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetStop events (opcode 1) -->
+      <!--
+       No row is created. Instead we fill some more cols from AspNetStart row. 
+       -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetEnd']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="endTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="startTime" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and @closed='false']/Data[@name='startTime'])" />
+            <Variable name="duration" expression="round(({endTime} - {startTime}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and @closed='false']">
+              <Node axis="child">
+                <Data name="elapsed" visible="false">0</Data>
+                <Data name="endTime" visible="false">{endTime}</Data>
+                <Data name="duration">{duration}</Data>
+              </Node>
+            </Insert>
+            <Variable name="stepName">$(aspnetRequestStarts)</Variable>
+            <Variable name="elapsed" expression="number('0')" />
+            <!-- Insert 'Request Start' step (elapsed 0.00, duration 0.00) -->
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and @closed='false']">
+              <Node axis="child">
+                <Item name="{stepName}">
+                  <Data name="stepName">{stepName}</Data>
+                  <Data name="startTime" visible="false">{startTime}</Data>
+                  <Data name="elapsed">{elapsed}</Data>
+                  <Data name="endTime" visible="false">{startTime}</Data>
+                  <Data name="duration">{elapsed}</Data>
+                </Item>
+              </Node>
+            </Insert>
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and @closed='false']">
+                <Attribute name="closed" value="true" />
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetEndHandler events (opcode 9) -->
+      <!--
+        No useful info here. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetEndHandler']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetGetAppDomainEnter events (opcode 5) -->
+      <!-- If one is found, we need to fix the start time of the requests and its duration -->
+      <!-- We need to use the process and thread ids since these events don't have context id -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetGetAppDomainEnter']/Item" sortType="all">
+        <Exists>
+          <Otherwise>
+            <Variable name="startTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="processId" expression="Data[@name='processId']" />
+            <Variable name="threadId" expression="Data[@name='threadId']" />
+            <Variable name="connId" expression="Data[@name='connId']" />
+            <Variable name="contextId" expression="/Report/Section[@name='aspnetSection']/Table[@name='aspnetProcessThreadIds']/Item[(@processId='{processId}' and @threadId='{threadId}') or (@connId='{connId}' and @connId!='0')]/Data[@name='contextId']" />
+            <Variable name="endTime" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}']/Data[@name='endTime'])" />
+            <Variable name="duration" expression="round(({endTime} - {startTime}) div number('100')) div number('100')" />
+            <!-- Clear process and thread ids -->
+            <!-- and connIds (in Classic mode)  -->
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetProcessThreadIds']/Item[(@processId='{processId}' and @threadId='{threadId}') or (@connId='{connId}' and @connId!='0')]">
+              <Attribute name="processId" value="" />
+              <Attribute name="threadId" value="" />
+              <Attribute name="connId" value="" />
+            </Insert>
+            <!-- Set the attributes on the request now -->
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}']">
+              <Attribute name="processId" value="{processId}" />
+              <Attribute name="threadId" value="{threadId}" />
+              <Attribute name="connId" value="{connId}" />
+            </Insert>
+            <!-- Delete old startTime and duration -->
+            <!-- In Integrated mode, where the AspNetGetAppDomainEnter happens before the AspNetStart -->
+            <Delete select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and @connId='0'][1]/Data[@name='startTime']" />
+            <Delete select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and @connId='0'][1]/Data[@name='duration']" />
+            <!-- New startTime and duration -->
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and @connId='0']">
+              <Node axis="child">
+                <Data name="startTime" visible="false">{startTime}</Data>
+                <Data name="duration">{duration}</Data>
+              </Node>
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetGetAppDomainLeave events (opcode 6) -->
+      <!--
+       Create steps for app domain creation inside the request. 
+       We also have to fix the 'Request Start' step.
+       -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetGetAppDomainLeave']/Item" sortType="all">
+        <Exists>
+          <Otherwise>
+            <Variable name="endTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="processId" expression="Data[@name='processId']" />
+            <Variable name="threadId" expression="Data[@name='threadId']" />
+            <Variable name="connId" expression="Data[@name='connId']" />
+            <Variable name="contextId" expression="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[(@processId='{processId}' and @threadId='{threadId}') or (@connId='{connId}' and @connId!='0')]/Data[@name='contextId']" />
+            <Variable name="startTime" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}']/Data[@name='startTime'])" />
+            <Variable name="duration" expression="round(({endTime} - {startTime}) div number('100')) div number('100')" />
+            <Variable name="stepName">$(aspnetCreateAppDomain)</Variable>
+            <Variable name="elapsed" expression="number('0')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}']">
+              <Node axis="child">
+                <Item name="{stepName}">
+                  <Data name="stepName">{stepName}</Data>
+                  <Data name="startTime" visible="false">{startTime}</Data>
+                  <Data name="elapsed">{elapsed}</Data>
+                  <Data name="endTime" visible="false">{endTime}</Data>
+                  <Data name="duration">{duration}</Data>
+                </Item>
+              </Node>
+            </Insert>
+            <!-- fix the 'Request Start' step -->
+            <!-- Only in integrated mode, where the app domain creation happens before the request starts -->
+            <Variable name="requestStartStepName">$(aspnetRequestStarts)</Variable>
+            <Variable name="requestStartStart" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}']/Item[@name='{requestStartStepName}']/Data[@name='startTime'])" />
+            <Variable name="requestStartElapsed" expression="round(({requestStartStart} - {startTime}) div number('100')) div number('100')" />
+            <Variable name="requestStartDuration" expression="number('0')" />
+
+            <Delete select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and @connId='0']/Item[@name='{requestStartStepName}']/Data[@name='elapsed']"/>
+            <Delete select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and @connId='0']/Item[@name='{requestStartStepName}']/Data[@name='duration']"/>
+
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and @connId='0']/Item[@name='{requestStartStepName}']">
+              <Node axis="child">
+                <Data name="elapsed">{requestStartElapsed}</Data>
+                <Data name="duration">{requestStartDuration}</Data>
+              </Node>
+            </Insert>
+            <!-- Clear process and thread ids -->
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}']">
+              <Attribute name="processId" value="" />
+              <Attribute name="threadId" value="" />
+              <Attribute name="connId" value="" />
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!--Process the AspNetAppDomainEnter events (opcode 7)-->
+      <!--
+       Create the 'Enter App Domain:' step.
+       -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetAppDomainEnter']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="domainId" expression="Data[@name='domainId']" />
+            <Variable name="prefix">$(aspnetEnterAppDomain)</Variable>
+            <Variable name="stepName" expression="concat('{prefix}',' ','{domainId}')" />
+            <Variable name="startTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="requestStart" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Data[@name='startTime'])" />
+            <Variable name="elapsed" expression="round(({startTime} - {requestStart}) div number('100')) div number('100')" />
+            <Variable name="endTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="duration" expression="number('0')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]">
+              <Node axis="child">
+                <Item name="{stepName}">
+                  <Data name="stepName">{stepName}</Data>
+                  <Data name="startTime" visible="false">{startTime}</Data>
+                  <Data name="elapsed">{elapsed}</Data>
+                  <Data name="endTime" visible="false">{endTime}</Data>
+                  <Data name="duration">{duration}</Data>
+                </Item>
+              </Node>
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetPipelineModuleEnter events (opcode 10) -->
+      <!--
+        These rows are childs of the one created in the AspNetStart event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetPipelineModuleEnter']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="stepName" expression="Data[@name='moduleName']" />
+            <Variable name="startTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="requestStart" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}'and (number(@limit) &gt; {startTime} or @limit='-1')]/Data[@name='startTime'])" />
+            <Variable name="elapsed" expression="round(({startTime} - {requestStart}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}'and (number(@limit) &gt; {startTime} or @limit='-1')]">
+              <Node axis="child">
+                <Item name="{stepName}">
+                  <Data name="stepName">{stepName}</Data>
+                  <Data name="startTime" visible="false">{startTime}</Data>
+                  <Data name="elapsed">{elapsed}</Data>
+                </Item>
+              </Node>
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetPipelineModuleLeave events (opcode 11) -->
+      <!--
+        These rows are childs of the one created in the AspNetStart event. 
+        No new row is created here. We just fill up other cols from the AspNetPipelineModuleEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetPipelineModuleLeave']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="stepName" expression="Data[@name='moduleName']" />
+            <Variable name="endTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="startTime" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{stepName}']/Data[@name='startTime'])" />
+            <Variable name="duration" expression="round(({endTime} - {startTime}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{stepName}']">
+              <Node axis="child">
+                <Data name="endTime" visible="false">{endTime}</Data>
+                <Data name="duration">{duration}</Data>
+              </Node>
+            </Insert>
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{stepName}']">
+              <Attribute name="name" value="" />
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetMapHandlerEnter events (opcode 12) -->
+      <!--
+        These rows are childs of the one created in the AspNetStart event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetMapHandlerEnter']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="stepName">$(aspnetMapHandler)</Variable>
+            <Variable name="startTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="requestStart" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}'and (number(@limit) &gt; {startTime} or @limit='-1')]/Data[@name='startTime'])" />
+            <Variable name="elapsed" expression="round(({startTime} - {requestStart}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]">
+              <Node axis="child">
+                <Item name="{stepName}">
+                  <Data name="stepName">{stepName}</Data>
+                  <Data name="startTime" visible="false">{startTime}</Data>
+                  <Data name="elapsed">{elapsed}</Data>
+                </Item>
+              </Node>
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetMapHandlerLeave events (opcode 13) -->
+      <!--
+        These rows are childs of the one created in the AspNetStart event. 
+        No new row is created here. We just fill up other cols from the AspNetMapHandlerEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetMapHandlerLeave']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="stepName">$(aspnetMapHandler)</Variable>
+            <Variable name="endTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="startTime" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{stepName}']/Data[@name='startTime'])" />
+            <Variable name="duration" expression="round(({endTime} - {startTime}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{stepName}']">
+              <Node axis="child">
+                <Data name="endTime" visible="false">{endTime}</Data>
+                <Data name="duration">{duration}</Data>
+              </Node>
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetParseEnter events (opcode 14) -->
+      <!--
+        These rows are childs of the one created in the AspNetStart event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetParseEnter']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetMapHandler)</Variable>
+            <Variable name="stepName">$(aspnetParse)</Variable>
+            <Variable name="startTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="requestStart" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Data[@name='startTime'])" />
+            <Variable name="elapsed" expression="round(({startTime} - {requestStart}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Item[@name='{parentStepName}']">
+              <Node axis="child">
+                <Item name="{stepName}">
+                  <Data name="stepName">{stepName}</Data>
+                  <Data name="startTime" visible="false">{startTime}</Data>
+                  <Data name="elapsed">{elapsed}</Data>
+                </Item>
+              </Node>
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetParseLeave events (opcode 15) -->
+      <!--
+        These rows are childs of the one created in the AspNetStart event. 
+        No new row is created here. We just fill up other cols from the AspNetParseEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetParseLeave']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetMapHandler)</Variable>
+            <Variable name="stepName">$(aspnetParse)</Variable>
+            <Variable name="endTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="startTime" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']/Data[@name='startTime'])" />
+            <Variable name="duration" expression="round(({endTime} - {startTime}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Node axis="child">
+                <Data name="endTime" visible="false">{endTime}</Data>
+                <Data name="duration">{duration}</Data>
+              </Node>
+            </Insert>
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Attribute name="name" value="" />
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetCompileEnter events (opcode 16) -->
+      <!--
+        These rows are childs of the one created in the AspNetStart event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetCompileEnter']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetMapHandler)</Variable>
+            <Variable name="stepName">$(aspnetCompile)</Variable>
+            <Variable name="startTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="requestStart" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Data[@name='startTime'])" />
+            <Variable name="elapsed" expression="round(({startTime} - {requestStart}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Item[@name='{parentStepName}']">
+              <Node axis="child">
+                <Item name="{stepName}">
+                  <Data name="stepName">{stepName}</Data>
+                  <Data name="startTime" visible="false">{startTime}</Data>
+                  <Data name="elapsed">{elapsed}</Data>
+                </Item>
+              </Node>
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetCompileLeave events (opcode 17) -->
+      <!--
+        These rows are childs of the one created in the AspNetStart event. 
+        No new row is created here. We just fill up other cols from the AspNetCompileEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetCompileLeave']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetMapHandler)</Variable>
+            <Variable name="stepName">$(aspnetCompile)</Variable>
+            <Variable name="endTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="files" expression="number(Data[@name='files'])" />
+            <Variable name="status" expression="number(Data[@name='status'])" />
+            <Variable name="startTime" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']/Data[@name='startTime'])" />
+            <Variable name="duration" expression="round(({endTime} - {startTime}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Node axis="child">
+                <Data name="endTime" visible="false">{endTime}</Data>
+                <Data name="duration">{duration}</Data>
+              </Node>
+            </Insert>
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Attribute name="name" value="" />
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetHttpHandlerEnter events (opcode 18) -->
+      <!--
+        These rows are childs of the one created in the AspNetStart event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetHttpHandlerEnter']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="stepName">$(aspnetHttpHandler)</Variable>
+            <Variable name="startTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="requestStart" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Data[@name='startTime'])" />
+            <Variable name="elapsed" expression="round(({startTime} - {requestStart}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]">
+              <Node axis="child">
+                <Item name="{stepName}">
+                  <Data name="stepName">{stepName}</Data>
+                  <Data name="startTime" visible="false">{startTime}</Data>
+                  <Data name="elapsed">{elapsed}</Data>
+                </Item>
+              </Node>
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetHttpHandlerLeave events (opcode 19) -->
+      <!--
+        These rows are childs of the one created in the AspNetStart event. 
+        No new row is created here. We just fill up other cols from the AspNetHttpHandlerEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetHttpHandlerLeave']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="stepName">$(aspnetHttpHandler)</Variable>
+            <Variable name="endTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="startTime" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{stepName}']/Data[@name='startTime'])" />
+            <Variable name="duration" expression="round(({endTime} - {startTime}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{stepName}']">
+              <Node axis="child">
+                <Data name="endTime" visible="false">{endTime}</Data>
+                <Data name="duration">{duration}</Data>
+              </Node>
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetPagePreInitEnter events (opcode 22) -->
+      <!--
+        These rows are childs of the one created in the AspNetHttpHandlerEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetPagePreInitEnter']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetHttpHandler)</Variable>
+            <Variable name="stepName">$(aspnetPagePreInit)</Variable>
+            <Variable name="startTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="requestStart" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Data[@name='startTime'])" />
+            <Variable name="elapsed" expression="round(({startTime} - {requestStart}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Item[@name='{parentStepName}']">
+              <Node axis="child">
+                <Item name="{stepName}">
+                  <Data name="stepName">{stepName}</Data>
+                  <Data name="startTime" visible="false">{startTime}</Data>
+                  <Data name="elapsed">{elapsed}</Data>
+                </Item>
+              </Node>
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetPagePreInitLeave events (opcode 23) -->
+      <!--
+        These rows are childs of the one created in the AspNetHttpHandlerEnter event. 
+        No new row is created here. We just fill up other cols from the AspNetPagePreInitEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetPagePreInitLeave']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetHttpHandler)</Variable>
+            <Variable name="stepName">$(aspnetPagePreInit)</Variable>
+            <Variable name="endTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="startTime" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']/Data[@name='startTime'])" />
+            <Variable name="duration" expression="round(({endTime} - {startTime}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Node axis="child">
+                <Data name="endTime" visible="false">{endTime}</Data>
+                <Data name="duration">{duration}</Data>
+              </Node>
+            </Insert>
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Attribute name="name" value="" />
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetPageInitEnter events (opcode 24) -->
+      <!--
+        These rows are childs of the one created in the AspNetHttpHandlerEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetPageInitEnter']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetHttpHandler)</Variable>
+            <Variable name="stepName">$(aspnetPageInit)</Variable>
+            <Variable name="startTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="requestStart" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Data[@name='startTime'])" />
+            <Variable name="elapsed" expression="round(({startTime} - {requestStart}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Item[@name='{parentStepName}']">
+              <Node axis="child">
+                <Item name="{stepName}">
+                  <Data name="stepName">{stepName}</Data>
+                  <Data name="startTime" visible="false">{startTime}</Data>
+                  <Data name="elapsed">{elapsed}</Data>
+                </Item>
+              </Node>
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetPageInitLeave events (opcode 25) -->
+      <!--
+        These rows are childs of the one created in the AspNetHttpHandlerEnter event. 
+        No new row is created here. We just fill up other cols from the AspNetPageInitEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetPageInitLeave']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetHttpHandler)</Variable>
+            <Variable name="stepName">$(aspnetPageInit)</Variable>
+            <Variable name="endTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="startTime" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']/Data[@name='startTime'])" />
+            <Variable name="duration" expression="round(({endTime} - {startTime}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Node axis="child">
+                <Data name="endTime" visible="false">{endTime}</Data>
+                <Data name="duration">{duration}</Data>
+              </Node>
+            </Insert>
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Attribute name="name" value="" />
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetPageLoadViewstateEnter events (opcode 26) -->
+      <!--
+        These rows are childs of the one created in the AspNetHttpHandlerEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetPageLoadViewstateEnter']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetHttpHandler)</Variable>
+            <Variable name="stepName">$(aspnetPageLoadViewstate)</Variable>
+            <Variable name="startTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="requestStart" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Data[@name='startTime'])" />
+            <Variable name="elapsed" expression="round(({startTime} - {requestStart}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Item[@name='{parentStepName}']">
+              <Node axis="child">
+                <Item name="{stepName}">
+                  <Data name="stepName">{stepName}</Data>
+                  <Data name="startTime" visible="false">{startTime}</Data>
+                  <Data name="elapsed">{elapsed}</Data>
+                </Item>
+              </Node>
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetPageLoadViewstateLeave events (opcode 27) -->
+      <!--
+        These rows are childs of the one created in the AspNetHttpHandlerEnter event. 
+        No new row is created here. We just fill up other cols from the AspNetPageLoadViewstateEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetPageLoadViewstateLeave']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetHttpHandler)</Variable>
+            <Variable name="stepName">$(aspnetPageLoadViewstate)</Variable>
+            <Variable name="endTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="startTime" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']/Data[@name='startTime'])" />
+            <Variable name="duration" expression="round(({endTime} - {startTime}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Node axis="child">
+                <Data name="endTime" visible="false">{endTime}</Data>
+                <Data name="duration">{duration}</Data>
+              </Node>
+            </Insert>
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Attribute name="name" value="" />
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetPageLoadPostDataEnter events (opcode 28) -->
+      <!--
+        These rows are childs of the one created in the AspNetHttpHandlerEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetPageLoadPostDataEnter']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetHttpHandler)</Variable>
+            <Variable name="stepName">$(aspnetPageLoadPostData)</Variable>
+            <Variable name="startTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="requestStart" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Data[@name='startTime'])" />
+            <Variable name="elapsed" expression="round(({startTime} - {requestStart}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Item[@name='{parentStepName}']">
+              <Node axis="child">
+                <Item name="{stepName}">
+                  <Data name="stepName">{stepName}</Data>
+                  <Data name="startTime" visible="false">{startTime}</Data>
+                  <Data name="elapsed">{elapsed}</Data>
+                </Item>
+              </Node>
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetPageLoadPostDataLeave events (opcode 29) -->
+      <!--
+        These rows are childs of the one created in the AspNetHttpHandlerEnter event. 
+        No new row is created here. We just fill up other cols from the AspNetPageLoadPostDataEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetPageLoadPostDataLeave']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetHttpHandler)</Variable>
+            <Variable name="stepName">$(aspnetPageLoadPostData)</Variable>
+            <Variable name="endTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="startTime" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']/Data[@name='startTime'])" />
+            <Variable name="duration" expression="round(({endTime} - {startTime}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Node axis="child">
+                <Data name="endTime" visible="false">{endTime}</Data>
+                <Data name="duration">{duration}</Data>
+              </Node>
+            </Insert>
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Attribute name="name" value="" />
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetPageLoadEnter events (opcode 30) -->
+      <!--
+        These rows are childs of the one created in the AspNetHttpHandlerEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetPageLoadEnter']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetHttpHandler)</Variable>
+            <Variable name="stepName">$(aspnetPageLoad)</Variable>
+            <Variable name="startTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="requestStart" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Data[@name='startTime'])" />
+            <Variable name="elapsed" expression="round(({startTime} - {requestStart}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Item[@name='{parentStepName}']">
+              <Node axis="child">
+                <Item name="{stepName}">
+                  <Data name="stepName">{stepName}</Data>
+                  <Data name="startTime" visible="false">{startTime}</Data>
+                  <Data name="elapsed">{elapsed}</Data>
+                </Item>
+              </Node>
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetPageLoadLeave events (opcode 31) -->
+      <!--
+        These rows are childs of the one created in the AspNetHttpHandlerEnter event. 
+        No new row is created here. We just fill up other cols from the AspNetPageLoadEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetPageLoadLeave']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetHttpHandler)</Variable>
+            <Variable name="stepName">$(aspnetPageLoad)</Variable>
+            <Variable name="endTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="startTime" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']/Data[@name='startTime'])" />
+            <Variable name="duration" expression="round(({endTime} - {startTime}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Node axis="child">
+                <Data name="endTime" visible="false">{endTime}</Data>
+                <Data name="duration">{duration}</Data>
+              </Node>
+            </Insert>
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Attribute name="name" value="" />
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetPagePostDataChangedEnter events (opcode 32) -->
+      <!--
+        These rows are childs of the one created in the AspNetHttpHandlerEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetPagePostDataChangedEnter']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetHttpHandler)</Variable>
+            <Variable name="stepName">$(aspnetPagePostDataChanged)</Variable>
+            <Variable name="startTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="requestStart" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Data[@name='startTime'])" />
+            <Variable name="elapsed" expression="round(({startTime} - {requestStart}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Item[@name='{parentStepName}']">
+              <Node axis="child">
+                <Item name="{stepName}">
+                  <Data name="stepName">{stepName}</Data>
+                  <Data name="startTime" visible="false">{startTime}</Data>
+                  <Data name="elapsed">{elapsed}</Data>
+                </Item>
+              </Node>
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetPagePostDataChangedLeave events (opcode 33) -->
+      <!--
+        These rows are childs of the one created in the AspNetHttpHandlerEnter event. 
+        No new row is created here. We just fill up other cols from the AspNetPagePostDataChangedEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetPagePostDataChangedLeave']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetHttpHandler)</Variable>
+            <Variable name="stepName">$(aspnetPagePostDataChanged)</Variable>
+            <Variable name="endTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="startTime" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']/Data[@name='startTime'])" />
+            <Variable name="duration" expression="round(({endTime} - {startTime}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Node axis="child">
+                <Data name="endTime" visible="false">{endTime}</Data>
+                <Data name="duration">{duration}</Data>
+              </Node>
+            </Insert>
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Attribute name="name" value="" />
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetPageRaisePostbackEnter events (opcode 34) -->
+      <!--
+        These rows are childs of the one created in the AspNetHttpHandlerEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetPageRaisePostbackEnter']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetHttpHandler)</Variable>
+            <Variable name="stepName">$(aspnetPageRaisePostback)</Variable>
+            <Variable name="startTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="requestStart" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Data[@name='startTime'])" />
+            <Variable name="elapsed" expression="round(({startTime} - {requestStart}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Item[@name='{parentStepName}']">
+              <Node axis="child">
+                <Item name="{stepName}">
+                  <Data name="stepName">{stepName}</Data>
+                  <Data name="startTime" visible="false">{startTime}</Data>
+                  <Data name="elapsed">{elapsed}</Data>
+                </Item>
+              </Node>
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetPageRaisePostbackLeave events (opcode 35) -->
+      <!--
+        These rows are childs of the one created in the AspNetHttpHandlerEnter event. 
+        No new row is created here. We just fill up other cols from the AspNetPageRaisePostbackEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetPageRaisePostbackLeave']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetHttpHandler)</Variable>
+            <Variable name="stepName">$(aspnetPageRaisePostback)</Variable>
+            <Variable name="endTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="startTime" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']/Data[@name='startTime'])" />
+            <Variable name="duration" expression="round(({endTime} - {startTime}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Node axis="child">
+                <Data name="endTime" visible="false">{endTime}</Data>
+                <Data name="duration">{duration}</Data>
+              </Node>
+            </Insert>
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Attribute name="name" value="" />
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetPagePreRenderEnter events (opcode 36) -->
+      <!--
+        These rows are childs of the one created in the AspNetHttpHandlerEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetPagePreRenderEnter']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetHttpHandler)</Variable>
+            <Variable name="stepName">$(aspnetPagePreRender)</Variable>
+            <Variable name="startTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="requestStart" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Data[@name='startTime'])" />
+            <Variable name="elapsed" expression="round(({startTime} - {requestStart}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Item[@name='{parentStepName}']">
+              <Node axis="child">
+                <Item name="{stepName}">
+                  <Data name="stepName">{stepName}</Data>
+                  <Data name="startTime" visible="false">{startTime}</Data>
+                  <Data name="elapsed">{elapsed}</Data>
+                </Item>
+              </Node>
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetPagePreRenderLeave events (opcode 37) -->
+      <!--
+        These rows are childs of the one created in the AspNetHttpHandlerEnter event. 
+        No new row is created here. We just fill up other cols from the AspNetPagePreRenderEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetPagePreRenderLeave']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetHttpHandler)</Variable>
+            <Variable name="stepName">$(aspnetPagePreRender)</Variable>
+            <Variable name="endTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="startTime" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']/Data[@name='startTime'])" />
+            <Variable name="duration" expression="round(({endTime} - {startTime}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Node axis="child">
+                <Data name="endTime" visible="false">{endTime}</Data>
+                <Data name="duration">{duration}</Data>
+              </Node>
+            </Insert>
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Attribute name="name" value="" />
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetPageSaveViewstateEnter events (opcode 38) -->
+      <!--
+        These rows are childs of the one created in the AspNetHttpHandlerEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetPageSaveViewstateEnter']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetHttpHandler)</Variable>
+            <Variable name="stepName">$(aspnetPageSaveViewstate)</Variable>
+            <Variable name="startTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="requestStart" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Data[@name='startTime'])" />
+            <Variable name="elapsed" expression="round(({startTime} - {requestStart}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Item[@name='{parentStepName}']">
+              <Node axis="child">
+                <Item name="{stepName}">
+                  <Data name="stepName">{stepName}</Data>
+                  <Data name="startTime" visible="false">{startTime}</Data>
+                  <Data name="elapsed">{elapsed}</Data>
+                </Item>
+              </Node>
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetPageSaveViewstateLeave events (opcode 39) -->
+      <!--
+        These rows are childs of the one created in the AspNetHttpHandlerEnter event. 
+        No new row is created here. We just fill up other cols from the AspNetPageSaveViewstateEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetPageSaveViewstateLeave']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetHttpHandler)</Variable>
+            <Variable name="stepName">$(aspnetPageSaveViewstate)</Variable>
+            <Variable name="endTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="startTime" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']/Data[@name='startTime'])" />
+            <Variable name="duration" expression="round(({endTime} - {startTime}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Node axis="child">
+                <Data name="endTime" visible="false">{endTime}</Data>
+                <Data name="duration">{duration}</Data>
+              </Node>
+            </Insert>
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Attribute name="name" value="" />
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetPageRenderEnter events (opcode 40) -->
+      <!--
+        These rows are childs of the one created in the AspNetHttpHandlerEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetPageRenderEnter']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetHttpHandler)</Variable>
+            <Variable name="stepName">$(aspnetPageRender)</Variable>
+            <Variable name="startTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="requestStart" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Data[@name='startTime'])" />
+            <Variable name="elapsed" expression="round(({startTime} - {requestStart}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {startTime} or @limit='-1')]/Item[@name='{parentStepName}']">
+              <Node axis="child">
+                <Item name="{stepName}">
+                  <Data name="stepName">{stepName}</Data>
+                  <Data name="startTime" visible="false">{startTime}</Data>
+                  <Data name="elapsed">{elapsed}</Data>
+                </Item>
+              </Node>
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Process the AspNetPageRenderLeave events (opcode 41) -->
+      <!--
+        These rows are childs of the one created in the AspNetHttpHandlerEnter event. 
+        No new row is created here. We just fill up other cols from the AspNetPageRenderEnter event. 
+        -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetPageRenderLeave']/Item" sortType="all">
+        <Variable name="contextId" expression="Data[@name='contextId']" />
+        <Exists>
+          <Otherwise>
+            <Variable name="parentStepName">$(aspnetHttpHandler)</Variable>
+            <Variable name="stepName">$(aspnetPageRender)</Variable>
+            <Variable name="endTime" expression="number(Data[@name='clockTime'])" />
+            <Variable name="startTime" expression="number(/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']/Data[@name='startTime'])" />
+            <Variable name="duration" expression="round(({endTime} - {startTime}) div number('100')) div number('100')" />
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Node axis="child">
+                <Data name="endTime" visible="false">{endTime}</Data>
+                <Data name="duration">{duration}</Data>
+              </Node>
+            </Insert>
+            <Insert select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetRequests']/Item[@name='{contextId}' and (number(@limit) &gt; {endTime} or @limit='-1')]/Item[@name='{parentStepName}']/Item[@name='{stepName}']">
+              <Attribute name="name" value="" />
+            </Insert>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+
+      <!-- Delete temp table with process and thread ids -->
+      <Step select="/Report/Section[@name='aspnetSection']/Table[@name='aspnetProcessThreadIds']" sortType="all">
+        <Exists>
+          <Otherwise>
+            <Delete select="." />
+          </Otherwise>
+        </Exists>
+      </Step>
+    </Rule>
+  </Group>
+
+  <StringTable>
+    <String ID="ASPNETSummary">ASP.NET Summary</String>
+    <String ID="ASPNETRequestsRule">ASP.NET Requests Rule</String>
+    <String ID="aspnetMapHandler">ASP.NET Map Handler</String>
+    <String ID="aspnetParse">ASP.NET Parse</String>
+    <String ID="aspnetCompile">ASP.NET Compile</String>
+    <String ID="aspnetHttpHandler">ASP.NET Execute Handler</String>
+    <String ID="aspnetPagePreInit">Page PreInit</String>
+    <String ID="aspnetPageInit">Page Init</String>
+    <String ID="aspnetPageLoadViewstate">Page Load Viewstate</String>
+    <String ID="aspnetPageLoadPostData">Page Load PostData</String>
+    <String ID="aspnetPageLoad">Page Load</String>
+    <String ID="aspnetPagePostDataChanged">Page PostData Changed</String>
+    <String ID="aspnetPageRaisePostback">Page Raise Postback</String>
+    <String ID="aspnetPagePreRender">Page PreRender</String>
+    <String ID="aspnetPageSaveViewstate">Page Save Viewstate</String>
+    <String ID="aspnetPageRender">Page Render</String>
+    <String ID="aspnetCreateAppDomain">Create App Domain</String>
+    <String ID="aspnetEnterAppDomain">Enter App Domain:</String>
+    <String ID="aspnetRequestStarts">Request Starts</String>
+  </StringTable>
+</Rules>

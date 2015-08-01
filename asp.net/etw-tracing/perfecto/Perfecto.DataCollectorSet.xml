@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?Copyright (c) Microsoft Corporation. All rights reserved. v1.0.0.12. Feedback: Jose.Reyes@microsoft.com?>
+<DataCollectorSet>
+  <Status>0</Status>
+  <Duration>0</Duration>
+  <Description/>
+  <DescriptionUnresolved/>
+  <DisplayName/>
+  <DisplayNameUnresolved/>
+  <SchedulesEnabled>-1</SchedulesEnabled>
+  <LatestOutputLocation/>
+  <Name>ASPNET Perfecto</Name>
+  <RootPath>%systemdrive%\PerfLogs\Admin\ASPNET Perfecto</RootPath>
+  <Segment>0</Segment>
+  <SegmentMaxDuration>0</SegmentMaxDuration>
+  <SegmentMaxSize>5</SegmentMaxSize>
+  <SerialNumber>1</SerialNumber>
+  <Server/>
+  <Subdirectory/>
+  <SubdirectoryFormat>1</SubdirectoryFormat>
+  <SubdirectoryFormatPattern>NNNNNN</SubdirectoryFormatPattern>
+  <Task/>
+  <TaskRunAsSelf>0</TaskRunAsSelf>
+  <TaskArguments/>
+  <TaskUserTextArguments/>
+  <UserAccount>SYSTEM</UserAccount>
+  <StopOnCompletion>0</StopOnCompletion>
+  <PerformanceCounterDataCollector>
+    <DataCollectorType>0</DataCollectorType>
+    <Name>AspnetCounters</Name>
+    <FileName>AspnetCounters</FileName>
+    <FileNameFormat>0</FileNameFormat>
+    <FileNameFormatPattern/>
+    <LogAppend>0</LogAppend>
+    <LogCircular>0</LogCircular>
+    <LogOverwrite>0</LogOverwrite>
+    <LatestOutputLocation/>
+    <DataSourceName/>
+    <SampleInterval>10</SampleInterval>
+    <SegmentMaxRecords>0</SegmentMaxRecords>
+    <LogFileFormat>3</LogFileFormat>
+    <Counter>\.NET CLR Exceptions(w3wp)\# of Exceps Thrown / sec</Counter>
+    <Counter>\.NET CLR Jit(w3wp)\% Time in Jit</Counter>
+    <Counter>\.NET CLR Jit(w3wp)\IL Bytes Jitted / sec</Counter>
+    <Counter>\.NET CLR Loading(w3wp)\% Time Loading</Counter>
+    <Counter>\.NET CLR Loading(w3wp)\Current appdomains</Counter>
+    <Counter>\.NET CLR Loading(w3wp)\Current Assemblies</Counter>
+    <Counter>\.NET CLR LocksAndThreads(w3wp)\Queue Length / sec</Counter>
+    <Counter>\.NET CLR LocksAndThreads(w3wp)\Total # of Contentions</Counter>
+    <Counter>\.NET CLR LocksAndThreads(w3wp)\Current Queue Length</Counter>
+    <Counter>\.NET CLR Memory(w3wp)\% Time in GC</Counter>
+    <Counter>\.NET CLR Memory(w3wp)\# Bytes in all Heaps</Counter>
+    <Counter>\.NET CLR Memory(w3wp)\# Gen 0 Collections</Counter>
+    <Counter>\.NET CLR Memory(w3wp)\# Gen 1 Collections</Counter>
+    <Counter>\.NET CLR Memory(w3wp)\# Gen 2 Collections</Counter>
+    <Counter>\.NET CLR Memory(w3wp)\# Induced GC</Counter>
+    <Counter>\.NET CLR Memory(w3wp)\Allocated Bytes/sec</Counter>
+    <Counter>\.NET CLR Memory(w3wp)\Finalization Survivors</Counter>
+    <Counter>\.NET CLR Memory(w3wp)\Gen 0 heap size</Counter>
+    <Counter>\.NET CLR Memory(w3wp)\Gen 1 heap size</Counter>
+    <Counter>\.NET CLR Memory(w3wp)\Gen 2 heap size</Counter>
+    <Counter>\.NET CLR Memory(w3wp)\Large Object Heap size</Counter>
+    <Counter>\.NET CLR Security(w3wp)\% Time in RT checks</Counter>
+    <Counter>\ASP.NET Applications(__Total__)\Cache Total Entries</Counter>
+    <Counter>\ASP.NET Applications(__Total__)\Cache Total Hit Ratio</Counter>
+    <Counter>\ASP.NET Applications(__Total__)\Cache Total Turnover Rate</Counter>
+    <Counter>\ASP.NET Applications(__Total__)\Output Cache Entries</Counter>
+    <Counter>\ASP.NET Applications(__Total__)\Output Cache Hits</Counter>
+    <Counter>\ASP.NET Applications(__Total__)\Output Cache Hit Ratio</Counter>
+    <Counter>\ASP.NET Applications(__Total__)\Output Cache Turnover Rate</Counter>
+    <Counter>\ASP.NET Applications(__Total__)\Compilations Total</Counter>
+    <Counter>\ASP.NET Applications(__Total__)\Errors Total/Sec</Counter>
+    <Counter>\ASP.NET Applications(__Total__)\Pipeline Instance Count</Counter>
+    <Counter>\ASP.NET Applications(__Total__)\Requests Executing</Counter>
+    <Counter>\ASP.NET Applications(__Total__)\Requests/Sec</Counter>
+    <Counter>\ASP.NET\Applications Running</Counter>
+    <Counter>\ASP.NET\Application Restarts</Counter>
+    <Counter>\ASP.NET\Request Wait Time</Counter>
+    <Counter>\ASP.NET\Requests Current</Counter>
+    <Counter>\ASP.NET\Requests Queued</Counter>
+    <Counter>\ASP.NET\Requests Rejected</Counter>
+    <Counter>\Memory\Available MBytes</Counter>
+    <Counter>\PhysicalDisk(_Total)\% Disk Time</Counter>
+    <Counter>\PhysicalDisk(_Total)\% Disk Read Time</Counter>
+    <Counter>\PhysicalDisk(_Total)\% Disk Write Time</Counter>
+    <Counter>\Process(w3wp)\% Processor Time</Counter>
+    <Counter>\Process(w3wp)\Handle Count</Counter>
+    <Counter>\Process(w3wp)\ID Process</Counter>
+    <Counter>\Process(w3wp)\Private Bytes</Counter>
+    <Counter>\Process(w3wp)\Thread Count</Counter>
+    <Counter>\Process(w3wp)\Virtual Bytes</Counter>
+    <Counter>\Process(w3wp)\Working Set</Counter>
+    <Counter>\System\Context Switches/sec</Counter>
+    <Counter>\System\System Calls/sec</Counter>
+    <Counter>\Web Service(_Total)\Get Requests/sec</Counter>
+    <Counter>\Web Service(_Total)\Post Requests/sec</Counter>
+    <Counter>\Web Service(_Total)\Connection Attempts/sec</Counter>
+    <Counter>\Web Service(_Total)\Current Connections</Counter>
+    <Counter>\Web Service(_Total)\ISAPI Extension Requests/sec</Counter>
+    <Counter>\Web Service Cache\URI Cache Hits %</Counter>
+    <Counter>\Web Service Cache\Kernel: URI Cache Hits %</Counter>
+    <Counter>\Web Service Cache\File Cache Hits %</Counter>
+    <Counter>\HTTP Service\UriCacheHits</Counter>
+    <Counter>\HTTP Service Request Queues(???1)\CurrentQueueSize</Counter>
+    <Counter>\HTTP Service Request Queues(???1)\RejectedRequests</Counter>
+    <CounterDisplayName>\.NET CLR Exceptions(w3wp)\# of Exceps Thrown / sec</CounterDisplayName>
+    <CounterDisplayName>\.NET CLR Jit(w3wp)\% Time in Jit</CounterDisplayName>
+    <CounterDisplayName>\.NET CLR Jit(w3wp)\IL Bytes Jitted / sec</CounterDisplayName>
+    <CounterDisplayName>\.NET CLR Loading(w3wp)\% Time Loading</CounterDisplayName>
+    <CounterDisplayName>\.NET CLR Loading(w3wp)\Current appdomains</CounterDisplayName>
+    <CounterDisplayName>\.NET CLR Loading(w3wp)\Current Assemblies</CounterDisplayName>
+    <CounterDisplayName>\.NET CLR LocksAndThreads(w3wp)\Queue Length / sec</CounterDisplayName>
+    <CounterDisplayName>\.NET CLR LocksAndThreads(w3wp)\Total # of Contentions</CounterDisplayName>
+    <CounterDisplayName>\.NET CLR LocksAndThreads(w3wp)\Current Queue Length</CounterDisplayName>
+    <CounterDisplayName>\.NET CLR Memory(w3wp)\% Time in GC</CounterDisplayName>
+    <CounterDisplayName>\.NET CLR Memory(w3wp)\# Bytes in all Heaps</CounterDisplayName>
+    <CounterDisplayName>\.NET CLR Memory(w3wp)\# Gen 0 Collections</CounterDisplayName>
+    <CounterDisplayName>\.NET CLR Memory(w3wp)\# Gen 1 Collections</CounterDisplayName>
+    <CounterDisplayName>\.NET CLR Memory(w3wp)\# Gen 2 Collections</CounterDisplayName>
+    <CounterDisplayName>\.NET CLR Memory(w3wp)\# Induced GC</CounterDisplayName>
+    <CounterDisplayName>\.NET CLR Memory(w3wp)\Allocated Bytes/sec</CounterDisplayName>
+    <CounterDisplayName>\.NET CLR Memory(w3wp)\Finalization Survivors</CounterDisplayName>
+    <CounterDisplayName>\.NET CLR Memory(w3wp)\Gen 0 heap size</CounterDisplayName>
+    <CounterDisplayName>\.NET CLR Memory(w3wp)\Gen 1 heap size</CounterDisplayName>
+    <CounterDisplayName>\.NET CLR Memory(w3wp)\Gen 2 heap size</CounterDisplayName>
+    <CounterDisplayName>\.NET CLR Memory(w3wp)\Large Object Heap size</CounterDisplayName>
+    <CounterDisplayName>\.NET CLR Security(w3wp)\% Time in RT checks</CounterDisplayName>
+    <CounterDisplayName>\ASP.NET Applications(__Total__)\Cache Total Entries</CounterDisplayName>
+    <CounterDisplayName>\ASP.NET Applications(__Total__)\Cache Total Hit Ratio</CounterDisplayName>
+    <CounterDisplayName>\ASP.NET Applications(__Total__)\Cache Total Turnover Rate</CounterDisplayName>
+    <CounterDisplayName>\ASP.NET Applications(__Total__)\Output Cache Entries</CounterDisplayName>
+    <CounterDisplayName>\ASP.NET Applications(__Total__)\Output Cache Hits</CounterDisplayName>
+    <CounterDisplayName>\ASP.NET Applications(__Total__)\Output Cache Hit Ratio</CounterDisplayName>
+    <CounterDisplayName>\ASP.NET Applications(__Total__)\Output Cache Turnover Rate</CounterDisplayName>
+    <CounterDisplayName>\ASP.NET Applications(__Total__)\Compilations Total</CounterDisplayName>
+    <CounterDisplayName>\ASP.NET Applications(__Total__)\Errors Total/Sec</CounterDisplayName>
+    <CounterDisplayName>\ASP.NET Applications(__Total__)\Pipeline Instance Count</CounterDisplayName>
+    <CounterDisplayName>\ASP.NET Applications(__Total__)\Requests Executing</CounterDisplayName>
+    <CounterDisplayName>\ASP.NET Applications(__Total__)\Requests/Sec</CounterDisplayName>
+    <CounterDisplayName>\ASP.NET\Applications Running</CounterDisplayName>
+    <CounterDisplayName>\ASP.NET\Application Restarts</CounterDisplayName>
+    <CounterDisplayName>\ASP.NET\Request Wait Time</CounterDisplayName>
+    <CounterDisplayName>\ASP.NET\Requests Current</CounterDisplayName>
+    <CounterDisplayName>\ASP.NET\Requests Queued</CounterDisplayName>
+    <CounterDisplayName>\ASP.NET\Requests Rejected</CounterDisplayName>
+    <CounterDisplayName>\Memory\Available MBytes</CounterDisplayName>
+    <CounterDisplayName>\PhysicalDisk(_Total)\% Disk Time</CounterDisplayName>
+    <CounterDisplayName>\PhysicalDisk(_Total)\% Disk Read Time</CounterDisplayName>
+    <CounterDisplayName>\PhysicalDisk(_Total)\% Disk Write Time</CounterDisplayName>
+    <CounterDisplayName>\Process(w3wp)\% Processor Time</CounterDisplayName>
+    <CounterDisplayName>\Process(w3wp)\Handle Count</CounterDisplayName>
+    <CounterDisplayName>\Process(w3wp)\ID Process</CounterDisplayName>
+    <CounterDisplayName>\Process(w3wp)\Private Bytes</CounterDisplayName>
+    <CounterDisplayName>\Process(w3wp)\Thread Count</CounterDisplayName>
+    <CounterDisplayName>\Process(w3wp)\Virtual Bytes</CounterDisplayName>
+    <CounterDisplayName>\Process(w3wp)\Working Set</CounterDisplayName>
+    <CounterDisplayName>\System\Context Switches/sec</CounterDisplayName>
+    <CounterDisplayName>\System\System Calls/sec</CounterDisplayName>
+    <CounterDisplayName>\Web Service(_Total)\Get Requests/sec</CounterDisplayName>
+    <CounterDisplayName>\Web Service(_Total)\Post Requests/sec</CounterDisplayName>
+    <CounterDisplayName>\Web Service(_Total)\Connection Attempts/sec</CounterDisplayName>
+    <CounterDisplayName>\Web Service(_Total)\Current Connections</CounterDisplayName>
+    <CounterDisplayName>\Web Service(_Total)\ISAPI Extension Requests/sec</CounterDisplayName>
+    <CounterDisplayName>\Web Service Cache\URI Cache Hits %</CounterDisplayName>
+    <CounterDisplayName>\Web Service Cache\Kernel: URI Cache Hits %</CounterDisplayName>
+    <CounterDisplayName>\Web Service Cache\File Cache Hits %</CounterDisplayName>
+    <CounterDisplayName>\HTTP Service\UriCacheHits</CounterDisplayName>
+    <CounterDisplayName>\HTTP Service Request Queues(???1)\CurrentQueueSize</CounterDisplayName>
+    <CounterDisplayName>\HTTP Service Request Queues(???1)\RejectedRequests</CounterDisplayName>
+  </PerformanceCounterDataCollector>
+  <TraceDataCollector>
+    <DataCollectorType>1</DataCollectorType>
+    <Name>AspnetTrace</Name>
+    <FileName>AspnetTrace</FileName>
+    <FileNameFormat>0</FileNameFormat>
+    <FileNameFormatPattern/>
+    <LogAppend>0</LogAppend>
+    <LogCircular>-1</LogCircular>
+    <LogOverwrite>-1</LogOverwrite>
+    <LatestOutputLocation/>
+    <Guid>{00000000-0000-0000-0000-000000000000}</Guid>
+    <BufferSize>8</BufferSize>
+    <BuffersLost>0</BuffersLost>
+    <BuffersWritten>0</BuffersWritten>
+    <ClockType>1</ClockType>
+    <EventsLost>0</EventsLost>
+    <ExtendedModes>0</ExtendedModes>
+    <FlushTimer>0</FlushTimer>
+    <FreeBuffers>0</FreeBuffers>
+    <MaximumBuffers>0</MaximumBuffers>
+    <MinimumBuffers>0</MinimumBuffers>
+    <NumberOfBuffers>0</NumberOfBuffers>
+    <PreallocateFile>0</PreallocateFile>
+    <ProcessMode>0</ProcessMode>
+    <RealTimeBuffersLost>0</RealTimeBuffersLost>
+    <SessionName>AspnetTrace</SessionName>
+    <SessionThreadId>0</SessionThreadId>
+    <StreamMode>1</StreamMode>
+    <TraceDataProvider>
+      <DisplayName>{AFF081FE-0247-4275-9C4E-021F3DC1DA35}</DisplayName>
+      <FilterEnabled>0</FilterEnabled>
+      <FilterType>0</FilterType>
+      <Level>
+        <Description>Events up to this level are enabled</Description>
+        <ValueMapType>1</ValueMapType>
+        <Value>5</Value>
+        <ValueMapItem>
+          <Key/>
+          <Description/>
+          <Enabled>-1</Enabled>
+          <Value>0x5</Value>
+        </ValueMapItem>
+      </Level>
+      <KeywordsAny>
+        <Description>Events with any of these keywords are enabled</Description>
+        <ValueMapType>2</ValueMapType>
+        <Value>0xf</Value>
+        <ValueMapItem>
+          <Key/>
+          <Description/>
+          <Enabled>-1</Enabled>
+          <Value>0x1</Value>
+        </ValueMapItem>
+        <ValueMapItem>
+          <Key/>
+          <Description/>
+          <Enabled>-1</Enabled>
+          <Value>0x2</Value>
+        </ValueMapItem>
+        <ValueMapItem>
+          <Key/>
+          <Description/>
+          <Enabled>-1</Enabled>
+          <Value>0x4</Value>
+        </ValueMapItem>
+        <ValueMapItem>
+          <Key/>
+          <Description/>
+          <Enabled>-1</Enabled>
+          <Value>0x8</Value>
+        </ValueMapItem>
+      </KeywordsAny>
+      <KeywordsAll>
+        <Description>Events with all of these keywords are enabled</Description>
+        <ValueMapType>2</ValueMapType>
+        <Value>0x0</Value>
+      </KeywordsAll>
+      <Properties>
+        <Description>These additional data fields will be collected with each event</Description>
+        <ValueMapType>2</ValueMapType>
+        <Value>0</Value>
+      </Properties>
+      <Guid>{AFF081FE-0247-4275-9C4E-021F3DC1DA35}</Guid>
+    </TraceDataProvider>
+  </TraceDataCollector>
+  <DataManager>
+    <Enabled>-1</Enabled>
+    <CheckBeforeRunning>0</CheckBeforeRunning>
+    <MinFreeDisk>0</MinFreeDisk>
+    <MaxSize>1024</MaxSize>
+    <MaxFolderCount>0</MaxFolderCount>
+    <ResourcePolicy>0</ResourcePolicy>
+    <ReportFileName>report.html</ReportFileName>
+    <RuleTargetFileName>report.xml</RuleTargetFileName>
+    <EventsFileName/>
+    <Rules>
+      <Logging level="15" file="rules.log"/>
+      <Import file="%programfiles%\perfecto\Rules.Microsoft.ASPNET.xml"/>
+    </Rules>
+    <ReportSchema>
+      <Report name="aspnetReport" version="1" threshold="100">
+        <Import file="%programfiles%\perfecto\Reports.Microsoft.ASPNET.xml"/>
+      </Report>
+    </ReportSchema>
+  </DataManager>
+</DataCollectorSet>
