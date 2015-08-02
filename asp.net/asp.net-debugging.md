@@ -6,7 +6,7 @@ In the **diag-pages** you may find pages displaying information about the ASP.NE
 
 ## Examining ASP.NET process memory (and dumps) ##
 
-FIXME describe SOS and netext commands
+[PSSCOR4](http://www.microsoft.com/en-us/download/details.aspx?id=21255) commands for ASP.NET:
 
 ```
 !ProcInfo [-env] [-time] [-mem]
@@ -15,9 +15,9 @@ FindDebugTrue
 
 !FindDebugModules [-full]
 
-`!DumpHttpContext` dumps the HttpContexts in the heap.  It shows the status of the request and the return code, etc.  It also prints out the start time
+!DumpHttpContext dumps the HttpContexts in the heap.  It shows the status of the request and the return code, etc.  It also prints out the start time
 
-`!ASPXPages` just calls !DumpHttpContext to print out information on the ASPX pages  running on threads.
+!ASPXPages just calls !DumpHttpContext to print out information on the ASPX pages  running on threads.
 
 !DumpASPNETCache [-short] [-stat] [-s]
 
@@ -29,6 +29,16 @@ FindDebugTrue
 !DumpBuckets dumps entire request table buckets.
 
 !GetWorkItems given a CLinkListNode, print out request & work items.
+```
+
+[Netext](http://netext.codeplex.com/) commands for ASP.NET:
+
+```
+!whttp [/order] [/running] [/withthread] [/status <decimal>] [/notstatus <decimal>] [/verb <string>] [<expr>] - dump HttpContext objects
+
+!wconfig - dump configuration sections loaded into memory
+
+!wruntime - dump all active Http Runtime information
 ```
 
 ## Links ##
