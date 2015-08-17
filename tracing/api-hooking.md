@@ -17,6 +17,7 @@ Tools
 - [SpyStudio](http://linkis.com/www.nektra.com/produ/6f3SS)
 - [Frida - hook javascript code into native apps on Windows, Mac, Linux and iOS](http://www.frida.re/)
 - [Ntrace - it shows you the calls made through ntdll.dll library](http://www.howzatt.demon.co.uk/NtTrace/)
+- [PowerLoaderEx](https://github.com/BreakingMalware/PowerLoaderEx)
 
 Libraries
 ---------

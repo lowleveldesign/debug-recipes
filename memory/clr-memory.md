@@ -175,3 +175,4 @@ Links
 - [Intro to Debugging a Memory Dump](http://blogs.msdn.com/b/psssql/archive/2012/03/15/intro-to-debugging-a-memory-dump.aspx)
 - [LeakShell or how to (almost) automatically find managed leaks](http://codenasarre.wordpress.com/2011/05/18/leakshell-or-how-to-automatically-find-managed-leaks/)
 - [Investigating Memory Issues](http://msdn.microsoft.com/en-us/magazine/cc163528.aspx)
+- [Make WPA Simple - Garbage Collection and JIT Times](http://geekswithblogs.net/akraus1/archive/2015/08/16/166270.aspx)
