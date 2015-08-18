@@ -207,7 +207,6 @@ Procmon network tracing does not collect data sent or received but it will revea
 Links
 -----
 
-- [To Log or NLog - my post describing the NLog library and its configuration](https://lowleveldesign.wordpress.com/2012/10/28/to-log-or-nlog/)
 - [Using .NET HttpClient to capture partial Responses](http://weblog.west-wind.com/posts/2014/Jan/29/Using-NET-HttpClient-to-capture-partial-Responses?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+RickStrahl+%28Rick+Strahl%27s+WebLog%29)
 - [Tracing System.Net to debug HTTP Clients](http://mikehadlow.blogspot.co.uk/2012/07/tracing-systemnet-to-debug-http-clients.html)
 - [Network Tracing](http://msdn.microsoft.com/en-us/library/hyb3xww8)
