@@ -8,7 +8,7 @@ A list of tips & tricks which might be useful when debugging .NET applications. 
 
 Common keyboard shortcuts, configuration.
 
-## [Plugin I use](vs-plugins.md) ##
+## [Plugins I use](vs-plugins.md) ##
 
 List of plugins I use.
 
