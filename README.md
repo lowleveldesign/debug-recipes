@@ -12,7 +12,7 @@ Memory
 ------
 
 - [CLR Memory model](memory/clr-memory.md)
-- [Investigate .NET memory issues in dumps](dumps/analyze-net-memory-dumps.md)
+- [Investigate .NET memory issues in dumps](dumps/dotnet-process-memory-dumps.md)
 
 Threading problems
 ------------------
@@ -71,6 +71,7 @@ Tools & technics
 ### Memory dumps
 
 - [Collect process memory dumps](dumps/windows-process-memory-dumps.md)
+- [Collect .NET process memory dumps](dumps/dotnet-process-memory-dumps.md)
 - [Collect kernel memory dumps](dumps/windows-kernel-memory-dumps.md)
 
 ### Debuggers
@@ -87,6 +88,5 @@ Links
 - [.NET Debugging for the Production Environment](http://channel9.msdn.com/Series/-NET-Debugging-Stater-Kit-for-the-Production-Environment)
 - [.NET Debugging Starter Kit: for the Production Environment - 6 great videos about .NET and native debugging](http://channel9.msdn.com/Series/-NET-Debugging-Stater-Kit-for-the-Production-Environment)
 - [Intersting library that binds github sources with solution](https://github.com/GeertvanHorrik/GitHubLink)
-- [StackDump - stack dumps for .Net Applications](http://stackdump.codeplex.com/)
 - [Defrag Tools #109 - Writing a CLR Debugger Extension Part 1](http://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-109-Writing-a-CLR-Debugger-Extension-Part-1)
 - [Defrag Tools #110 - Writing a CLR Debugger Extension Part 2](http://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-110-Writing-a-CLR-Debugger-Extension-Part-2)

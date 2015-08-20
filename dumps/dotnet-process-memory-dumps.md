@@ -5,13 +5,15 @@ Search .NET memory dumps for memory issues
 Collect memory
 --------------
 
-You can collect either **a memory dump** (using procdump or any other tool):
+You may use any tool which works for the native process: <windows-process-memory-dumps.md>.
 
-    procdump -ma <pid|name>
+Other option is to use the [minidumper](https://github.com/goldshtn/minidumper) tool from Sasha Goldshtein:
 
-or **a perfview snapshot**:
+    FIXME
 
-    procdump heapsnapshot <pid|name>
+For a GC heap snapshot use **a perfview snapshot**:
+
+    perfview heapsnapshot <pid|name>
 
 Analyse collected snapshots
 ---------------------------
@@ -84,3 +86,9 @@ Load necessary **plugins**:
 
 !gch [-HandleType]
 ```
+
+Links
+-----
+
+- [StackDump - stack dumps for .Net Applications](http://stackdump.codeplex.com/)
+- [Creating Smaller, But Still Usable, Dumps of .NET Applications](http://blogs.microsoft.co.il/sasha/2015/08/19/minidumper-smaller-dumps-net-applications/)
