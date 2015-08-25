@@ -100,4 +100,4 @@ Links
 - [Two More Ways for Diagnosing For Which Synchronization Object Your Thread Is Waiting](http://blogs.microsoft.co.il/blogs/sasha/archive/2013/04/24/two-more-ways-for-diagnosing-for-which-synchronization-object-your-thread-is-waiting.aspx?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+sashag+%28All+Your+Base+Are+Belong+To+Us%29)
 - [Interesting problem to diagnose (wait on a context thread)](http://blog.stephencleary.com/2012/07/dont-block-on-async-code.html?m=1)
 - [A case of a deadlock in a .NET application](A case of a deadlock in a .NET application)
-
+- [The C# Memory Model in Theory and Practice](http://msdn.microsoft.com/en-us/magazine/jj863136.aspx)

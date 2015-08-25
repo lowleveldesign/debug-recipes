@@ -149,30 +149,23 @@ Links
 -----
 
 - [.NET Memory Basics](http://www.simple-talk.com/dotnet/.net-framework/.net-memory-management-basics/)
-- [The C# Memory Model in Theory and Practice](http://msdn.microsoft.com/en-us/magazine/jj863136.aspx)
-- [Defrag Tools: #33 - CLR GC - Part 1](http://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-33-CLR-GC-Part-1)
-- [Defrag Tools: #34 - CLR GC - Part 2](http://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-34-CLR-GC-Part-2)
 - [Large Obect Heap compaction - should I use it?](https://www.simple-talk.com/dotnet/.net-framework/large-object-heap-compaction-should-you-use-it/)
-- [Does Garbage Collection Hurt?](http://geekswithblogs.net/akraus1/archive/2014/02/17/155442.aspx) - PerfView usage to examine GC activities
-- [Identify And Prevent Memory Leaks In Managed Code](http://msdn.microsoft.com/en-us/magazine/cc163491.aspx)
 - [Garbage Collection: Automatic Memory Management in the Microsoft .NET Framework](http://msdn.microsoft.com/en-us/magazine/bb985010.aspx)
   [Garbage Collection Part 2: Automatic Memory Management in the Microsoft .NET Framework](http://msdn.microsoft.com/en-us/magazine/bb985011.aspx)
+- [Tracking down managed memory leaks (how to find a GC leak)](http://blogs.msdn.com/b/ricom/archive/2004/12/10/279612.aspx)
+  [CLR Profiler: Detecting High Memory consuming functions in .NET code](http://www.dotnetspark.com/kb/772-net-best-practice-no-1--detecting-high-memory.aspx)
+- [How to detect and avoid memory and resources leaks in .NET applications](http://madgeek.com/Articles/Leaks/Leaks.en.html)
+- [Investigating Memory Issues](http://msdn.microsoft.com/en-us/magazine/cc163528.aspx)
+
+### ETW ###
+
+- [Defrag Tools: #33 - CLR GC - Part 1](http://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-33-CLR-GC-Part-1)
+- [Defrag Tools: #34 - CLR GC - Part 2](http://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-34-CLR-GC-Part-2)
 - [GC ETW events](http://blogs.msdn.com/b/maoni/archive/2014/12/22/gc-etw-events.aspx)
 - [GC ETW events - 2](http://blogs.msdn.com/b/maoni/archive/2014/12/25/gc-etw-events-2.aspx)
 - [GC ETW Events - 3](http://blogs.msdn.com/b/maoni/archive/2014/12/25/gc-etw-events-3.aspx)
 - [GC ETW Events - 4](http://blogs.msdn.com/b/maoni/archive/2014/12/30/gc-etw-events-4.aspx)
 - [Measure GC Allocations and Collections using TraceEvent](http://naveensrinivasan.com/2015/05/11/measure-gc-allocations-and-collections-using-traceevent/)
-
-### Troubleshooting ###
-
 - [ProfBugging - How to find leaks with allocation profiling](http://geekswithblogs.net/akraus1/archive/2015/03/22/161982.aspx)
-- [Memory Leak Detection in .NET](http://www.codeproject.com/KB/dotnet/Memory_Leak_Detection.aspx)
-- [Tracking down managed memory leaks (how to find a GC leak)](http://blogs.msdn.com/b/ricom/archive/2004/12/10/279612.aspx)
-- [Best Practices No 5: - Detecting .NET application memory leaks](http://www.dotnetspark.com/kb/878-best-practices-no-5---detecting-net-application.aspx)
-  [Best Practice No: 1:- Detecting High Memory consuming functions in .NET code](http://www.dotnetspark.com/kb/772-net-best-practice-no-1--detecting-high-memory.aspx)
-- [How to detect and avoid memory and resources leaks in .NET applications](http://madgeek.com/Articles/Leaks/Leaks.en.html)
-- [Best Practices No. 5: Detecting .NET application memory leaks](http://www.codeproject.com/Articles/42721/Best-Practices-No-5-Detecting-NET-application-memo)
-- [Intro to Debugging a Memory Dump](http://blogs.msdn.com/b/psssql/archive/2012/03/15/intro-to-debugging-a-memory-dump.aspx)
-- [LeakShell or how to (almost) automatically find managed leaks](http://codenasarre.wordpress.com/2011/05/18/leakshell-or-how-to-automatically-find-managed-leaks/)
-- [Investigating Memory Issues](http://msdn.microsoft.com/en-us/magazine/cc163528.aspx)
 - [Make WPA Simple - Garbage Collection and JIT Times](http://geekswithblogs.net/akraus1/archive/2015/08/16/166270.aspx)
+- [Does Garbage Collection Hurt?](http://geekswithblogs.net/akraus1/archive/2014/02/17/155442.aspx) - PerfView usage to examine GC activities
