@@ -2,8 +2,15 @@
 Analysing locks in .NET applications
 ====================================
 
-Useful WinDbg commands
-----------------------
+Using PerfView (ETW traces)
+---------------------------
+
+You need to select the ThreadTime in the collection dialog. With this setting PerfView will record context switch events as well as the usual stack dumps every 100ms.
+
+When analyzing blocks use any of the **Thread Time** views. It's best to start with the **Call Stack** view, exclude threads which seem not interesting and locate blocks which might be connected with your investigation. Then for each block time narrow the time to its start and try to guess the flow of the commands that fire it (what was executed last on each thread and what might be the cause of the wait).
+
+Using windbg (live debugging and dumps)
+---------------------------------------
 
 ### Correlate thread ids with thread objects ###
 
@@ -67,8 +74,8 @@ Notice that the thread number from the output is a managed thread id and to map 
 
 You may examine thin locks using **!DumpHeap -thinlocks**.  To find all hard locks (the ones that were created after the object header was full) use **!SyncBlk -all** command.
 
-Using Concurrency Visualizer
-----------------------------
+Using ConcurrencyVisualizer (ETW traces)
+----------------------------------------
 
 Under the ANALYZE menu in Visual Studio there is a great tool to observe concurrency execution of .NET applications. It allows you to monitor what each thread of the application was doing during a given period of time. By zooming to a particular point in time you may even examine a stack of a waiting thread.
 
