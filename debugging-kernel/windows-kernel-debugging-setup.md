@@ -6,11 +6,15 @@ In order to debug windows kernel you need to configure the `/debug` option durin
 
 ### Configure LAN debugging ###
 
+Supported in Windows 8 up.
+
     C:\Windows\system32>bcdedit /dbgsettings NET HOSTIP:192.168.1.13 PORT:60000
     Key=3ma3qyz02ptls.23uxbvnd0e2zh.1gnwiqb6v3mpb.mjltos9cf63x
 
     C:\Windows\system32>bcdedit /debug {current} on
     The operation completed successfully.
+
+Starting from Debugging Tools for Windows 10 we have an additional tool: **kdnet.exe**. By running it on the guest you may see if your network card supports kernel debugging. You may later enable them by using: `kdnet 192.168.0.1 50000`. This should return an encryption key used later when connecting from the remote windbg.
 
 ### Configure Serial port debugging ###
 

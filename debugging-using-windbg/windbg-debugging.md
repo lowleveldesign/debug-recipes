@@ -2,7 +2,8 @@
 Windbg debugging tips
 =====================
 
-## General usage ##
+General usage
+-------------
 
 First, some very useful start commands:
 
@@ -84,11 +85,13 @@ To terminate the entire session and exit the debugging server, use the `q (Quit)
 
 When running `!analyse -v` windbg makes checks in order to identify the faulting driver (or module). When looking for the faulting module it first checks the "help list" stored in `triage\triage.ini` file in the debuggers home folder.
 
-## Check process information ##
+Check process information
+-------------------------
 
 **!peb** shows loaded modules, environment variables, command line arg, and more.
 
-## Check threads information ##
+Check threads information
+-------------------------
 
 **To list all threads** in a current process use `~` command. Dot (.) in the first column signals a currently selected thread and hash (#) points to a thread on which an exception occurred.
 
@@ -110,7 +113,17 @@ When running `!analyse -v` windbg makes checks in order to identify the faulting
     0:001> !tls 0
     10b8.1628: 00000000
 
-## Debugging techniques ##
+Work with data
+--------------
+
+When you have private symbols you may list local variables with the **dv** command.
+
+Additionally the **dt** command allows you to work with type symbols. You may either list them, eg.: `dt notepad!g_*` or dump a data address using a given type format, eg.: `dt nt!_PEG 0x13123`.
+
+With windbg 10.0 a new very interesting command was introduced: **dx**. It uses a navigation expressions just like Visual Studio (you may define your own file .natvis files). You load the interesting .natvis file with the **.nvload** command.
+
+Debugging techniques
+--------------------
 
 ### Checking stack content ###
 
@@ -147,7 +160,8 @@ Setting breakpoint if a specific function is in the call stack:
 
 <http://stackoverflow.com/questions/7791675/windbg-set-conditional-breakpoints-that-depends-on-call-stack/7800435#7800435>, for managed stack visit <http://naveensrinivasan.com/2010/12/28/conditional-breakpoint-based-on-callstack-within-windbg-net/>.
 
-## Find process handles ##
+Find process handles
+--------------------
 
 There is a special debugger extension command `!handle` that allows you to find system handles reserved by a process:
 
@@ -177,11 +191,15 @@ To list all handles reserved by a process use -1 (in kernel mode) or 0 (in user-
       Type         	File
     7 handles of type File
 
-## Links ##
+Links
+-----
 
-- [Interesting Windbg commands explained](http://blogs.microsoft.co.il/blogs/sasha/search.aspx?q=obscure+windbg+commands)
-- [A Cool WinDBG/SOS Hidden Feature (.prefer dml 1)](http://www.wintellect.com/CS/blogs/jrobbins/archive/2010/07/14/a-cool-windbg-sos-hidden-feature.aspx)
 - [Heap Layout Visualization with mona.py and WinDBG](https://www.corelan.be/index.php/2013/01/18/heap-layout-visualization-with-mona-py-and-windbg/)
 - [Obtaining Reliable Thread Call Stacks of 64-bit Processes](http://blogs.microsoft.co.il/blogs/sasha/archive/2013/05/15/obtaining-reliable-thread-call-stacks-of-64-bit-processes.aspx?utm_source=feedly&utm_medium=feed&utm_campaign=Feed%3A+sashag+(All+Your+Base+Are+Belong+To+Us))
 - [Customizing the WinDbg environment](http://bsodanalysis.blogspot.fr/2014/07/customizing-windbg-environment.html)
 - [Reverse Engineering Windbg Commands for Profit](http://standa-note.blogspot.ca/2015/06/reverse-engineering-winbg-for-profit.html)
+
+### Commands ###
+
+- [Interesting Windbg commands explained](http://blogs.microsoft.co.il/blogs/sasha/search.aspx?q=obscure+windbg+commands)
+- [dx command and NatVis](https://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-138-Debugging-dx-Command-Part-1)
