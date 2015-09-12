@@ -125,7 +125,11 @@ Then run [Fiddler](http://www.telerik.com/fiddler) (or any other proxy) and requ
 ETW network traces
 ------------------
 
-### Collect ###
+### Using perfview ###
+
+FIXME
+
+### Using netsh ###
 
 Starting from Windows 7 (2008 Server) you don't need to install anything (such as WinPcap or Network Monitor) on the server to collect network traces. You can simply use `netsh trace {start|stop}` command which will create an ETW session with the interesting ETW providers enabled. Few diagnostics scenarios are available and you may list them using `netsh trace show scenarios`:
 
