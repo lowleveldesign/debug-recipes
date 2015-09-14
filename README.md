@@ -81,6 +81,10 @@ Tools & technics
 - [Debugging in WinDbg - tips](debugging-using-windbg/windbg-debugging.md)
 - [Debugging .NET apps using windbg](debugging-using-windbg/windbg-clr-debugging.md)
 
+### Profilers
+
+- [PerfView](profiling-tools/perfview/perfview.md)
+
 Links
 -----
 
