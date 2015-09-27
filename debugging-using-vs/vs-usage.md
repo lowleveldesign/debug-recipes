@@ -146,3 +146,4 @@ Links
 -----
 
 - [Powershell cmdlets](http://www.wintellect.com/CS/blogs/jrobbins/archive/2012/03/30/using-nuget-powershell-to-replace-missing-macros-in-dev-11.aspx)
+- [Concurrency Visualizer for Visual Studio 2015 is now available on the gallery](http://blogs.msdn.com/b/visualstudioalm/archive/2015/09/18/concurrency-visualizer-for-visual-studio-2015-is-now-available-on-the-gallery.aspx)
