@@ -32,6 +32,12 @@ Zw | Kernel version of Nt functions
 Gathering machine information
 -----------------------------
 
+### Information about the hardware ###
+
+`!cpuinfo` - display CPU manufacturer, speed, features
+`!sysinfo cpuinfo` - displays detailed processor information
+`!sysinfo machineid` - displays system hardware model, BIOS
+
 ### Read Kernel Processor Control Region and Control Block (KPCR and KPRCB) ###
 
 The kernel uses a data structure called the processor control region, or KPCR, to store processor-specific data.
