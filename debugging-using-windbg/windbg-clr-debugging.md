@@ -5,7 +5,7 @@ Debugging .NET using WinDbg
 Usage examples
 --------------
 
-### Save a module from a dump (!savemodule) ###
+### Save a module from a dump (!savemodule) [SOS] ###
 
     !SaveModule <Base address> <Filename>
 
@@ -26,52 +26,21 @@ To save all modules in a given dump you may use **!for\_each\_module** command:
 
     !for_each_module !savemodule @#Base C:\path_to_save\${@#ModuleName}.dll
 
-### Display .NET objects ###
-
-Based on <http://www.wintellect.com/blogs/jrobbins/displaying-multiple-.net-objects-with-windbg%E2%80%99s-command-language>
-
-We can show detail information on each object found in a heap using WinDbg meta commands and SOSEX `mdt`:
-
-    0:013> .foreach (addr {!dumpheap -type FontFamily -short}) { !mdt addr; .echo }
-    000000b45faff460 (System.Drawing.FontFamily)
-        __identity:NULL (System.Object)
-        nativeFamily:000000b6aaad8f40 (System.IntPtr)
-        createDefaultOnFail:false (System.Boolean)
-
-    000000b45faff630 (System.Drawing.FontFamily)
-        __identity:NULL (System.Object)
-        nativeFamily:000000b6aaad8f40 (System.IntPtr)
-        createDefaultOnFail:false (System.Boolean)
-
-A DumpType.txt script is available in \scripts folder which automize this process. Example usage:
-
-    0:013> $$>a<c:\junk\DumpType.txt
-    Usage: $$>>a<DumpType.txt type
-
-    0:013> $$>a<c:\junk\DumpType.txt FontFamily
-    000000b45faff460 (System.Drawing.FontFamily)
-        __identity:NULL (System.Object)
-        nativeFamily:000000b6aaad8f40 (System.IntPtr)
-        createDefaultOnFail:false (System.Boolean)
-
-    000000b45faff630 (System.Drawing.FontFamily)
-        __identity:NULL (System.Object)
-        nativeFamily:000000b6aaad8f40 (System.IntPtr)
-        createDefaultOnFail:false (System.Boolean)
-
-### Break when specific exception occurs ###
+### Break when specific exception occurs [SOS] ###
 
 Break when `NullReferenceException` is thrown:
 
     !sxe -c "!soe System.NullReferenceException 1;.if (@$t1 != 1) { g; }" clr
 
-### Find a value of a static field ###
+### Find a value of a static field [SOSEX,Netext] ###
 
 SOS does not display the address of the field. Use `!sosex.mdt` or netext `!wdo`.
 
     !sosex.mdt windbg_static_test.StaticTest
 
-### Find a type or method (Name2EE) ###
+Netext display static fields automatically when dumping an object.
+
+### Find a type or method (Name2EE) [SOS] ###
 
 **Name2EE** searches through all the domains and lists matching methods and types, eg.
 
@@ -92,6 +61,12 @@ SOS does not display the address of the field. Use `!sosex.mdt` or netext `!wdo`
     JITTED Code Address: 000007fbff996d70
     --------------------------------------
     ...
+
+### Show GC roots for all objects found with !wfrom [Netext] ###
+
+Example for dumping GC roots for IP address objects:
+
+    .foreach (t { !wfrom -nofield -nospace -type System.Net.IPAddress select $addr(); }) { !GCRoot ${t} }
 
 Work with types
 --------------
@@ -167,6 +142,14 @@ Copy the value of the `_ticks` field and use `!weval`:
 0:023> !weval $tickstotimespan(0xb2d05e00)
 calculated: 00:05:00
 ```
+
+### Dump MemoryCache content ###
+
+select memory cache stores: `!wfrom -type System.Runtime.Caching.MemoryCache select _stores`
+
+for each store choose buckets: `!wselect _entries.buckets from {store-addr}`
+
+for each found bucket: `!wselect key._key,val._value.m_value from {bucket-addr}`
 
 CLR debugging setup
 -------------------
