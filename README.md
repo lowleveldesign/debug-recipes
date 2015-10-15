@@ -70,9 +70,9 @@ Tools & technics
 
 ### Memory dumps
 
-- [Collect process memory dumps](dumps/windows-process-memory-dumps.md)
-- [Collect .NET process memory dumps](dumps/dotnet-process-memory-dumps.md)
-- [Collect kernel memory dumps](dumps/windows-kernel-memory-dumps.md)
+- [Collect and analyze process memory dumps](dumps/windows-process-memory-dumps.md)
+- [Collect and analyze .NET process memory dumps](dumps/dotnet-process-memory-dumps.md)
+- [Collect and analyze kernel memory dumps](dumps/windows-kernel-memory-dumps.md)
 
 ### Debuggers
 
