@@ -198,6 +198,7 @@ Links
 - [Obtaining Reliable Thread Call Stacks of 64-bit Processes](http://blogs.microsoft.co.il/blogs/sasha/archive/2013/05/15/obtaining-reliable-thread-call-stacks-of-64-bit-processes.aspx?utm_source=feedly&utm_medium=feed&utm_campaign=Feed%3A+sashag+(All+Your+Base+Are+Belong+To+Us))
 - [Customizing the WinDbg environment](http://bsodanalysis.blogspot.fr/2014/07/customizing-windbg-environment.html)
 - [Reverse Engineering Windbg Commands for Profit](http://standa-note.blogspot.ca/2015/06/reverse-engineering-winbg-for-profit.html)
+- [I have the handle to a file; how can I get the file name from the debugger?](http://blogs.msdn.com/b/oldnewthing/archive/2015/10/16/10648184.aspx)
 
 ### Commands ###
 
