@@ -199,6 +199,7 @@ Links
 - [Customizing the WinDbg environment](http://bsodanalysis.blogspot.fr/2014/07/customizing-windbg-environment.html)
 - [Reverse Engineering Windbg Commands for Profit](http://standa-note.blogspot.ca/2015/06/reverse-engineering-winbg-for-profit.html)
 - [I have the handle to a file; how can I get the file name from the debugger?](http://blogs.msdn.com/b/oldnewthing/archive/2015/10/16/10648184.aspx)
+- ["No .natvis files found" error when you run Debugging Tools For Windows (WinDbg)](https://support.microsoft.com/en-us/kb/3091112)
 
 ### Commands ###
 
