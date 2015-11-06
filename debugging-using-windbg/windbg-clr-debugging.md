@@ -34,11 +34,30 @@ Break when `NullReferenceException` is thrown:
 
 ### Find a value of a static field [SOSEX,Netext] ###
 
-SOS does not display the address of the field. Use `!sosex.mdt` or netext `!wdo`.
+In SOS you need to first find the EEClass address for a given type (by calling for instance `!DumpMT`) and then use `!DumpClass`:
 
-    !sosex.mdt windbg_static_test.StaticTest
+    0:000> !DumpClass /d 00c1af5c
+    Class Name:      LowLevelDesign.Diagnostics.Musketeer.Config.SharedInfoAboutApps
+    mdToken:         02000011
+    File:            c:\tools\musketeer\Musketeer.exe
+    Parent Class:    698239a4
+    Module:          002c2edc
+    Method Table:    00be97c0
+    Vtable Slots:    9
+    Total Method Slots:  b
+    Class Attributes:    100101
+    Transparency:        Critical
+    NumInstanceFields:   4
+    NumStaticFields:     2
+          MT    Field   Offset                 Type VT     Attr    Value Name
+    689a45c8  4000044        4 ...derWriterLockSlim  0 instance           lck
+    0359001c  4000045        8 ...Info, Musketeer]]  0 instance           appPathToAppInfoMap
+    03590440  4000046        c ...eer]], mscorlib]]  0 instance           workerProcessIdToAppInfoMap
+    035907fc  4000047       10 ...eer]], mscorlib]]  0 instance           logsPathToAppInfoMap
+    69c23e18  4000042       40        System.String  0   static 00e21598 MachineName
+    69be0cbc  4000043       44      System.Object[]  0   static 00e215b0 NoApps
 
-Netext display static fields automatically when dumping an object.
+If you have an instance of a given type it will be probably faster to simply use netext `!wdo` which displays static fields automatically when dumping an object.
 
 ### Find a type or method (Name2EE) [SOS] ###
 
