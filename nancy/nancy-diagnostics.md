@@ -20,6 +20,8 @@ The console allows you to examine Nancy settings, configure diagnostics paramete
 - `Stop-NancyRequestTracing -BaseAppUrl ... -Password ...`
 - `Read-NancyCollectedRequests -BaseAppUrl ... -Password ... [-ShowLogs] [-SessionId ...]`
 
-Additionally I created a script which wraps all those commands into one wrapper. Example output might look as follows:
+Additionally I created a script (**trace-requests.bat app-url diagnostics-password**) which wraps all those commands into one tracing session. Example output might look as follows:
 
+![commands-output](https://raw.githubusercontent.com/lowleveldesign/debug-recipes/master/nancy/trace-commands-output.PNG)
 
+If needed you may redirect the output to some output file: `trace-requests.bat http://localhost:59017/ password >> test.txt`.
