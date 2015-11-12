@@ -42,6 +42,11 @@ ASP.NET
 - [Profiling ASP.NET applications](asp.net/asp.net-profiling.md)
 - [Troubleshooting IIS](asp.net/iis-troubleshooting.md)
 
+Nancy
+-----
+
+- [Diagnosing Nancy applications](nancy/nancy-diagnostics.md)
+
 ADO.NET
 -------
 

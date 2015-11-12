@@ -24,4 +24,4 @@ Additionally I created a script (**trace-requests.bat app-url diagnostics-passwo
 
 ![commands-output](https://raw.githubusercontent.com/lowleveldesign/debug-recipes/master/nancy/trace-commands-output.PNG)
 
-If needed you may redirect the output to some output file: `trace-requests.bat http://localhost:59017/ password >> test.txt`.
+If needed you may redirect the output to some log file: `trace-requests.bat http://localhost:59017/ password >> test.log`.
