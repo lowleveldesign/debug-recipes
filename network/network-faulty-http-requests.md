@@ -2,9 +2,9 @@
 Diagnosing HTTP requests
 ========================
 
-### Find a faulting web server in a farm ###
+### Find a faulty web server in a farm ###
 
-Let's assume that we have a web farm composed of four IIS servers which serve requests to our application hosted under address: http://test.example.com. One day customers start complaining that sometimes a request to http://test.example.com/test-request is failing. Our immediate assumption is that one of our servers is failing. The script below may be used to sent a request to all the servers at once:
+Let's assume that we have a web farm composed of four IIS servers which serve requests to our application hosted under the address: http://test.example.com. One day customers start complaining that sometimes a request to http://test.example.com/test-request is failing. Our immediate assumption is that one of our servers is failing. The script below may be used to sent a request to all the servers at once and find the faulty one:
 
 ```powershell
 @("192.168.1.10", "192.168.1.11", "192.168.1.12", "192.168.1.13") | % {
