@@ -24,6 +24,7 @@ Network issues
 
 - [Collect and analyze network traces](network/network-tracing.md)
 - [Identify network problems in memory dumps](network/network-problems-in-dumps.md)
+- [Diagnosing HTTP requests](network/network-http-requests.md)
 
 Exceptions
 ----------
