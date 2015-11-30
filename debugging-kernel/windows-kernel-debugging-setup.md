@@ -56,3 +56,7 @@ On the host computer you can connect to the VM using windbg by using a given nam
 
     windbg -k com:pipe,port=\\.\pipe\PipeName,resets=0,reconnect
 
+Links
+-----
+
+- [Debugging a Generation 2 Virtual Machine](http://blogs.msdn.com/b/ntdebugging/archive/2013/10/24/debugging-a-generation-2-virtual-machine.aspx)
