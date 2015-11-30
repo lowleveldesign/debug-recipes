@@ -8,26 +8,25 @@ I hope you will find them useful. Any contribution is welcome.
 
 Following sections are available:
 
-Memory
-------
+Recipes grouped by types of problems
+------------------------------------
+
+### Memory issues
 
 - [CLR Memory model](memory/clr-memory.md)
 - [Investigate .NET memory issues in dumps](dumps/dotnet-process-memory-dumps.md)
 
-Threading problems
-------------------
+### Threading problems
 
 - [Analysing locks in .NET](threading/analysing-locks-in-net.md)
 
-Network issues
---------------
+### Network issues
 
 - [Collect and analyze network traces](network/network-tracing.md)
 - [Identify network problems in memory dumps](network/network-problems-in-dumps.md)
 - [Diagnosing faulty HTTP requests](network/network-faulty-http-requests.md)
 
-Exceptions
-----------
+### Exceptions
 
 - [Collecting exception information in production](exceptions/collecting-exceptions-info.md)
 - [Analyzing exceptions](exceptions/analyzing-exceptions.md)
@@ -36,38 +35,33 @@ Exceptions
 - [Adplus usage](exceptions/adplus/adplus.md)
 - [DebugDiag](exceptions/debugdiag/debugdiag.md)
 
-ASP.NET
--------
+### Diagnosing ASP.NET
 
 - [Debugging ASP.NET applications](asp.net/asp.net-debugging.md)
 - [Profiling ASP.NET applications](asp.net/asp.net-profiling.md)
 - [Troubleshooting IIS](asp.net/iis-troubleshooting.md)
 
-Nancy
------
+### Diagnosing Nancy
 
 - [Diagnosing Nancy applications](nancy/nancy-diagnostics.md)
 
-ADO.NET
--------
+### Diagnosing ADO.NET
 
 - [ETW tracing in ADO.NET](ado.net/ado.net-etw-tracing.md)
 - [Debugging ADO.NET](ado.net/ado.net-debugging.md)
 
-General
--------
+### General .NET & Windows
 
 - [JIT configuration for debugging](jit-configuration-for-debugging.md)
 - [Windows debugging configuration](windows-debugging-configuration.md)
 - [PDB files](pdb-files.md)
 
-Tracing
--------
-
-- [API hooking in Windws](tracing/api-hooking.md)
-
 Tools & technics
 ----------------
+
+### General
+
+- [How to debug effectively?](howto.md)
 
 ### Debugging kernel
 
@@ -90,6 +84,10 @@ Tools & technics
 ### Profilers
 
 - [PerfView](profiling-tools/perfview/perfview.md)
+
+### Tracing
+
+- [API hooking in Windws](tracing/api-hooking.md)
 
 Links
 -----
