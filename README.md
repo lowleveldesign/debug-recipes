@@ -6,7 +6,7 @@ This is a repository of my notes collected while debugging various .NET and Wind
 
 I hope you will find them useful. Any contribution is welcome.
 
-Following sections are available:
+------------------------------------
 
 Recipes grouped by types of problems
 ------------------------------------
@@ -56,6 +56,8 @@ Recipes grouped by types of problems
 - [Windows debugging configuration](windows-debugging-configuration.md)
 - [PDB files](pdb-files.md)
 
+----------------
+
 Tools & technics
 ----------------
 
@@ -88,6 +90,8 @@ Tools & technics
 ### Tracing
 
 - [API hooking in Windws](tracing/api-hooking.md)
+
+-----
 
 Links
 -----
