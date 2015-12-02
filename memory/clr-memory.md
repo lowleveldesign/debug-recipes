@@ -169,3 +169,8 @@ Links
 - [ProfBugging - How to find leaks with allocation profiling](http://geekswithblogs.net/akraus1/archive/2015/03/22/161982.aspx)
 - [Make WPA Simple - Garbage Collection and JIT Times](http://geekswithblogs.net/akraus1/archive/2015/08/16/166270.aspx)
 - [Does Garbage Collection Hurt?](http://geekswithblogs.net/akraus1/archive/2014/02/17/155442.aspx) - PerfView usage to examine GC activities
+
+### Tools ###
+
+- [dotMemory - .NET memory usage monitoring with unit tests](https://www.jetbrains.com/dotmemory/unit/)
+
