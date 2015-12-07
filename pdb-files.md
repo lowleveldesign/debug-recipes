@@ -363,3 +363,7 @@ where 0000000009 is a transaction number from history.txt file.
 
 Making debug symbols accessible through HTTP is a very simple task. You just need to create a virtual directory for the symbols directory (and choose the authentication method). Then you need to ensure that authenticated users are able to browse the directory on the system (use Security settings for a directory). Finally set MIME type to "application/octet-stream" for all files served by the symbol store. In HTTP Headers tab add a new MIME type with "Extension" set to "\*" and "Mime type" set to "application/octet-stream".
 
+Links
+-----
+
+- [GitHub Source Symbol Indexer](http://hamishgraham.net/post/GitHub-Source-Symbol-Indexer.aspx)

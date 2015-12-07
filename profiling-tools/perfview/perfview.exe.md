@@ -33,6 +33,26 @@ PerfView command line
 
 See perfview /?
 
+### Collect traces from the command line ###
+
+To collect traces into a 500MB file (in circular mode) run the following command:
+
+```
+perfview -AcceptEULA -ThreadTime -CircularMB:500 -Circular:1 -LogFile:perf.output -Merge:TRUE -Zip:TRUE -noView  collect
+```
+
+A new console window will open with the following text:
+
+```
+Pre V4.0 .NET Rundown enabled, Type 'D' to disable and speed up .NET Rundown.
+Do NOT close this console window.   It will leave collection on!
+Type S to stop collection, 'A' will abort.  (Also consider /MaxCollectSec:N)
+```
+
+Type 'S' when you are done with tracing and wait (DO NOT CLOSE THE WINDOW) till you see `Press enter to close window`. Then copy the files: **PerfViewData.etl.zip** and **perf.output** to the machine when you will perform analysis.
+
+If you are also interested in the network traces append the **-NetMonCapture** option. This will generate additional **PerfViewData\_netmon.cab** file which you may open in the Message Analyzer.
+
 ### Open Perfview trace in WPA ###
 
     perfview /wpr unzip test.etl.zip
