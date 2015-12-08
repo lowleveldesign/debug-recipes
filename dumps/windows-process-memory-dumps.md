@@ -71,6 +71,10 @@ The -i option allows you to install procdump as a system post-mortem debugger. I
 
     ProcDump is now set as the Just-in-time (AeDebug) debugger.
 
+### Use Windows Error Reporting (WER) to generate dumps ###
+
+It is possible to configure WER to make full memory dumps on a process crash. Please check [the WER description](exceptions/wer/wer-usage.md) in the Exception section for more details.
+
 Analyzing collected dump files
 ------------------------------
 
