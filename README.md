@@ -52,6 +52,7 @@ Recipes grouped by types of problems
 
 ### General .NET & Windows
 
+- [.NET version/GAC/caspol](clr-information.md)
 - [JIT configuration for debugging](jit-configuration-for-debugging.md)
 - [Windows debugging configuration](windows-debugging-configuration.md)
 - [PDB files](pdb-files.md)
