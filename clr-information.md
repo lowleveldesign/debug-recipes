@@ -52,14 +52,14 @@ For .NET2.0 you could check the version of mscorwks in the file properties or, i
 
 For .NET4.x you need to check clr.dll (or the Release value under the `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full` key) and make use of the table below:
 
-.NET Version | Clr.dll Build 4.0.30319.{build}
+.NET Version|Clr.dll Build 4.0.30319.{build}
 -----------------------------------------------
-.NET 4.0     | 4.0.30319.0 to 4.0.30319.17000
-.NET 4.5     | 4.0.30319.17001 to 4.0.3019.19000
-.NET 4.5.1   | 4.0.3019.19001 to 4.0.30319.34000
-.NET 4.5.2   | 4.0.30319.34000 to 4.0.30319.393295
-.NET 4.6     | 4.0.30319.393295 (Windows 10) or 4.0.30319.393297 (All other OS versions)
-.NET 4.6.1   | 4.0.30319.394256
+.NET 4.0  |4.0.30319.0 to 4.0.30319.17000
+.NET 4.5  |4.0.30319.17001 to 4.0.3019.19000
+.NET 4.5.1|4.0.3019.19001 to 4.0.30319.34000
+.NET 4.5.2|4.0.30319.34000 to 4.0.30319.393295
+.NET 4.6  |4.0.30319.393295 (Windows 10) or 4.0.30319.393297 (All other OS versions)
+.NET 4.6.1|4.0.30319.394256
 
 
 Examine GAC
