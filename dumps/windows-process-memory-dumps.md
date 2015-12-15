@@ -97,7 +97,7 @@ Additionally when dump is loaded into windbg it will print the comment (if any) 
 
 ### Show information on what dump contains ###
 
-Great tool to display information about the collected dump is **dmpchk.exe**. Example excerpt of the command output:
+Great tool to display information about the collected dump is **dumpchk.exe**. Example excerpt of the command output:
 
 ```
 ................................................................
