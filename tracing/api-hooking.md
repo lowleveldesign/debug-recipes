@@ -31,6 +31,7 @@ Libraries
 - [A library for intercepting native functions by hooking KiFastSystemCall](https://github.com/MalwareTech/FstHook)
 - [InjectCode - code for injecting remote thread into a process](https://github.com/EvilKnight1986/InjectCode)
 - [Blackbone - Windows memory hacking library - has some options to hook code by a remote thread](https://github.com/DarthTon/Blackbone)
+- [PowerLoaderEx - Advanced Code Injection Technique for x32 / x64](https://github.com/BreakingMalware/PowerLoaderEx)
 
 ### Python ###
 
