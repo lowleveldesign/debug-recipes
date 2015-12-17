@@ -1,11 +1,11 @@
 
-Troubleshooting assembly loading
-================================
+Troubleshooting assemblies loading
+==================================
 
 Using ETW (in Perfview)
 -----------------------
 
-I think that currently the most efficient way to diagnose problems with assembly loading is to collect ETW events from the .NET ETW provider. There is a bunch of them under the **Microsoft-Windows-DotNETRuntimePrivate/Binding/** and ** category.
+I think that currently the most efficient way to diagnose problems with assembly loading is to collect ETW events from the .NET ETW provider. There is a bunch of them under the **Microsoft-Windows-DotNETRuntimePrivate/Binding/** category.
 
 For this purpose you may use the [**PerfView**](https://www.microsoft.com/en-us/download/details.aspx?id=28567) util. Just make sure that you have the .NET check box selected in the collection dialog (it should be by default). Start collection and stop it after the loading exception occurs. Then open the .etl file, go to the **Events** screen and filter them by *binding* as you can see on the screenshot below:
 
