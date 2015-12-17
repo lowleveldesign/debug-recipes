@@ -50,6 +50,11 @@ Recipes grouped by types of problems
 - [ETW tracing in ADO.NET](ado.net/ado.net-etw-tracing.md)
 - [Debugging ADO.NET](ado.net/ado.net-debugging.md)
 
+### Diagnosing problems with .NET assmeblies
+
+- [.NET assemblies - some general info](assemblies/clr-assemblies.md)
+- [Troubleshooting assemblies loading](assemblies/clr-troubleshooting-assembly-loading.md)
+
 ### General .NET & Windows
 
 - [.NET version/GAC/caspol](clr-information.md)
