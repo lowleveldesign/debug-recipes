@@ -45,3 +45,4 @@ FindDebugTrue
 
 - [The strange case of the Application Pool recycling causing high CPU](http://blogs.msdn.com/b/rodneyviana/archive/2015/03/12/the-strange-case-of-the-application-pool-recycling-causing-high-cpu.aspx)
 - [Debugging ASP.NET WebAPI with route debugger](http://blogs.msdn.com/b/webdev/archive/2013/04/04/debugging-asp-net-web-api-with-route-debugger.aspx)
+- [Using ASP.Net Module to Debug Async Calls](http://blogs.msdn.com/b/webdev/archive/2015/12/29/using-asp-net-module-to-debug-async-calls.aspx)

@@ -50,7 +50,7 @@ For .NET2.0 you could check the version of mscorwks in the file properties or, i
         LegalCopyright:   © Microsoft Corporation.  All rights reserved.
         Comments:         Flavor=Retail
 
-For .NET4.x you need to check clr.dll (or the Release value under the `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full` key) and make use of the table below:
+For .NET4.x you need to check clr.dll (or the Release value under the `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full` key) and make use of the table below. Available .NET 4 Framework versions:
 
 .NET Version | Clr.dll Build 4.0.30319.{build}
 -------------|-----------------------------------

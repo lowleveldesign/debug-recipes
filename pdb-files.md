@@ -363,7 +363,19 @@ where 0000000009 is a transaction number from history.txt file.
 
 Making debug symbols accessible through HTTP is a very simple task. You just need to create a virtual directory for the symbols directory (and choose the authentication method). Then you need to ensure that authenticated users are able to browse the directory on the system (use Security settings for a directory). Finally set MIME type to "application/octet-stream" for all files served by the symbol store. In HTTP Headers tab add a new MIME type with "Extension" set to "\*" and "Mime type" set to "application/octet-stream".
 
+Interesting Symbol Servers
+-------------------------
+
+Based on <http://zine.net.pl/blogs/mgrzeg/archive/2014/03/03/serwery-symboli-dla-znanych-produkt-w-nie-ms.aspx>
+
+- Firefox ([source](https://developer.mozilla.org/en-US/docs/Using_the_Mozilla_symbol_server)) - private `SRV*c:\websymbols*http://symbols.mozilla.org/firefox
+- Chrome ([source](http://www.chromium.org/developers/how-tos/debugging)) - private: `SRV*c:\websymbols*http://chromium-browser-symsrv.commondatastorage.googleapis.com`
+- Citrix ([source](http://support.citrix.com/article/CTX118622)) - `SRV*c:\websymbols*http://ctxsym.citrix.com/symbols`
+- SymbolSource ([more info](http://www.symbolsource.org/Public/Wiki/Using)) - `SRV*c:\websymbols\*http://srv.symbolsource.org/pdb/Public`, `SRV*c:\websymbols\*http://srv.symbolsource.org/pdb/MyGet`
+
 Links
 -----
 
 - [GitHub Source Symbol Indexer](http://hamishgraham.net/post/GitHub-Source-Symbol-Indexer.aspx)
+- [The RSDS pdb format](http://www.godevtool.com/Other/pdb.htm)
+- [Microsoft repo containing information about PDB](https://github.com/Microsoft/microsoft-pdb)
