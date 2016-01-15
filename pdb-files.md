@@ -65,54 +65,6 @@ Get symbols for notepad.exe that is currently running (its PID is 3188):
 
     > symchk /v /ods /fm notepad.exe /ip 3188
 
-    DBGHELP: Symbol Search Path: SRV*C:\Symbols\MSS*http://referencesource.microsoft.com/symbols;SRV*C:\Symbols\MSS*http://m
-    sdl.microsoft.com/download/symbols
-    [SYMCHK] Using search path "SRV*C:\Symbols\MSS*http://referencesource.microsoft.com/symbols;SRV*C:\Symbols\MSS*http://ms
-    dl.microsoft.com/download/symbols"
-    DBGHELP: No header for C:\Windows\system32\notepad.exe.  Searching for image on disk
-    DBGHELP: C:\Windows\system32\notepad.exe - OK
-    DBGHELP: notepad - public symbols
-             C:\Symbols\MSS\notepad.pdb\36CFD5F9888C4483B522B9DB242D84782\notepad.pdb
-    [SYMCHK] MODULE64 Info ----------------------
-    [SYMCHK] Struct size: 1680 bytes
-    [SYMCHK] Base: 0x0000000100000000
-    [SYMCHK] Image size: 217088 bytes
-    [SYMCHK] Date: 0x4a5bc9b3
-    [SYMCHK] Checksum: 0x0003e749
-    [SYMCHK] NumSyms: 0
-    [SYMCHK] SymType: SymPDB
-    [SYMCHK] ModName: notepad
-    [SYMCHK] ImageName: C:\Windows\system32\notepad.exe
-    [SYMCHK] LoadedImage: C:\Windows\system32\notepad.exe
-    [SYMCHK] PDB: "C:\Symbols\MSS\notepad.pdb\36CFD5F9888C4483B522B9DB242D84782\notepad.pdb"
-    [SYMCHK] CV: RSDS
-    [SYMCHK] CV DWORD: 0x53445352
-    [SYMCHK] CV Data:  notepad.pdb
-    [SYMCHK] PDB Sig:  0
-    [SYMCHK] PDB7 Sig: {36CFD5F9-888C-4483-B522-B9DB242D8478}
-    [SYMCHK] Age: 2
-    [SYMCHK] PDB Matched:  TRUE
-    [SYMCHK] DBG Matched:  TRUE
-    [SYMCHK] Line nubmers: FALSE
-    [SYMCHK] Global syms:  FALSE
-    [SYMCHK] Type Info:    FALSE
-    [SYMCHK] ------------------------------------
-    SymbolCheckVersion  0x00000002
-    Result              0x00030001
-    DbgFilename
-    DbgTimeDateStamp    0x4a5bc9b3
-    DbgSizeOfImage      0x00035000
-    DbgChecksum         0x0003e749
-    PdbFilename         C:\Symbols\MSS\notepad.pdb\36CFD5F9888C4483B522B9DB242D84782\notepad.pdb
-    PdbSignature        {36CFD5F9-888C-4483-B522-B9DB242D8478}
-    PdbDbiAge           0x00000002
-    [SYMCHK] [ 0x00000000 - 0x00030001 ] Checked "C:\Windows\system32\notepad.exe"
-    SYMCHK: notepad.exe          PASSED  - PDB: C:\Symbols\MSS\notepad.pdb\36CFD5F9888C4483B522B9DB242D84782\notepad.pdb DBG
-    : <N/A>
-
-    SYMCHK: FAILED files = 0
-    SYMCHK: PASSED + IGNORED files = 1
-
 ### using dumpbin.exe ###
 
 With this switch on, dumpbin will look for a PDB file that will match the examined exe/dll file, eg.
@@ -136,8 +88,10 @@ With this switch on, dumpbin will look for a PDB file that will match the examin
             E000 .rsrc
            33000 .text
 
-Examine symbol files using DBH
--------------------------------
+Examine symbol files
+--------------------
+
+### With dbh
 
 Start dbh loading a log4net module file:
 
@@ -249,7 +203,7 @@ List all source lines connected with symbols in a given source file:
           802 806 807 812 812 812 817 817 817 825 826 827 836 836 836 837
           837 841 842 846 847
 
-### Useful commands
+#### Useful commands
 
     verbose [on|off]
     sympath [Path]
@@ -284,6 +238,69 @@ List all source lines connected with symbols in a given source file:
     elines [Source[Obj]] - enumerates all sources lines matching the specified source mask and object mask
 
     locals Function [Mask] - display local variables declared in a given function
+
+### Dia2Dump
+
+Under `C:\Program Files (x86)\Microsoft Visual Studio <version>\DIA SDK\Samples\DIA2Dump` there is a sample pdb parser which you may compile and later use to examine the .pdb files. Example usage:
+
+    > Dia2Dump.exe .\Test.pdb
+
+    *** MODULES
+    0001 Program
+
+    *** PUBLICS
+    PublicSymbol: [00000000][0000:06000001] COM+_Entry_Point(COM+_Entry_Point)
+
+    *** SYMBOLS
+
+    ** Module: Program
+    Function       : In MetaData, [00000000][0001:00000000], len = 00000036, Main
+                     Function attribute:
+                     Function info:
+    FuncDebugStart :
+    FuncDebugEnd   :
+    Block          :   static, [00000000][0001:00000000], len = 00000036, (none)
+    UsingNamespace :     USystem
+    Custom         :   (none)
+
+    *** GLOBALS
+    Function: [00000000][0001:00000000] Main
+
+    *** TYPES
+    ** User Defined Types
+    ** ENUMS
+    ** TYPEDEFS
+    *** FILES
+    Compiland = Program
+            c:\temp\Test.cs
+    *** LINES
+    ** Main
+            line 5 at [00000000][0001:00000000], len = 0x1  c:\temp\Test.cs
+            line 6 at [00000001][0001:00000001], len = 0x1
+            line 7 at [00000002][0001:00000002], len = 0xB
+            line 8 at [0000000D][0001:0000000D], len = 0x6
+            line 9 at [00000013][0001:00000013], len = 0xB
+            line 10 at [0000001E][0001:0000001E], len = 0x1
+            line 10 at [0000001F][0001:0000001F], len = 0x1
+            line 11 at [00000020][0001:00000020], len = 0xB
+            line 12 at [0000002B][0001:0000002B], len = 0x6
+            line 13 at [00000031][0001:00000031], len = 0x1
+            line 16707566 at [00000032][0001:00000032], len = 0x2
+            line 16707566 at [00000034][0001:00000034], len = 0x1
+            line 14 at [00000035][0001:00000035], len = 0x1
+    *** SECTION CONTRIBUTION
+        RVA        Address       Size    Module
+      00000000  0001:00000000  00000036  Program
+    *** DEBUG STREAMS
+    Stream: SECTIONHEADERS(1)
+    00 00 00 00 00 00 00 00 - 36 00 00 00 00 00 00 00 - 36 00 00 00 00 00 00 00 - 00 00 00 00 00 00 00 00 - 00 00 00 00 00 0
+    0 00 00 | ........6.......6.......................
+    Summary :
+            No of Elems = 1
+            Sizeof(Elem) = 40
+    *** INJECTED SOURCES TABLE
+    *** FPO
+    *** OEM Specific types
 
 Get source information from the PDB files
 -----------------------------------------
