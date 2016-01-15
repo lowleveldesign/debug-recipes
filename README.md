@@ -64,8 +64,8 @@ Recipes grouped by types of problems
 
 ----------------
 
-Tools & technics
-----------------
+Tools, libraries & technics
+---------------------------
 
 ### General
 
@@ -82,6 +82,10 @@ Tools & technics
 - [Collect and analyze .NET process memory dumps](dumps/dotnet-process-memory-dumps.md)
 - [Collect and analyze kernel memory dumps](dumps/windows-kernel-memory-dumps.md)
 
+### Event Tracing for Windows (ETW)
+
+- [CLR ETW tracing](etw/clr-etw-tracing.md)
+
 ### Debuggers
 
 - [Debuging using Visual Studio](debugging-using-vs/README.md)
@@ -93,9 +97,13 @@ Tools & technics
 
 - [PerfView](profiling-tools/perfview/perfview.md)
 
+### Libraries
+
+- [.NET libraries for app diagnostics](profiling-tools/clr-diaglibs.md)
+
 ### Tracing
 
-- [API hooking in Windws](tracing/api-hooking.md)
+- [API hooking in Windws](api-hooking.md)
 
 -----
 
