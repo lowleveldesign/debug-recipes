@@ -96,4 +96,5 @@ Links
 - [Great PerfView video casts](http://channel9.msdn.com/Series/PerfView-Tutorial)
 - [A Lab on investigating Memory Performance with PerfView](http://blogs.msdn.com/b/vancem/archive/2013/02/27/a-lab-on-investigating-memory-performance-with-perfview.aspx)
 - [Defrag Tools - search for perfview](http://channel9.msdn.com/Shows/Defrag-Tools/)
+- [Using PerfView on 'External' data (e.g. Other Profilers)](http://blogs.msdn.com/b/vancem/archive/2016/02/20/using-perfview-on-external-data-e-g-other-profilers.aspx)
 
