@@ -2,17 +2,17 @@
 IIS Troubleshooting
 ===================
 
-The notes are divided based on the IIS versions:
+Specific notes are provided for the following versions of IIS:
 
 - [IIS6](iis6.md)
-- [IIS7up](iis7up.md)
+- [IIS7 and newer](iis7up.md)
 - [IIS Express](iisexpress.md)
 
 In the notes folder you may also find scripts to collect ETW traces from IIS server and [WMI API description](wmi/iis-wmi.md).
 
 ### Powershell module ###
 
-Also in this folder you may find my **Powershell LLDIIS module** which contains following methods:
+In the notes folder you may also find my **Powershell LLDIIS module** which contains following methods:
 
 ```powershell
 Get-HttpSysLog [[-ComputerName] <string>] [[-Newest] <int>]
