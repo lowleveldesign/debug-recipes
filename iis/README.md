@@ -12,7 +12,7 @@ In the notes folder you may also find scripts to collect ETW traces from IIS ser
 
 ### Powershell module ###
 
-In the notes folder you may also find my **Powershell LLDIIS module** which contains following methods:
+In the notes folder you may also find my **[Powershell LLDIIS module](LLDIIS)** which contains following methods:
 
 ```powershell
 Get-HttpSysLog [[-ComputerName] <string>] [[-Newest] <int>]
