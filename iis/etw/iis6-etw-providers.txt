@@ -1,0 +1,163 @@
+
+IIS6 ETW Providers
+------------------
+
+    Provider                                 GUID
+    -------------------------------------------------------------------------------
+    IIS: WWW Global                          {d55d3bc9-cba9-44df-827e-132d3a4596c2}
+    IIS: WWW Server                          {3a2a4e84-4c21-4981-ae10-3fda0d9b0f83}
+    IIS: Request Monitor                     {3b7b0b4b-4b01-44b4-a95e-3c755719aebf}
+    IIS: Active Server Pages (ASP)           {06b94d9a-b15e-456e-a4ef-37c984a2cb4b}
+    IIS: WWW Isapi Extension                 {a1c2040e-8840-4c31-ba11-9871031a19ea}
+    ASP.NET Events                           {AFF081FE-0247-4275-9C4E-021F3DC1DA35}
+    IIS: IISADMIN Global                     {DC1271C2-A0AF-400f-850C-4E42FE16BE1C}
+    IIS: SSL Filter                          {1fbecc45-c060-4e7c-8a0e-0dbd6116181b}
+    HTTP Service Trace                       {dd5ef90a-6398-47a4-ad34-4dcecdef795f}
+
+### IIS: WWW Global ###
+
+Description: <http://www.microsoft.com/technet/prodtechnol/WindowsServer2003/Library/IIS/991e07c3-4143-48cc-ab39-8d49065a8388.mspx?mfr=true>
+
+    Provider                                 GUID
+    -------------------------------------------------------------------------------
+    IIS: WWW Global                          {d55d3bc9-cba9-44df-827e-132d3a4596c2}
+
+    Flags                Value               Description
+    -------------------------------------------------------------------------------
+    Startup              0x0001              IIS process startup events
+    Shutdown             0x0002              IIS process shutdown eventsAll                  0x0003              IIS global all events
+
+    Level                Value               Description
+    -------------------------------------------------------------------------------
+    Fatal                0x1                 Abnormal exit or termination
+    Error                0x2                 Severe errors
+    Warning              0x3                 Warnings
+    Information          0x4                 Information
+    Verbose              0x5                 Detailed information
+
+### IIS: WWW Server ###
+
+    Provider                                 GUID
+    -------------------------------------------------------------------------------
+    IIS: WWW Server                          {3a2a4e84-4c21-4981-ae10-3fda0d9b0f83}
+
+    Flags                Value               Description
+    -------------------------------------------------------------------------------
+    UseUrlFilter         0x0001              Allow tracing only selected requests
+    IISAuthentication    0x0002              IIS authentication events
+    IISSecurity          0x0004              IIS security events
+    IISFilter            0x0008              IIS filter events
+    IISStaticFile        0x0010              IIS static file events
+    IISCGI               0x0020              IIS CGI events
+    IISCompression       0x0040              IIS compression events
+    IISCache             0x0080              IIS cache events
+    IISAll               0x00FE              IIS all events
+
+    Level                Value               Description
+    -------------------------------------------------------------------------------
+    Fatal                0x1                 Abnormal exit or termination
+    Error                0x2                 Severe errors
+    Warning              0x3                 Warnings
+    Information          0x4                 Information
+    Verbose              0x5                 Detailed information
+
+### IIS: Request Monitor ###
+
+    Provider                                 GUID
+    -------------------------------------------------------------------------------
+    IIS: Request Monitor                     {3b7b0b4b-4b01-44b4-a95e-3c755719aebf}
+
+    Flags                Value               Description
+    -------------------------------------------------------------------------------
+    monitorOnDemand      0x00000001          Monitor on demand
+
+### IIS: Active Server Pages (ASP) ###
+
+    Provider                                 GUID
+    -------------------------------------------------------------------------------
+    IIS: Active Server Pages (ASP)           {06b94d9a-b15e-456e-a4ef-37c984a2cb4b}
+
+    Level                Value               Description
+    -------------------------------------------------------------------------------
+    Fatal                0x1                 Abnormal exit or termination
+    Error                0x2                 Severe errors
+    Warning              0x3                 Warnings
+    Information          0x4                 Information
+    Verbose              0x5                 Detailed information
+
+### IIS: WWW Isapi Extension ###
+
+    Provider                                 GUID
+    -------------------------------------------------------------------------------
+    IIS: WWW Isapi Extension                 {a1c2040e-8840-4c31-ba11-9871031a19ea}
+
+    Level                Value               Description
+    -------------------------------------------------------------------------------
+    Fatal                0x1                 Abnormal exit or termination
+    Error                0x2                 Severe errors
+    Warning              0x3                 Warnings
+    Information          0x4                 Information
+    Verbose              0x5                 Detailed information
+
+### ASP.NET Events ###
+
+    Provider                                 GUID
+    -------------------------------------------------------------------------------
+    ASP.NET Events                           {AFF081FE-0247-4275-9C4E-021F3DC1DA35}
+
+    Flags                Value               Description
+    -------------------------------------------------------------------------------
+    Infrastructure       0x0001              Infrastructure Events
+    Module               0x0002              Pipeline Module Events
+    Page                 0x0004              Page Events
+    AppServices          0x0008              Application Services Events
+
+    Level                Value               Description
+    -------------------------------------------------------------------------------
+    Fatal                0x1                 Abnormal exit or termination
+    Error                0x2                 Severe errors
+    Warning              0x3                 Warnings
+    Information          0x4                 Information
+    Verbose              0x5                 Detailed information
+
+### IIS: SSL Filter ###
+
+    Provider                                 GUID
+    -------------------------------------------------------------------------------
+    IIS: SSL Filter                          {1fbecc45-c060-4e7c-8a0e-0dbd6116181b}
+
+    Flags                Value               Description
+    -------------------------------------------------------------------------------
+    Connection           0x00000002          Connection info
+    SSLHandshake         0x00000004          SSL Handshake info
+    ClientCertificate    0x00000008          Client certificate info
+    ShowCleartextData    0x00000010          Show cleartext data
+    SchannelCalls        0x00000020          Monitor Schannel calls
+    SSLInfo              0x0000000E          SSL connection, handshake and cert info
+
+    Level                Value               Description
+    -------------------------------------------------------------------------------
+    Fatal                0x1                 Abnormal exit or termination
+    Error                0x2                 Severe errors that need logging
+    Warning              0x3                 Warnings such as allocation failure
+    Information          0x4                 Includes non-error cases
+    Verbose              0x5                 Detailed traces from intermediate steps
+
+### IIS: IISADMIN Global ###
+
+    Provider                                 GUID
+    -------------------------------------------------------------------------------
+    IIS: IISADMIN Global                     {DC1271C2-A0AF-400f-850C-4E42FE16BE1C}
+
+    Flags                Value               Description
+    -------------------------------------------------------------------------------
+    Startup              0x0001              Startup events
+    Shutdown             0x0002              Shutdown events
+
+    Level                Value               Description
+    -------------------------------------------------------------------------------
+    Fatal                0x1                 Abnormal exit or termination
+    Error                0x2                 Severe errors
+    Warning              0x3                 Warnings
+    Information          0x4                 Information
+    Verbose              0x5                 Detailed information

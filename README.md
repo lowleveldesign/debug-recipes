@@ -45,6 +45,14 @@ Recipes grouped by types of problems
 
 - [Diagnosing Nancy applications](nancy/nancy-diagnostics.md)
 
+### Troubleshooting IIS
+
+- [Troubleshooting IIS 6](iis/iis6.md)
+- [Troubleshooting IIS 7 and newer](iis/iis7up.md)
+- [Troubleshooting IIS Express](iis/iisexpress.md)
+- [IIS WMI API](iis/wmi/iis-wmi.md)
+- [Other resources (including Powershel LLDIIS module)](iis/README.md)
+
 ### Diagnosing ADO.NET
 
 - [ETW tracing in ADO.NET](ado.net/ado.net-etw-tracing.md)
