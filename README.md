@@ -15,6 +15,7 @@ Recipes grouped by types of problems
 
 - [CLR Memory model](memory/clr-memory.md)
 - [Investigate .NET memory issues in dumps](dumps/dotnet-process-memory-dumps.md)
+- [Diagnose native memory leaks](memory/native-memory-leaks.md)
 
 ### Threading problems
 
