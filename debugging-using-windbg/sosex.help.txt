@@ -6,12 +6,13 @@ bhi       [filename]                                     BuildHeapIndex - Builds
 bpsc      (Deprecated.  Use !mbp instead)
 chi                                                      ClearHeapIndex - Frees all resources used by the heap index and removes it from memory.
 dlk       [-d]                                           Displays deadlocks between SyncBlocks and/or ReaderWriterLocks
+dumpfd    <FieldAddr>                                    Dumps the properties of a FieldDef structure
 dumpgen   <GenNum> [-free] [-stat] [-type <TYPE_NAME>]   Dumps the contents of the specified generation
-                   [-nostrings]
+                   [-nostrings] [-live] [-dead] [-short]
 finq      [GenNum] [-stat]                               Displays objects in the finalization queue
 frq       [-stat]                                        Displays objects in the Freachable queue
 gcgen     <ObjectAddr>                                   Displays the GC generation of the specified object
-gch       [HandleType]...                                Lists all GCHandles, optionally filtered by specified handle types
+gch       [HandleType]... [-stat]                        Lists all GCHandles, optionally filtered by specified handle types
 help      [CommandName]                                  Display this screen or details about the specified command
 lhi       [filename]                                     LoadHeapIndex - load the heap index into memory.
 mbc       <SOSEX breakpoint ID | *>                      Clears the specified or all managed breakpoints
@@ -33,8 +34,9 @@ mroot     <ObjectAddr> [-all]                            Displays GC roots for t
 mt        (no parameters)                                Steps into the managed method at the current position
 mu        [address] [-s] [-il] [-n]                      Displays a disassembly around the current instruction with interleaved source, IL and asm code
 muf       [MD Address | Code Address] [-s] [-il] [-n]    Displays a disassembly with interleaved source, IL and asm code
-mwaits    [-d]                                           Lists all waiting threads and, if known, the locks they are waiting on
+mwaits    [-d | LockAddr]                                Lists all waiting threads and, if known, the locks they are waiting on
 mx        <Filter String>                                Displays managed type/field/method names matching the specified filter string
+rcw       [Object or SyncBlock Addr]                     Displays Runtime Callable Wrapper (RCW) COM interop data.
 refs      <ObjectAddr> [-target|-source]                 Displays all references from and to the specified object
 rwlock    [ObjectAddr | -d]                              Displays all RWLocks or, if provided a RWLock address, details of the specified lock
 sosexhelp [CommandName]                                  Display this screen or details about the specified command
@@ -43,6 +45,21 @@ strings   [ModuleAddress] [Options]                      Search the managed heap
 ListGcHandles - See gch
 
 Use !help <command> or !sosexhelp <command> for more details about each command.
+You can also use the /? (or -?) option on any command to get help for that command.
+``
+
+*!bhi [filename]
+BuildHeapIndex - Builds an index file for heap objects.
+This enables the !gcroot command to quickly find paths from objects to a root and also enables the !refs command to work much more quickly.
+The heap index is stored in the filename specified or, if a filename is not specified, the filename will be %dumppath%\%dumpname%_heapindex.bin.
+``
+
+*!chi
+ClearHeapIndex - Frees all resources used by the heap index and removes it from memory.
+``
+
+*!dumpfd <FieldAddr>
+Dumps the properties of a FieldDef structure
 ``
 
 *!dlk [-d]
@@ -128,7 +145,7 @@ CLR Thread 22 is waiting at ConsoleTestApp.ConsoleTestApp.MonitorDeadlockThreadP
 ``
 
 *!dumpgen
-Usage: !sosex.dumpgen <intGenNum> [-free] [-stat] [-type <TYPE_NAME>] [-nostrings]
+Usage: !sosex.dumpgen <intGenNum> [-free] [-stat] [-type <TYPE_NAME>] [-nostrings] [-live] [-dead] [-short]
 
 Dumps the contents of the specified generation in the following format:
 hexAddr decSize strTypeName
@@ -137,8 +154,13 @@ Pass 3 to dump the large object heap
 
 if -nostrings is specified, no object names or string data are printed.  This will increase performance significantly.
 If -free is specified, only FREE object types are included
-If -stat is specified, only a statistical summary is presented
+If -stat is specified, only a statistical summary is presented.  Cannot be used with -short.
 If -type is specified, the output is filtered to only include objects where TYPE_NAME is a substring of the full type name.
+If -live is specified, the output is filtered to include only objects that are referenced (requires a heap index built by !bhi)
+If -dead is specified, the output is filtered to include only objects that are not referenced (requires a heap index built by !bhi)
+If -short is specified, the output is limited to the address of each object with no header or DML.  Cannot be used with -stat.
+-live and -dead are mutually exclusive.
+-stat and -short are mutually exclusive.
 
 Sample output:
 0:000>!sosex.dumpgen 1
@@ -258,10 +280,12 @@ If the object is in the LOH, "Large Object Heap" will be indicated
 ``
 
 *!gch
-Usage: !sosex.gch [-HandleType]
+Usage: !sosex.gch [-HandleType] [-stat]
 
 Lists all GCHandle instances. To list handles of a certain type, pass 1 or more types preceded by a dash (-).
 e.g. !gch -Pinned -Strong
+
+If -stat is specified, only the count of each type of handle is presented.
 
 Valid types:
 ------------
@@ -271,6 +295,7 @@ Strong
 Pinned
 Variable
 RefCounted
+Dependent
 AsyncPinned
 
 Sample Output:
@@ -294,6 +319,11 @@ HandleObj   HandleType  Object         Size	  Type
 005612fc	Pinned     	0a1a4288	   4096   System.Object[]
 ``
 
+*!lhi [filename]
+LoadHeapIndex - Loads a heap index for the dump from the specified file.
+If a filename is not specified, the command loads the following file: %dumppath%\%dumpname%_heapindex.bin.  This is the default filename that !bhi creates.
+``
+
 *!mbc
 Usage: !sosex.mbc <Managed Breakpoint ID | *>
 
@@ -309,7 +339,7 @@ also be disabled, unless a native breakpoint is shared by multiple managed break
 ``
 
 *!mbe
-Usage: !sosex.mbd <Managed Breakpoint ID | *>
+Usage: !sosex.mbe <Managed Breakpoint ID | *>
 
 Enables the specified breakpoint. If * is specified, enables all managed breakpoints.
 Any corresponding native breakpoints that have been set in support of the specified managed breakpoint will
@@ -346,7 +376,7 @@ As an example of the first level of information, take the following line, indica
 
 The number 4 is the managed breakpoint ID.  The e indicates that the breakpoint is enabled.
 If the breakpoint were disabled, a d would be displayed instead.  Following the first colon,
-either the source/line/column info or method name is displayed, depending on whether the 
+either the source/line/column info or method name is displayed, depending on whether the
 breakpoint is a source (!mbp) breakpoint or a method (!mbm) breakpoint.  Following the second
 colon are the breakpoint parameters.
 
@@ -354,7 +384,7 @@ Here's a sample of an unresolved breakpoint:
 1 eu: consoletestapp.cs, line 170: pass=1 oneshot=false thread=ANY
 
 The only difference here is the presence of the u character, indicating that the breakpoint is
-unresolved.  For managed breakpoints, unresolved means that the breakpoint has not yet been 
+unresolved.  For managed breakpoints, unresolved means that the breakpoint has not yet been
 matched to a method definition in any currently-loaded module.
 
 
@@ -374,16 +404,16 @@ always listed as pending JIT because a new instance of the method can be created
 
 
 LEVEL 3:
-The third level of information, indented by 6 characters displays information for any native breakpoints 
+The third level of information, indented by 6 characters displays information for any native breakpoints
 that have been set in support of the managed breakpoint.
 
 Example (managed breakpoint 3)
       1 e 002f0cea: Test<TestStruct, Int32>(TestStruct, Int32)
 
-The 1 is the debugger ID for the corresponding native breakpoint.  This is the same identifier that 
+The 1 is the debugger ID for the corresponding native breakpoint.  This is the same identifier that
 would be displayed by the bl command.  The e indicates that the native breakpoint is enabled.  A d
 could also be displayed, indicating that the native breakpoint is disabled.  Native breakpoints that
-correspond to managed breakpoints can be controlled by the native debugger breakpoint commands, 
+correspond to managed breakpoints can be controlled by the native debugger breakpoint commands,
 such as be, bd, bc, etc.  Next, the address of the native breakpoint is listed.  In this particular
 example, method signature information is displayed.  This is because the method is a generic method.
 In this case, the signature is necessary in order to distinguish between the different method instances.
@@ -408,7 +438,7 @@ the breakpoint will be set.
 Options:
 /1 - Sets a one-shot breakpoint
 
-/p:n - Sets the pass count for the breakpoint.  This causes the breakpoint to be triggered only when the 
+/p:n - Sets the pass count for the breakpoint.  This causes the breakpoint to be triggered only when the
 breakpoint has been "hit" the specified number of times.  /p:1 causes the breakpoint to be triggered on the
 first hit, /p:3 causes the breakpoint to be triggered only on the third hit.
 
@@ -437,7 +467,7 @@ The decimal number of the column of <line number> at which to set the breakpoint
 Options:
 /1 - Sets a one-shot breakpoint
 
-/p:n - Sets the pass count for the breakpoint.  This causes the breakpoint to be triggered only when the 
+/p:n - Sets the pass count for the breakpoint.  This causes the breakpoint to be triggered only when the
 breakpoint has been "hit" the specified number of times.  /p:1 causes the breakpoint to be triggered on the
 first hit, /p:3 causes the breakpoint to be triggered only on the third hit.
 
@@ -469,7 +499,7 @@ Options:
 ``
 
 *!mdt
-Usage: !sosex.mdt [typename | paramname | localname | MT] [ADDR] [-r[:level]] [-e[:level]]
+Usage: !sosex.mdt [typename | paramname | localname | MT] [ADDR] [-r[:level]] [-e[:level]] [-start:index] [-count:n]
 
 Sample usages:
 "!sosex.mdt typeName"  (displays the names of the member fields of the specified type)
@@ -480,15 +510,18 @@ Sample usages:
 
 Displays the fields of the specified object or type, optionally recursively.
 
-If -r is specified, fields will be displayed recursively down the object graph.  The -r switch is ONLY 
-applicable where an address is used, either by passing an address explicitly or when a param/local name 
+If -r is specified, fields will be displayed recursively down the object graph.  The -r switch is ONLY
+applicable where an address is used, either by passing an address explicitly or when a param/local name
 that resolves to an address is specified.  To limit the levels of the graph that are displayed, append the desired
 maximum level, preceded by a colon.  e.g. !mdt myVar -r:3
 
 The -e switch causes certain collection types to be expanded.  The currently expandable collection types are:
-Array, ArrayList, List, Hashtable and Dictionary.  You can also specify a maximum expansion level by appending 
-the desired maximum level, preceded by a colon.  e.g. !mdt myColl -e:3.  The minimum (and default) level is 2, 
+Array, ArrayList, List, Hashtable and Dictionary.  You can also specify a maximum expansion level by appending
+the desired maximum level, preceded by a colon.  e.g. !mdt myColl -e:3.  The minimum (and default) level is 2,
 which means that the collection is expanded to show each element address and it's top level fields.
+
+If you pass -e for collection expansion, you can also pass -start:index to specify a start index and/or -count:n
+to specify the number of elements to expand.
 
 Sample of collection expansion:
 0:000> !mdt -e ht1
@@ -658,8 +691,8 @@ Displays or sets the current managed frame for the !mdt and !mdv commands.
 If no frame number is passed, the current scope frame for !mdt and !mdv is displayed.
 
 If a frame number is passed, the current scope frame for !mdt and !mdv is changed.
-IMPORTANT:  This frame number must be retrieved by using the !mk command, because the 
-merged stack trace that is displayed by the !mk command (which is different than that 
+IMPORTANT:  This frame number must be retrieved by using the !mk command, because the
+merged stack trace that is displayed by the !mk command (which is different than that
 of !sos.clrstack and the 'k' command) is the reference point for scoping !mdt and !mdv.
 ``
 
@@ -747,7 +780,7 @@ Sample output:
 0:011> !mln 6cd16db4
 Method instance: 6cd16d70[System.Threading.ThreadHelper.ThreadStart()]
 
-0:011> !mln 0f85ec88 
+0:011> !mln 0f85ec88
 Stack: debugger thread 11, frame 5
 ``
 
@@ -792,10 +825,10 @@ Console.ReadLine();
     IL_0703: call System.Console::ReadLine
         003718f1 e88aa9e75f      call    mscorlib_ni+0x82c280 (601ec280)
 >>>>>>>>003718f6 898544feffff    mov     dword ptr [ebp-1BCh],eax
-    IL_0708: pop 
+    IL_0708: pop
         003718fc 90              nop
 __running = false;
-    IL_0709: ldc.i4.0 
+    IL_0709: ldc.i4.0
     IL_070a: stsfld ConsoleTestApp.ConsoleTestApp::__running
         003718fd c6050834210000  mov     byte ptr ds:[213408h],0
 ``
@@ -813,7 +846,7 @@ default: Display source, IL and native for method at current IP
 
 Sample Output:
 
-0:027> !muf 00371e13 
+0:027> !muf 00371e13
 ConsoleTestApp.ConsoleTestApp.RwLockThread1(): void
         00371dc0 55              push    ebp
         00371dc1 8bec            mov     ebp,esp
@@ -822,17 +855,17 @@ ConsoleTestApp.ConsoleTestApp.RwLockThread1(): void
         00371dcd 7405            je      00371dd4
         00371dcf e87b3d3962      call    clr!JIT_DbgIsJustMyCode (62705b4f)
 {
-    IL_0000: nop 
+    IL_0000: nop
         00371dd4 90              nop
 __rwLock1.AcquireReaderLock(Timeout.Infinite);
     IL_0001: ldsfld ConsoleTestApp.ConsoleTestApp::__rwLock1
-    IL_0006: ldc.i4.m1 
+    IL_0006: ldc.i4.m1
     IL_0007: callvirt System.Threading.ReaderWriterLock::AcquireReaderLock
         00371dd5 8b0dc8221a0a    mov     ecx,dword ptr ds:[0A1A22C8h]
         00371ddb 83caff          or      edx,0FFFFFFFFh
         00371dde 3909            cmp     dword ptr [ecx],ecx
         00371de0 e84b0ae55f      call    mscorlib_ni+0x802830 (601c2830)
-    IL_000c: nop 
+    IL_000c: nop
         00371de5 90              nop
 __rwLockSync1.Set();
     IL_000d: ldsfld ConsoleTestApp.ConsoleTestApp::__rwLockSync1
@@ -840,7 +873,7 @@ __rwLockSync1.Set();
         00371de6 8b0df0221a0a    mov     ecx,dword ptr ds:[0A1A22F0h]
         00371dec 3909            cmp     dword ptr [ecx],ecx
         00371dee e8e5a6825f      call    mscorlib_ni+0x1dc4d8 (5fb9c4d8)
-    IL_0017: pop 
+    IL_0017: pop
         00371df3 90              nop
 __rwLockSync2.WaitOne();
     IL_0018: ldsfld ConsoleTestApp.ConsoleTestApp::__rwLockSync2
@@ -849,17 +882,17 @@ __rwLockSync2.WaitOne();
         00371dfa 8b01            mov     eax,dword ptr [ecx]
         00371dfc 8b402c          mov     eax,dword ptr [eax+2Ch]
         00371dff ff500c          call    dword ptr [eax+0Ch]
-    IL_0022: pop 
+    IL_0022: pop
         00371e02 90              nop
 __rwLock2.AcquireWriterLock(Timeout.Infinite);
     IL_0023: ldsfld ConsoleTestApp.ConsoleTestApp::__rwLock2
-    IL_0028: ldc.i4.m1 
+    IL_0028: ldc.i4.m1
     IL_0029: callvirt System.Threading.ReaderWriterLock::AcquireWriterLock
         00371e03 8b0dcc221a0a    mov     ecx,dword ptr ds:[0A1A22CCh]
         00371e09 83caff          or      edx,0FFFFFFFFh
         00371e0c 3909            cmp     dword ptr [ecx],ecx
         00371e0e e89d08e55f      call    mscorlib_ni+0x8026b0 (601c26b0)
-    IL_002e: nop 
+    IL_002e: nop
         00371e13 90              nop
 __rwLock1.ReleaseLock();
     IL_002f: ldsfld ConsoleTestApp.ConsoleTestApp::__rwLock1
@@ -868,7 +901,7 @@ __rwLock1.ReleaseLock();
         00371e1a 8d55f0          lea     edx,[ebp-10h]
         00371e1d 3909            cmp     dword ptr [ecx],ecx
         00371e1f e86c0ae55f      call    mscorlib_ni+0x802890 (601c2890)
-    IL_0039: pop 
+    IL_0039: pop
         00371e24 90              nop
 __rwLock2.ReleaseLock();
     IL_003a: ldsfld ConsoleTestApp.ConsoleTestApp::__rwLock2
@@ -877,17 +910,17 @@ __rwLock2.ReleaseLock();
         00371e2b 8d55e0          lea     edx,[ebp-20h]
         00371e2e 3909            cmp     dword ptr [ecx],ecx
         00371e30 e85b0ae55f      call    mscorlib_ni+0x802890 (601c2890)
-    IL_0044: pop 
+    IL_0044: pop
         00371e35 90              nop
 Console.WriteLine("RwLockThread1 succeeded.");
     IL_0045: ldstr "RwLockThread1 succeeded."
     IL_004a: call System.Console::WriteLine
         00371e36 8b0d08111a0a    mov     ecx,dword ptr ds:[0A1A1108h]
         00371e3c e86b528a5f      call    mscorlib_ni+0x2570ac (5fc170ac)
-    IL_004f: nop 
+    IL_004f: nop
         00371e41 90              nop
 }
-    IL_0050: ret 
+    IL_0050: ret
         00371e42 90              nop
         00371e43 8be5            mov     esp,ebp
         00371e45 5d              pop     ebp
@@ -895,22 +928,36 @@ Console.WriteLine("RwLockThread1 succeeded.");
 ``
 
 *!mwaits
-Usage: !sosex.mwaits [-d]
+Usage: !sosex.mwaits [-d | LockAddr]
 
 Lists all waiting threads and, if known, the locks they are waiting on
 
 If -d is specified, the heap is searched for types derived from ReaderWriterLock or ReaderWriterLockSlim
+
+If LockAddr is specified, all threads waiting on the specified lock are listed
+
+The -d and LockAddr options are mutually exclusive.  Exactly zero or one of these options may be used.
 ``
 
 *!mx
 Usage: !sosex.mx <Filter String>
 
-Displays any matching type, method or field for <Filter String>, where <Filter String> is a string in 
-module!metadataname format.  If module! is not specified, all modules are searched for the specified 
+Displays any matching type, method or field for <Filter String>, where <Filter String> is a string in
+module!metadataname format.  If module! is not specified, all modules are searched for the specified
 metadata.  Searched info includes types, methods and fields.
 
 In order to search globals, do not precede the field or method filter with a ".".  To enumerate all globals
 for a given module filter, use "globals" as the type filter.  eg: "globals" "*!globals" "mymod!globals", etc...
+``
+
+*!rcw
+Usage:
+!sosex.rcw [Object or SyncBlock Addr]
+
+Displays Runtime Callable Wrapper data.
+
+If an object or sync block address is specified, only data for the specified RCW is displayed.
+If no address is specified, all RCWs are listed.
 ``
 
 *!refs
@@ -965,7 +1012,7 @@ Address    ReaderCount   WaitingReaderCount   WriterThread   WaitingWriterCount
 061aa500             0                    1             17                    0
 0623cddc             0                    0              0                    0
 
-0:027> !rwlock 061aa4d4             
+0:027> !rwlock 061aa4d4
 WriterThread:           16
 WriterLevel:            1
 WaitingWriterCount:     0
