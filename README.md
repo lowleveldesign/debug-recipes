@@ -71,6 +71,10 @@ Recipes grouped by types of problems
 - [Windows debugging configuration](windows-debugging-configuration.md)
 - [PDB files](pdb-files.md)
 
+### Troubleshooting databases
+
+- [MS SQL Server](databases/mssqlserver/README.md)
+
 ----------------
 
 Tools, libraries & technics
