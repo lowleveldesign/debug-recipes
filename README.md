@@ -74,6 +74,7 @@ Recipes grouped by types of problems
 ### Troubleshooting databases
 
 - [MS SQL Server](databases/mssqlserver/README.md)
+- [MySQL](databases/mysql/README.md)
 
 ----------------
 
