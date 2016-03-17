@@ -1,6 +1,6 @@
 
 Troubleshooting MySql
-=====================
+======================
 
 In this folder you may find my notes on troubleshooting MySql. They are based on various sources and I tried to link all the source documents, but if I missed something please let me know.
 

@@ -109,7 +109,7 @@ Tools, libraries & technics
 
 ### Profilers
 
-- [PerfView](profiling-tools/perfview/perfview.md)
+- [PerfView](profiling-tools/perfview/perfview.exe.md)
 
 ### Libraries
 
