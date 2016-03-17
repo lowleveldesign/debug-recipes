@@ -11,7 +11,7 @@ Table of contents:
 - [Query Optimizer](#qo)
 - [Query hints](#qh)
 
-<a href="ooqe">Order of query execution</a>
+<a name="ooqe">Order of query execution</a>
 -------------------------------------------
 
 The order in which SQL directives get executed:
