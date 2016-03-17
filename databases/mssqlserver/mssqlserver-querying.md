@@ -401,7 +401,7 @@ Removes all cached plans from memory:
 
 ### Query cache internals
 
-SQL Server’s plan cache is made up of four separate memory areas, called cache stores. There are actually other stores in SQL Server’s memory, which can be seen in the Dynamic Management View (DMV) called `sys.dm_os_memory_cache_counters`, but there are only four that contain query plans. The DMV `sys.dm_os_memory_cache_hash_tables` contains information about each hash table, including its size. You can query this view to retrieve the number of buckets for each of the plan cache stores using the following query:
+SQL Server's plan cache is made up of four separate memory areas, called cache stores. There are actually other stores in SQL Server's memory, which can be seen in the Dynamic Management View (DMV) called `sys.dm_os_memory_cache_counters`, but there are only four that contain query plans. The DMV `sys.dm_os_memory_cache_hash_tables` contains information about each hash table, including its size. You can query this view to retrieve the number of buckets for each of the plan cache stores using the following query:
 
     SELECT type as 'plan cache store', buckets_count
     FROM sys.dm_os_memory_cache_hash_tables
@@ -477,7 +477,7 @@ Example of creating a plan guide with an `OPTIMIZE FOR` hint for a query:
     @params = NULL,
     @hints = N'OPTION (OPTIMIZE FOR (@Country = N''US''))';
 
-Read Inside SQL Server querying for more information on how to manage plan guides.
+Read "Inside SQL Server querying" for more information on how to manage plan guides.
 
 ### Links
 
