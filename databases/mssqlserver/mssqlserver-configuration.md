@@ -55,7 +55,7 @@ You can also use the `@@version` variable:
 Configuration options
 ---------------------
 
-SQL Server 2008 has 68 server configuration options that you can query using the catalog view `sys.configurations`. The server-wide options discussed here can be changed in several ways. All of them can be set via the `sp_configure` system stored procedure. However, of the 68 options, all but 16 are considered advanced options and are not manageable by default using `sp_configure`. You’ll first need to change the Show Advanced Options option to be 1, as shown here:
+To show all available configuration options use:
 
     EXEC sp_configure 'show advanced options', 1;
     GO
