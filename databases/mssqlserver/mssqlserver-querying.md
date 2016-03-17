@@ -83,13 +83,6 @@ When **STATISTICS PROFILE** is ON, each executed query returns its regular resul
 
 `SET STATISTICS PROFILE` and `SET STATISTICS XML` are counterparts of each other. The former produces textual output; the latter produces XML output. In future versions of SQL Server, new query execution plan information will only be displayed through the `SET STATISTICS XML` statement, not the `SET STATISTICS PROFILE` statement.
 
-#### Statistics on computed columns ####
-
-In SQL Server 2005, the query optimizer will detect the use of the computed column in queries, just as it does for any unindexed column reference, and it will create statistics on the computed column. The statistics will allow the optimizer to determine the appropriate cardinality estimation on the filter. So instead of writing `WHERE UnitPrice * Quantity > 1000` consider creating a computed column:
-
-    ALTER TABLE [Order Details]
-    ADD TotalSale AS UnitPrice * Quantity;
-
 ### Display information on collected statistics ###
 
 #### sys.stats, sys.stats\_columns ####
@@ -264,46 +257,6 @@ We can get the **sql\_handle** value that corresponds to a particular **plan\_ha
          ) AS ecpa
     PIVOT (MAX(ecpa.value) FOR ecpa.attribute
        IN ("set_options", "object_id", "sql_handle")) AS pvt;
-
-And here is the query that creates a stored procedure that will combine the above results with XML plans:
-
-    USE master
-    GO
-    CREATE VIEW sp_cacheobjects
-       (bucketid, cacheobjtype, objtype, objid, dbid, dbidexec, uid,
-       refcounts, usecounts, pagesused, setopts, langid, dateformat,
-       status, lasttime, maxexectime, avgexectime, lastreads,
-       lastwrites, sqlbytes, sql)
-    AS
-       SELECT pvt.bucketid,
-          CONVERT(nvarchar(17), pvt.cacheobjtype) AS cacheobjtype,
-          pvt.objtype,
-          CONVERT(int, pvt.objectid) AS object_id,
-          CONVERT(smallint, pvt.dbid) AS dbid,
-          CONVERT(smallint, pvt.dbid_execute) AS execute_dbid,
-          CONVERT(smallint, pvt.user_id) AS user_id,
-          pvt.refcounts, pvt.usecounts,
-          pvt.size_in_bytes / 8192 AS size_in_bytes,
-          CONVERT(int, pvt.set_options) AS setopts,
-          CONVERT(smallint, pvt.language_id) AS langid,
-          CONVERT(smallint, pvt.date_format) AS date_format,
-          CONVERT(int, pvt.status) AS status,
-          CONVERT(bigint, 0),
-          CONVERT(bigint, 0),
-          CONVERT(bigint, 0),
-          CONVERT(bigint, 0),
-          CONVERT(bigint, 0),
-          CONVERT(int, LEN(CONVERT(nvarchar(max), fgs.text)) * 2),
-          CONVERT(nvarchar(3900), fgs.text)
-    FROM (SELECT ecp.*, epa.attribute, epa.value
-      FROM sys.dm_exec_cached_plans ecp
-       OUTER APPLY
-         sys.dm_exec_plan_attributes(ecp.plan_handle) epa) AS ecpa
-    PIVOT (MAX(ecpa.value) for ecpa.attribute IN
-       ("set_options", "objectid", "dbid",
-       "dbid_execute", "user_id", "language_id",
-       "date_format", "status")) AS pvt
-    OUTER APPLY sys.dm_exec_sql_text(pvt.plan_handle) fgs
 
 ### Plan cache dependent objects ###
 
