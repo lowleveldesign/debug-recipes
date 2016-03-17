@@ -6,25 +6,25 @@ In this folder you may find my notes on troubleshooting MS SQL Server. They are 
 
 ### Querying and concurrency
 
-- [Troubleshooting queries](mssqlserver-querying)
-- [Requests/Sessions/Transactions/Locks](mssqlserver-concurrency)
-- [Schedulers/Workers/Tasks/Threads](mssqlserver-schedulers-workers-tasks-threads)
+- [Troubleshooting queries](mssqlserver-querying.md)
+- [Requests / Sessions / Transactions / Locks](mssqlserver-concurrency.md)
+- [Schedulers / Workers / Tasks / Threads](mssqlserver-schedulers-workers-tasks-threads.md)
 
 ### Storage
 
-- [Databases](mssqlserver-databases)
-- [Tables and views](mssqlserver-tables-views)
-- [Indexes](mssqlserver-indexes)
-- [Physical storage](mssqlserver-physical-storage)
-- [Troubleshooting IO](mssqlserver-troubleshooting-io)
-- [Transaction log](mssqlserver-transaction-log)
+- [Databases](mssqlserver-databases.md)
+- [Tables and views](mssqlserver-tables-views.md)
+- [Indexes](mssqlserver-indexes.md)
+- [Physical storage](mssqlserver-physical-storage.md)
+- [Troubleshooting IO](mssqlserver-troubleshooting-io.md)
+- [Transaction log](mssqlserver-transaction-log.md)
 
 ### Misc
 
-- [Configuration](mssqlserver-configuration)
-- [Initial troubleshooting](mssqlserver-general-troubleshooting)
-- [Memory management](mssqlserver-memory-management)
-- [Text collations](mssqlserver-text-collations)
-- [Triggers](mssqlserver-triggers)
-- [Extended events](extended-events/mssqlserver-extended-events)
+- [Configuration](mssqlserver-configuration.md)
+- [Initial troubleshooting](mssqlserver-general-troubleshooting.md)
+- [Memory management](mssqlserver-memory-management.md)
+- [Text collations](mssqlserver-text-collations.md)
+- [Triggers](mssqlserver-triggers.md)
+- [Extended events](extended-events/mssqlserver-extended-events.md)
 
