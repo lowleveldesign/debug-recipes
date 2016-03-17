@@ -484,7 +484,7 @@ Read "Inside SQL Server querying" for more information on how to manage plan gui
 - Parameter Sniffing, Embedding, and the RECOMPILE Options
   <http://www.sqlperformance.com/2013/08/t-sql-queries/parameter-sniffing-embedding-and-the-recompile-options>
 
-<a href="qo">Query Optimizer</a>
+<a name="qo">Query Optimizer</a>
 --------------------------------
 
 ### Diagnosing query optimization ###
@@ -523,8 +523,8 @@ Based on:
 ### Links ###
 
 - [Query Optimizer Deep Dive - Part 1](http://sqlblog.com/blogs/paul_white/archive/2012/04/28/query-optimizer-deep-dive-part-1.aspx)
-- [Query Optimizer Deep Dive – Part 2](http://sqlblog.com/blogs/paul_white/archive/2012/04/28/query-optimizer-deep-dive-part-2.aspx)
-- [Query Optimizer Deep Dive – Part 3](http://sqlblog.com/blogs/paul_white/archive/2012/04/29/query-optimizer-deep-dive-part-3.aspx)
+- [Query Optimizer Deep Dive - Part 2](http://sqlblog.com/blogs/paul_white/archive/2012/04/28/query-optimizer-deep-dive-part-2.aspx)
+- [Query Optimizer Deep Dive - Part 3](http://sqlblog.com/blogs/paul_white/archive/2012/04/29/query-optimizer-deep-dive-part-3.aspx)
 - [Query Optimizer Deep Dive - Part 4](http://sqlblog.com/blogs/paul_white/archive/2012/05/01/query-optimizer-deep-dive-part-4.aspx)
 
 - <http://www.simple-talk.com/sql/performance/sql-server-prefetch-and-query-performance/>
