@@ -399,29 +399,6 @@ Removes all cached plans from memory:
       CROSS APPLY query_plan.nodes('//ParameterList') AS q1(n1)
       CROSS APPLY n1.nodes('ColumnReference') as q2(n2)
 
-### Query cache internals
-
-SQL Server's plan cache is made up of four separate memory areas, called cache stores. There are actually other stores in SQL Server's memory, which can be seen in the Dynamic Management View (DMV) called `sys.dm_os_memory_cache_counters`, but there are only four that contain query plans. The DMV `sys.dm_os_memory_cache_hash_tables` contains information about each hash table, including its size. You can query this view to retrieve the number of buckets for each of the plan cache stores using the following query:
-
-    SELECT type as 'plan cache store', buckets_count
-    FROM sys.dm_os_memory_cache_hash_tables
-    WHERE type IN ('CACHESTORE_OBJCP', 'CACHESTORE_SQLCP', 'CACHESTORE_PHDR', 'CACHESTORE_XPROC');
-
-The DMV `sys.dm_os_memory_cache_entries` can show you the current and original cost of any cache entry, as well as the components that make up that cost.
-
-    SELECT text, objtype, refcounts, usecounts, size_in_bytes,
-       disk_ios_count, context_switches_count,
-       pages_allocated_count, original_cost, current_cost
-    FROM sys.dm_exec_cached_plans p
-       CROSS APPLY sys.dm_exec_sql_text(plan_handle)
-       JOIN sys.dm_os_memory_cache_entries e
-         ON p.memory_object_address = e.memory_object_address
-      WHERE cacheobjtype = 'Compiled Plan'
-         AND type in ('CACHESTORE_SQLCP', 'CACHESTORE_OBJCP')
-      ORDER BY objtype desc, usecounts DESC;
-
-Note that we can find the specific entry in `sys.dm_os_memory_cache_entries` that corresponds to a particular plan in `sys.dm_exec_cached_plans` by joining on the memory\_object\_address column.
-
 ### Using query plan hints ###
 
 #### KEEP PLAN / KEEPFIXED PLAN ####
@@ -460,23 +437,6 @@ When it's impossible to change the query sent to SQL Server we can create a plan
        'type_of_plan_guide', 'object_name_or_batch_text',
        'parameter_list', 'hints'
 
-Example of creating a plan guide with an `OPTIMIZE FOR` hint for a query:
-
-    EXEC sp_create_plan_guide
-       @name = N'plan_US_Country',
-       @stmt =
-          N'SELECT SalesOrderID, OrderDate, h.CustomerID, h.TerritoryID
-               FROM Sales.SalesOrderHeader AS h
-               INNER JOIN Sales.Customer AS c
-                  ON h.CustomerID = c.CustomerID
-               INNER JOIN Sales.SalesTerritory AS t
-                  ON c.TerritoryID = t.TerritoryID
-               WHERE t.CountryRegionCode = @Country',
-    @type = N'OBJECT',
-    @module_or_batch = N'Sales.GetOrdersByCountry',
-    @params = NULL,
-    @hints = N'OPTION (OPTIMIZE FOR (@Country = N''US''))';
-
 Read "Inside SQL Server querying" for more information on how to manage plan guides.
 
 ### Links
@@ -508,6 +468,8 @@ To display a query tree you need to enable 3604 flag:
 
 ### Emulate production query execution locally ###
 
+Based on: <http://www.simple-talk.com/sql/database-administration/using-optimizer_whatif-and-statsstream-to-simulate-a-production-environment/>
+
 There are multiple parameters that define how the query optimizer runs. One of them are statistics which you can export to your system. Other parameters are the number of CPU Cores or the amount of memory. Using **DBCC OPTIMIZER\_WHATIF** you may fool the query optimizer about the actual system settings as described in the first link.
 
 To display the current optimizer settings:
@@ -515,10 +477,6 @@ To display the current optimizer settings:
     DBCC TRACEON(3604) WITH NO_INFOMSGS
     DBCC OPTIMIZER_WHATIF(0) WITH NO_INFOMSGS;
     GO
-
-Based on:
-- <http://www.simple-talk.com/sql/database-administration/using-optimizer_whatif-and-statsstream-to-simulate-a-production-environment/>
-
 
 ### Links ###
 

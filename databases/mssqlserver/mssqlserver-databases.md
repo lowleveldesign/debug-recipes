@@ -4,7 +4,7 @@ DATABASES
 
 A database is owned by a single SQL Server login account. It maintains its own set of user accounts, roles, schemas, and security. It has its own set of system tables to hold the database catalog. It has its own transaction log and manages its own transactions.
 
-A new SQL Server 2008 installation always includes four databases: master, model, tempdb, and msdb. The **master database** is composed of system tables that keep track of the server installation as a whole and all other databases that are subsequently created. The **model database** is simply a template database. Every time you create a new database, SQL Server makes a copy of model to form the basis of the new database. If you’d like every new database to start out with certain objects or permissions, you can put them in model, and all new databases inherit them. The **tempdb database** is used as a workspace. It is unique among SQL Server databases because it’s re-created—not recovered—every time SQL Server is restarted. As mentioned, the **mssqlsystemresource database** is a hidden database and is usually referred to as the resource database. Executable system objects, such as system stored procedures and functions, are stored here. The **msdb database** is used by the SQL Server Agent service and other companion services, which perform scheduled activities such as backups and replication tasks, and the Service Broker, which provides queuing and reliable messaging for SQL Server.
+A new SQL Server installation always includes four databases: master, model, tempdb, and msdb.
 
 Example of creating a database:
 
@@ -110,7 +110,7 @@ SQL Server allows the following three types of database files:
 - **secondary data files** - A database can have zero or more secondary data files. By convention, a secondary data file has the extension .ndf.
 - **log files** - Every database has at least one log file that contains the information necessary to recover all transactions in a database. By convention, a log file has the extension .ldf.
 
-In addition, SQL Server 2008 databases can have filestream data files and full-text data files. Each database file has five properties that can be specified when you create the file: a logical filename, a physical filename, an initial size, a maximum size, and a growth increment. (Filestream data files have only the logical and physical name properties.) The value of these properties, along with other information about each file, can be seen through the metadata view `sys.database_files`, which contains one row for each file used by the current database:
+In addition, SQL Server 2008 databases can have filestream data files and full-text data files. Each database file has five properties that can be specified when you create the file: a logical filename, a physical filename, an initial size, a maximum size, and a growth increment. The value of these properties, along with other information about each file, can be seen through the metadata view `sys.database_files`, which contains one row for each file used by the current database:
 
     select * from sys.databases_files
 

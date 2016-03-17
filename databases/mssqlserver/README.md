@@ -22,7 +22,6 @@ In this folder you may find my notes on troubleshooting MS SQL Server. They are 
 
 - [Configuration](mssqlserver-configuration.md)
 - [Initial troubleshooting](mssqlserver-general-troubleshooting.md)
-- [Memory management](mssqlserver-memory-management.md)
 - [Text collations](mssqlserver-text-collations.md)
 - [Triggers](mssqlserver-triggers.md)
 - [Extended events](extended-events/mssqlserver-extended-events.md)
