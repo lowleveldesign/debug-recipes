@@ -15,7 +15,6 @@ In this folder you may find my notes on troubleshooting MS SQL Server. They are 
 - [Databases](mssqlserver-databases.md)
 - [Tables and views](mssqlserver-tables-views.md)
 - [Indexes](mssqlserver-indexes.md)
-- [Physical storage](mssqlserver-physical-storage.md)
 - [Troubleshooting IO](mssqlserver-troubleshooting-io.md)
 - [Transaction log](mssqlserver-transaction-log.md)
 
