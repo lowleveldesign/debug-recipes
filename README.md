@@ -8,121 +8,71 @@ I hope you will find them useful. Any contribution is welcome.
 
 ------------------------------------
 
-Recipes grouped by types of problems
-------------------------------------
+### Types of problems
 
-### Memory issues
+| Exceptions | Memory issues | Threading problems |
+| --- | --- | ---
+| [Collecting exception information in production](exceptions/collecting-exceptions-info.md) | [CLR Memory model](memory/clr-memory.md) | [Analysing locks in .NET](threading/analysing-locks-in-net.md)
+| [Analyzing exceptions](exceptions/analyzing-exceptions.md) | [Investigate .NET memory issues in dumps](dumps/dotnet-process-memory-dumps.md) |
+| [Windows Error Reporting](exceptions/wer/wer-usage.md) | [Diagnose native memory leaks](memory/native-memory-leaks.md) |
+| [Aedebug](exceptions/aedebug/aedebug.md) | | |
+| [Adplus usage](exceptions/adplus/adplus.md) | | |
+| [DebugDiag](exceptions/debugdiag/debugdiag.md) | | |
 
-- [CLR Memory model](memory/clr-memory.md)
-- [Investigate .NET memory issues in dumps](dumps/dotnet-process-memory-dumps.md)
-- [Diagnose native memory leaks](memory/native-memory-leaks.md)
 
-### Threading problems
+| Network issues | .NET Assemblies |
+| --- | --- |
+| [Collect and analyze network traces](network/network-tracing.md) | [.NET assemblies - some general info](assemblies/clr-assemblies.md) |
+| [Identify network problems in memory dumps](network/network-problems-in-dumps.md) | [Troubleshooting assemblies loading](assemblies/clr-troubleshooting-assembly-loading.md) |
+| [Diagnosing faulty HTTP requests](network/network-faulty-http-requests.md) | |
 
-- [Analysing locks in .NET](threading/analysing-locks-in-net.md)
 
-### Network issues
+### Tools, libraries & technics
 
-- [Collect and analyze network traces](network/network-tracing.md)
-- [Identify network problems in memory dumps](network/network-problems-in-dumps.md)
-- [Diagnosing faulty HTTP requests](network/network-faulty-http-requests.md)
+| IIS | ASP.NET | Nancy
+| --- | --- | ---
+| [Troubleshooting IIS 6](iis/iis6.md) | [Debugging ASP.NET applications](asp.net/asp.net-debugging.md) | [Diagnosing Nancy applications](nancy/nancy-diagnostics.md)
+| [Troubleshooting IIS 7 and newer](iis/iis7up.md) | [Profiling ASP.NET applications](asp.net/asp.net-profiling.md) |
+| [Troubleshooting IIS Express](iis/iisexpress.md) | [Troubleshooting IIS](asp.net/iis-troubleshooting.md) |
+| [IIS WMI API](iis/wmi/iis-wmi.md) | | |
+| [Other resources (including Powershel LLDIIS module)](iis/README.md) | | |
 
-### Exceptions
+| ADO.NET | Diagnostics libraries |
+| --- | ---
+| [ETW tracing in ADO.NET](ado.net/ado.net-etw-tracing.md) | [.NET libraries for app diagnostics](profiling-tools/clr-diaglibs.md)
+| [Debugging ADO.NET](ado.net/ado.net-debugging.md) | [API hooking in Windws](api-hooking.md)
 
-- [Collecting exception information in production](exceptions/collecting-exceptions-info.md)
-- [Analyzing exceptions](exceptions/analyzing-exceptions.md)
-- [Windows Error Reporting](exceptions/wer/wer-usage.md)
-- [Aedebug](exceptions/aedebug/aedebug.md)
-- [Adplus usage](exceptions/adplus/adplus.md)
-- [DebugDiag](exceptions/debugdiag/debugdiag.md)
+| Databases |
+| --- |
+| [MS SQL Server](databases/mssqlserver/README.md) |
+| [MySQL](databases/mysql/README.md) |
 
-### Diagnosing ASP.NET
+### HOWTOs
 
-- [Debugging ASP.NET applications](asp.net/asp.net-debugging.md)
-- [Profiling ASP.NET applications](asp.net/asp.net-profiling.md)
-- [Troubleshooting IIS](asp.net/iis-troubleshooting.md)
+| Debugging kernel | Memory dumps | Event Tracing for Windows (ETW) |
+| --- | ---
+| [Debugging Windows kernel - setup](debugging-kernel/windows-kernel-debugging-setup.md) | [Collect and analyze process memory dumps](dumps/windows-process-memory-dumps.md) | [CLR ETW tracing](etw/clr-etw-tracing.md)
+| [Debugging Windows kernel - basics](debugging-kernel/windows-kernel-debugging.md) | [Collect and analyze .NET process memory dumps](dumps/dotnet-process-memory-dumps.md) |
+| | [Collect and analyze kernel memory dumps](dumps/windows-kernel-memory-dumps.md) |
 
-### Diagnosing Nancy
+| Debuggers | Profilers |
+| --- | --- |
+| [Debuging using Visual Studio](debugging-using-vs/README.md) | [PerfView](profiling-tools/perfview/perfview.exe.md)
+| [Debugging using mdbg](debugging-using-mdbg/mdbg.exe.md) |
+| [Debugging in WinDbg - tips](debugging-using-windbg/windbg-debugging.md) |
+| [Debugging .NET apps using windbg](debugging-using-windbg/windbg-clr-debugging.md) |
 
-- [Diagnosing Nancy applications](nancy/nancy-diagnostics.md)
-
-### Troubleshooting IIS
-
-- [Troubleshooting IIS 6](iis/iis6.md)
-- [Troubleshooting IIS 7 and newer](iis/iis7up.md)
-- [Troubleshooting IIS Express](iis/iisexpress.md)
-- [IIS WMI API](iis/wmi/iis-wmi.md)
-- [Other resources (including Powershel LLDIIS module)](iis/README.md)
-
-### Diagnosing ADO.NET
-
-- [ETW tracing in ADO.NET](ado.net/ado.net-etw-tracing.md)
-- [Debugging ADO.NET](ado.net/ado.net-debugging.md)
-
-### Diagnosing problems with .NET assmeblies
-
-- [.NET assemblies - some general info](assemblies/clr-assemblies.md)
-- [Troubleshooting assemblies loading](assemblies/clr-troubleshooting-assembly-loading.md)
-
-### General .NET & Windows
-
-- [.NET version/GAC/caspol](clr-information.md)
-- [JIT configuration for debugging](jit-configuration-for-debugging.md)
-- [Windows debugging configuration](windows-debugging-configuration.md)
-- [PDB files](pdb-files.md)
-
-### Troubleshooting databases
-
-- [MS SQL Server](databases/mssqlserver/README.md)
-- [MySQL](databases/mysql/README.md)
-
-----------------
-
-Tools, libraries & technics
----------------------------
-
-### General
-
-- [How to debug effectively?](howto.md)
-
-### Debugging kernel
-
-- [Debugging Windows kernel - setup](debugging-kernel/windows-kernel-debugging-setup.md)
-- [Debugging Windows kernel - basics](debugging-kernel/windows-kernel-debugging.md)
-
-### Memory dumps
-
-- [Collect and analyze process memory dumps](dumps/windows-process-memory-dumps.md)
-- [Collect and analyze .NET process memory dumps](dumps/dotnet-process-memory-dumps.md)
-- [Collect and analyze kernel memory dumps](dumps/windows-kernel-memory-dumps.md)
-
-### Event Tracing for Windows (ETW)
-
-- [CLR ETW tracing](etw/clr-etw-tracing.md)
-
-### Debuggers
-
-- [Debuging using Visual Studio](debugging-using-vs/README.md)
-- [Debugging using mdbg](debugging-using-mdbg/mdbg.exe.md)
-- [Debugging in WinDbg - tips](debugging-using-windbg/windbg-debugging.md)
-- [Debugging .NET apps using windbg](debugging-using-windbg/windbg-clr-debugging.md)
-
-### Profilers
-
-- [PerfView](profiling-tools/perfview/perfview.exe.md)
-
-### Libraries
-
-- [.NET libraries for app diagnostics](profiling-tools/clr-diaglibs.md)
-
-### Tracing
-
-- [API hooking in Windws](api-hooking.md)
+| Misc |
+| --- |
+| [How to debug effectively?](howto.md) |
+| [.NET version/GAC/caspol](clr-information.md) |
+| [JIT configuration for debugging](jit-configuration-for-debugging.md) |
+| [Windows debugging configuration](windows-debugging-configuration.md) |
+| [PDB files](pdb-files.md)
 
 -----
 
-Links
------
+### Links
 
 - [.NET Debugging Quick Start -  a list of links for different parts of a .net debugging infrastructure](http://blogs.msdn.com/b/arvindsh/archive/2012/03/14/net-debugging-quick-start.aspx)
 - [.NET Debugging for the Production Environment](http://channel9.msdn.com/Series/-NET-Debugging-Stater-Kit-for-the-Production-Environment)
