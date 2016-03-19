@@ -50,10 +50,10 @@ I hope you will find them useful. Any contribution is welcome.
 ### HOWTOs
 
 | Debugging kernel | Memory dumps | Event Tracing for Windows (ETW) |
-| --- | ---
-| [Debugging Windows kernel - setup](debugging-kernel/windows-kernel-debugging-setup.md) | [Collect and analyze process memory dumps](dumps/windows-process-memory-dumps.md) | [CLR ETW tracing](etw/clr-etw-tracing.md)
-| [Debugging Windows kernel - basics](debugging-kernel/windows-kernel-debugging.md) | [Collect and analyze .NET process memory dumps](dumps/dotnet-process-memory-dumps.md) |
-| | [Collect and analyze kernel memory dumps](dumps/windows-kernel-memory-dumps.md) |
+| --- | --- | --- |
+| [Debugging Windows kernel - setup](debugging-kernel/windows-kernel-debugging-setup.md) | [Collect and analyze process memory dumps](dumps/windows-process-memory-dumps.md) | [CLR ETW tracing](etw/clr-etw-tracing.md) |
+| [Debugging Windows kernel - basics](debugging-kernel/windows-kernel-debugging.md) | [Collect and analyze .NET process memory dumps](dumps/dotnet-process-memory-dumps.md) | |
+| | [Collect and analyze kernel memory dumps](dumps/windows-kernel-memory-dumps.md) | |
 
 | Debuggers | Profilers |
 | --- | --- |
