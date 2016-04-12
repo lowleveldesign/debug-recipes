@@ -112,4 +112,5 @@ Links
 
 - <http://stackoverflow.com/questions/1362687/the-net-2-0-sdk-programs-what-does-each-tool-do>
 - [.NET Framework Repair Tool](http://support.microsoft.com/kb/2698555)
+- [File version history for CLR 4.x](https://blogs.msdn.microsoft.com/dougste/2016/03/17/file-version-history-for-clr-4-x/)
 

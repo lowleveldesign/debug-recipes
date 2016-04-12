@@ -168,3 +168,4 @@ The `sys.dm_tran_database_transactions` shows information about space of a trans
 - [Using `fn_dblog`](http://killspid.blogspot.com/2006/07/using-fndblog.html)
 - [Managing the SQL Server Transaction Log: Dealing with Explosive Log Growth](https://www.simple-talk.com/sql/database-administration/managing-the-sql-server-transaction-log-dealing-with-explosive-log-growth/)
 - [Transaction Log Monitoring](http://www.sqlperformance.com/2013/11/sql-performance/transaction-log-monitoring)
+- [Tackle WRITELOG Waits Using the Transaction Log and Extended Events](http://michaeljswart.com/2016/04/tackle_writelog/)

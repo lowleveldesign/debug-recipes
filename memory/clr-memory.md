@@ -157,6 +157,7 @@ Links
 - [How to detect and avoid memory and resources leaks in .NET applications](http://madgeek.com/Articles/Leaks/Leaks.en.html)
 - [Investigating Memory Issues](http://msdn.microsoft.com/en-us/magazine/cc163528.aspx)
 - [Learning How Garbage Collectors Work - Part 1](http://mattwarren.github.io/2016/02/04/learning-how-garbage-collectors-work-part-1/)
+- [NBench Testing – Garbage collection](http://www.dotnetalgorithms.com/2016/02/nbench-testing-garbage-collection/)
 
 ### ETW ###
 
