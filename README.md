@@ -80,3 +80,5 @@ I hope you will find them useful. Any contribution is welcome.
 - [Intersting library that binds github sources with solution](https://github.com/GeertvanHorrik/GitHubLink)
 - [Defrag Tools #109 - Writing a CLR Debugger Extension Part 1](http://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-109-Writing-a-CLR-Debugger-Extension-Part-1)
 - [Defrag Tools #110 - Writing a CLR Debugger Extension Part 2](http://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-110-Writing-a-CLR-Debugger-Extension-Part-2)
+
+- [Clint Huffman's one drive](https://onedrive.live.com/?id=E6360C54B48A891B!428&cid=E6360C54B48A891B)
