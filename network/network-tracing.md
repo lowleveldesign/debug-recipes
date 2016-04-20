@@ -218,3 +218,7 @@ Links
 - [Windows Filtering Platform](http://www.windowsnetworking.com/articles_tutorials/new-netsh-commands-windows-7-server-2008-r2.html)
 - [Using HTTP ETW tracing to troubleshoot HTTP issues](http://blogs.msdn.com/b/benjaminperkins/archive/2014/03/10/using-http-etw-tracing-to-troubleshoot-http-issues.aspx)
 
+### Tools and libraries ###
+
+- [Nmap Project's packet sniffing library for Windows, based on WinPcap/Libpcap improved with NDIS 6 and LWF](https://github.com/nmap/npcap)
+

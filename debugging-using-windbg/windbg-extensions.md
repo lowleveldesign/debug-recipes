@@ -19,6 +19,7 @@ There is also an UI for pykd: <https://karmadbg.codeplex.com/>
 Scripts:
 
 - [vtfinder - script to dynamically find vtables on heap](https://github.com/iSECPartners/vtfinder)
+- [Heap tracing with WinDbg and Python](https://labs.mwrinfosecurity.com/blog/heap-tracing-with-windbg-and-python/)
 
 ## DmpExt ##
 
