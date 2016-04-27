@@ -2,7 +2,7 @@
 .NET assemblies
 ===============
 
-## Troubleshooting loding using ETW (in Perfview)
+## Troubleshooting loading using ETW (in Perfview)
 
 I think that currently the most efficient way to diagnose problems with assembly loading is to collect ETW events from the .NET ETW provider. There is a bunch of them under the **Microsoft-Windows-DotNETRuntimePrivate/Binding/** category.
 
