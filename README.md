@@ -2,13 +2,51 @@
 Debug Recipes
 =============
 
-This is a repository of my notes collected while debugging various .NET and Windows problems. You can find here commands with example usages, scripts and other debugging materials.  It is still being constructed so some notes might not be finished - use on your own responsiblity. Try using the project search box while looking for a particular subject.
+This is a repository of my notes collected while debugging various .NET and Windows problems. You can find here commands with example usages, scripts and other debugging materials.  It is still being constructed so some notes might not be finished - use on your own responsiblity. Try using **the project search box** while looking for a particular subject.
 
 I hope you will find them useful. Any contribution is welcome.
 
-------------------------------------
+## General advice
 
-### Types of problems
+Make sure you have [valid symbols configuration](windows-debugging-configuration.md) in your system. You may also have a look at a list of my [debugging tips](howto.md). If you are debugging a .NET application you may first [make some adjustments in the JIT configuration](jit-configuration-for-debugging.md).
+
+## What is the problem about?
+
+Columns: "Type of a faulty application"
+Rows: "Type of a problem"
+
+|    | ASP.NET | Nancy | .NET console/windows |
+| -- | ------- | ----- | ---------------------|
+| Exception | X | X | X |
+| Memory leak | X | X | X |
+| High CPU usage | X | X | X |
+| Deadlocks | X | X | X |
+| Slow database queries | X | X | X |
+| Slow requests | X | X | |
+
+### Databases
+
+|    | MS SQL Server | MySQL |
+| -- | ------------- | ----- |
+| FIXME
+
+## Tools tutorials
+
+- [Visual Studio (debugging)](debugging-using-vs/README.md) |
+- [mdbg (debugger)](debugging-using-mdbg/mdbg.exe.md) |
+- [WinDbg (debugger)](debugging-using-windbg/windbg-debugging.md) |
+- [PerfView (profiler)](profiling-tools/perfview/perfview.exe.md)
+
+
+
+### Obsolete
+
+
+| [.NET version/GAC/caspol](clr-information.md) |
+
+- [Debugging .NET apps using windbg](debugging-using-windbg/windbg-clr-debugging.md) |
+
+
 
 | Exceptions | Memory issues | Threading problems |
 | --- | --- | ---
@@ -42,11 +80,6 @@ I hope you will find them useful. Any contribution is welcome.
 | [ETW tracing in ADO.NET](ado.net/ado.net-etw-tracing.md) | [.NET libraries for app diagnostics](profiling-tools/clr-diaglibs.md)
 | [Debugging ADO.NET](ado.net/ado.net-debugging.md) | [API hooking in Windws](api-hooking.md)
 
-| Databases |
-| --- |
-| [MS SQL Server](databases/mssqlserver/README.md) |
-| [MySQL](databases/mysql/README.md) |
-
 ### HOWTOs
 
 | Debugging kernel | Memory dumps | Event Tracing for Windows (ETW) |
@@ -55,30 +88,3 @@ I hope you will find them useful. Any contribution is welcome.
 | [Debugging Windows kernel - basics](debugging-kernel/windows-kernel-debugging.md) | [Collect and analyze .NET process memory dumps](dumps/dotnet-process-memory-dumps.md) | |
 | | [Collect and analyze kernel memory dumps](dumps/windows-kernel-memory-dumps.md) | |
 
-| Debuggers | Profilers |
-| --- | --- |
-| [Debuging using Visual Studio](debugging-using-vs/README.md) | [PerfView](profiling-tools/perfview/perfview.exe.md)
-| [Debugging using mdbg](debugging-using-mdbg/mdbg.exe.md) |
-| [Debugging in WinDbg - tips](debugging-using-windbg/windbg-debugging.md) |
-| [Debugging .NET apps using windbg](debugging-using-windbg/windbg-clr-debugging.md) |
-
-| Misc |
-| --- |
-| [How to debug effectively?](howto.md) |
-| [.NET version/GAC/caspol](clr-information.md) |
-| [JIT configuration for debugging](jit-configuration-for-debugging.md) |
-| [Windows debugging configuration](windows-debugging-configuration.md) |
-| [PDB files](pdb-files.md)
-
------
-
-### Links
-
-- [.NET Debugging Quick Start -  a list of links for different parts of a .net debugging infrastructure](http://blogs.msdn.com/b/arvindsh/archive/2012/03/14/net-debugging-quick-start.aspx)
-- [.NET Debugging for the Production Environment](http://channel9.msdn.com/Series/-NET-Debugging-Stater-Kit-for-the-Production-Environment)
-- [.NET Debugging Starter Kit: for the Production Environment - 6 great videos about .NET and native debugging](http://channel9.msdn.com/Series/-NET-Debugging-Stater-Kit-for-the-Production-Environment)
-- [Intersting library that binds github sources with solution](https://github.com/GeertvanHorrik/GitHubLink)
-- [Defrag Tools #109 - Writing a CLR Debugger Extension Part 1](http://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-109-Writing-a-CLR-Debugger-Extension-Part-1)
-- [Defrag Tools #110 - Writing a CLR Debugger Extension Part 2](http://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-110-Writing-a-CLR-Debugger-Extension-Part-2)
-
-- [Clint Huffman's one drive](https://onedrive.live.com/?id=E6360C54B48A891B!428&cid=E6360C54B48A891B)
