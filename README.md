@@ -10,81 +10,61 @@ I hope you will find them useful. Any contribution is welcome.
 
 Make sure you have [valid symbols configuration](windows-debugging-configuration.md) in your system. You may also have a look at a list of my [debugging tips](howto.md). If you are debugging a .NET application you may first [make some adjustments in the JIT configuration](jit-configuration-for-debugging.md).
 
-## What is the problem about?
+## Troublehooting
 
-Columns: "Type of a faulty application", Rows: "Type of a problem"
+### .NET applications
 
+Choose a recipe corresponding to your application problem:
 
-|     | ASP.NET | Nancy | .NET console
-| --- | --- | --- | --- |
-| Exception | T | T | X |
-| Memory leak | X | X | X |
-| High CPU usage | X | X | X |
-| Deadlocks | X | X | X |
-| Slow database queries | X | X | X |
-| Slow requests | X | X | |
+- [Unknown exceptions thrown](exceptions/exceptions.md)
+- [Memory leaks (IN PROGRESS)](memory/managed-memory-leaks.md)
+- [High CPU usage (IN PROGRESS)](cpu/analyzing-high-cpu-usage.md)
+- [I/O issues (IN PROGRESS)]()
+- [Networking problems](network/network-tracing)
+- [Deadlocks](threading/analysing-locks-in-net.md)
+- [Assembly not found](assemblies/clr-assemblies.md)
+- Slow database queries:
+  - [Using ADO.NET](ado.net/ado.net-debugging.md)
+  - [Using MySql connector](databases/mysql/mysql.net-connector-usage.md)
+
+Specific problems per application types:
+
+| ASP.NET | Nancy
+| --- | ---
+| [Slow requests](asp.net/asp.net-profiling.md) | [Slow requests](nancy/nancy-diagnostics.md)
+| [Unknown errors in the application](asp.net/asp.net-debugging) |
+
 
 ### Databases
 
+**Column**: "Type of a database", **Row**: "Type of a problem"
+
 |    | MS SQL Server | MySQL |
 | --- | --- | --- |
-| FIXME
+| Slow queries | [X](databases/mssqlserver/mssqlserver-querying.md) | [X](databases/mysql/mysql-querying.md) |
+| Blocked requests | [X](databases/mssqlserver/mssqlserver-concurrency.md) | [X](databases/mysql/mysql-concurrency.md) |
+| Indexes problems | [X](databases/mssqlserver/mssqlserver-indexes.md) | [X](databases/mysql/mysql-indexes.md) |
+| I/O problems | [X](databases/mssqlserver/mssqlserver-troubleshooting-io.md) |  |
+| Server problems | [X](databases/mssqlserver/mssqlserver-troubleshooting-server.md) | [X](databases/mysql/mysql-troubleshooting-server.md) |
 
-## Tools tutorials
+### [Web servers](iid/README.md)
+
+- [Troubleshooting IIS7+](iis/iis7up.md)
+- [Troubleshooting IIS6](iis/iis6.md)
+- [Troubleshooting IIS Express](iis/iisexpress.md)
+
+### Windows kernel
+
+- [Debugging Windows kernel - setup](debugging-kernel/windows-kernel-debugging-setup.md)
+- [Debugging Windows kernel - basics](debugging-kernel/windows-kernel-debugging.md)
+
+## Tools descriptions
 
 - [Visual Studio (debugging)](debugging-using-vs/README.md)
 - [mdbg (debugger)](debugging-using-mdbg/mdbg.exe.md)
 - [WinDbg (debugger)](debugging-using-windbg/windbg-debugging.md)
-- [PerfView (profiler)](profiling-tools/perfview/perfview.exe.md)
-
-
-
-### Obsolete
-
-
-| [.NET version/GAC/caspol](clr-information.md) |
-
-- [Debugging .NET apps using windbg](debugging-using-windbg/windbg-clr-debugging.md) |
-
-
-
-| Exceptions | Memory issues | Threading problems |
-| --- | --- | ---
-| [Collecting exception information in production](exceptions/collecting-exceptions-info.md) | [CLR Memory model](memory/clr-memory.md) | [Analysing locks in .NET](threading/analysing-locks-in-net.md)
-| [Analyzing exceptions](exceptions/analyzing-exceptions.md) | [Investigate .NET memory issues in dumps](dumps/dotnet-process-memory-dumps.md) |
-| [Windows Error Reporting](exceptions/wer/wer-usage.md) | [Diagnose native memory leaks](memory/native-memory-leaks.md) |
-| [Aedebug](exceptions/aedebug/aedebug.md) | | |
-| [Adplus usage](exceptions/adplus/adplus.md) | | |
-| [DebugDiag](exceptions/debugdiag/debugdiag.md) | | |
-
-
-| Network issues | .NET Assemblies |
-| --- | --- |
-| [Collect and analyze network traces](network/network-tracing.md) | [.NET assemblies - some general info](assemblies/clr-assemblies.md) |
-| [Identify network problems in memory dumps](network/network-problems-in-dumps.md) | [Troubleshooting assemblies loading](assemblies/clr-troubleshooting-assembly-loading.md) |
-| [Diagnosing faulty HTTP requests](network/network-faulty-http-requests.md) | |
-
-
-### Tools, libraries & technics
-
-| IIS | ASP.NET | Nancy
-| --- | --- | ---
-| [Troubleshooting IIS 6](iis/iis6.md) | [Debugging ASP.NET applications](asp.net/asp.net-debugging.md) | [Diagnosing Nancy applications](nancy/nancy-diagnostics.md)
-| [Troubleshooting IIS 7 and newer](iis/iis7up.md) | [Profiling ASP.NET applications](asp.net/asp.net-profiling.md) |
-| [Troubleshooting IIS Express](iis/iisexpress.md) | [Troubleshooting IIS](asp.net/iis-troubleshooting.md) |
-| [IIS WMI API](iis/wmi/iis-wmi.md) | | |
-| [Other resources (including Powershel LLDIIS module)](iis/README.md) | | |
-
-| ADO.NET | Diagnostics libraries |
-| --- | ---
-| [ETW tracing in ADO.NET](ado.net/ado.net-etw-tracing.md) | [.NET libraries for app diagnostics](profiling-tools/clr-diaglibs.md)
-| [Debugging ADO.NET](ado.net/ado.net-debugging.md) | [API hooking in Windws](api-hooking.md)
-
-### HOWTOs
-
-| Debugging kernel | Memory dumps | Event Tracing for Windows (ETW) |
-| --- | --- | --- |
-| [Debugging Windows kernel - setup](debugging-kernel/windows-kernel-debugging-setup.md) | [Collect and analyze process memory dumps](dumps/windows-process-memory-dumps.md) | [CLR ETW tracing](etw/clr-etw-tracing.md) |
-| [Debugging Windows kernel - basics](debugging-kernel/windows-kernel-debugging.md) | [Collect and analyze .NET process memory dumps](dumps/dotnet-process-memory-dumps.md) | |
-| | [Collect and analyze kernel memory dumps](dumps/windows-kernel-memory-dumps.md) | |
+  - [.NET in WinDbg](debugging-using-windbg/windbg-clr-debugging.md)
+- [DebugDiag (debugger)](debugdiag/debugdiag.md)
+- [Adplus (debugger)](exceptions/adplus/adplus.md)
+- [PerfView (profiler)](perfview/perfview.exe.md)
 

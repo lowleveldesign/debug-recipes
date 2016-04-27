@@ -1,8 +1,88 @@
 
-Analyzing exceptions
-====================
+Troubleshooting exceptions
+==========================
 
-## Read exception context ##
+Table of contents:
+
+- [Collect exception info](#collect)
+  - [Using procdump](#procdump)
+  - [Using adplus](#adplus)
+- [Analyzing collected information](#analyze)
+  - [Read exception context](#exc-context)
+  - [Exception handlers](#exc-handlers)
+  - [Decoding error numbers](#exc-numbers)
+- [Links](#links)
+
+If you are interested in Windows Error Reporting information, have a look at [the WER recipe](wer/wer-usage.md). If you want to configue a system-wide debugger using the AeDebug settings, check [the AeDebug recipe](aedebug/aedebug.md).
+
+## <a name="collect">Collecting exceptions info in production</a>
+
+### <a name="procdump">Using procdump</a>
+
+From some time procdump filtering works on .NET exception names. Each exception name is prefixed with CLR exception code (E0434F4D) and contains the full name of the exception type. Look at the example below which does nothing but prints 1st chance exceptions occurring in the process 8012:
+
+    C:\Utils> procdump -e 1 -f "" 8012
+
+    ProcDump v7.1 - Writes process dump files
+    Copyright (C) 2009-2014 Mark Russinovich
+    Sysinternals - www.sysinternals.com
+    With contributions from Andrew Richards
+
+    Process:               w3wp.exe (8012)
+    CPU threshold:         n/a
+    Performance counter:   n/a
+    Commit threshold:      n/a
+    Threshold seconds:     10
+    Hung window check:     Disabled
+    Log debug strings:     Disabled
+    Exception monitor:     First Chance+Unhandled
+    Exception filter:      Display Only
+    Terminate monitor:     Disabled
+    Cloning type:          Disabled
+    Concurrent limit:      n/a
+    Avoid outage:          n/a
+    Number of dumps:       1
+    Dump folder:           C:\Utils\
+    Dump filename/mask:    PROCESSNAME_YYMMDD_HHMMSS
+
+
+    Press Ctrl-C to end monitoring without terminating the process.
+
+    CLR Version: v4.0.30319
+
+    [09:03:27] Exception: E0434F4D.System.NullReferenceException ("Object reference not set to an instance of an object.")
+    [09:03:28] Exception: E0434F4D.System.NullReferenceException ("Object reference not set to an instance of an object.")
+
+We may also observe the logs in procmon. In order to see the procdump log events in **procmon** remember to add procdump.exe and procdump64.exe to the accepted process names in procmon filters.
+
+
+To create a full memory dump when `NullReferenceException` occurs use the following command:
+
+```
+procdump -ma -e 1 -f "E0434F4D.System.NullReferenceException" 8012
+```
+
+### <a name="adplus">Using adplus</a>
+
+Details: <http://lowleveldesign.wordpress.com/2012/01/16/adplus-managed-exceptions/>
+
+If you need to log exceptions (CLR exceptions with stack and detailed information) that occur in your application use:
+
+    adplus -c log.adplus.config -o c:\dumps [-p <pid> | -sc <process-to-start> | -pn <process-name> ]
+
+You may add new keywords and define custom actions for thrown exceptions.
+
+If you would like to create a memory dump when a specific exception occurs use:
+
+    adplus -c log-and-dump.adplus.config -o c:\dumps [-p <pid> | -sc <process-to-start> | -pn <process-name> ]
+
+The example in the configuration file creates dumps on `System.ArgumentNullException` and `System.InvalidOperationException` so adapt it to your needs.
+
+More information about Adplus usage can be found in [the Adplus recipe](adplus/adplus.md).
+
+## <a name="analyze">Analyzing exceptions</a>
+
+### <a name="exc-context">Read exception context</a>
 
 The  `.ecxr` debugger command instructs the debugger to restore the register context to what it was when the initial fault that led to the SEH exception took place. When an SEH exception is dispatched, the OS builds an internal structure called an exception record  It also conveniently saves the register context at the time of the initial fault in a context record structure.
 
@@ -39,7 +119,7 @@ To get the last error value for the current thread you may use the **!gle** comm
 
 Based on <http://blogs.msdn.com/b/friis/archive/2012/09/19/c-compiler-or-visual-basic-net-compilers-fail-with-error-code-1073741502-when-generating-assemblies-for-your-asp-net-site.aspx>
 
-## Exception handlers ##
+### <a name="exc-handlers">Exception handlers</a>
 
 To list exception handlers for the currently running method use **!exchain** command, eg.:
 
@@ -55,7 +135,7 @@ To list exception handlers for the currently running method use **!exchain** com
 
 Managed exception handlers can be listed using the SOS **!EHInfo** - example of how to list ASP.NET MVC exception handlers can be found [on my blog](https://lowleveldesign.wordpress.com/2013/04/26/life-of-exception-in-asp-net/).
 
-### x86 applications ###
+#### x86 applications
 
 Pointer to the exception handler is kept in fs:[0]. The prolog for a method with exception handling has the following structure:
 
@@ -82,7 +162,7 @@ Example session of retrieving the exception handler:
     0072ef84  0072f058
     0072ef88  744064f9
 
-## Decrypting error numbers ##
+### <a name="exc-numbers">Decoding error numbers</a>
 
 If you receive an error message with an error number like this:
 
@@ -121,7 +201,7 @@ or **errmsg**:
     Error: 2 (0x00000002) (02)
     The system cannot find the file specified.
 
-## Links ##
+## <a name="links">Links</a>
 
 - [Decoding the parameters of a thrown C++ exception (0xE06D7363)](http://blogs.msdn.com/b/oldnewthing/archive/2010/07/30/10044061.aspx)
 - <http://support.microsoft.com/kb/313109>

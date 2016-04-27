@@ -11,6 +11,13 @@ Debugging links
 - [Defrag Tools #109 - Writing a CLR Debugger Extension Part 1](http://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-109-Writing-a-CLR-Debugger-Extension-Part-1)
 - [Defrag Tools #110 - Writing a CLR Debugger Extension Part 2](http://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-110-Writing-a-CLR-Debugger-Extension-Part-2)
 
+## Exceptions
+
+
+## ADO.NET
+
+-[Diagnosing ADO.NET with ETW traces](https://lowleveldesign.wordpress.com/2012/09/07/diagnosing-ado-net-with-etw-traces/)
+ [Read last executed SQL statement from a memory dump](https://lowleveldesign.wordpress.com/2012/06/16/read-last-executed-sql-statement-from-a-memory-dump/)
 
 ## ETW
 
