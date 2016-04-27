@@ -15,11 +15,9 @@ Make sure you have [valid symbols configuration](windows-debugging-configuration
 Columns: "Type of a faulty application", Rows: "Type of a problem"
 
 
-|  |ASP.NET|Nancy|.NET console
-|--|-------|-----|------------
+|     | ASP.NET | Nancy | .NET console
+| --- | --- | --- | --- |
 | Exception | T | T | X |
-
-
 | Memory leak | X | X | X |
 | High CPU usage | X | X | X |
 | Deadlocks | X | X | X |
@@ -29,14 +27,14 @@ Columns: "Type of a faulty application", Rows: "Type of a problem"
 ### Databases
 
 |    | MS SQL Server | MySQL |
-| -- | ------------- | ----- |
+| --- | --- | --- |
 | FIXME
 
 ## Tools tutorials
 
-- [Visual Studio (debugging)](debugging-using-vs/README.md) |
-- [mdbg (debugger)](debugging-using-mdbg/mdbg.exe.md) |
-- [WinDbg (debugger)](debugging-using-windbg/windbg-debugging.md) |
+- [Visual Studio (debugging)](debugging-using-vs/README.md)
+- [mdbg (debugger)](debugging-using-mdbg/mdbg.exe.md)
+- [WinDbg (debugger)](debugging-using-windbg/windbg-debugging.md)
 - [PerfView (profiler)](profiling-tools/perfview/perfview.exe.md)
 
 
