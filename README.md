@@ -12,11 +12,10 @@ Make sure you have [valid symbols configuration](windows-debugging-configuration
 
 ## What is the problem about?
 
-Columns: "Type of a faulty application"
-Rows: "Type of a problem"
+Columns: "Type of a faulty application", Rows: "Type of a problem"
 
-|    | ASP.NET | Nancy | .NET console/windows  |
-| -- | ------- | ----- | --------------------- |
+| XX | ASP.NET | Nancy | .NET console |
+| -- | ------- | ----- | ------------ |
 | Exception | X | X | X |
 | Memory leak | X | X | X |
 | High CPU usage | X | X | X |
