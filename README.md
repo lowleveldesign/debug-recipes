@@ -20,7 +20,7 @@ Choose a recipe corresponding to your application problem:
 - [Memory leaks (IN PROGRESS)](memory/managed-memory-leaks.md)
 - [High CPU usage (IN PROGRESS)](cpu/analyzing-high-cpu-usage.md)
 - [I/O issues (IN PROGRESS)]()
-- [Networking problems](network/network-tracing)
+- [Networking problems](network/network-tracing.md)
 - [Deadlocks](threading/analysing-locks-in-net.md)
 - [Assembly not found](assemblies/clr-assemblies.md)
 - Slow database queries:
@@ -36,8 +36,6 @@ Specific problems per application types:
 
 
 ### Databases
-
-**Column**: "Type of a database", **Row**: "Type of a problem"
 
 |    | MS SQL Server | MySQL |
 | --- | --- | --- |
