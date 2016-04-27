@@ -206,5 +206,3 @@ Links
 - [.NET: Loading Native (NGEN) images and its interaction with the GAC](http://blogs.msdn.com/b/abhinaba/archive/2013/12/11/net-loading-native-ngen-images-and-its-interaction-with-the-gac.aspx)
 - [Rewriting IL - Part 1 - Metadata Interfaces](http://www.debugthings.com/2015/09/16/rewriting-il-remotely-part1/)
 - [Rewriting IL - Part 2 - Tokens](http://www.debugthings.com/2015/09/28/rewriting-il-remotely-part2/)
------
-
