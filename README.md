@@ -10,7 +10,7 @@ I hope you will find them useful. Any contribution is welcome.
 
 Make sure you have [valid symbols configuration](windows-debugging-configuration.md) in your system. You may also have a look at a list of my [debugging tips](howto.md). If you are debugging a .NET application you may first [make some adjustments in the JIT configuration](jit-configuration-for-debugging.md).
 
-## Troublehooting
+## Troubleshooting
 
 ### .NET applications
 
