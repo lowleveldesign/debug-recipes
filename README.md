@@ -14,9 +14,12 @@ Make sure you have [valid symbols configuration](windows-debugging-configuration
 
 Columns: "Type of a faulty application", Rows: "Type of a problem"
 
-| XX | ASP.NET | Nancy | .NET console |
-| -- | ------- | ----- | ------------ |
-| Exception | X | X | X |
+
+|  |ASP.NET|Nancy|.NET console
+|--|-------|-----|------------
+| Exception | T | T | X |
+
+
 | Memory leak | X | X | X |
 | High CPU usage | X | X | X |
 | Deadlocks | X | X | X |
