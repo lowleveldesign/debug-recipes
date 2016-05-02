@@ -10,6 +10,12 @@
 - [The case of the non-responsive MVC Web Application](http://blogs.msdn.com/b/rodneyviana/archive/2015/03/27/the-case-of-the-non-responsive-mvc-web-application.aspx)
 - [Debugging - NetExt WinDbg Extension](http://www.debugthings.com/2015/03/31/netext-windbg/)
 
+## Powershell extension for WinDbg ##
+
+from <https://github.com/powercode/PSExt/blob/master/README.md>
+
+Allows running PS commands from within WinDbg.
+
 ## Python extension for WinDbg ##
 
 from <http://pykd.codeplex.com/>
