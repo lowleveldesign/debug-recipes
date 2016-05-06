@@ -7,9 +7,7 @@ FIXME
 Collect memory
 --------------
 
-You may use [any tool which works for the native process](windows-process-memory-dumps.md).
-
-Other option is to use the [minidumper](https://github.com/goldshtn/minidumper) tool from Sasha Goldshtein:
+To create a memory dump you may use procdump or [minidumper](https://github.com/goldshtn/minidumper) tool from Sasha Goldshtein:
 
     FIXME
 
