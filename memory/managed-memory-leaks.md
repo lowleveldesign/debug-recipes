@@ -1,5 +1,5 @@
 
-Diagnosing manager memory leaks
+Diagnosing managed memory leaks
 ==============================
 
 Collect memory
