@@ -2,19 +2,18 @@
 Diagnosing manager memory leaks
 ==============================
 
-FIXME
-
 Collect memory
 --------------
 
 To create a memory dump you may use procdump or [minidumper](https://github.com/goldshtn/minidumper) tool from Sasha Goldshtein:
 
-    FIXME
+    procdump -ma <your-app-name-or-pid>
 
 For a GC heap snapshot use **a perfview snapshot**:
 
     perfview heapsnapshot <pid|name>
 
+You may also use the menu option: **Memory -&gt; Take Heap Snapshot**.
 
 Analyse collected snapshots
 ---------------------------
@@ -39,7 +38,6 @@ When dump was not taken with a full memory you may receive an error similar to t
     Please check your debugger configuration and/or network access.
 
 You can then try loading `psscor4` but still many commands won't be working.
-
 
 Identify object which used most of the memory using **!DumpHeap -stat**.
 
