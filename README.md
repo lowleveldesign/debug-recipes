@@ -6,9 +6,13 @@ This is a repository of my notes collected while debugging various .NET and Wind
 
 I hope you will find them useful. Any contribution is welcome.
 
+---------------------
+
 ## General advice
 
 Make sure you have [valid symbols configuration](windows-debugging-configuration.md) in your system. You may also have a look at a list of my [debugging tips](howto.md). If you are debugging a .NET application you may first [make some adjustments in the JIT configuration](jit-configuration-for-debugging.md).
+
+---------------------
 
 ## Troubleshooting
 
@@ -56,7 +60,9 @@ Specific problems per application types:
 - [Debugging Windows kernel - setup](debugging-kernel/windows-kernel-debugging-setup.md)
 - [Debugging Windows kernel - basics](debugging-kernel/windows-kernel-debugging.md)
 
-## Tools descriptions
+---------------------
+
+## Tools
 
 - [Visual Studio (debugging)](debugging-using-vs/README.md)
 - [mdbg (debugger)](debugging-using-mdbg/mdbg.exe.md)
