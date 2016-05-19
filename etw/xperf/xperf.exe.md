@@ -2,7 +2,7 @@
 xperf.exe
 =========
 
-A lot of scripts for various collection scenarios can be found under the **scripts** folder. I collected them from various sources (Andrew Richard's one drive, Tarik Soulami's book, Bruce Dawson articles) and hopefully authors won't mind sharing them.
+This recipe contains general notes about xperf. Some specific usage scenarios will be shown in other Windows recipes.
 
 ### Collecting stack walk events ###
 
