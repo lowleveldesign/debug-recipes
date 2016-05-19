@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes'?>
+<!-- Created by Alois Kraus. Free for public use. 
+   This region file is used to visualize mouse clicks which makes it very useful to follow user interactions on one or more machines.
+   The mouse and keyboard events are written by ETWControler https://etwcontroler.codeplex.com/ which can capture your mouse and keyboard events 
+   on one machine and can send them over the network to remote version of ETWControler which logs them again as ETW events. 
+   This is super useful if you are hunting down distributed problems where it is not clear if the client, server or the network in between 
+   has a problem. With ETWControler I could track down sporadic networking issues and prove that it was really the network.    
+-->
+<InstrumentationManifest>
+  <Instrumentation>
+    <Regions>
+     <RegionRoot Guid="{d8d555a0-cf4c-45fb-493c-0000DEADBEEF}" Name="User Actions" FriendlyName="User Actions">
+              <Region Guid="{d8d639a1-cf5c-45fb-976a-100000000101}" Name="Mouse Ups" FriendlyName="Mouse Up">
+              <Region Guid="{d8d639a1-cf5c-45fb-976a-000000000001}" Name="Mouse Up1" FriendlyName="Mouse Up">
+                <Start>
+                  <Event Provider="{f0a5da64-0fbc-4d41-b6c7-bf56a0601d7d}" Id="1" Version="0"/>
+					<PayloadIdentifier FieldName="MouseButton" FieldValue="LButtonDown" />
+                </Start>
+                <Stop>
+                  <Event Provider="{f0a5da64-0fbc-4d41-b6c7-bf56a0601d7d}" Id="1" Version="0"/>
+					<PayloadIdentifier FieldName="MouseButton" FieldValue="LButtonUp" />
+                </Stop>
+                <Match>
+                  <Event PID="true"/>
+                </Match>
+             </Region>
+             </Region>
+     </RegionRoot>	 
+  </Regions>
+  </Instrumentation>
+ </InstrumentationManifest>

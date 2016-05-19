@@ -55,8 +55,9 @@ Specific problems per application types:
 - [Troubleshooting IIS6](iis/iis6.md)
 - [Troubleshooting IIS Express](iis/iisexpress.md)
 
-### Windows kernel
+### Windows
 
+- [Event Tracing for Windows](etw/README.md)
 - [Debugging Windows kernel - setup](debugging-kernel/windows-kernel-debugging-setup.md)
 - [Debugging Windows kernel - basics](debugging-kernel/windows-kernel-debugging.md)
 
@@ -71,4 +72,5 @@ Specific problems per application types:
 - [DebugDiag (debugger)](debugdiag/debugdiag.md)
 - [Adplus (debugger)](exceptions/adplus/adplus.md)
 - [PerfView (profiler)](perfview/perfview.exe.md)
+- [Windows built-in tools](windows-system-perftools.md)
 

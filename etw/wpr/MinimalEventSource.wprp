@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WindowsPerformanceRecorder Version="1.0">
+  <Profiles>
+    <EventCollector Id="EventCollector_MyEventSource" Name="MyEventSourceCollector">
+      <BufferSize Value="1024" />
+      <Buffers Value="200" />
+    </EventCollector>
+    <EventProvider Id="MinimalEventSource" Name="*MinimalEventSource" />
+
+    <Profile Id="MyEventSource.Verbose.File" Name="MyEventSource" Description="EventSource Collection" LoggingMode="File" DetailLevel="Verbose">
+      <Collectors>
+        <EventCollectorId Value="EventCollector_MyEventSource">
+          <EventProviders>
+            <EventProviderId Value="MinimalEventSource" />
+          </EventProviders>
+        </EventCollectorId>
+      </Collectors>
+    </Profile>
+    <Profile Id="MyEventSource.Verbose.Memory" Name="MyEventSource" Description="EventSource Collection" Base="MyEventSource.Verbose.File" LoggingMode="Memory" DetailLevel="Verbose" />
+  </Profiles>
+</WindowsPerformanceRecorder>

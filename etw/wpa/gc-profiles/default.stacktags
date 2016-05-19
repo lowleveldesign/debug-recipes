@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created by Alois Kraus. Free for public use. 
+  This enrichted stack tag file captures some of the most common .NET issues which would be very hard to spot otherwise and serves as
+  platform to add your methods of your application to this file. Once you have found an issue in your application after a long analysis you
+  can stuff the CPU consumption bugs of hte lowest methods in the call stack in this file and give it a tag. 
+  When you hit this CPU issue next time you can see that if this stack tag consumes significant CPU again that you have the same issue again.
+  To make it work you need to overwrite the file
+    C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\Catalog\default.stacktags
+  with your file or be sure to remove the default file used by WPA.
+  The reason behind this is that otherwise the default file will steal nearly all CPU activity caused by JIT compiler and GC and list it as GC or JIT or TypeLoader tags but your more
+  specific application level tags will never show up. 
+  Lets suppose you have a call stack like
+  
+    Main()
+	F1()
+	F2()
+	ScaleImage()        Tag=ScaleImageProblem
+	garbage::collect()  Tag=GC  
+	
+	Now WPA will walk from the bottom and find that the default stack tag for GC will match first. Then your tag higher up in the call stack will never show up!
+	To work around this you need to overwrite the default stacktag file so it does not steal the stacks which are relevant to your tagging. 
+	Or you make sure that you remove the default stacktag file always in your list under Trace - Trace Properties - Stack Tag Definitions
+	
+	As a general rule to get a useful stacktag file you should tag methods as high as possible in the call stack to prevent that you "steal" methods from other tags which might
+	be conflicting with your tagging lower in the call stack. 
+	
+	When you idenfity a method be sure to add both definitions for NGenned and JITed to the tag file
+	
+	The JITed methods have :: between class and method name but no arguments:
+		PresentationFramework.dll!System.Windows.Markup.WpfXamlLoader::Load	
+	Whereas NGenned code has . between class and metehod name and the full list of types in the pdb. You need to be careful when you
+	create stack tag file to get the same tags for JITed and NGenned code.
+		System.ni.dll!System.Text.RegularExpressions.RegexRunner.Scan(System.Text.RegularExpressions.Regex, System.String, Int32, Int32, Int32, Int32, Boolean, System.TimeSpan)
+-->
+<Tag Name="">
+  <Tag Name="HTML">
+    <Tag Name="Display">
+      <Entrypoint Module="mshtml.dll" Method="CDoc::Paint*"/>
+      <Entrypoint Module="mshtml.dll" Method="CView::Render*"/>
+    </Tag>
+    <Tag Name="Layout">
+      <Entrypoint Module="mshtml.dll" Method="CView::EnsureView"/>
+      <Entrypoint Module="mshtml.dll" Method="CView::CloseDisplayTree"/>
+      <Entrypoint Module="mshtml.dll" Method="CView::FinalizeDisplayTree"/>
+      <Entrypoint Module="mshtml.dll" Method="CLayout*"/>
+      <Entrypoint Module="mshtml.dll" Method="Ptls5::*"/>
+    </Tag>
+    <Tag Name="Formatting">
+      <Entrypoint Module="mshtml.dll" Method="CView::ExecuteInvalidationTasks"/>
+      <Entrypoint Module="mshtml.dll" Method="CTreeNode::ComputeFormats"/>
+      <Entrypoint Module="mshtml.dll" Method="CStyleSheetArray::*"/>
+      <Entrypoint Module="mshtml.dll" Method="*ApplyStyle*"/>
+    </Tag>
+    <Tag Name="Parsing">
+      <Entrypoint Module="mshtml.dll" Method="CHtmParse*"/>
+      <Entrypoint Module="mshtml.dll" Method="CHtmPre*"/>
+      <Entrypoint Module="mshtml.dll" Method="CHtmPost*"/>
+      <Entrypoint Module="mshtml.dll" Method="CPreParser*"/>
+      <Tag Name="CSS">
+        <Entrypoint Module="mshtml.dll" Method="CStyleSheet::*Pars*"/>
+        <Entrypoint Module="mshtml.dll" Method="CSS*::RuleSet"/>
+        <Entrypoint Module="mshtml.dll" Method="ProcessCSSText"/>
+      </Tag>
+    </Tag>
+    <Tag Name="Script">
+      <Tag Name="GC">
+        <Entrypoint Module="jscript9.dll" Method="Recycler::*"/>
+      </Tag>
+      <Entrypoint Module="jscript9.dll"/>
+    </Tag>
+    <Tag Name="Canvas">
+      <Entrypoint Module="mshtml.dll" Method="CCanvas*"/>
+      <Entrypoint Module="mshtml.dll" Method="CHTMLCanvasElement::*"/>
+    </Tag>
+    <Tag Name="OM">
+      <Entrypoint Module="mshtml.dll" Method="CFastDOM::*"/>
+      <Entrypoint Module="mshtml.dll" Method="Method_*"/>
+      <Entrypoint Module="mshtml.dll" Method="GS_*"/>
+      <Entrypoint Module="mshtml.dll" Method="G_*"/>
+    </Tag>
+    <Tag Name="ImageDecoding">
+      <Entrypoint Module="mshtml.dll" Method="CImgTask*"/>
+    </Tag>
+    <Tag Name="Networking">
+      <Tag Name="WinINet">
+        <Entrypoint Module="wininet.dll"/>
+      </Tag>
+    </Tag>
+  </Tag>
+  <Tag Name="XAML">
+    <Entrypoint Module="windows.ui.xaml.dll" Method="DirectUI::FrameworkView::*"/>
+    <Entrypoint Module="windows.ui.xaml.dll" Method="CompositorScheduler::RenderThreadMain"/>
+    <Tag Name="Layout">
+      <Entrypoint Module="windows.ui.xaml.dll" Method="CLayoutManager::UpdateLayout"/>
+      <Tag Name="Measure">
+        <Entrypoint Module="windows.ui.xaml.dll" Method="CUIElement::Measure"/>
+      </Tag>
+      <Tag Name="Arrange">
+        <Entrypoint Module="windows.ui.xaml.dll" Method="CUIElement::Arrange"/>
+      </Tag>
+    </Tag>
+    <Tag Name="Rendering">
+      <Entrypoint Module="windows.ui.xaml.dll" Method="CCoreServices::RenderWalk"/>
+    </Tag>
+    <Tag Name="CommitGraphicsDevice">
+      <Entrypoint Module="windows.ui.xaml.dll" Method="DCompTreeHost::CommitSecondaryDevice"/>
+      <Entrypoint Module="windows.ui.xaml.dll" Method="DCompTreeHost::CommitMainDevice"/>
+    </Tag>
+    <Tag Name="CompositionTargetRendering">
+      <Entrypoint Module="windows.ui.xaml.dll" Method="CCoreServices::CallPerFrameCallback"/>
+    </Tag>
+    <Tag Name="ApplicationActivate">
+      <Entrypoint Module="windows.ui.xaml.dll" Method="DirectUI::FrameworkView::Initialize"/>
+      <Entrypoint Module="windows.ui.xaml.dll" Method="DirectUI::ApplicationFactory::Start"/>
+    </Tag>
+    <Tag Name="EventCallback">
+      <Entrypoint Module="windows.ui.xaml.dll" Method="AgCoreCallbacks::FireEvent"/>
+    </Tag>
+    <Tag Name="ProcessInput">
+      <Entrypoint Module="windows.ui.xaml.dll" Method="CInputManager::*"/>
+    </Tag>
+    <Tag Name="Tick">
+      <Entrypoint Module="windows.ui.xaml.dll" Method="CCoreServices::Tick"/>
+      <Tag Name="UpdateAnimations">
+        <Entrypoint Module="windows.ui.xaml.dll" Method="CTimeManager::Tick"/>
+        <Entrypoint Module="windows.ui.xaml.dll" Method="CCoreServices::FlushDeferredAnimationOperationQueue"/>
+        <Entrypoint Module="windows.ui.xaml.dll" Method="CHardwareCompositor::IndependentTick"/>
+      </Tag>
+      <Tag Name="UpdateViewports">
+        <Entrypoint Module="windows.ui.xaml.dll" Method="CCompositorDirectManipulationViewport::UpdateTransform"/>
+      </Tag>
+      <Tag Name="AddMemoryPressure">
+        <Entrypoint Module="windows.ui.xaml.dll" Method="ReportMemoryPressureToGC"/>
+      </Tag>
+    </Tag>
+    <Tag Name="Parsing">
+      <Entrypoint Module="windows.ui.xaml.dll" Method="CCoreServices::LoadXaml"/>
+      <Entrypoint Module="windows.ui.xaml.dll" Method="CCoreServices::ParseXaml*"/>
+    </Tag>
+    <Tag Name="WarpTextRasterize">
+      <Entrypoint Module="D3D10Warp.dll" Method="Task::ExecuteTask"/>
+    </Tag>
+    <Tag Name="ImageDecode">
+      <Entrypoint Module="windows.ui.xaml.dll" Method="AsyncDecodeToSurfaceTask::Execute"/>
+    </Tag>
+    <Tag Name="CreateGraphicsDevice">
+      <Entrypoint Module="windows.ui.xaml.dll" Method="WindowsGraphicsDeviceManager::*"/>
+    </Tag>
+  </Tag>
+  <Tag Name=".NET">
+ 	<Tag Name="WCF">
+		<Tag Name="Read">
+			<Entrypoint Module="System.ServiceModel.ni.dll" Method="*System.ServiceModel.Channels.PipeConnection.OnAsyncReadComplete*"/>
+			<Entrypoint Module="System.ServiceModel.ni.dll" Method="*System.ServiceModel.Channels.PipeConnection::OnAsyncReadComplete*"/>
+		</Tag>
+	</Tag>
+
+	<Tag Name="WPF">
+		<Tag Name="Measure">
+			<Entrypoint Module="PresentationCore.ni.dll" Method="*System.Windows.UIElement.Measure*"/>
+			<Entrypoint Module="PresentationCore.dll" Method="*System.Windows.UIElement::Measure*"/>
+		</Tag>
+	</Tag>
+	<Tag Name="GDI">
+		<Entrypoint Module="GdiPlus.dll" Method="*GpGraphics::DrvDrawImage*"/>
+	</Tag>
+
+	<Tag Name="Regular Expression">
+		<Entrypoint Module="System.ni.dll" Method="*System.Text.RegularExpressions.Regex*"/>
+		<Entrypoint Module="System.dll" Method="*System.Text.RegularExpressions.Regex*"/>
+	</Tag>
+	<Tag Name="Event Leaks?">
+		<Tag Name="Delegate.Remove">
+			<Entrypoint Module="mscorlib.ni.dll" Method="System.MulticastDelegate.RemoveImpl(System.Delegate)"/>
+		</Tag>
+		<Tag Name="Delegate.Combine">
+			<Entrypoint Module="mscorlib.ni.dll" Method="System.MulticastDelegate.CombineImpl(System.Delegate)"/>
+		</Tag>
+	</Tag>
+	<Tag Name="Lock Contention">
+		<Entrypoint Module="clr.dll" Method="*JITutil_MonContention*"/>
+		<Entrypoint Module="clr.dll" Method="*JITutil_MonReliableContention*"/>
+		<Entrypoint Module="clr.dll" Method="*JITutil_MonEnterWorker*"/>
+		<Entrypoint Module="clr.dll" Method="*JITutil_MonReliableEnter*"/>
+	</Tag>
+	<Tag Name="Background GC">
+		<Entrypoint Module="clr.dll" Method="*WKS::gc_heap::bgc_thread_function*"/>
+	</Tag>
+<!--
+	<Tag Name="Threadpool Worker Contention">
+		<Entrypoint Module="clr.dll" Method="*ThreadpoolMgr::UnfairSemaphore::Wait*"/>
+	</Tag>
+-->
+  </Tag>
+  <Tag Name="System">
+    <Tag Name="ETW Overhead">
+      <Entrypoint Module="nt*.exe" Method="Etw*"/>
+      <Entrypoint Module="ntdll.dll" Method="Etw*"/>
+    </Tag>
+
+    <Tag Name="LoadLibrary">
+      <Entrypoint Module="ntdll.dll" Method="Ldr*"/>
+      <Entrypoint Module="kernel*.dll" Method="LoadLibrary*"/>
+      <Entrypoint Module="kernel*.dll" Method="FreeLibrary*"/>
+      <Entrypoint Module="kernel32.dll" Method="GetProcAddress"/>
+    </Tag>
+    <Tag Name="ThreadPool">
+      <Entrypoint Module="ntdll.dll" Method="Tp*"/>
+      <Entrypoint Module="ntdll.dll" Method="*Tp*Callback"/>
+    </Tag>
+  </Tag>
+</Tag>

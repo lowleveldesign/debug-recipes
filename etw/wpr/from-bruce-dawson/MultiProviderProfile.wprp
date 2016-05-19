@@ -1,0 +1,81 @@
+﻿<?xml version='1.0' encoding='utf-8' standalone='yes'?>
+<WindowsPerformanceRecorder
+    Author="Bruce Dawson"
+    Comments="Custom user events sample - see http://randomascii.wordpress.com/category/xperf/ for details"
+    Copyright="Bruce Dawson"
+    Version="1.0"
+    Tag="Enables MultiProvider providers to allow identifying key events in an instrumented process."
+    >
+
+  <Profiles>
+    <!-- The EventCollector block is used to specify the number and size of the buffers
+          to be used when recording ETW data. The Id must match what is specified in the
+          Collectors blocks. The units for Buffer Size are KB. -->
+    <EventCollector Id="MultiCollector" Name="Sample Event Collector">
+      <BufferSize Value="64"/>
+      <Buffers Value="64"/>
+    </EventCollector>
+    <!-- A fully specified .wprp file should have four profiles, with DetailLevel set to Verbose and Light and with Logging Mode set to
+          Memory and File. The Light options can be skipped, but then light logging will be disabled when your profile is enabled.
+          The ID must be of the form Name.DetailLevel.LoggingMode. The Description tag is mandatory but is ignored, except for the
+          description of the last Profile which is displayed in wprui. -->
+    <Profile Id="MultiProvider.Verbose.Memory" Name="MultiProvider" Description="MultiProvider providers (ignored)" DetailLevel="Verbose" LoggingMode="Memory">
+      <Collectors>
+        <!-- EventCollectorId must match the EventCollector ID specified above -->
+        <EventCollectorId Value="MultiCollector">
+          <EventProviders>
+            <!-- List all the user mode providers you want enabled. Name is the name or GUID of the provider. Id is a word (no spaces
+                  spaces allowed?) that doesn't seem to be used. Some user-mode providers require that the NonPagedMemory be specified
+                  in the EventProvider definition and set to "true". No error messages are displayed if your providers fail to get
+                  enabled, but you can use the undocumented "xperf -loggers" command while tracing is enabled to see if your providers
+                  show up. -->
+            <EventProvider Id="Multi-Main-Provider" Name="Multi-Main"></EventProvider>
+            <EventProvider Id="Multi-Worker-Provider" Name="Multi-Worker"></EventProvider>
+            <EventProvider Id="Multi-FrameRate-Provider" Name="Multi-FrameRate"></EventProvider>
+            <EventProvider Id="Multi-Input-Provider" Name="Multi-Input"></EventProvider>
+          </EventProviders>
+        </EventCollectorId>
+      </Collectors>
+    </Profile>
+    <!-- Redundant Profile definition for Verbose.File - identical to Verbose.Memory in this case. -->
+    <Profile Id="MultiProvider.Verbose.File" Name="MultiProvider" Description="MultiProvider providers (ignored)" DetailLevel="Verbose" LoggingMode="File">
+      <Collectors>
+        <EventCollectorId Value="MultiCollector">
+          <EventProviders>
+            <EventProvider Id="Multi-Main-Provider" Name="Multi-Main"></EventProvider>
+            <EventProvider Id="Multi-Worker-Provider" Name="Multi-Worker"></EventProvider>
+            <EventProvider Id="Multi-FrameRate-Provider" Name="Multi-FrameRate"></EventProvider>
+            <EventProvider Id="Multi-Input-Provider" Name="Multi-Input"></EventProvider>
+          </EventProviders>
+        </EventCollectorId>
+      </Collectors>
+    </Profile>
+    <!-- Redundant Profile definition for Light.Memory - identical to Verbose.Memory in this case. -->
+    <Profile Id="MultiProvider.Light.Memory" Name="MultiProvider" Description="MultiProvider providers (ignored)" DetailLevel="Light" LoggingMode="Memory">
+      <Collectors>
+        <EventCollectorId Value="MultiCollector">
+          <EventProviders>
+            <EventProvider Id="Multi-Main-Provider" Name="Multi-Main"></EventProvider>
+            <EventProvider Id="Multi-Worker-Provider" Name="Multi-Worker"></EventProvider>
+            <EventProvider Id="Multi-FrameRate-Provider" Name="Multi-FrameRate"></EventProvider>
+            <EventProvider Id="Multi-Input-Provider" Name="Multi-Input"></EventProvider>
+          </EventProviders>
+        </EventCollectorId>
+      </Collectors>
+    </Profile>
+    <!-- Redundant Profile definition for Light.File - identical to Verbose.Memory in this case. Since this is 
+          the last profile the Description field from this Profile is shown in wprui. -->
+    <Profile Id="MultiProvider.Light.File" Name="MultiProvider" Description="MultiProvider providers" DetailLevel="Light" LoggingMode="File">
+      <Collectors>
+        <EventCollectorId Value="MultiCollector">
+          <EventProviders>
+            <EventProvider Id="Multi-Main-Provider" Name="Multi-Main"></EventProvider>
+            <EventProvider Id="Multi-Worker-Provider" Name="Multi-Worker"></EventProvider>
+            <EventProvider Id="Multi-FrameRate-Provider" Name="Multi-FrameRate"></EventProvider>
+            <EventProvider Id="Multi-Input-Provider" Name="Multi-Input"></EventProvider>
+          </EventProviders>
+        </EventCollectorId>
+      </Collectors>
+    </Profile>
+  </Profiles>
+</WindowsPerformanceRecorder>
