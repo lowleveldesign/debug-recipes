@@ -81,6 +81,8 @@ Windbg extension to extract file from Cache Manager.
 
 ## Developing extensions ##
 
+- [WinDBG Extension written completely in C#](https://blogs.msdn.microsoft.com/rodneyviana/2016/05/18/windbg-extension-written-completely-in-c/)
+
 Great tutorial on writing WinDbg extensions:
 
 - <http://www.msuiche.net/2014/01/12/extengcpp-part-1/>

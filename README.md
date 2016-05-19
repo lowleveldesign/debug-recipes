@@ -31,13 +31,10 @@ Choose a recipe corresponding to your application problem:
   - [Using ADO.NET](ado.net/ado.net-debugging.md)
   - [Using MySql connector](databases/mysql/mysql.net-connector-usage.md)
 
-Specific problems per application types:
+Problems in **.NET Web Applications**:
 
-| ASP.NET | Nancy
-| --- | ---
-| [Slow requests](asp.net/asp.net-profiling.md) | [Slow requests](nancy/nancy-diagnostics.md)
-| [Unknown errors in the application](asp.net/asp.net-debugging) |
-
+- Slow requests / tracing: [ASP.NET](asp.net/asp.net-profiling.md), [Nancy](nancy/nancy-diagnostics.md)
+- Unknown errors: [ASP.NET](asp.net/asp.net-debugging.md)
 
 ### Databases
 
