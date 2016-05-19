@@ -88,8 +88,3 @@ Based on <http://randomascii.wordpress.com/2014/02/04/process-tree-from-an-xperf
 
 You may generate a process tree from xperf using `xperf -i foo.etl -a process -tree` command. Other analysis command allow you to extract thread stacks, modules etc.
 
-
-Links
------
-
-- [Becoming an XPerf XPert series](http://blogs.technet.com/b/askpfeplat/archive/tags/xperf/)
