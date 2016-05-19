@@ -1,9 +1,8 @@
 
-XPerf.exe
+xperf.exe
 =========
 
-Usage samples
--------------
+A lot of scripts for various collection scenarios can be found under the **scripts** folder. I collected them from various sources (Andrew Richard's one drive, Tarik Soulami's book, Bruce Dawson articles) and hopefully authors won't mind sharing them.
 
 ### Collecting stack walk events ###
 
