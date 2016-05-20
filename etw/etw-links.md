@@ -22,7 +22,7 @@ ETW links
 - [EtwDataViewer - Analyze, visualize, and make sense of your ETW logs](http://www.codeproject.com/Articles/632390/EtwDataViewer-Analyze-visualize-and-make-sense-of)
 - [Application Analysis with Event Tracing for Windows (ETW)](http://www.codeproject.com/Articles/570690/Application-Analysis-with-Event-Tracing-for-Window)
 - [UIforETW - User interface for recording and managing ETW traces](https://github.com/google/UIforETW)
-- [Use Eventsource to get the duration of a Start Stop of Custom ETW events](http://naveensrinivasan.com/2015/06/08/use-eventsource-to-get-the-duration-of-a-start-stop-of-custom-etw-events/)
+- [Use Eventsource to get the duration of a Start Stop of Custom ETW events](http://naveensrinivasan.azurewebsites.net/index.php/2015/06/08/use-eventsource-to-get-the-duration-of-a-start-stop-of-custom-etw-events/)
 - [A series on troubleshooting Windows performance](http://blogs.technet.com/b/markrenoden/archive/2015/08/12/windows-enterprise-client-boot-and-logon-optimization-part-22-blog-post-series-wrap-up.aspx)
 - [Activate Stacks only for some specific ETW Tasks in a provider?](http://stackoverflow.com/questions/30289932/activate-stacks-only-for-some-specific-etw-tasks-in-a-provider)
 - [Setup Perfmon with PowerShell and Logman](http://sqlblog.com/blogs/allen_white/archive/2012/03/02/setup-perfmon-with-powershell-and-logman.aspx)
