@@ -32,7 +32,7 @@ ETW links
 - [An easy way to use XPerf and Event Tracing for Windows (ETW) - tutorial on creating your own event provider](http://nemetht.wordpress.com/2013/03/18/an-easy-way-to-use-xperf-and-event-tracing-for-windows-etw/)
 - [Semantic Tracing For .NET 4.0 (tutorial on using your own event provider)](http://geekswithblogs.net/akraus1/archive/2013/06/02/153041.aspx)
 - [Troubleshooting Windows Performance Issues Using the Windows Performance Recorder](http://blogs.technet.com/b/askpfeplat/archive/2013/03/22/troubleshooting-windows-performance-issues-using-the-windows-performance-recorder.aspx)
-- [More on using EventSources with XPERF or WPR](More on using EventSources with XPERF or WPR)
+- [More on using EventSources with XPERF or WPR](https://blogs.msdn.microsoft.com/vancem/2014/04/10/more-on-using-eventsources-with-xperf-or-wpr/)
 - [Load Perfmon Log Data into SQL Server with PowerShell](http://sqlblog.com/blogs/allen_white/archive/2012/03/03/load-perfmon-log-data-into-sql-server-with-powershell.aspx)
 - [Windows Performance Analyzer on MSDN](http://msdn.microsoft.com/en-us/library/windows/hardware/hh448170.aspx)
 
