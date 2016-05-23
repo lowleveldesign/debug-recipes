@@ -1,31 +1,29 @@
 ETW links
 =========
 
+### General info
+
 - [ETW Central](https://randomascii.wordpress.com/2015/09/24/etw-central/)
 - [Intro to Event Tracing For Windows by Matt Pietrek](http://blogs.msdn.com/b/matt_pietrek/archive/2004/09/16/230700.aspx)
 - [Core OS Events in Windows 7, Part 1 (MSDN Magazine)](http://msdn.microsoft.com/en-us/magazine/ee412263.aspx)
 - [Core Instrumentation Events in Windows 7, Part 2 (MSDN Magazine)](http://msdn.microsoft.com/en-us/magazine/ee358703.aspx)
 - [Improve Debugging And Performance Tuning With ETW (MSDN Magazine)](http://msdn.microsoft.com/en-us/magazine/cc163437.aspx)
 - [Four part serie about Event Tracing (Fink@Mozilla)](http://blog.mozilla.com/sfink/tag/etw/)
-- [Part 1 - ETW Introduction and Overview (NtDebugging blog)](http://blogs.msdn.com/b/ntdebugging/archive/2009/08/27/etw-introduction-and-overview.aspx)
-- [Part 2 - Exploring and Decoding ETW Providers using Event Log Channels (NtDebugging blog)](http://blogs.msdn.com/b/ntdebugging/archive/2009/09/08/exploring-and-decoding-etw-providers-using-event-log-channels.aspx)
-- [Part 3: ETW Methods of Tracing (NtDebugging blog)](http://blogs.msdn.com/b/ntdebugging/archive/2009/12/11/test.aspx)
+- [Part 1 - ETW Introduction and Overview (NtDebugging blog)](http://blogs.msdn.com/b/ntdebugging/archive/2009/08/27/etw-introduction-and-overview.aspx), [Part 2 - Exploring and Decoding ETW Providers using Event Log Channels (NtDebugging blog)](http://blogs.msdn.com/b/ntdebugging/archive/2009/09/08/exploring-and-decoding-etw-providers-using-event-log-channels.aspx), [Part 3: ETW Methods of Tracing (NtDebugging blog)](http://blogs.msdn.com/b/ntdebugging/archive/2009/12/11/test.aspx)
 - [Event Tracing for Windows and Network Monitor](http://blogs.technet.com/b/netmon/archive/2009/05/13/event-tracing-for-windows-and-network-monitor.aspx)
-- [Two Minute Drill: TYPEPERF (Performance team)](http://blogs.technet.com/b/askperf/archive/2009/05/12/two-minute-drill-typeperf.aspx)
-- [Two Minute Drill: LOGMAN.EXE (Performance team)](http://blogs.technet.com/b/askperf/archive/2008/05/13/two-minute-drill-logman-exe.aspx)
-- [Two Minute Drill: RELOG.EXE (Performance team)](http://blogs.technet.com/b/askperf/archive/2008/05/20/two-minute-drill-relog-exe.aspx)
-- [Two Minute Drill: System Diagnostics Report (Performance team)](http://blogs.technet.com/b/askperf/archive/2008/05/02/two-minute-drill-system-diagnostics-report.aspx)
-- [Prepare XPref ETL files for FlameGraph - flame graphs for ETW events](https://github.com/MSOpenTech/ETWFlamegraph)
-- Flame Graphs: <https://github.com/brendangregg/FlameGraph>, <http://geekswithblogs.net/akraus1/archive/2013/06/10/153104.aspx>
+- Two Minute Drill (Performance team): [TYPEPERF](http://blogs.technet.com/b/askperf/archive/2009/05/12/two-minute-drill-typeperf.aspx), [LOGMAN.EXE](http://blogs.technet.com/b/askperf/archive/2008/05/13/two-minute-drill-logman-exe.aspx), [RELOG.EXE](http://blogs.technet.com/b/askperf/archive/2008/05/20/two-minute-drill-relog-exe.aspx), [System Diagnostics Report](http://blogs.technet.com/b/askperf/archive/2008/05/02/two-minute-drill-system-diagnostics-report.aspx)
 - [Defrag Tools series on channel 9](http://channel9.msdn.com/Shows/Defrag-Tools)
-- [Collecting ETW/PerfView data on an Windows RT (WinRT, ARM, Surface) device](http://blogs.msdn.com/b/vancem/archive/2012/12/19/collecting-etw-perfview-data-on-an-windows-rt-winrt-arm-surface-device.aspx)
-- [EtwDataViewer - Analyze, visualize, and make sense of your ETW logs](http://www.codeproject.com/Articles/632390/EtwDataViewer-Analyze-visualize-and-make-sense-of)
-- [Application Analysis with Event Tracing for Windows (ETW)](http://www.codeproject.com/Articles/570690/Application-Analysis-with-Event-Tracing-for-Window)
-- [UIforETW - User interface for recording and managing ETW traces](https://github.com/google/UIforETW)
-- [Use Eventsource to get the duration of a Start Stop of Custom ETW events](http://naveensrinivasan.azurewebsites.net/index.php/2015/06/08/use-eventsource-to-get-the-duration-of-a-start-stop-of-custom-etw-events/)
 - [A series on troubleshooting Windows performance](http://blogs.technet.com/b/markrenoden/archive/2015/08/12/windows-enterprise-client-boot-and-logon-optimization-part-22-blog-post-series-wrap-up.aspx)
 - [Activate Stacks only for some specific ETW Tasks in a provider?](http://stackoverflow.com/questions/30289932/activate-stacks-only-for-some-specific-etw-tasks-in-a-provider)
 - [Setup Perfmon with PowerShell and Logman](http://sqlblog.com/blogs/allen_white/archive/2012/03/02/setup-perfmon-with-powershell-and-logman.aspx)
+- [Collecting ETW/PerfView data on an Windows RT (WinRT, ARM, Surface) device](http://blogs.msdn.com/b/vancem/archive/2012/12/19/collecting-etw-perfview-data-on-an-windows-rt-winrt-arm-surface-device.aspx)
+- [Application Analysis with Event Tracing for Windows (ETW)](http://www.codeproject.com/Articles/570690/Application-Analysis-with-Event-Tracing-for-Window)
+- [Use Eventsource to get the duration of a Start Stop of Custom ETW events](http://naveensrinivasan.azurewebsites.net/index.php/2015/06/08/use-eventsource-to-get-the-duration-of-a-start-stop-of-custom-etw-events/)
+
+### Flame graphs
+
+- [Prepare XPref ETL files for FlameGraph - flame graphs for ETW events](https://github.com/MSOpenTech/ETWFlamegraph)
+- Flame Graphs: <https://github.com/brendangregg/FlameGraph>, <http://geekswithblogs.net/akraus1/archive/2013/06/10/153104.aspx>
 
 ### WPR and WPA ###
 
@@ -44,3 +42,9 @@ ETW links
 - [A series of great posts on XPerf](http://randomascii.wordpress.com/category/xperf/)
 - [XPerf - Windows Performance Toolkit (Sasha Goldstein)](http://blogs.microsoft.co.il/blogs/sasha/archive/2008/03/15/xperf-windows-performance-toolkit.aspx)
 - [Windows Performance Toolkit - Xperf (NtDebugging blog)](http://blogs.msdn.com/b/ntdebugging/archive/2008/04/03/windows-performance-toolkit-xperf.aspx)
+
+### Diagnostics tools based on ETW
+
+- [ClueTool](https://onedrive.live.com/?authkey=!APQbXtD8U-HExzE&id=E6360C54B48A891B!238430&cid=E6360C54B48A891B)
+- [UIforETW - User interface for recording and managing ETW traces](https://github.com/google/UIforETW)
+- [EtwDataViewer - Analyze, visualize, and make sense of your ETW logs](http://www.codeproject.com/Articles/632390/EtwDataViewer-Analyze-visualize-and-make-sense-of)
