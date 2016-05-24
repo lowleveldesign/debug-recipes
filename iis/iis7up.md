@@ -190,6 +190,7 @@ Links
 - <http://www.codeguru.com/csharp/.net/net_asp/tutorials/article.php/c16775>
 - <http://learn.iis.net/page.aspx/266/troubleshooting-failed-requests-using-tracing-in-iis/>
 - <http://learn.iis.net/page.aspx/488/using-failed-request-tracing-rules-to-troubleshoot-application-request-routing-arr/>
+- [Enlightening a mystery with Failed Request Tracing: does IIS not respect the minFileSizeForComp setting for static compression?](https://blogs.msdn.microsoft.com/amb/2016/05/23/iis-respects-minfilesizeforcomp-for-static-compression/)
 
 ### Url rewrite module ###
 
