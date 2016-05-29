@@ -39,14 +39,18 @@ Usually, you read a graphical execution plan from right to left and top to botto
 
 All those commands cause SQL Server not to execute a statement but display its estimated plan. `SET SHOWPLAN_ALL` is intended to be used by applications written to handle its output. Use `SET SHOWPLAN_TEXT` to return readable output for Microsoft Win32 command prompt applications, such as the osql utility. When we would like to see the actual plan, we need to use the `set statistics profile|xml on` option.
 
-### Links ###
+### Examining historical query plans using the Query Store ###
 
-- Explanation of different sql plan symbols:
-  <http://msdn.microsoft.com/en-us/library/ms191158.aspx>
-- Execution Plan Analysis: The Mystery Work Table
-  <http://sqlblog.com/blogs/paul_white/archive/2013/03/08/execution-plan-analysis-the-mystery-work-table.aspx>
-- Spooling in SQL execution plans
-  <http://sqlblog.com/blogs/rob_farley/archive/2013/06/11/spooling-in-sql-execution-plans.aspx>
+Query store is a feature available in SQL Servers starting from the 2016 version which allows you to analyze how the query plans were changing. Use the query below to find queries in the Query Store:
+
+```
+SELECT Txt.query_text_id, Txt.query_sql_text, Pl.plan_id, Qry.*
+FROM sys.query_store_plan AS Pl
+JOIN sys.query_store_query AS Qry
+    ON Pl.query_id = Qry.query_id
+JOIN sys.query_store_query_text AS Txt
+    ON Qry.query_text_id = Txt.query_text_id ;
+```
 
 <a name="qs">Query statistics</a>
 ---------------------------------

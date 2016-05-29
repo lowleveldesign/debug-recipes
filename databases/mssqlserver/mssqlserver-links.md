@@ -27,6 +27,14 @@ MS SQL Server links
 - [SQL Diagnostics Project Part 1 – Configuring Custom SQL Data Collections](http://blogs.msdn.com/b/sql_pfe_blog/archive/2013/11/21/sql-performance-diagnostics-part-1-configuring-custom-sql-data-collections.aspx)
 - [SQL Server Diagnostic Information Queries by Glenn Berry](https://sqlserverperformance.wordpress.com/)
 
+### Queries
+
+- [Monitoring Performance By Using the Query Store](https://msdn.microsoft.com/en-US/library/dn817826.aspx)
+- [The SQL Server Query Store](http://sqlperformance.com/2015/02/sql-plan/the-sql-server-query-store)
+- [Explanation of different sql plan symbols](http://msdn.microsoft.com/en-us/library/ms191158.aspx)
+- [Execution Plan Analysis: The Mystery Work Table](http://sqlblog.com/blogs/paul_white/archive/2013/03/08/execution-plan-analysis-the-mystery-work-table.aspx)
+- [Spooling in SQL execution plans](http://sqlblog.com/blogs/rob_farley/archive/2013/06/11/spooling-in-sql-execution-plans.aspx)
+
 ### Connections
 
 - [How Secure Is My SSL or TLS Connection? - TDS protocol security](http://dascomputerconsultants.com/WhatSecurityLevelAreYou.htm)
