@@ -2,8 +2,8 @@
 Diagnosing managed memory leaks
 ==============================
 
-Collect memory
---------------
+Collect memory snapshot
+-----------------------
 
 To create a memory dump you may use [procdump](https://live.sysinternals.com) or [minidumper](https://github.com/goldshtn/minidumper) - a tool from Sasha Goldshtein (with my contribution):
 
