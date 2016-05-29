@@ -19,6 +19,7 @@ ETW links
 - [Collecting ETW/PerfView data on an Windows RT (WinRT, ARM, Surface) device](http://blogs.msdn.com/b/vancem/archive/2012/12/19/collecting-etw-perfview-data-on-an-windows-rt-winrt-arm-surface-device.aspx)
 - [Application Analysis with Event Tracing for Windows (ETW)](http://www.codeproject.com/Articles/570690/Application-Analysis-with-Event-Tracing-for-Window)
 - [Use Eventsource to get the duration of a Start Stop of Custom ETW events](http://naveensrinivasan.azurewebsites.net/index.php/2015/06/08/use-eventsource-to-get-the-duration-of-a-start-stop-of-custom-etw-events/)
+- [Creating an ETW Provider Step by Step](https://kallanreed.wordpress.com/2016/05/28/creating-an-etw-provider-step-by-step/)
 
 ### Flame graphs
 
