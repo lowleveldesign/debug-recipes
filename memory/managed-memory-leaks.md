@@ -5,9 +5,11 @@ Diagnosing managed memory leaks
 Collect memory
 --------------
 
-To create a memory dump you may use procdump or [minidumper](https://github.com/goldshtn/minidumper) tool from Sasha Goldshtein:
+To create a memory dump you may use [procdump](https://live.sysinternals.com) or [minidumper](https://github.com/goldshtn/minidumper) - a tool from Sasha Goldshtein (with my contribution):
 
     procdump -ma <your-app-name-or-pid>
+
+    minidumper -ma <your-app-name-or-pid>
 
 For a GC heap snapshot use **a perfview snapshot**:
 
@@ -20,9 +22,18 @@ Analyse collected snapshots
 
 ### Using perfview (dumps and snapshots) ###
 
-You may convert a memory dump file to perfview snapshot using `PerfView HeapSnapshotFromProcessDump ProcessDumpFile [DataFile]`.
+You may convert a memory dump file to perfview snapshot using `PerfView HeapSnapshotFromProcessDump ProcessDumpFile [DataFile]` or using the GUI options **Memory -&gt; Take Heap Snapshot from Dump**.
 
-For further steps check perfview excellent help. FIXME: analysis example
+I would like to bring your attention to an excellent diffing option available for heap snapshots. Imagine you made two heap snapshots of the leaking process:
+
+- first named LeakingProcess.gcdump
+- second (taken a minute later) named LeakingProcess.1.gcdump
+
+You may now run PerfView, open two collected snapshots, switch to the LeakingProcess.1.gcdump and under the Diff menu you should see an option to diff this snapshot with the baseline:
+
+![diff option under the menu](perfview-snapshots-diff.png)
+
+After you choose it a new window will pop up with a tree of objects which have changed between the snapshots. Of course, if you have more snapshots you can generate diffs between them all. A really powerful feature!
 
 ### Using windbg (dumps only) ###
 
@@ -84,6 +95,25 @@ Load necessary **plugins**:
 !refs <ObjectAddr> [-target|-source]
 
 !gch [-HandleType]
+```
+
+**netext commands:**
+
+```
+!windex [/quiet] [/enumtypes] [/tree] [/flush] [/short] [/ignorestate]
+        [/withpointer] [/type <string>] [/fieldname <string>]
+        [/fieldtype <string>] [/implement <string>] [/save <string>]
+        [/load <string>] [/mt <string>]
+
+!wfrom [/nofield] [/withpointer] [/type <string>]
+       [/mt <string>] [/fieldname <string>] [/fieldtype <string>]
+       [/implement <string>] [/obj <expr>]
+       [where (<condition>)] select <expr1>, ..., <exprN>
+
+!wselect [mt <expr>] <field1>, ..., <fieldN> from <obj-expr> | <array-expr>
+<field1>, ..., <fieldN> List of fields to display (accepts * and ?)
+
+!wgchandle [-handletype <partial-name-of-handle-type>] [-type <partial-name-of-handle-type>] [-summary]
 ```
 
 Links

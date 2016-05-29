@@ -18,10 +18,10 @@ Make sure you have [valid symbols configuration](windows-debugging-configuration
 
 ### .NET applications
 
-Choose a recipe corresponding to your application problem:
+Choose a recipe corresponding to your application problem (if a recipe requires WinDbg please have a look [how to setup .NET in WinDbg](debugging-using-windbg/windbg-clr-debugging.md) first):
 
 - [Unknown exceptions thrown](exceptions/exceptions.md)
-- [Memory leaks (IN PROGRESS)](memory/managed-memory-leaks.md)
+- [Memory leaks](memory/managed-memory-leaks.md)
 - [High CPU usage (IN PROGRESS)](cpu/analyzing-high-cpu-usage.md)
 - [I/O issues (IN PROGRESS)]()
 - [Networking problems](network/network-tracing.md)

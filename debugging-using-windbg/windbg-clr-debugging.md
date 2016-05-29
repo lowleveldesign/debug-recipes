@@ -2,6 +2,59 @@
 Debugging .NET using WinDbg
 ===========================
 
+CLR debugging setup
+-------------------
+
+### Loading SOS ###
+
+You may use a great WinDbg plugin (**procdumpext**) by Andrew Richards for loading SOS:
+
+```
+0:000> .load c:\tools\diagnosing\Debugging Tools for Windows\_winext-x64\ProcDumpExt.dll
+=========================================================================================
+ ProcDumpExt v6.4 - Copyright 2013 Andrew Richards
+=========================================================================================
+0:000> !loadsos
+```
+
+However, recently I usually use any command from **netext** (eg. **!wver**) and make it load sos automatically, eg.:
+
+```
+0:000> .load netext
+netext version 2.1.2.5000 Jan 21 2016
+License and usage can be seen here: !whelp license
+Check Latest version: !wupdate
+For help, type !whelp (or in WinDBG run: '.browse !whelp')
+Questions and Feedback: http://netext.codeplex.com/discussions
+Copyright (c) 2014-2015 Rodney Viana (http://blogs.msdn.com/b/rodneyviana)
+Type: !windex -tree or ~*e!wstack to get started
+
+0:000> !wver
+Runtime(s) Found: 1
+0: Filename: mscordacwks_Amd64_Amd64_4.6.1080.00.dll Location: C:\Windows\Microsoft.NET\Framework64\v4.0.30319\mscordacwks.dll
+.NET Version: v4.6.1080.00
+NetExt (this extension) Version: 2.1.2.5000
+0:000> .chain
+Extension DLL search Path:
+...
+Extension DLL chain:
+    netext: image 2.1.2.5000, API 1.0.0, built Thu Jan 21 17:33:00 2016
+        [path: C:\tools\diag\Debugging Tools for Windows\_winext-x64\netext.dll]
+    C:\Windows\Microsoft.NET\Framework64\v4.0.30319\SOS.dll: image 4.6.1080.0, API 1.0.0, built Tue Apr 12 03:02:38 2016
+        [path: C:\Windows\Microsoft.NET\Framework64\v4.0.30319\sos.dll]
+...
+```
+
+### Get help for a SOS command ###
+
+SOS commands sometimes get overriden by other extensions help files. In such a case just use `!sos.help <cmd>` command, eg.
+
+    0:000> !sos.help !savemodule
+    -------------------------------------------------------------------------------
+    !SaveModule <Base address> <Filename>
+    ...
+
+
 Usage examples
 --------------
 
@@ -169,42 +222,6 @@ select memory cache stores: `!wfrom -type System.Runtime.Caching.MemoryCache sel
 for each store choose buckets: `!wselect _entries.buckets from {store-addr}`
 
 for each found bucket: `!wselect key._key,val._value.m_value from {bucket-addr}`
-
-CLR debugging setup
--------------------
-
-### Get help for a SOS command ###
-
-SOS commands sometimes get overriden by other extensions help files. In such a case just use `!sos.help <cmd>` command, eg.
-
-    0:000> !sos.help !savemodule
-    -------------------------------------------------------------------------------
-    !SaveModule <Base address> <Filename>
-    ...
-
-### Loading SOS using procdumpext ###
-
-Andrew Richards created a great WinDbg plugin for loading SOS: **procdumpext**:
-
-    0:000> !procdumpext.help
-    [CIAP]
-      !loadsos        - Runs .cordll and .loadby sos
-      !loadpsscor     - Runs .cordll and .load psscor2/4
-      !loadsosex      - Runs .cordll and .load sosex
-                      - Note, sosex is loaded with sos or psscor2/4
-
-      Define PROCDUMPEXT_LOADCORDLL to choose the extension at load
-                      0 = Disabled
-                      1 = SOS + SOSEX
-                      2 = PSSCORx + SOSEX (default)
-
-Using it makes it really simple to load SOS:
-
-    0:000> .load c:\tools\diagnosing\Debugging Tools for Windows\_winext-x64\ProcDumpExt.dll
-    =========================================================================================
-     ProcDumpExt v6.4 - Copyright 2013 Andrew Richards
-    =========================================================================================
-    0:000> !loadsos
 
 Links
 -----

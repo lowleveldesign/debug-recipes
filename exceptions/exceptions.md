@@ -8,6 +8,7 @@ Table of contents:
   - [Using procdump](#procdump)
   - [Using adplus](#adplus)
 - [Analyzing collected information](#analyze)
+  - [Read managed exception information](#exc-managed)
   - [Read exception context](#exc-context)
   - [Exception handlers](#exc-handlers)
   - [Decoding error numbers](#exc-numbers)
@@ -81,6 +82,40 @@ The example in the configuration file creates dumps on `System.ArgumentNullExcep
 More information about Adplus usage can be found in [the Adplus recipe](adplus/adplus.md).
 
 ## <a name="analyze">Analyzing exceptions</a>
+
+### <a name="exc-manager">Read managed exception information</a>
+
+First make sure with the `!Threads` command (SOS) that your current thread is the one with the exception context:
+
+```
+0:000> !Threads
+ThreadCount:      2
+UnstartedThread:  0
+BackgroundThread: 1
+PendingThread:    0
+DeadThread:       0
+Hosted Runtime:   no
+                                                                                                        Lock
+       ID OSID ThreadOBJ           State GC Mode     GC Alloc Context                  Domain           Count Apt Exception
+   0    1 1ec8 000000000055adf0    2a020 Preemptive  0000000002253560:0000000002253FD0 00000000004fb970 0     Ukn System.ArgumentException 0000000002253438
+   5    2 1c74 00000000005851a0    2b220 Preemptive  0000000000000000:0000000000000000 00000000004fb970 0     Ukn (Finalizer)
+```
+
+In the snippet above we can see that the exception was thrown on the thread no. 0 and this is our currently selected thread (in case it's not we would use `~0s` command) so we may use the `!PrintException` command from SOS (alias `!pe`), example:
+
+```
+0:000> !pe
+Exception object: 0000000002253438
+Exception type:   System.ArgumentException
+Message:          v should not be null
+InnerException:   <none>
+StackTrace (generated):
+<none>
+StackTraceString: <none>
+HResult: 80070057
+```
+
+Another option is the `!wpe` command from the netext plugin.
 
 ### <a name="exc-context">Read exception context</a>
 
