@@ -20,6 +20,7 @@ ETW links
 - [Application Analysis with Event Tracing for Windows (ETW)](http://www.codeproject.com/Articles/570690/Application-Analysis-with-Event-Tracing-for-Window)
 - [Use Eventsource to get the duration of a Start Stop of Custom ETW events](http://naveensrinivasan.azurewebsites.net/index.php/2015/06/08/use-eventsource-to-get-the-duration-of-a-start-stop-of-custom-etw-events/)
 - [Creating an ETW Provider Step by Step](https://kallanreed.wordpress.com/2016/05/28/creating-an-etw-provider-step-by-step/)
+- [How can I get fileversion information from a ETL file](http://stackoverflow.com/questions/24700531/how-can-i-get-fileversion-information-from-a-etl-file)
 
 ### Flame graphs
 
