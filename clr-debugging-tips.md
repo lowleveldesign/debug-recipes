@@ -1,6 +1,6 @@
 
-JIT configuration for debugging
-===============================
+CLR general debugging tips
+==========================
 
 Controlling JIT optimization
 ----------------------------
@@ -58,3 +58,12 @@ The ini file must have the same name as the executable with only extension chang
     GenerateTrackingInfo=1
     AllowOptimize=0
 
+Links
+-----
+
+- [.NET Debugging Quick Start -  a list of links for different parts of a .net debugging infrastructure](http://blogs.msdn.com/b/arvindsh/archive/2012/03/14/net-debugging-quick-start.aspx)
+- [.NET Debugging for the Production Environment](http://channel9.msdn.com/Series/-NET-Debugging-Stater-Kit-for-the-Production-Environment)
+- [.NET Debugging Starter Kit: for the Production Environment - 6 great videos about .NET and native debugging](http://channel9.msdn.com/Series/-NET-Debugging-Stater-Kit-for-the-Production-Environment)
+- [Interesting library that binds github sources with solution](https://github.com/GeertvanHorrik/GitHubLink)
+- [Defrag Tools #109 - Writing a CLR Debugger Extension Part 1](http://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-109-Writing-a-CLR-Debugger-Extension-Part-1)
+- [Defrag Tools #110 - Writing a CLR Debugger Extension Part 2](http://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-110-Writing-a-CLR-Debugger-Extension-Part-2)

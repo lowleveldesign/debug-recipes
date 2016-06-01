@@ -47,6 +47,6 @@ ETW links
 
 ### Diagnostics tools based on ETW
 
-- [ClueTool](https://onedrive.live.com/?authkey=!APQbXtD8U-HExzE&id=E6360C54B48A891B!238430&cid=E6360C54B48A891B)
+- [Clint Huffman's ClueTool](https://onedrive.live.com/?id=E6360C54B48A891B!428&cid=E6360C54B48A891B)
 - [UIforETW - User interface for recording and managing ETW traces](https://github.com/google/UIforETW)
 - [EtwDataViewer - Analyze, visualize, and make sense of your ETW logs](http://www.codeproject.com/Articles/632390/EtwDataViewer-Analyze-visualize-and-make-sense-of)

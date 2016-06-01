@@ -262,3 +262,8 @@ Example output:
         >> Domain:Value  00571188:NotInit  <<
     ...
 
+## Links
+
+-[Diagnosing ADO.NET with ETW traces](https://lowleveldesign.wordpress.com/2012/09/07/diagnosing-ado-net-with-etw-traces/)
+ [Read last executed SQL statement from a memory dump](https://lowleveldesign.wordpress.com/2012/06/16/read-last-executed-sql-statement-from-a-memory-dump/)
+
