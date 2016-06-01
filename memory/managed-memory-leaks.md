@@ -119,18 +119,33 @@ Load necessary **plugins**:
 Links
 -----
 
-- [.NET Memory Basics](http://www.simple-talk.com/dotnet/.net-framework/.net-memory-management-basics/)
-- [Large Obect Heap compaction - should I use it?](https://www.simple-talk.com/dotnet/.net-framework/large-object-heap-compaction-should-you-use-it/)
-- [Garbage Collection: Automatic Memory Management in the Microsoft .NET Framework](http://msdn.microsoft.com/en-us/magazine/bb985010.aspx)
-  [Garbage Collection Part 2: Automatic Memory Management in the Microsoft .NET Framework](http://msdn.microsoft.com/en-us/magazine/bb985011.aspx)
 - [Tracking down managed memory leaks (how to find a GC leak)](http://blogs.msdn.com/b/ricom/archive/2004/12/10/279612.aspx)
   [CLR Profiler: Detecting High Memory consuming functions in .NET code](http://www.dotnetspark.com/kb/772-net-best-practice-no-1--detecting-high-memory.aspx)
 - [How to detect and avoid memory and resources leaks in .NET applications](http://madgeek.com/Articles/Leaks/Leaks.en.html)
 - [Investigating Memory Issues](http://msdn.microsoft.com/en-us/magazine/cc163528.aspx)
-- [Learning How Garbage Collectors Work - Part 1](http://mattwarren.github.io/2016/02/04/learning-how-garbage-collectors-work-part-1/)
+- Some tools found on [https://skydrive.live.com/?cid=2b879b9ac7a9e117&sc=documents&id=2B879B9AC7A9E117%21466](https://skydrive.live.com/?cid=2b879b9ac7a9e117&sc=documents&id=2B879B9AC7A9E117%21466)
+
+### Testing ###
+
 - [NBench Testing – Garbage collection](http://www.dotnetalgorithms.com/2016/02/nbench-testing-garbage-collection/)
-- [StackDump - stack dumps for .Net Applications](http://stackdump.codeplex.com/)
+- [dotMemory - .NET memory usage monitoring with unit tests](https://www.jetbrains.com/dotmemory/unit/)
+- [WMemoryProfiler - wraps cdbg to collect GC data](https://wmemoryprofiler.codeplex.com/)
+
+### GC ###
+
+- [.NET Memory Basics](http://www.simple-talk.com/dotnet/.net-framework/.net-memory-management-basics/)
+- [Large Obect Heap compaction - should I use it?](https://www.simple-talk.com/dotnet/.net-framework/large-object-heap-compaction-should-you-use-it/)
+- [Garbage Collection: Automatic Memory Management in the Microsoft .NET Framework](http://msdn.microsoft.com/en-us/magazine/bb985010.aspx)
+  [Garbage Collection Part 2: Automatic Memory Management in the Microsoft .NET Framework](http://msdn.microsoft.com/en-us/magazine/bb985011.aspx)
+- [Learning How Garbage Collectors Work - Part 1](http://mattwarren.github.io/2016/02/04/learning-how-garbage-collectors-work-part-1/)
+- [Large Object Heap Uncovered (an old MSDN article)](https://blogs.msdn.microsoft.com/maoni/2016/05/31/large-object-heap-uncovered-from-an-old-msdn-article/)
+
+### Dumps ###
+
+- [Minidumper - a better way to create managed memory dumps](http://www.codeproject.com/Articles/1102423/Minidumper-a-better-way-to-create-managed-memory-d)
 - [Creating Smaller, But Still Usable, Dumps of .NET Applications](http://blogs.microsoft.co.il/sasha/2015/08/19/minidumper-smaller-dumps-net-applications/)
+- [StackDump - stack dumps for .Net Applications](http://stackdump.codeplex.com/)
+
 
 ### ETW ###
 
