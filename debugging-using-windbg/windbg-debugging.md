@@ -95,16 +95,29 @@ Check threads information
 
 **To list all threads** in a current process use `~` command. Dot (.) in the first column signals a currently selected thread and hash (#) points to a thread on which an exception occurred.
 
-**!runaway** shows quanta of each thread
+**!runaway** shows the time consumed by each thread:
 
-    0:029> !runaway
-     User Mode Time
-      Thread       Time
-      17:828       0 days 0:04:40.578
-      11:380       0 days 0:04:24.046
-      14:288       0 days 0:04:14.296
-      13:4a0       0 days 0:03:58.984
-      29:13e4      0 days 0:01:13.078
+```
+0:029> !runaway 7
+ User Mode Time
+  Thread       Time
+   0:bfc       0 days 0:00:00.031
+   3:10c       0 days 0:00:00.000
+   2:844       0 days 0:00:00.000
+   1:15bc      0 days 0:00:00.000
+ Kernel Mode Time
+  Thread       Time
+   0:bfc       0 days 0:00:00.046
+   3:10c       0 days 0:00:00.000
+   2:844       0 days 0:00:00.000
+   1:15bc      0 days 0:00:00.000
+ Elapsed Time
+  Thread       Time
+   0:bfc       0 days 0:27:19.817
+   1:15bc      0 days 0:27:19.810
+   2:844       0 days 0:27:19.809
+   3:10c       0 days 0:27:19.809
+```
 
 **~~[thread-id]** - in case you would like to use the system thread id you may with this syntax.
 
@@ -150,7 +163,64 @@ To go up the funtion use **gu** command. We can go to a specified address using 
 
 Useful commands are **pc** and **tc** which step or trace to **the next call statement**. **pt** and **tt** step or trace to **the next return statement**.
 
-FIXME wt
+### Watch trace ###
+
+**wt** is a very powerful command and might be excellent at revealing what the function under the cursor is doing, eg.
+
+```
+0:000> wt -l1 -oa -or
+Tracing notepad!NPInit to return address 00007ff6`72c23af5
+   11     0 [  0] notepad!NPInit
+                      call at 00007ff6`72c27749
+   14     0 [  1]   notepad!_chkstk rax = 1570
+   20    14 [  0] notepad!NPInit
+                      call at 00007ff6`72c27772
+   11     0 [  1]   USER32!RegisterWindowMessageW rax = c06f
+   26    25 [  0] notepad!NPInit
+                      call at 00007ff6`72c2778f
+   11     0 [  1]   USER32!RegisterWindowMessageW rax = c06c
+   31    36 [  0] notepad!NPInit
+                      call at 00007ff6`72c277a5
+    6     0 [  1]   USER32!NtUserGetDC rax = 9011652
+>> More than one level popped 0 -> 0
+   37    42 [  0] notepad!NPInit
+                      call at 00007ff6`72c277bc
+ 1635     0 [  1]   notepad!InitStrings rax = 1
+   42  1677 [  0] notepad!NPInit
+                      call at 00007ff6`72c277d0
+    8     0 [  1]   USER32!LoadCursorW rax = 10007
+   46  1685 [  0] notepad!NPInit
+                      call at 00007ff6`72c277e4
+    8     0 [  1]   USER32!LoadCursorW rax = 10009
+   50  1693 [  0] notepad!NPInit
+                      call at 00007ff6`72c277fb
+   24     0 [  1]   USER32!LoadAcceleratorsW
+   24     0 [  1]   USER32!LoadAcc rax = 0
+   59  1741 [  0] notepad!NPInit
+                      call at 00007ff6`72c27d84
+    6     0 [  1]   notepad!_security_check_cookie rax = 0
+   69  1747 [  0] notepad!NPInit
+
+1816 instructions were executed in 1815 events (0 from other threads)
+
+Function Name                               Invocations MinInst MaxInst AvgInst
+USER32!LoadAcc                                        1      24      24      24
+USER32!LoadAcceleratorsW                              1      24      24      24
+USER32!LoadCursorW                                    2       8       8       8
+USER32!NtUserGetDC                                    1       6       6       6
+USER32!RegisterWindowMessageW                         2      11      11      11
+notepad!InitStrings                                   1    1635    1635    1635
+notepad!NPInit                                        1      69      69      69
+notepad!_chkstk                                       1      14      14      14
+notepad!_security_check_cookie                        1       6       6       6
+
+1 system call was executed
+
+Calls  System Call
+    1  USER32!NtUserGetDC
+```
+
+The first number in the trace output specifies the number of instructions that were executed from the beginning of the trace in a given function (it is always incrementing), the second number specifies the number of instructions executed in the child functions (it is also always incrementing), and the third represents the depth of the function in the stack (parameter -l).
 
 ### Breakpoints ###
 
