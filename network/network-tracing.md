@@ -2,8 +2,15 @@
 Network tracing
 ===============
 
-Traces available in .NET applications
--------------------------------------
+In this recipe:
+
+- [Network traces in .NET](#dotnet)
+- [Tracing using proxy](#proxy)
+- [Tracing using ETW  (netsh, perfview, Message Analyzer)](#etw)
+
+
+<a name="dotnet">Traces available in .NET applications</a>
+----------------------------------------------------
 
 All classes from `System.Net`, if configured properly, may provide a lot of interesting logs through the default System.Diagnostics mechanisms.
 
@@ -95,8 +102,8 @@ If you are using NLog in your application you may redirect the System.Net trace 
 </system.diagnostics>
 ```
 
-Logging application requests in a proxy
----------------------------------------
+<a name="proxy">Logging application requests in a proxy</a>
+-----------------------------------------------------------
 
 When you make a request in code you should remember to configure its proxy according to the system settings, eg.:
 
@@ -122,12 +129,16 @@ Then run [Fiddler](http://www.telerik.com/fiddler) (or any other proxy) and requ
 
 **NOTE for WCF clients**: WCF has its own proxy settings, to use the default proxy add an `useDefaultWebProxy=true` attribute to your binding.
 
-ETW network traces
-------------------
+<a name="etw">ETW network traces</a>
+------------------------------------
 
-### Using perfview ###
+### Using PerfView ###
 
-FIXME
+There are two options in PerfView to collect network traces next to the usual trace: **NetMon** and **Net Capture**:
+
+![perfview-options](perfview-netmon-option.png)
+
+I recommend checking the NetMon option as it will generate a seperate .etl file containing just the network traces. We may later open this file in [Message Analyzer](https://www.microsoft.com/en-us/download/details.aspx?id=44226) and analyze the collected data.
 
 ### Using netsh ###
 
