@@ -231,5 +231,7 @@ Links
 
 ### Tools and libraries ###
 
+- [Wireshark](https://www.wireshark.org/)
 - [Nmap Project's packet sniffing library for Windows, based on WinPcap/Libpcap improved with NDIS 6 and LWF](https://github.com/nmap/npcap)
+- [Network Miner - a network packet collector](http://www.netresec.com/?page=NetworkMiner)
 
