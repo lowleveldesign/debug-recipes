@@ -124,6 +124,7 @@ Then you need to import those templates into perfmon and creat user-defined Data
   <http://sqlblog.com/blogs/allen_white/archive/2012/03/02/setup-perfmon-with-powershell-and-logman.aspx>
 - Load Perfmon Log Data into SQL Server with PowerShell
   <http://sqlblog.com/blogs/allen_white/archive/2012/03/03/load-perfmon-log-data-into-sql-server-with-powershell.aspx>
+- [5 Monitoring Queries for SQL Server](https://www.simple-talk.com/sql/database-administration/5-monitoring-queries-for-sql-server/)
 
 SQLDiag
 -------
