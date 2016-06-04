@@ -70,7 +70,7 @@ TBD
 - [mdbg (debugger)](debugging-using-mdbg/mdbg.exe.md)
 - [WinDbg (debugger)](debugging-using-windbg/windbg-debugging.md)
   - [.NET in WinDbg](debugging-using-windbg/windbg-clr-debugging.md)
-  - [Interesting WinDbg extensions](debugging-using-windbg/windbg-extensions)
+  - [Interesting WinDbg extensions](debugging-using-windbg/windbg-extensions.md)
 - [DebugDiag (debugger)](debugdiag/debugdiag.md)
 - [Adplus (debugger)](exceptions/adplus/adplus.md)
 - [PerfView (profiler)](perfview/perfview.exe.md)
