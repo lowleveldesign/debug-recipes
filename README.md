@@ -76,7 +76,7 @@ TBD
 - [Adplus (debugger)](exceptions/adplus/adplus.md)
 - [PerfView (profiler)](perfview/perfview.exe.md)
 - [Windows built-in tools](windows-system-perftools.md)
-- [A list of other .NET diagnostics tools](clr-diagtools.md)
+- [Other .NET diagnostics tools](clr-diagtools.md)
 
 ## Libraries
 
