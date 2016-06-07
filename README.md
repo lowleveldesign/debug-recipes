@@ -10,7 +10,7 @@ I hope you will find them useful. Any contribution is welcome.
 
 ## General advice
 
-Make sure you have [valid symbols configuration](windows-debugging-configuration.md) in your system. You may also have a look at a list of my [debugging tips](howto.md). If you are debugging a .NET application you may first [check the .NET debugging tips](clr-general-debugging-tips.md).
+Make sure you have [valid symbols configuration](windows-debugging-configuration.md) in your system. You may also have a look at a list of my [debugging tips](howto.md). If you are debugging a .NET application you may first [check the .NET debugging tips](clr-debugging-tips.md).
 
 ---------------------
 
@@ -30,6 +30,7 @@ Choose a recipe corresponding to your application problem (if a recipe requires 
 - Slow database queries:
   - [Using ADO.NET](ado.net/ado.net-debugging.md)
   - [Using MySql connector](databases/mysql/mysql.net-connector-usage.md)
+- [Framework installation or GAC](clr-information.md)
 
 Problems in **.NET Web Applications**:
 
@@ -75,4 +76,9 @@ TBD
 - [Adplus (debugger)](exceptions/adplus/adplus.md)
 - [PerfView (profiler)](perfview/perfview.exe.md)
 - [Windows built-in tools](windows-system-perftools.md)
+- [A list of other .NET diagnostics tools](clr-diagtools.md)
+
+## Libraries
+
+- [A list of .NET diagnostics libraries](clr-diaglibs.md)
 
