@@ -231,6 +231,7 @@ Links
 - [How to display a DateTime in WinDbg using SOS](http://blogs.iis.net/carlosag/archive/2014/10/24/how-to-display-a-datetime-in-windbg-using-sos.aspx)
 - [Andrew Richard's onedrive](https://onedrive.live.com/?authkey=!AJeSzeiu8SQ7T4w&id=DAE128BD454CF957!7152&cid=DAE128BD454CF957)
 - [Using SoS to debug 32-bit code in a 64-bit dump with WinDbg](https://poizan.dk/blog/2015/10/15/using-sos-to-debug-32-bit-code-in-a-64-bit-dump-with-windbg/)
+- [How to list stowed exceptions?](http://stackoverflow.com/questions/34462048/sos-debugging-extensions-for-microsoft-net-coreruntime/34470061#34470061)
 
 ### loading mscordacwks.dll ###
 
