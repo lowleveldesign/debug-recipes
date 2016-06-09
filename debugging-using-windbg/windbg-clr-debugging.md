@@ -45,7 +45,7 @@ Extension DLL chain:
 ...
 ```
 
-### Get help for a SOS command ###
+### Get help for commands in .NET WinDbg extensions ###
 
 SOS commands sometimes get overriden by other extensions help files. In such a case just use `!sos.help <cmd>` command, eg.
 
@@ -54,6 +54,9 @@ SOS commands sometimes get overriden by other extensions help files. In such a c
     !SaveModule <Base address> <Filename>
     ...
 
+SOSEX help can be seen using the `!sosexhelp [command]` command.
+
+Netext help can be nicely rendered in the command window: `.browse !whelp`.
 
 Usage examples
 --------------
@@ -87,6 +90,10 @@ Break when `NullReferenceException` is thrown:
 
 ### Find a value of a static field [SOSEX,Netext] ###
 
+In **SOSEX** you might just call `!mdt <MT-address>` and the static class fields will be shown.
+
+If you have an instance of a given type, the `!wdo` command from **netext** will show static fields values next to the instance fields values.
+
 In SOS you need to first find the EEClass address for a given type (by calling for instance `!DumpMT`) and then use `!DumpClass`:
 
     0:000> !DumpClass /d 00c1af5c
@@ -110,11 +117,20 @@ In SOS you need to first find the EEClass address for a given type (by calling f
     69c23e18  4000042       40        System.String  0   static 00e21598 MachineName
     69be0cbc  4000043       44      System.Object[]  0   static 00e215b0 NoApps
 
-If you have an instance of a given type it will be probably faster to simply use netext `!wdo` which displays static fields automatically when dumping an object.
+### Find a type or method ###
 
-### Find a type or method (Name2EE) [SOS] ###
+We may use the `!mx <Filter String>` command from **SOSEX**, eg.:
 
-**Name2EE** searches through all the domains and lists matching methods and types, eg.
+    0:005> !mx *TestWorker
+    AppDomain 74c76670 (Shared Domain)
+    ---------------------------------------------------------
+
+    AppDomain 00483040 (TopshelfHang.exe)
+    ---------------------------------------------------------
+    module: TopshelfHang
+      class: TopshelfHang.TestWorker
+
+Another option is the `!Name2EE` command from **SOS**, eg.:
 
     0:000> !Name2EE * System.Diagnostics.EventLog.SourceExists
     ...
@@ -140,45 +156,31 @@ Example for dumping GC roots for IP address objects:
 
     .foreach (t { !wfrom -nofield -nospace -type System.Net.IPAddress select $addr(); }) { !GCRoot ${t} }
 
+### Dump all objects with thin locks set ###
+
+Thin lock is set on a object if the object header hasn't been used and we call `Monitor.Enter` on this object. The thin lock in this case contains the thread id which acquired the object. To dump all the objects from the heap with the thin locks use the `!DumpHeap -thinlock` command.
+
 Work with types
 --------------
 
-### Decode a GUID value ###
+### Decode a value object (eg. DateTime, TimeSpan, Guid) ###
 
-The `!wdo` command from netext nicely decode Guids. If necessary you may use the `!weval` and `$toguid` function.
+The `!wdo` command from netext nicely decode Guids. If necessary you may use the `!weval` and `$toguid` function. Also the `!mdt <addr>` command from **SOSEX** is very good at decoding value objects.
 
-### Decode a DateTime value ###
-
-The `!wdo` command from netext prints readable date for fields of date type. If you need to decode a specific DateTime object, dump it:
-
-```
-0:019> !do 09443a74
-Name: System.DateTime
-MethodTable: 79308184
-EEClass: 790e0564
-Size: 16(0x10) bytes
- (C:\WINDOWS\assembly\GAC_32\mscorlib\2.0.0.0__b77a5c561934e089\mscorlib.dll)
-Fields:
-      MT    Field   Offset                 Type VT     Attr    Value Name
-79309428  40000f4        4        System.UInt64  1 instance 634915192800000000 dateData
-79332cc0  40000f0       30       System.Int32[]  0   shared   static DaysToMonth365
-    >> Domain:Value  0015f7c8:01082d10 <<
-79332cc0  40000f1       34       System.Int32[]  0   shared   static DaysToMonth366
-    >> Domain:Value  0015f7c8:01082d50 <<
-79308184  40000f2       28      System.DateTime  1   shared   static MinValue
-    >> Domain:Value  0015f7c8:01082cf0 <<
-79308184  40000f3       2c      System.DateTime  1   shared   static MaxValue
-    >> Domain:Value  0015f7c8:01082d00 <<
-```
-
-Copy the `dateData` and use `!weval` function:
+For datetime you may also use the `dateData` field value and `!weval` function (netext):
 
 ```
 0:023> !weval $tickstodatetime(0n634915192800000000)
 calculated: 2012-12-19 13:08:00
 ```
+For timestamps copy the `_ticks` field and use `!weval`:
 
-or powershell
+```
+0:023> !weval $tickstotimespan(0xb2d05e00)
+calculated: 00:05:00
+```
+
+Powershell:
 
 ```powershell
 > new-object System.DateTime 634915192800000000
@@ -186,18 +188,7 @@ or powershell
 19 grudnia 2012 13:08:00
 ```
 
-### Decode a timespan value ###
-
-By default netext shows the value of a timespan field when calling `!wdo`, eg.
-
-```
-000007feef993d68               System.Runtime.Caching.ObjectCache +0000                                   _cache 00000000ffb3ab50
-000007fef84d9360                                  System.TimeSpan +0008   <DefaultExpirationTime>k__BackingField -mt 000007FEF84D9360 000000042B700DA0 01:00:00
-000007fef84d9360                                  System.TimeSpan +0010 <DefaultRefreshTresholdTime>k__BackingFi -mt 000007FEF84D9360 000000042B700DA8 00:05:00
-000007fef7e0ccb8 Static  System.Collections.Concurrent.Concurrent +0000                                    Locks 00000001ffb38a10
-```
-
-But if only have the address of the timestamp instance, dump it:
+If you only have the address of the value object, dump it with `!wdo -mt <MT> <addr>` or `!mdt <MT> <addr>`, eg.:
 
 ```
 0:023> !wdo -mt 000007fef84d9360 000000042b700da8
@@ -206,13 +197,6 @@ Assembly Name: C:\Windows\Microsoft.Net\assembly\GAC_64\mscorlib\v4.0_4.0.0.0__b
 Inherits: System.ValueType System.Object (000007FEF84D3390 000007FEF84D13E8)
 000007fef84eb350                                     System.Int64 +0000                                   _ticks b2d05e00 (0n3000000000)
 ...
-```
-
-Copy the value of the `_ticks` field and use `!weval`:
-
-```
-0:023> !weval $tickstotimespan(0xb2d05e00)
-calculated: 00:05:00
 ```
 
 ### Dump MemoryCache content ###
@@ -241,5 +225,4 @@ Links
 - <http://blogs.msdn.com/b/asiatech/archive/2010/09/10/how-to-load-the-specified-mscordacwks-dll-for-managed-debugging-when-multiple-net-runtime-are-loaded-in-one-process.aspx>
 - <http://blogs.microsoft.co.il/blogs/sasha/archive/2012/05/19/obtaining-mscordacwks-dll-for-clr-versions-you-don-t-have.aspx?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+sashag+%28All+Your+Base+Are+Belong+To+Us%29&utm_content=Google+Reader>
 - [Rozwiązywanie problemów z mscordacwks](http://zine.net.pl/blogs/mgrzeg/archive/2014/01/15/rozwi-zywanie-problem-w-z-mscordacwks.aspx)
-
 - [Mscordacwks/SOS debugging archive - a list of all versions of mscordacwks and SOS](http://www.sos.debugging.wellisolutions.de/)
