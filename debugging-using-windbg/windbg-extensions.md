@@ -1,5 +1,15 @@
 
-# Windbg extensions #
+Windbg extensions
+=================
+
+Extensions for managed debugging
+--------------------------------
+
+### SOSEX ###
+
+From <http://www.stevestechspot.com/>
+
+Great extension with a log of useful commands for .NET debugging. More [here](windbg-clr-debugging.md).
 
 ## Netext ##
 
@@ -9,6 +19,39 @@
 - [Getting started with NetExt](http://blogs.msdn.com/b/rodneyviana/archive/2015/03/10/getting-started-with-netext.aspx)
 - [The case of the non-responsive MVC Web Application](http://blogs.msdn.com/b/rodneyviana/archive/2015/03/27/the-case-of-the-non-responsive-mvc-web-application.aspx)
 - [Debugging - NetExt WinDbg Extension](http://www.debugthings.com/2015/03/31/netext-windbg/)
+- [NetExt – SOS on steroids](https://lowleveldesign.wordpress.com/2015/07/09/netext-sos-on-steroids/)
+
+## SOSWOW64 ##
+
+From: <https://github.com/poizan42/soswow64>
+
+Makes SOS work on 64-bit dumps taken from a 32-bit processes on Win64.
+
+Extensions for managed and native debugging
+-------------------------------------------
+
+## PDE ##
+
+from [Andrew Richard's onedrive](https://onedrive.live.com/?authkey=!AJeSzeiu8SQ7T4w&id=DAE128BD454CF957!7152&cid=DAE128BD454CF957)
+
+A lot of very useful commands which make work with the process memory much easier. An extract of the help can be found [here](pde.help.txt).
+
+## DmpExt ##
+
+from <http://crashdmp.wordpress.com/2014/10/08/dmpext-windbg-extension/>
+
+Usage:
+
+    0: kd> !dmpext
+
+    DmpExt 1.0
+    -----------
+    Target OS build: Win NT 6.2
+    Available commands:
+    -stack: Display the crash dump driver stack
+    -crashdmp: Display details about crashdmp.sys
+    -filters: Display details about crash dump filters
+
 
 ## Powershell extension for WinDbg ##
 
@@ -26,22 +69,6 @@ Scripts:
 
 - [vtfinder - script to dynamically find vtables on heap](https://github.com/iSECPartners/vtfinder)
 - [Heap tracing with WinDbg and Python](https://labs.mwrinfosecurity.com/blog/heap-tracing-with-windbg-and-python/)
-
-## DmpExt ##
-
-from <http://crashdmp.wordpress.com/2014/10/08/dmpext-windbg-extension/>
-
-Usage:
-
-    0: kd> !dmpext
-
-    DmpExt 1.0
-    -----------
-    Target OS build: Win NT 6.2
-    Available commands:
-    -stack: Display the crash dump driver stack
-    -crashdmp: Display details about crashdmp.sys
-    -filters: Display details about crash dump filters
 
 ## WinDBG Anti-RootKit extension ##
 
@@ -79,7 +106,8 @@ Windbg extension to extract file from Cache Manager.
 
 <https://github.com/JumpCallPop/dumpfiles>
 
-## Developing extensions ##
+Developing extensions
+---------------------
 
 - [WinDBG Extension written completely in C#](https://blogs.msdn.microsoft.com/rodneyviana/2016/05/18/windbg-extension-written-completely-in-c/)
 

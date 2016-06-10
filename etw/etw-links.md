@@ -31,12 +31,13 @@ ETW links
 
 - [Becoming an Xperf Xpert Part 6: RIP Xperf. Time to Learn Windows Performance Analyzer! (WPA, WPR)](http://blogs.technet.com/b/askpfeplat/archive/2013/08/12/becoming-an-xperf-xpert-part-6-rip-xperf-time-to-learn-windows-performance-analyzer.aspx)
 - [New Windows Performance Toolkit](http://geekswithblogs.net/akraus1/archive/2013/08/03/153594.aspx)
-- [An easy way to use XPerf and Event Tracing for Windows (ETW) - tutorial on creating your own event provider](http://nemetht.wordpress.com/2013/03/18/an-easy-way-to-use-xperf-and-event-tracing-for-windows-etw/)
 - [Semantic Tracing For .NET 4.0 (tutorial on using your own event provider)](http://geekswithblogs.net/akraus1/archive/2013/06/02/153041.aspx)
 - [Troubleshooting Windows Performance Issues Using the Windows Performance Recorder](http://blogs.technet.com/b/askpfeplat/archive/2013/03/22/troubleshooting-windows-performance-issues-using-the-windows-performance-recorder.aspx)
 - [More on using EventSources with XPERF or WPR](https://blogs.msdn.microsoft.com/vancem/2014/04/10/more-on-using-eventsources-with-xperf-or-wpr/)
 - [Load Perfmon Log Data into SQL Server with PowerShell](http://sqlblog.com/blogs/allen_white/archive/2012/03/03/load-perfmon-log-data-into-sql-server-with-powershell.aspx)
 - [Windows Performance Analyzer on MSDN](http://msdn.microsoft.com/en-us/library/windows/hardware/hh448170.aspx)
+- [Getting the schema for Windows Performance Recorder profiles](https://blogs.msdn.microsoft.com/matthew_van_eerde/2016/02/09/getting-the-schema-for-windows-performance-recorder-profiles/)
+- [Authoring Recording Profiles](https://msdn.microsoft.com/en-us/library/hh448223.aspx)
 
 ### XPerf ###
 
@@ -44,6 +45,7 @@ ETW links
 - [A series of great posts on XPerf](http://randomascii.wordpress.com/category/xperf/)
 - [XPerf - Windows Performance Toolkit (Sasha Goldstein)](http://blogs.microsoft.co.il/blogs/sasha/archive/2008/03/15/xperf-windows-performance-toolkit.aspx)
 - [Windows Performance Toolkit - Xperf (NtDebugging blog)](http://blogs.msdn.com/b/ntdebugging/archive/2008/04/03/windows-performance-toolkit-xperf.aspx)
+- [An easy way to use XPerf and Event Tracing for Windows (ETW) - tutorial on creating your own event provider](http://nemetht.wordpress.com/2013/03/18/an-easy-way-to-use-xperf-and-event-tracing-for-windows-etw/)
 
 ### Diagnostics tools based on ETW
 

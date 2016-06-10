@@ -6,17 +6,12 @@
     version="1.0"
     xml:lang="en-us"
     >
-  <xs:simpleType name="SystemCollectorNameEnumeration">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="NT Kernel Logger"/>
-      <xs:enumeration value="Circular Kernel Context Logger"/>
-    </xs:restriction>
-  </xs:simpleType>
   <xs:simpleType name="SystemKeywordEnumeration">
     <xs:restriction base="xs:string">
       <xs:enumeration value="AllFaults"/>
       <xs:enumeration value="Alpc"/>
       <xs:enumeration value="AntiStarvation"/>
+      <xs:enumeration value="CacheFlush"/>
       <xs:enumeration value="CC"/>
       <xs:enumeration value="ClockInterrupt"/>
       <xs:enumeration value="ClusterOff"/>
@@ -27,6 +22,7 @@
       <xs:enumeration value="DiskIO"/>
       <xs:enumeration value="DiskIOInit"/>
       <xs:enumeration value="DPC"/>
+      <xs:enumeration value="DPCQueue"/>
       <xs:enumeration value="Drivers"/>
       <xs:enumeration value="FileIO"/>
       <xs:enumeration value="FileIOInit"/>
@@ -36,7 +32,7 @@
       <xs:enumeration value="FilterIOFastIO"/>
       <xs:enumeration value="FilterIOInit"/>
       <xs:enumeration value="FootPrint"/>
-      <xs:enumeration value="HalClock"/>
+      <xs:enumeration value="KeClock"/>
       <xs:enumeration value="Handle"/>
       <xs:enumeration value="HardFaults"/>
       <xs:enumeration value="IdleStates"/>
@@ -44,7 +40,6 @@
       <xs:enumeration value="Interrupt"/>
       <xs:enumeration value="KernelQueue"/>
       <xs:enumeration value="Loader"/>
-      <xs:enumeration value="LoadBalancer"/>
       <xs:enumeration value="Memory"/>
       <xs:enumeration value="MemoryInfo"/>
       <xs:enumeration value="MemoryInfoWS"/>
@@ -54,6 +49,7 @@
       <xs:enumeration value="OpticalIOInit"/>
       <xs:enumeration value="Pool"/>
       <xs:enumeration value="Power"/>
+      <xs:enumeration value="PmcProfile"/>
       <xs:enumeration value="ProcessCounter"/>
       <xs:enumeration value="ProcessFreeze"/>
       <xs:enumeration value="ProcessThread"/>
@@ -62,14 +58,21 @@
       <xs:enumeration value="Registry"/>
       <xs:enumeration value="RegistryHive"/>
       <xs:enumeration value="SampledProfile"/>
+      <xs:enumeration value="Session"/>
       <xs:enumeration value="SpinLock"/>
       <xs:enumeration value="SplitIO"/>
       <xs:enumeration value="SynchronizationObjects"/>
       <xs:enumeration value="SystemCall"/>
       <xs:enumeration value="ThreadPriority"/>
       <xs:enumeration value="Timer"/>
+      <xs:enumeration value="VAMap"/>
       <xs:enumeration value="VirtualAllocation"/>
       <xs:enumeration value="WakeCounter"/>
+      <xs:enumeration value="WakeDrop"/>
+      <xs:enumeration value="WakeEvent"/>
+      <xs:enumeration value="WDFDPC"/>
+      <xs:enumeration value="WDFInterrupt"/>
+      <xs:enumeration value="HiberRundown"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="SystemStackEnumeration">
@@ -92,15 +95,14 @@
       <xs:enumeration value="CcWorkitemDequeue"/>
       <xs:enumeration value="CcWorkitemEnqueue"/>
       <xs:enumeration value="CcWriteBehind"/>
-      <xs:enumeration value="ChargeWakeCounterUser"/>
-      <xs:enumeration value="ChargeWakeCounterDevice"/>
-      <xs:enumeration value="ChargeWakeCounterKernel"/>
-      <xs:enumeration value="ChargeWakeCounterPower"/>
       <xs:enumeration value="ContiguousMemoryGeneration"/>
+      <xs:enumeration value="CacheFlush"/>
       <xs:enumeration value="CSwitch"/>
       <xs:enumeration value="DiskFlushInit"/>
       <xs:enumeration value="DiskReadInit"/>
       <xs:enumeration value="DiskWriteInit"/>
+      <xs:enumeration value="DpcEnqueue"/>
+      <xs:enumeration value="DpcExecute"/>
       <xs:enumeration value="ExecutiveResource"/>
       <xs:enumeration value="FileCleanup"/>
       <xs:enumeration value="FileClose"/>
@@ -133,12 +135,6 @@
       <xs:enumeration value="ImageUnload"/>
       <xs:enumeration value="KernelQueueEnqueue"/>
       <xs:enumeration value="KernelQueueDequeue"/>
-      <xs:enumeration value="KernelSignal"/>
-      <xs:enumeration value="KernelSignalInit"/>
-      <xs:enumeration value="KernelSync"/>
-      <xs:enumeration value="KernelSyncAll"/>
-      <xs:enumeration value="KernelWaitSync"/>
-      <xs:enumeration value="KernelWaitSyncAll"/>
       <xs:enumeration value="MapFile"/>
       <xs:enumeration value="Mark"/>
       <xs:enumeration value="MiniFilterPreOpInit"/>
@@ -147,6 +143,7 @@
       <xs:enumeration value="ObjectDelete"/>
       <xs:enumeration value="ObjectReference"/>
       <xs:enumeration value="PageAccess"/>
+      <xs:enumeration value="PageAccessEx"/>
       <xs:enumeration value="PagefaultAV"/>
       <xs:enumeration value="PagefaultCopyOnWrite"/>
       <xs:enumeration value="PagefaultDemandZero"/>
@@ -159,6 +156,8 @@
       <xs:enumeration value="PageRangeAccess"/>
       <xs:enumeration value="PageRangeRelease"/>
       <xs:enumeration value="PageRelease"/>
+      <xs:enumeration value="PageRemovedfromWorkingSet"/>
+      <xs:enumeration value="PmcInterrupt"/>
       <xs:enumeration value="PoolAllocation"/>
       <xs:enumeration value="PoolAllocationSession"/>
       <xs:enumeration value="PoolFree"/>
@@ -205,10 +204,6 @@
       <xs:enumeration value="RegHiveDestroy"/>
       <xs:enumeration value="RegHiveLink"/>
       <xs:enumeration value="RegHiveDirty"/>
-      <xs:enumeration value="ReleaseWakeCounterUser"/>
-      <xs:enumeration value="ReleaseWakeCounterDevice"/>
-      <xs:enumeration value="ReleaseWakeCounterKernel"/>
-      <xs:enumeration value="ReleaseWakeCounterPower"/>
       <xs:enumeration value="SplitIO"/>
       <xs:enumeration value="SystemCallEnter"/>
       <xs:enumeration value="SystemCallExit"/>
@@ -232,6 +227,22 @@
       <xs:enumeration value="UnMapFile"/>
       <xs:enumeration value="VirtualAllocation"/>
       <xs:enumeration value="VirtualFree"/>
+      <xs:enumeration value="WakeChargeUser"/>
+      <xs:enumeration value="WakeChargeExecution"/>
+      <xs:enumeration value="WakeChargeKernel"/>
+      <xs:enumeration value="WakeChargeInstrumentation"/>
+      <xs:enumeration value="WakeReleaseUser"/>
+      <xs:enumeration value="WakeReleaseExecution"/>
+      <xs:enumeration value="WakeReleaseKernel"/>
+      <xs:enumeration value="WakeReleaseInstrumentation"/>
+      <xs:enumeration value="WakeDropUser"/>
+      <xs:enumeration value="WakeDropExecution"/>
+      <xs:enumeration value="WakeDropKernel"/>
+      <xs:enumeration value="WakeDropInstrumentation"/>
+      <xs:enumeration value="WakeEventUser"/>
+      <xs:enumeration value="WakeEventExecution"/>
+      <xs:enumeration value="WakeEventKernel"/>
+      <xs:enumeration value="WakeEventInstrumentation"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="LoggingModeEnumeration">
@@ -453,6 +464,33 @@
       </xs:element>
     </xs:sequence>
   </xs:group>
+  <xs:simpleType name="CaptureStateTimeoutValue">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:integer">
+          <xs:minInclusive value="0"/>
+          <xs:maxInclusive value="4294967"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="infinite"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:attributeGroup name="CaptureStateAttributeGroup">
+    <xs:attribute
+        name="Operation"
+        type="OperationEnumeration"
+        use="optional"
+        />
+    <xs:attribute
+        name="Timeout"
+        type="CaptureStateTimeoutValue"
+        use="optional"
+        />
+  </xs:attributeGroup>
   <xs:group name="EventProviderCaptureStateOnStartGroup">
     <xs:sequence>
       <xs:element
@@ -469,11 +507,7 @@
                 type="EventProviderKeywordType"
                 />
           </xs:sequence>
-          <xs:attribute
-              name="Operation"
-              type="OperationEnumeration"
-              use="optional"
-              />
+          <xs:attributeGroup ref="CaptureStateAttributeGroup"/>
         </xs:complexType>
         <xs:key name="EventProviderCaptureStateOnStartKey">
           <xs:selector xpath="./*"/>
@@ -498,13 +532,34 @@
                 type="EventProviderKeywordType"
                 />
           </xs:sequence>
-          <xs:attribute
-              name="Operation"
-              type="OperationEnumeration"
-              use="optional"
-              />
+          <xs:attributeGroup ref="CaptureStateAttributeGroup"/>
         </xs:complexType>
         <xs:key name="EventProviderCaptureStateOnSaveKey">
+          <xs:selector xpath="./*"/>
+          <xs:field xpath="@Value"/>
+        </xs:key>
+      </xs:element>
+    </xs:sequence>
+  </xs:group>
+  <xs:group name="EventProviderCaptureStateOnDemandGroup">
+    <xs:sequence>
+      <xs:element
+          maxOccurs="unbounded"
+          minOccurs="0"
+          name="CaptureStateOnDemand"
+          >
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element
+                maxOccurs="unbounded"
+                minOccurs="1"
+                name="Keyword"
+                type="EventProviderKeywordType"
+                />
+          </xs:sequence>
+          <xs:attributeGroup ref="CaptureStateAttributeGroup"/>
+        </xs:complexType>
+        <xs:key name="EventProviderCaptureStateOnDemandKey">
           <xs:selector xpath="./*"/>
           <xs:field xpath="@Value"/>
         </xs:key>
@@ -524,8 +579,8 @@
         />
     <xs:attribute
         name="Name"
-        type="SystemCollectorNameEnumeration"
-        use="required"
+        type="xs:string"
+        use="optional"
         />
     <xs:attribute
         name="Realtime"
@@ -563,12 +618,17 @@
         />
     <xs:attribute
         name="Value"
-        type="xs:unsignedLong"
+        type="xs:decimal"
         use="required"
         />
     <xs:attribute
         name="PercentageOfTotalMemory"
         type="xs:boolean"
+        use="optional"
+        />
+    <xs:attribute
+        name="MaximumBufferSpace"
+        type="xs:unsignedLong"
         use="optional"
         />
   </xs:complexType>
@@ -581,6 +641,47 @@
     <xs:attribute
         name="Value"
         type="xs:unsignedLong"
+        use="required"
+        />
+  </xs:complexType>
+  <xs:simpleType name="FileModeEnumeration">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Circular"/>
+      <xs:enumeration value="Sequential"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="FileMaxValue">
+    <xs:restriction base="xs:unsignedLong">
+      <xs:minInclusive value="0"/>
+      <xs:maxInclusive value="16"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="MaximumFileSizeType">
+    <xs:attribute
+        name="Operation"
+        type="OperationEnumeration"
+        use="optional"
+        />
+    <xs:attribute
+        name="Value"
+        type="xs:unsignedLong"
+        use="required"
+        />
+    <xs:attribute
+        name="FileMode"
+        type="FileModeEnumeration"
+        use="optional"
+        />
+  </xs:complexType>
+  <xs:complexType name="FileMaxType">
+    <xs:attribute
+        name="Operation"
+        type="OperationEnumeration"
+        use="optional"
+        />
+    <xs:attribute
+        name="Value"
+        type="FileMaxValue"
         use="required"
         />
   </xs:complexType>
@@ -616,6 +717,18 @@
           name="StackCaching"
           type="StackCachingType"
           />
+      <xs:element
+          maxOccurs="1"
+          minOccurs="0"
+          name="MaximumFileSize"
+          type="MaximumFileSizeType"
+          />
+      <xs:element
+          maxOccurs="1"
+          minOccurs="0"
+          name="FileMax"
+          type="FileMaxType"
+          />
     </xs:sequence>
   </xs:group>
   <xs:group name="EventBufferElementGroup">
@@ -637,6 +750,18 @@
           minOccurs="0"
           name="StackCaching"
           type="StackCachingType"
+          />
+      <xs:element
+          maxOccurs="1"
+          minOccurs="0"
+          name="MaximumFileSize"
+          type="MaximumFileSizeType"
+          />
+      <xs:element
+          maxOccurs="1"
+          minOccurs="0"
+          name="FileMax"
+          type="FileMaxType"
           />
     </xs:sequence>
   </xs:group>
@@ -694,6 +819,7 @@
       <xs:group ref="EventProviderKeywordsGroup"/>
       <xs:group ref="EventProviderCaptureStateOnStartGroup"/>
       <xs:group ref="EventProviderCaptureStateOnSaveGroup"/>
+      <xs:group ref="EventProviderCaptureStateOnDemandGroup"/>
     </xs:sequence>
     <xs:attribute
         name="Id"
@@ -742,6 +868,16 @@
         />
     <xs:attribute
         name="Strict"
+        type="xs:boolean"
+        use="optional"
+        />
+    <xs:attribute
+        name="ProcessExeFilter"
+        type="xs:string"
+        use="optional"
+        />
+    <xs:attribute
+        name="EventKey"
         type="xs:boolean"
         use="optional"
         />
@@ -1045,6 +1181,105 @@
       </xs:element>
     </xs:sequence>
   </xs:group>
+  <xs:complexType name="TraceMergePropertiesCustomEventType">
+    <xs:attribute
+        name="Value"
+        type="TraceMergePropertiesCustomEventsEnumeration"
+        />
+  </xs:complexType>
+  <xs:complexType name="DeletePreMergedTraceFilesType">
+    <xs:attribute
+        name="Value"
+        type="xs:boolean"
+        use="optional"
+        />
+  </xs:complexType>
+  <xs:complexType name="FileCompressionType">
+    <xs:attribute
+        name="Value"
+        type="xs:boolean"
+        use="optional"
+        />
+  </xs:complexType>
+  <xs:complexType name="InjectOnlyType">
+    <xs:attribute
+        name="Value"
+        type="xs:boolean"
+        use="optional"
+        />
+  </xs:complexType>
+  <xs:complexType name="TraceMergePropertiesType">
+    <xs:sequence>
+      <xs:element
+          maxOccurs="unbounded"
+          minOccurs="1"
+          name="TraceMergeProperty"
+          >
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element
+                maxOccurs="1"
+                minOccurs="0"
+                name="DeletePreMergedTraceFiles"
+                type="DeletePreMergedTraceFilesType"
+                />
+            <xs:element
+                maxOccurs="1"
+                minOccurs="0"
+                name="FileCompression"
+                type="FileCompressionType"
+                />
+            <xs:element
+                maxOccurs="1"
+                minOccurs="0"
+                name="InjectOnly"
+                type="InjectOnlyType"
+                />
+            <xs:element
+                maxOccurs="1"
+                minOccurs="0"
+                name="CustomEvents"
+                >
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element
+                      maxOccurs="unbounded"
+                      minOccurs="1"
+                      name="CustomEvent"
+                      type="TraceMergePropertiesCustomEventType"
+                      />
+                </xs:sequence>
+                <xs:attribute
+                    name="Operation"
+                    type="OperationEnumeration"
+                    use="optional"
+                    />
+              </xs:complexType>
+              <xs:key name="TraceMergePropertyCustomEventsKey">
+                <xs:selector xpath="./*"/>
+                <xs:field xpath="@Value"/>
+              </xs:key>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute
+              name="Id"
+              type="IdType"
+              use="required"
+              />
+          <xs:attribute
+              name="Name"
+              type="xs:string"
+              use="required"
+              />
+          <xs:attribute
+              name="Base"
+              type="xs:string"
+              use="optional"
+              />
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
   <xs:complexType name="ProfilesType">
     <xs:sequence>
       <xs:element
@@ -1092,6 +1327,12 @@
           <xs:sequence>
             <xs:group ref="ProblemCategoriesGroup"/>
             <xs:group ref="CollectorsGroup"/>
+            <xs:element
+                maxOccurs="1"
+                minOccurs="0"
+                name="TraceMergeProperties"
+                type="TraceMergePropertiesType"
+                />
           </xs:sequence>
           <xs:attribute
               name="Id"
@@ -1131,92 +1372,6 @@
           <xs:attribute
               name="Default"
               type="xs:boolean"
-              use="optional"
-              />
-        </xs:complexType>
-      </xs:element>
-    </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="TraceMergePropertiesCustomEventType">
-    <xs:attribute
-        name="Value"
-        type="TraceMergePropertiesCustomEventsEnumeration"
-        />
-  </xs:complexType>
-  <xs:complexType name="DeletePreMergedTraceFilesType">
-    <xs:attribute
-        name="Value"
-        type="xs:boolean"
-        use="optional"
-        />
-  </xs:complexType>
-  <xs:complexType name="FileCompressionType">
-    <xs:attribute
-        name="Value"
-        type="xs:boolean"
-        use="optional"
-        />
-  </xs:complexType>
-  <xs:complexType name="TraceMergePropertiesType">
-    <xs:sequence>
-      <xs:element
-          maxOccurs="unbounded"
-          minOccurs="1"
-          name="TraceMergeProperty"
-          >
-        <xs:complexType>
-          <xs:sequence>
-            <xs:element
-                maxOccurs="1"
-                minOccurs="0"
-                name="DeletePreMergedTraceFiles"
-                type="DeletePreMergedTraceFilesType"
-                />
-            <xs:element
-                maxOccurs="unbounded"
-                minOccurs="1"
-                name="CustomEvents"
-                >
-              <xs:complexType>
-                <xs:sequence>
-                  <xs:element
-                      maxOccurs="unbounded"
-                      minOccurs="1"
-                      name="CustomEvent"
-                      type="TraceMergePropertiesCustomEventType"
-                      />
-                </xs:sequence>
-                <xs:attribute
-                    name="Operation"
-                    type="OperationEnumeration"
-                    use="optional"
-                    />
-              </xs:complexType>
-              <xs:key name="TraceMergePropertyCustomEventsKey">
-                <xs:selector xpath="./*"/>
-                <xs:field xpath="@Value"/>
-              </xs:key>
-            </xs:element>
-            <xs:element
-                maxOccurs="1"
-                minOccurs="0"
-                name="FileCompression"
-                type="FileCompressionType"
-                />
-          </xs:sequence>
-          <xs:attribute
-              name="Id"
-              type="IdType"
-              use="required"
-              />
-          <xs:attribute
-              name="Name"
-              type="xs:string"
-              use="required"
-              />
-          <xs:attribute
-              name="Base"
-              type="xs:string"
               use="optional"
               />
         </xs:complexType>
