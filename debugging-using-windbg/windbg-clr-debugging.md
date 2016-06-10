@@ -21,14 +21,7 @@ However, recently I usually use any command from **netext** (eg. **!wver**) and 
 
 ```
 0:000> .load netext
-netext version 2.1.2.5000 Jan 21 2016
-License and usage can be seen here: !whelp license
-Check Latest version: !wupdate
-For help, type !whelp (or in WinDBG run: '.browse !whelp')
-Questions and Feedback: http://netext.codeplex.com/discussions
-Copyright (c) 2014-2015 Rodney Viana (http://blogs.msdn.com/b/rodneyviana)
-Type: !windex -tree or ~*e!wstack to get started
-
+...
 0:000> !wver
 Runtime(s) Found: 1
 0: Filename: mscordacwks_Amd64_Amd64_4.6.1080.00.dll Location: C:\Windows\Microsoft.NET\Framework64\v4.0.30319\mscordacwks.dll
@@ -57,6 +50,8 @@ SOS commands sometimes get overriden by other extensions help files. In such a c
 SOSEX help can be seen using the `!sosexhelp [command]` command.
 
 Netext help can be nicely rendered in the command window: `.browse !whelp`.
+
+For you convenience I also extracted the text help files from those extensions: [SOS](sos.help.txt), [SOSEX](sosex.help.txt), [netext](netext.help.txt).
 
 Usage examples
 --------------
