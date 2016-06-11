@@ -11,7 +11,7 @@ From <http://www.stevestechspot.com/>
 
 Great extension with a log of useful commands for .NET debugging. More [here](windbg-clr-debugging.md).
 
-## Netext ##
+### Netext ###
 
 .NET plugin for WinDbg with interesting commands: <http://netext.codeplex.com/>. Some articles about it:
 
@@ -21,7 +21,7 @@ Great extension with a log of useful commands for .NET debugging. More [here](wi
 - [Debugging - NetExt WinDbg Extension](http://www.debugthings.com/2015/03/31/netext-windbg/)
 - [NetExt – SOS on steroids](https://lowleveldesign.wordpress.com/2015/07/09/netext-sos-on-steroids/)
 
-## SOSWOW64 ##
+### SOSWOW64 ###
 
 From: <https://github.com/poizan42/soswow64>
 
@@ -30,13 +30,13 @@ Makes SOS work on 64-bit dumps taken from a 32-bit processes on Win64.
 Extensions for managed and native debugging
 -------------------------------------------
 
-## PDE ##
+### PDE ###
 
 from [Andrew Richard's onedrive](https://onedrive.live.com/?authkey=!AJeSzeiu8SQ7T4w&id=DAE128BD454CF957!7152&cid=DAE128BD454CF957)
 
 A lot of very useful commands which make work with the process memory much easier. An extract of the help can be found [here](pde.help.txt).
 
-## DmpExt ##
+### DmpExt ###
 
 from <http://crashdmp.wordpress.com/2014/10/08/dmpext-windbg-extension/>
 
@@ -53,13 +53,13 @@ Usage:
     -filters: Display details about crash dump filters
 
 
-## Powershell extension for WinDbg ##
+### Powershell extension for WinDbg ###
 
 from <https://github.com/powercode/PSExt/blob/master/README.md>
 
 Allows running PS commands from within WinDbg.
 
-## Python extension for WinDbg ##
+### Python extension for WinDbg ###
 
 from <http://pykd.codeplex.com/>
 
@@ -70,13 +70,13 @@ Scripts:
 - [vtfinder - script to dynamically find vtables on heap](https://github.com/iSECPartners/vtfinder)
 - [Heap tracing with WinDbg and Python](https://labs.mwrinfosecurity.com/blog/heap-tracing-with-windbg-and-python/)
 
-## WinDBG Anti-RootKit extension ##
+### WinDBG Anti-RootKit extension ###
 
 WDBGARK is an extension (dynamic library) for the Microsoft Debugging Tools for Windows. It main purpose is to view and analyze anomalies in Windows kernel using kernel debugger.
 
 <https://github.com/swwwolf/wdbgark/blob/master/README.md>
 
-## SwishDbgExt ##
+### SwishDbgExt ###
 
 from <http://www.msuiche.net/?wpdmact=process&did=MS5ob3RsaW5r>
 
@@ -88,19 +88,19 @@ Links:
 - [SwishDbgExt: Update (0.6.20140817)](http://www.msuiche.net/2014/08/19/swishdbgext-update-0-6-20140817/)
 - [SwishDbgExt - source code](https://github.com/msuiche/SwishDbgExt)
 
-## !exploitable ##
+### !exploitable ###
 
 <https://msecdbg.codeplex.com/>
 
 !exploitable (pronounced “bang exploitable”) is a Windows debugging extension (Windbg) that provides automated crash analysis and security risk assessment. The tool first creates hashes to determine the uniqueness of a crash and then assigns an exploitability rating to the crash: Exploitable, Probably Exploitable, Probably Not Exploitable, or Unknown.
 
-## DbgKit ##
+### DbgKit ###
 
 <http://www.andreybazhan.com/dbgkit.html>
 
 DbgKit is the first GUI extension for Debugging Tools for Windows (WinDbg, KD, CDB, NTSD). It will show you hierarchical view of processes and detailed information about each process including its full image path, command line, start time, memory statistics, vads, handles, threads, security attributes, modules, environment variables and more.
 
-## Dumpfiles ##
+### Dumpfiles ###
 
 Windbg extension to extract file from Cache Manager.
 
