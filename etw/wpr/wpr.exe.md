@@ -34,6 +34,24 @@ To save the results run:
 
 To completely turn off wpr logging run: `wpr -cancel`.
 
+### Profiling using custom profiles
+
+Start tracing:
+
+    wpr.exe -start GeneralProfile -start Audio -start circular-audio-glitches.wprp!MediaProfile -filemode
+
+Stop tracing and save the results to a file (say, my-wpr-glitches.etl:)
+
+    wpr.exe -stop my-wpr-glitches.etl
+
+(Optional) if you want to cancel tracing:
+
+    wpr.exe -cancel
+
+(Optional) if you want to see whether tracing is currently active:
+
+    wpr.exe -status
+
 ### Profiling a system boot ###
 
 To collect general profile traces use:

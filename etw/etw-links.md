@@ -38,6 +38,7 @@ ETW links
 - [Windows Performance Analyzer on MSDN](http://msdn.microsoft.com/en-us/library/windows/hardware/hh448170.aspx)
 - [Getting the schema for Windows Performance Recorder profiles](https://blogs.msdn.microsoft.com/matthew_van_eerde/2016/02/09/getting-the-schema-for-windows-performance-recorder-profiles/)
 - [Authoring Recording Profiles](https://msdn.microsoft.com/en-us/library/hh448223.aspx)
+- [Taking audio glitch traces on Windows 10: desktop edition](https://blogs.msdn.microsoft.com/matthew_van_eerde/2015/08/11/taking-audio-glitch-traces-on-windows-10-desktop-edition/)
 
 ### XPerf ###
 
