@@ -198,6 +198,23 @@ For both those commands you may limit their scope to a particular process using 
 
 FIXME
 
+### Break at the entry point of a process ###
+
+Copied from: <http://www.andreybazhan.com/how-to-break-at-the-entry-point-of-a-process-in-kernel-mode-debugging-mode.html>:
+
+x86:
+
+```
+bu notepad!WinMain; sxe -c ".reload /user; g" bpe; ad /q ImageFileName; bu nt!PspInsertProcess "as /ma ${/v:ImageFileName} @@c++(((nt!_EPROCESS *)@ecx)->ImageFileName); .block { .if ($spat(\"${ImageFileName}\", \"notepad*\")) { ad ${/v:ImageFileName}; .process /r /p @ecx; eb @@c++(&@$peb->BeingDebugged) 1; gc } .else { ad ${/v:ImageFileName}; gc } }"; g
+```
+
+x64:
+
+```
+bu notepad!WinMain; sxe -c ".reload /user; g" bpe; ad /q ImageFileName; bu nt!PspInsertProcess "as /ma ${/v:ImageFileName} @@c++(((nt!_EPROCESS *)@rcx)->ImageFileName); .block { .if ($spat(\"${ImageFileName}\", \"notepad*\")) { ad ${/v:ImageFileName}; .process /r /p @rcx; eb @@c++(&@$peb->BeingDebugged) 1; gc } .else { ad ${/v:ImageFileName}; gc } }"; g
+```
+
+Clear: `bc *; sxe -c "" bpe`
 
 Diagnosing BugCheck
 -------------------

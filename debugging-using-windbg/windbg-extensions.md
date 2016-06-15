@@ -111,12 +111,18 @@ Developing extensions
 
 - [WinDBG Extension written completely in C#](https://blogs.msdn.microsoft.com/rodneyviana/2016/05/18/windbg-extension-written-completely-in-c/)
 
-Great tutorial on writing WinDbg extensions:
+Tutorial on writing WinDbg extensions (using exteng):
 
 - <http://www.msuiche.net/2014/01/12/extengcpp-part-1/>
 - <http://www.msuiche.net/2014/01/15/developing-windbg-extengcpp-extension-in-c-com-interface/>
 - <http://www.msuiche.net/2014/01/20/developing-windbg-extengcpp-extension-in-c-memory-debugger-markup-language-dml-part-3/>
 - <http://www.msuiche.net/2014/04/28/developing-windbg-extengcpp-extension-in-c-symbols-part-4/>
+
+Tutorial on writing WinDbg extensions (using dbgeng):
+
+- [Debugger APIs - Writing a Debugging Tools for Windows Extension](https://msdn.microsoft.com/en-us/magazine/gg650659.aspx)
+- [Debugger Engine API - Writing a Debugging Tools for Windows Extension, Part 2: Output](https://msdn.microsoft.com/en-us/magazine/hh148143.aspx)
+- [Debugger Engine API - Writing a Debugging Tools for Windows Extension, Part 3: Clients and Callbacks](https://msdn.microsoft.com/en-us/magazine/hh205613.aspx)
 
 A series on Defrag show how to write a WinDbg extension:
 
