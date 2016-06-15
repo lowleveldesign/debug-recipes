@@ -36,29 +36,6 @@ from [Andrew Richard's onedrive](https://onedrive.live.com/?authkey=!AJeSzeiu8SQ
 
 A lot of very useful commands which make work with the process memory much easier. An extract of the help can be found [here](pde.help.txt).
 
-### DmpExt ###
-
-from <http://crashdmp.wordpress.com/2014/10/08/dmpext-windbg-extension/>
-
-Usage:
-
-    0: kd> !dmpext
-
-    DmpExt 1.0
-    -----------
-    Target OS build: Win NT 6.2
-    Available commands:
-    -stack: Display the crash dump driver stack
-    -crashdmp: Display details about crashdmp.sys
-    -filters: Display details about crash dump filters
-
-
-### Powershell extension for WinDbg ###
-
-from <https://github.com/powercode/PSExt/blob/master/README.md>
-
-Allows running PS commands from within WinDbg.
-
 ### Python extension for WinDbg ###
 
 from <http://pykd.codeplex.com/>
@@ -69,12 +46,6 @@ Scripts:
 
 - [vtfinder - script to dynamically find vtables on heap](https://github.com/iSECPartners/vtfinder)
 - [Heap tracing with WinDbg and Python](https://labs.mwrinfosecurity.com/blog/heap-tracing-with-windbg-and-python/)
-
-### WinDBG Anti-RootKit extension ###
-
-WDBGARK is an extension (dynamic library) for the Microsoft Debugging Tools for Windows. It main purpose is to view and analyze anomalies in Windows kernel using kernel debugger.
-
-<https://github.com/swwwolf/wdbgark/blob/master/README.md>
 
 ### SwishDbgExt ###
 
@@ -88,26 +59,31 @@ Links:
 - [SwishDbgExt: Update (0.6.20140817)](http://www.msuiche.net/2014/08/19/swishdbgext-update-0-6-20140817/)
 - [SwishDbgExt - source code](https://github.com/msuiche/SwishDbgExt)
 
-### !exploitable ###
-
-<https://msecdbg.codeplex.com/>
-
-!exploitable (pronounced “bang exploitable”) is a Windows debugging extension (Windbg) that provides automated crash analysis and security risk assessment. The tool first creates hashes to determine the uniqueness of a crash and then assigns an exploitability rating to the crash: Exploitable, Probably Exploitable, Probably Not Exploitable, or Unknown.
-
 ### DbgKit ###
 
 <http://www.andreybazhan.com/dbgkit.html>
 
 DbgKit is the first GUI extension for Debugging Tools for Windows (WinDbg, KD, CDB, NTSD). It will show you hierarchical view of processes and detailed information about each process including its full image path, command line, start time, memory statistics, vads, handles, threads, security attributes, modules, environment variables and more.
 
-### Dumpfiles ###
+### !exploitable ###
 
-Windbg extension to extract file from Cache Manager.
+<https://msecdbg.codeplex.com/>
 
-<https://github.com/JumpCallPop/dumpfiles>
+!exploitable (pronounced “bang exploitable”) is a Windows debugging extension (Windbg) that provides automated crash analysis and security risk assessment. The tool first creates hashes to determine the uniqueness of a crash and then assigns an exploitability rating to the crash: Exploitable, Probably Exploitable, Probably Not Exploitable, or Unknown.
+
+Other extensions
+----------------
+
+- [PSExt - Powershell extension for WinDbg](https://github.com/powercode/PSExt/blob/master/README.md)
+- [Dumpfiles - extension to extract file from Cache Manager](https://github.com/JumpCallPop/dumpfiles)
+- [Extensions by Sasha Goldstein: tracer, wct, heap\_stat.py, bkb.py, traverse\_map.py, traverse\_vector.py](https://github.com/goldshtn/windbg-extensions)
+- [wdbgark - an extension to analyze anomalies in Windows kernel using kernel debugger](https://github.com/swwwolf/wdbgark/blob/master/README.md)
+- [DmpExt - crash dump analysis](http://crashdmp.wordpress.com/2014/10/08/dmpext-windbg-extension/)
 
 Developing extensions
 ---------------------
+
+Sample Windbg extension to recurse, filter and pipe commands: <http://blogs.msdn.com/b/nicd/archive/2008/12/18/windbg-extension-to-easily-recurse-filter-and-pipe-commands.aspx>. There is also some interesting extensions written by Nynaeve at <http://www.nynaeve.net/?page_id=240>.
 
 Tutorial on writing WinDbg extensions (using exteng):
 
@@ -139,6 +115,3 @@ How to write WinDbg extensions in C#:
 - [Defrag Tools #109 - Writing a CLR Debugger Extension Part 1](https://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-109-Writing-a-CLR-Debugger-Extension-Part-1)
 - [Defrag Tools #110 - Writing a CLR Debugger Extension Part 2](https://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-110-Writing-a-CLR-Debugger-Extension-Part-2)
 - [WinDBG Extension written completely in C#](https://blogs.msdn.microsoft.com/rodneyviana/2016/05/18/windbg-extension-written-completely-in-c/)
-
-
-Sample Windbg extension to recurse, filter and pipe commands: <http://blogs.msdn.com/b/nicd/archive/2008/12/18/windbg-extension-to-easily-recurse-filter-and-pipe-commands.aspx>
