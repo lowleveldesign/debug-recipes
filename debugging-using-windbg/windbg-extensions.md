@@ -109,8 +109,6 @@ Windbg extension to extract file from Cache Manager.
 Developing extensions
 ---------------------
 
-- [WinDBG Extension written completely in C#](https://blogs.msdn.microsoft.com/rodneyviana/2016/05/18/windbg-extension-written-completely-in-c/)
-
 Tutorial on writing WinDbg extensions (using exteng):
 
 - <http://www.msuiche.net/2014/01/12/extengcpp-part-1/>
@@ -135,5 +133,12 @@ A series on Defrag show how to write a WinDbg extension:
 - <http://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-103-Writing-a-Debugger-Extension-Part-7>
 - <http://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-104-Writing-a-Debugger-Extension-Part-8>
 - <http://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-105-Writing-a-Debugger-Extension-Part-9>
+
+How to write WinDbg extensions in C#:
+
+- [Defrag Tools #109 - Writing a CLR Debugger Extension Part 1](https://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-109-Writing-a-CLR-Debugger-Extension-Part-1)
+- [Defrag Tools #110 - Writing a CLR Debugger Extension Part 2](https://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-110-Writing-a-CLR-Debugger-Extension-Part-2)
+- [WinDBG Extension written completely in C#](https://blogs.msdn.microsoft.com/rodneyviana/2016/05/18/windbg-extension-written-completely-in-c/)
+
 
 Sample Windbg extension to recurse, filter and pipe commands: <http://blogs.msdn.com/b/nicd/archive/2008/12/18/windbg-extension-to-easily-recurse-filter-and-pipe-commands.aspx>
