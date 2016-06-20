@@ -232,3 +232,4 @@ Links
 - [Windows 8 kernel debugging: New protocols and certification requirements](http://channel9.msdn.com/Events/Build/BUILD2011/HW-98P)
 - [Fun with Windows Kernel Flaw - Part 2: Hunting the important part](http://security.my/post/76395059266/fun-with-windows-kernel-flaw-part-2-hunting-the)
 - [Analyst's Perspective: Analyzing User Mode State from a Kernel Connection](https://www.osronline.com/article.cfm?article=576)
+- [How to monitor processes start and exit events in kernel-mode debugging mode](http://www.andreybazhan.com/how-to-monitor-processes-start-and-exit-events-in-kernel-mode-debugging-mode.html)

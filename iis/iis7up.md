@@ -174,6 +174,10 @@ Links
 - [Configure Debug Diagnostic 2.0 to create a memory dump when a specific exception is thrown](http://blogs.msdn.com/b/benjaminperkins/archive/2014/04/01/configure-debug-diagnostic-2-0-to-create-a-memory-dump-when-a-specific-exception-is-thrown.aspx)
 - [Collecting a memory dump with ProcDump when ASP.NET ISAPI is reported unhealthy or deadlock detected in an ASP.NET application](http://blogs.msdn.com/b/amb/archive/2015/11/06/collect-dump-with-procdump-when-asp.net-unhealthy-or-deadlock-detected.aspx)
 
+### Tutorials and labs ###
+
+- [IIS Debugging Labs – Information and setup instructions](https://blogs.msdn.microsoft.com/benjaminperkins/2016/06/16/iis-debugging-labs-information-and-setup-instructions/)
+
 ### Tools ###
 
 - [FREBViewer – yet another FREB files viewer](http://blogs.msdn.com/b/rakkimk/archive/2011/09/28/frebviewer-yet-another-freb-files-viewer.aspx)
