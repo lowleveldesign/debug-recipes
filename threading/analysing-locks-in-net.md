@@ -12,6 +12,33 @@ When analyzing blocks use any of the **Thread Time** views. It's best to start w
 Using windbg (live debugging and dumps)
 ---------------------------------------
 
+### Automatic detection of the dead-locks ###
+
+Try running the **!dlk** command from the SOSEX extension. It is pretty good in detecting dead-locks, example:
+
+```
+0:007> .load sosex
+0:007> !dlk
+Examining SyncBlocks...
+Scanning for ReaderWriterLock(Slim) instances...
+Scanning for holders of ReaderWriterLock locks...
+Scanning for holders of ReaderWriterLockSlim locks...
+Examining CriticalSections...
+Scanning for threads waiting on SyncBlocks...
+Scanning for threads waiting on ReaderWriterLock locks...
+Scanning for threads waiting on ReaderWriterLocksSlim locks...
+*** WARNING: Unable to verify checksum for C:\WINDOWS\assembly\NativeImages_v4.0.30319_32\System\3a4f0a84904c4b568b6621b30306261c\System.ni.dll
+*** WARNING: Unable to verify checksum for C:\WINDOWS\assembly\NativeImages_v4.0.30319_32\System.Transactions\ebef418f08844f99287024d1790a62a4\System.Transactions.ni.dll
+Scanning for threads waiting on CriticalSections...
+*DEADLOCK DETECTED*
+CLR thread 0x1 holds the lock on SyncBlock 011e59b0 OBJ:02e93410[System.Object]
+...and is waiting on CriticalSection 01216a58
+CLR thread 0x3 holds CriticalSection 01216a58
+...and is waiting for the lock on SyncBlock 011e59b0 OBJ:02e93410[System.Object]
+CLR Thread 0x1 is waiting at clr!CrstBase::SpinEnter+0x92
+CLR Thread 0x3 is waiting at System.Threading.Monitor.Enter(System.Object, Boolean ByRef)(+0x17 Native)
+```
+
 ### Correlate thread ids with thread objects ###
 
 The `!Threads` commands does not unfortunately show addresses of the managed thread objects on the heap. So first you need to find the MT of the `Thread` class in your appdomain, eg.
