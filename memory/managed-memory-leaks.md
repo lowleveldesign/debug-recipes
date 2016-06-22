@@ -130,6 +130,7 @@ Links
 - [NBench Testing – Garbage collection](http://www.dotnetalgorithms.com/2016/02/nbench-testing-garbage-collection/)
 - [dotMemory - .NET memory usage monitoring with unit tests](https://www.jetbrains.com/dotmemory/unit/)
 - [WMemoryProfiler - wraps cdbg to collect GC data](https://wmemoryprofiler.codeplex.com/)
+- [Visualising the .NET Garbage Collector](http://mattwarren.org/2016/06/20/Visualising-the-dotNET-Garbage-Collector/)
 
 ### GC ###
 
