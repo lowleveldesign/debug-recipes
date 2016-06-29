@@ -71,5 +71,5 @@ Links
 - [Windows Error Reporting and CLR integration](http://blogs.msdn.com/b/oanapl/archive/2009/01/30/windows-error-reporting-wer-and-clr-integration.aspx)
 - [Problems with CLR Windows Error Reporting (WER) Integration](http://blogs.msdn.com/b/oanapl/archive/2009/02/01/problems-with-clr-windows-error-reporting-wer-integration.aspx)
 - [Windows/Phone 8.1 Debugging: Getting a Crash Dump File From a Device ](http://mtaulty.com/CommunityServer/blogs/mike_taultys_blog/archive/2015/02/19/windows-phone-8-1-debugging-getting-a-crash-dump-file-from-a-device.aspx)
-
 - [MSDN: WER Settings](http://msdn.microsoft.com/en-us/library/bb513638(VS.85).aspx)
+- [SO: Is the INT3 breakpoint the root cause? - some info about WER internals](http://stackoverflow.com/questions/38019466/how-to-know-if-a-different-exception-is-hidden-behind-a-80000003-breakpoint-wer)
