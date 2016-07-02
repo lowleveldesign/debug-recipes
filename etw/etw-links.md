@@ -24,7 +24,7 @@ ETW links
 
 ### Flame graphs
 
-- [Prepare XPref ETL files for FlameGraph - flame graphs for ETW events](https://github.com/MSOpenTech/ETWFlamegraph)
+- [Prepare XPerf ETL files for FlameGraph - flame graphs for ETW events](https://github.com/MSOpenTech/ETWFlamegraph)
 - Flame Graphs: <https://github.com/brendangregg/FlameGraph>, <http://geekswithblogs.net/akraus1/archive/2013/06/10/153104.aspx>
 
 ### WPR and WPA ###
@@ -39,6 +39,7 @@ ETW links
 - [Getting the schema for Windows Performance Recorder profiles](https://blogs.msdn.microsoft.com/matthew_van_eerde/2016/02/09/getting-the-schema-for-windows-performance-recorder-profiles/)
 - [Authoring Recording Profiles](https://msdn.microsoft.com/en-us/library/hh448223.aspx)
 - [Taking audio glitch traces on Windows 10: desktop edition](https://blogs.msdn.microsoft.com/matthew_van_eerde/2015/08/11/taking-audio-glitch-traces-on-windows-10-desktop-edition/)
+- [Windows Performance Recorder reference on MSDN](https://msdn.microsoft.com/en-us/library/windows/desktop/hh448205.aspx)
 
 ### XPerf ###
 
