@@ -60,3 +60,31 @@ To collect general profile traces use:
 
 All options are displayed after executing: `wpr -help start`.
 
+WPR schema analysis
+-------------------
+
+I guess that the name in the Profile tag is used to group the profiles for the UI. Those names are displayed when we call `wpr -profiles`. Interestingly WPR finds the most thorough profile from the available profiles in a given wprp file, eg.:
+
+```
+PS temp> wpr -profiledetails CPU
+
+Microsoft Windows Performance Recorder Version 10.0.10240
+Copyright (c) 2015 Microsoft Corporation. All rights reserved.
+
+Profile                 : CPU.Verbose.Memory
+```
+
+Where `CPU.Verbose.Memory` is defined as:
+
+```
+    <Profile
+        Base="CPU.Verbose.File"
+        Description="@WindowsPerformanceRecorderControl.dll,-5002"
+        DetailLevel="Verbose"
+        Id="CPU.Verbose.Memory"
+        LoggingMode="Memory"
+        Name="CPU"
+        >
+```
+
+with nothing inheriting from it.
