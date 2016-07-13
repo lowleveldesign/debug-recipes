@@ -39,3 +39,11 @@ Links:
 
 - [Source code](https://github.com/bodyloss/BenchmarkIt)
 - [Nuget: Benchmark.It](https://www.nuget.org/packages/Benchmark.It)
+
+### NBench ###
+
+A nice library for benchmarking .NET code.
+
+Lins:
+
+- [Source code](https://github.com/petabridge/NBench)
