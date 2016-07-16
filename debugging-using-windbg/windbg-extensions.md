@@ -36,6 +36,12 @@ from [Andrew Richard's onedrive](https://onedrive.live.com/?authkey=!AJeSzeiu8SQ
 
 A lot of very useful commands which make work with the process memory much easier. An extract of the help can be found [here](pde.help.txt).
 
+### MEX ###
+
+from <https://www.microsoft.com/en-us/download/details.aspx?id=53304&WT.mc_id=rss_allproducts_windows>
+
+A lot of various commands - for long time used internally by Microsoft only.
+
 ### Python extension for WinDbg ###
 
 from <http://pykd.codeplex.com/>
