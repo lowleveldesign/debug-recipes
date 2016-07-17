@@ -230,6 +230,14 @@ Setting breakpoint if a specific function is in the call stack:
 
 <http://stackoverflow.com/questions/7791675/windbg-set-conditional-breakpoints-that-depends-on-call-stack/7800435#7800435>, for managed stack visit <http://naveensrinivasan.com/2010/12/28/conditional-breakpoint-based-on-callstack-within-windbg-net/>.
 
+### Working with modules ###
+
+To find out if a given address belongs to any of the loaded dlls we may use the **!dlls -c {addr}** command.
+
+### Error codes ###
+
+To decode the error value use the **!error {code}** command. To check the last error code on the thread use the **!gle [-all]** command.
+
 Find process handles
 --------------------
 
