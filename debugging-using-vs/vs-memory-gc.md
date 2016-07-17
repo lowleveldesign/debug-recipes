@@ -17,6 +17,8 @@ Find the memory address of an object
 
 Probably not very well known feature of the **Memory Window** is the fact that you may drag on it objects from other windows. As shown in the [breakpoints section](vs-breakpoints.md) we may drag register values onto the Memory Window in order to check the pointers destination. We may also drag objects from the **Watch Windows** and their addresses in memory will be revealed.
 
+When you would like to disassemly an exported function in 64-bit debugger (and you have no symbols loaded) you need to use the native breakpoint syntax, eg. `{,,kernel32}LoadLibraryA`. When debugging 32-bit app things get a bit trickier as you need to know the raw name of the function, eg.: `{,,kernel32}LoadLibraryA@4`.
+
 Get GC Generation in which a given object resides
 -------------------------------------------------
 
