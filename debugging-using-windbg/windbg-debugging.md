@@ -165,7 +165,7 @@ Useful commands are **pc** and **tc** which step or trace to **the next call sta
 
 ### Watch trace ###
 
-**wt** is a very powerful command and might be excellent at revealing what the function under the cursor is doing, eg.
+**wt** is a very powerful command and might be excellent at revealing what the function under the cursor is doing, eg. (-oa displays the actual address of the call sites, -or displays the return register values):
 
 ```
 0:000> wt -l1 -oa -or
