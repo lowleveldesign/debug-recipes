@@ -25,7 +25,3 @@ Resolve problems with locks
 
 The best place to search for blocked threads is the **Parallel Stacks** window. As threads' call stacks are grouped, in a glimpse of an eye you are able to find the critical section or lock which was not properly released (more on this in the next point). If you mark any threads in the Threads window (renamed or flagged them) the marks will be visible also in the Parallel Stacks window.
 
-### Localize monitor the thread is waiting on ###
-
-FIXME
-

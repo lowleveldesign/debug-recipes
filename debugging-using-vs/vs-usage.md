@@ -81,7 +81,6 @@ Immediate window
 
 ### Debugging commands ###
 
-**FIXME** (examples)
 There are special commands available in native mode (after <http://msdn.microsoft.com/en-us/library/ms171362.aspx>):
 
 **.s** - memory search

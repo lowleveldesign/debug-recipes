@@ -84,8 +84,6 @@ Work only with full assembly name provided. If no name is provided lists all the
 CLR Code Policies
 -----------------
 
-FIXME
-
 List groups:
 
     caspol -l

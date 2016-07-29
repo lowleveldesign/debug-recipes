@@ -25,11 +25,13 @@ Choose a recipe corresponding to your application problem (if a recipe requires 
 - [High CPU usage (IN PROGRESS)](cpu/analyzing-high-cpu-usage.md)
 - [I/O issues (IN PROGRESS)]()
 - [Networking problems](network/network-tracing.md)
-- [Deadlocks](threading/analysing-locks-in-net.md)
+- Wait analysis (deadlocks):
+  - [using ETW](threading/analyzing-waits-etw.md)
+  - [in the debugger](threading/analyzing-waits-debugger.md)
 - [Assembly not found](assemblies/clr-assemblies.md)
 - Slow database queries:
-  - [Using ADO.NET](ado.net/ado.net-debugging.md)
-  - [Using MySql connector](databases/mysql/mysql.net-connector-usage.md)
+  - [using ADO.NET](ado.net/ado.net-debugging.md)
+  - [using MySql connector](databases/mysql/mysql.net-connector-usage.md)
 - [Framework installation or GAC](clr-information.md)
 
 Problems in **.NET Web Applications**:

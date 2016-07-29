@@ -1,16 +1,9 @@
 
-Analysing locks in .NET applications
-====================================
+Analysing locks
+===============
 
-Using PerfView (ETW traces)
----------------------------
-
-You need to select the ThreadTime in the collection dialog. With this setting PerfView will record context switch events as well as the usual stack dumps every 100ms.
-
-When analyzing blocks use any of the **Thread Time** views. It's best to start with the **Call Stack** view, exclude threads which seem not interesting and locate blocks which might be connected with your investigation. Then for each block time narrow the time to its start and try to guess the flow of the commands that fire it (what was executed last on each thread and what might be the cause of the wait).
-
-Using windbg (live debugging and dumps)
----------------------------------------
+Locks in managed apps
+---------------------
 
 ### Automatic detection of the dead-locks ###
 
@@ -85,15 +78,13 @@ Name:        System.Threading.Thread
 
 And then paste it in the scripts below:
 
-```
-x86:
+    x86:
 
-.foreach ($addr {!DumpHeap -short -mt <METHODTABLE> }) { .printf /D "Thread: %i; Execution context: <link cmd=\"!do %p\">%p</link>\n", poi(${$addr}+28), poi(${$addr}+8), poi(${$addr}+8) }
+    .foreach ($addr {!DumpHeap -short -mt <METHODTABLE> }) { .printf /D "Thread: %i; Execution context: <link cmd=\"!do %p\">%p</link>\n", poi(${$addr}+28), poi(${$addr}+8), poi(${$addr}+8) }
 
-x64:
+    x64:
 
-.foreach ($addr {!DumpHeap -short -mt <METHODTABLE> }) { .printf /D "Thread: %i; Execution context: <link cmd=\"!do %p\">%p</link>\n", poi(${$addr}+4c), poi(${$addr}+10), poi(${$addr}+10) }
-```
+    .foreach ($addr {!DumpHeap -short -mt <METHODTABLE> }) { .printf /D "Thread: %i; Execution context: <link cmd=\"!do %p\">%p</link>\n", poi(${$addr}+4c), poi(${$addr}+10), poi(${$addr}+10) }
 
 Notice that the thread number from the output is a managed thread id and to map it to the windbg thread number you need to use the `!Threads` command.
 
@@ -101,38 +92,41 @@ Notice that the thread number from the output is a managed thread id and to map 
 
 You may examine thin locks using **!DumpHeap -thinlocks**.  To find all hard locks (the ones that were created after the object header was full) use **!SyncBlk -all** command.
 
-Using ConcurrencyVisualizer (ETW traces)
-----------------------------------------
 
-Under the ANALYZE menu in Visual Studio there is a great tool to observe concurrency execution of .NET applications. It allows you to monitor what each thread of the application was doing during a given period of time. By zooming to a particular point in time you may even examine a stack of a waiting thread.
+Locks in native apps
+--------------------
 
-Concurrency Visualizer under the hood uses ETW infrastructure and generates 2 .etl files: user.etl and kernel.etl. You can then merge them:
+There are many types of objects that the thread can wait on. You usually see many `WaitOnMultipleObjects` on many threads.
 
-    xperf -merge user.etl kernel.etl merged.etl
+If you see RtlWaitForCriticalSection or other method connected with a critical section it might indicate that the program hang. In order to find the cause of this situation you may use following commands:
 
-and load the merged.etl file into WPR or XPerfView.
+    !locks shows the contained lock, use ~~[<thread>] to switch to a given thread
+    !cs shows all critical sections in the program (dump)
+    !timers presents all timers running in system
 
-### Command line ###
+### Check locks in kernel mode ###
 
-Launch application:
+Another command that can be useful here is **!locks**. With **-v** parameter will display all locks accessed by threads in a process.
 
-    PS temp> & 'C:\Program Files (x86)\Microsoft Concurrency Visualizer Collection Tools\CvCollectionCmd.exe' /Launch c:\temp\AsyncGrep1.exe /LaunchArgs c:\temp
+### Examine threadpools ###
 
-Query status:
+There is a special `!tp` extension command that has numerous options to analyse threadpools in processes.
 
-    PS temp> & 'C:\Program Files (x86)\Microsoft Concurrency Visualizer Collection Tools\CvCollectionCmd.exe' /Query
-    Microsoft (R) Concurrency Visualizer Collection Tool Version 12.0.21005.1
-    Copyright (C) Microsoft Corp. All rights reserved.
+### Examine critical sections ###
 
-    Not collecting, ready to start.
+Use **!cs** comman to examine critical sections in your applications:
 
-You may as well attach and detach to the currently running process.
+    0:033> !cs -s 000000001a496f50
+    -----------------------------------------
+    Critical section   = 0x000000001a496f50 (+0x1A496F50)
+    DebugInfo          = 0x0000000013c9bee0
+    LOCKED
+    LockCount          = 0x0
+    WaiterWoken        = No
+    OwningThread       = 0x0000000000001b04
+    RecursionCount     = 0x1
+    LockSemaphore      = 0x0
+    SpinCount          = 0x00000000020007d0
 
-Links
------
+`LockCount` tells you how many threads are currently waiting on a given cs. The `OwningThread` is a thread that owns the cs at the time the command is run. You can easily identify the thread that is waiting on a given cs by issuing `kv` command and looking for critical section identifier in the call parameters.
 
-- [Diagnosing a Windows Service timeout with PerfView](https://lowleveldesign.wordpress.com/2015/09/01/diagnosing-windows-service-timeout-with-perfview/)
-- [Two More Ways for Diagnosing For Which Synchronization Object Your Thread Is Waiting](http://blogs.microsoft.co.il/blogs/sasha/archive/2013/04/24/two-more-ways-for-diagnosing-for-which-synchronization-object-your-thread-is-waiting.aspx?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+sashag+%28All+Your+Base+Are+Belong+To+Us%29)
-- [Interesting problem to diagnose (wait on a context thread)](http://blog.stephencleary.com/2012/07/dont-block-on-async-code.html?m=1)
-- [A case of a deadlock in a .NET application](https://lowleveldesign.wordpress.com/2015/04/30/a-case-of-a-deadlock-in-a-net-application/)
-- [The C# Memory Model in Theory and Practice](http://msdn.microsoft.com/en-us/magazine/jj863136.aspx)
