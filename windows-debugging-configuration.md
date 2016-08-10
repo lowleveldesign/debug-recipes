@@ -46,19 +46,16 @@ To use a symbol server (`srv*` syntax) symsrv.dll must be installed in the same 
 Known symbol servers links
 --------------------------
 
-    1. Firefox (źródło informacji) - prywatne
+    1. Firefox - private
     SRV*c:\websymbols*http://symbols.mozilla.org/firefox
 
-    2. Chrome (źródło informacji) - prywatne
+    2. Chrome - private
     SRV*c:\websymbols*http://chromium-browser-symsrv.commondatastorage.googleapis.com
 
-    3. Safari (źródło informacji) (nie działa?)
-    SRV*c:\websymbols*http://developer.apple.com/internet/safari/windows_symbols
-
-    4. Citrix (źródło informacji)
+    3. Citrix
     SRV*c:\websymbols*http://ctxsym.citrix.com/symbols
 
-    5. SymbolSource (zawiera symbole dla wielu projektów OS, szczegóły użycia)
+    4. SymbolSource (many OSS projects)
     SRV*c:\websymbols\*http://srv.symbolsource.org/pdb/Public
     SRV*c:\websymbols\*http://srv.symbolsource.org/pdb/MyGet
 
