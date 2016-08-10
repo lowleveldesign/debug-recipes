@@ -9,8 +9,6 @@ In order to match the process instance index with a PID you may use a special co
     typeperf -c "\Process(*)\ID Process" -si 1 -sc 1 -f CSV -o pids.txt
     typeperf -c "\.NET CLR Memory(*)\Process ID" -si 1 -sc 1 -f CSV -o clr-pids.txt
 
-or run `find-pids.ps1` from the `_scripts` folder.
-
 Listing performance counters
 -------------------------
 
