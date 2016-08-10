@@ -384,7 +384,6 @@ Links
 ### Support
 
 - [Using PDH APIs correctly in a localized language](http://support.microsoft.com/kb/287159)
-
 - [How to manually rebuild Performance Counter Library values](http://support.microsoft.com/default.aspx?scid=kb;en-us;300956)
 - [Fix Corrupted Performance Counters](http://blogs.msdn.com/b/oanapl/archive/2009/04/24/fix-corrupted-performance-counters.aspx)
 
