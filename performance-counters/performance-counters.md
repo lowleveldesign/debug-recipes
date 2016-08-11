@@ -225,7 +225,7 @@ To open the binary performance counter data in perfmon use the command:
 
     > perfmon /sys /open "c:\temp\testdata.blg"
 
-REMARK: Remember to specify full path to the file in the `/open` switch, otherwise
+REMARK: Remember to specify full path to the file in the `/open` switch.
 
 ### Analyze performance data using relog and logparser ###
 
