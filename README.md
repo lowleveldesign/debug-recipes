@@ -65,6 +65,7 @@ TBD
 - [Windows Error Reporting](exceptions/wer/wer-usage.md)
 - [Debugging Windows kernel - setup](debugging-kernel/windows-kernel-debugging-setup.md)
 - [Debugging Windows kernel - basics](debugging-kernel/windows-kernel-debugging.md)
+- [HTTP.sys troubleshooting](windows-httpsys-troubleshooting.md)
 
 ---------------------
 
