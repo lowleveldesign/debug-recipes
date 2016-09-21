@@ -61,7 +61,6 @@ TBD
 
 ### Windows system
 
-- [Event Tracing for Windows](etw/README.md)
 - [Windows Error Reporting](exceptions/wer/wer-usage.md)
 - [Debugging Windows kernel - setup](debugging-kernel/windows-kernel-debugging-setup.md)
 - [Debugging Windows kernel - basics](debugging-kernel/windows-kernel-debugging.md)
