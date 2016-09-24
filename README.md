@@ -49,7 +49,7 @@ Problems in **.NET Web Applications**:
 | I/O problems | [X](databases/mssqlserver/mssqlserver-troubleshooting-io.md) |  |
 | Server problems | [X](databases/mssqlserver/mssqlserver-troubleshooting-server.md) | [X](databases/mysql/mysql-troubleshooting-server.md) |
 
-### [IIS](iid/README.md)
+### IIS
 
 - [Troubleshooting IIS7+](iis/iis7up.md)
 - [Troubleshooting IIS6](iis/iis6.md)
