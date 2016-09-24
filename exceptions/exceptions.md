@@ -14,8 +14,6 @@ Table of contents:
   - [Decoding error numbers](#exc-numbers)
 - [Links](#links)
 
-If you are interested in Windows Error Reporting information, have a look at [the WER recipe](wer/wer-usage.md). If you want to configue a system-wide debugger using the AeDebug settings, check [the AeDebug recipe](aedebug/aedebug.md).
-
 ## <a name="collect">Collecting exceptions info in production</a>
 
 ### <a name="procdump">Using procdump</a>
@@ -62,24 +60,6 @@ To create a full memory dump when `NullReferenceException` occurs use the follow
 ```
 procdump -ma -e 1 -f "E0434F4D.System.NullReferenceException" 8012
 ```
-
-### <a name="adplus">Using adplus</a>
-
-Details: <http://lowleveldesign.wordpress.com/2012/01/16/adplus-managed-exceptions/>
-
-If you need to log exceptions (CLR exceptions with stack and detailed information) that occur in your application use:
-
-    adplus -c log.adplus.config -o c:\dumps [-p <pid> | -sc <process-to-start> | -pn <process-name> ]
-
-You may add new keywords and define custom actions for thrown exceptions.
-
-If you would like to create a memory dump when a specific exception occurs use:
-
-    adplus -c log-and-dump.adplus.config -o c:\dumps [-p <pid> | -sc <process-to-start> | -pn <process-name> ]
-
-The example in the configuration file creates dumps on `System.ArgumentNullException` and `System.InvalidOperationException` so adapt it to your needs.
-
-More information about Adplus usage can be found in [the Adplus recipe](adplus/adplus.md).
 
 ## <a name="analyze">Analyzing exceptions</a>
 
@@ -238,6 +218,7 @@ or **errmsg**:
 
 ## <a name="links">Links</a>
 
+- [Debug exceptions using AdPlus](http://lowleveldesign.wordpress.com/2012/01/16/adplus-managed-exceptions)
 - [Decoding the parameters of a thrown C++ exception (0xE06D7363)](http://blogs.msdn.com/b/oldnewthing/archive/2010/07/30/10044061.aspx)
 - <http://support.microsoft.com/kb/313109>
 - <http://blogs.msdn.com/b/ntdebugging/archive/2013/01/30/case-of-the-unexplained-services-exe-termination.aspx>

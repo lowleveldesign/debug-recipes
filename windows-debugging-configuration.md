@@ -40,22 +40,3 @@ To use a symbol server (`srv*` syntax) symsrv.dll must be installed in the same 
 
 `SymbolServer` is a path to the symbol store. There may be multiple symbol servers defined - asterisk (\*) is used to separate them.
 
-### \_NT\_SOURCE\_PATH ###
-
-
-Known symbol servers links
---------------------------
-
-    1. Firefox - private
-    SRV*c:\websymbols*http://symbols.mozilla.org/firefox
-
-    2. Chrome - private
-    SRV*c:\websymbols*http://chromium-browser-symsrv.commondatastorage.googleapis.com
-
-    3. Citrix
-    SRV*c:\websymbols*http://ctxsym.citrix.com/symbols
-
-    4. SymbolSource (many OSS projects)
-    SRV*c:\websymbols\*http://srv.symbolsource.org/pdb/Public
-    SRV*c:\websymbols\*http://srv.symbolsource.org/pdb/MyGet
-
