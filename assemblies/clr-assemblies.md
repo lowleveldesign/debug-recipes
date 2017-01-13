@@ -2,7 +2,16 @@
 .NET assemblies
 ===============
 
-## Troubleshooting loading using ETW (in Perfview)
+Table of contents:
+
+- [Troubleshooting loading using ETW (in Perfview)](#perfview)
+- [Troubleshooting loading using Fusion Log](#fuslogvw)
+- [Working with assembly signaures (sn.exe)](#sn)
+- [Examine/modify assemblies bitness (corflags.exe)](#corflags)
+- [GAC](#gac)
+- [Links](#links)
+
+## <a name="perfview">Troubleshooting loading using ETW (in Perfview)</a>
 
 I think that currently the most efficient way to diagnose problems with assembly loading is to collect ETW events from the .NET ETW provider. There is a bunch of them under the **Microsoft-Windows-DotNETRuntimePrivate/Binding/** category.
 
@@ -12,7 +21,7 @@ For this purpose you may use the [**PerfView**](https://www.microsoft.com/en-us/
 
 Select all of the events and press ENTER. PerfView will immediately print the instances of the selected events in the grid on the right. You may later search or filter the grid with the help of the search boxes above it.
 
-## Troubleshooting loading using Fusion Log
+## <a name="fuslogvw">Troubleshooting loading using Fusion Log</a>
 
 Fusion log is available in all versions of .NET Framework. There is a tool named **fuslogvw** which you may use to set the fusion log configuration but this tool might not be available on a server. In such a case just apply the registry settings described below.
 
@@ -61,7 +70,7 @@ Command:
 
     reg delete HKLM\Software\Microsoft\Fusion /va
 
-## Decompile, view metadata (ildasm.exe)
+## <a name="">Decompile, view metadata (ildasm.exe)</a>
 
 ### ildasm /OUT:<outputfile> ###
 
@@ -123,7 +132,7 @@ Example output:
     // 		1 Parameters
     // 			(1) ParamToken : (08000001) Name : args flags: [none] (00000000)
 
-## Working with assembly signaures (sn.exe)
+## <a name="sn">Working with assembly signaures (sn.exe)</a>
 
 ### Display public key of an assembly (sn.exe -Tp) ###
 
@@ -144,7 +153,7 @@ Display/check token for public key of <assembly> (**-Tp**)
     Public key token is d687cd68612aadaa
 
 
-## Examine/modify assemblies bitness (corflags.exe)
+## <a name="corfags">Examine/modify assemblies bitness (corflags.exe)</a>
 
 Remove the 32BIT flag:
 
@@ -176,7 +185,7 @@ Remove the 32BIT flag:
     32BIT     : 0
     Signed    : 0
 
-## GAC
+## <a name="gac">GAC</a>
 
 For .NET2.0/3.5 gac was located in **c:\Windows\assembly** folder with a drag/drop option for installing/uninstalling assemblies. According to <http://stackoverflow.com/questions/10013047/gacutil-vs-manually-editing-c-windows-assembly>:
 
@@ -188,16 +197,7 @@ For .NET4.0 GAC was moved to **c:\Windows\Microsoft.NET\assembly** and no longer
 
 .NET GAC settings are stored under the registry key: HKLM\Software\Microsoft\Fusion.
 
-## Dependencies
-
-It seems that an assembly that was compiled for .NET Framework version 3.5 and that has a dependency to a library A, when run on .NET Runtime 4.0 might load a version of this library created for .NET 4.0.
-
-### Find code in assembly A dependent on assembly B ###
-
-Load both assemblies into dotpeek and then click on the assembly B and find all references. This should result in a list of code fragments in assembly A that depend on B.
-
-Links
------
+## <a name="links">Links</a>
 
 - [How to enable assembly bind failure logging (Fusion) in .NET](http://stackoverflow.com/questions/255669/how-to-enable-assembly-bind-failure-logging-fusion-in-net)
 - [Working with Assemblies in the GAC](http://blogs.telerik.com/aspnet-ajax/posts/13-09-19/working-with-assemblies-in-the-global-assembly-cache)

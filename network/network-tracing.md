@@ -7,6 +7,9 @@ In this recipe:
 - [Network traces in .NET](#dotnet)
 - [Tracing using proxy](#proxy)
 - [Tracing using ETW  (netsh, perfview, Message Analyzer)](#etw)
+- [Network tracing in procmon](#procmon)
+- [Troubleshoot network with pspsing](#psping)
+- [Links](#links)
 
 
 <a name="dotnet">Traces available in .NET applications</a>
@@ -214,13 +217,38 @@ function ConvertFrom-EtlToCap([Parameter(Mandatory=$True)][String]$EtlFilePath, 
 }
 ```
 
-Procmon network tracing
------------------------
+<a name="procmon">Procmon network tracing</a>
+---------------------------------------------
 
 Procmon network tracing does not collect data sent or received but it will reveal all the network connections opened by processes in the system.
 
-Links
------
+<a name="psping">Troubleshooting network with PsPing</a>
+--------------------------------------------------------
+
+### Troubleshooting connectivity
+
+PsPing (a part of [Sysinternals toolkit](https://technet.microsoft.com/en-us/sysinternals)) has few interesting options when it comes to diagnosing network connectivity issues. The simplest usage is just a replacement for a ping.exe tool (performs ICMP ping):
+
+    > psping www.google.com
+
+By adding a port number at the end of the host we will measure a TCP handshake (or discover a closed port on the remote host):
+
+    > psping www.google.com:80
+
+To test UDP add **-u** option on the command line.
+
+### Troubleshooting latency
+
+We need to run a PsPing in a server mode on the other side (-f for creating a temporary exception in the Windows Firewall, -s to enable server listening mode):
+
+    > psping -f -s 192.168.1.3:4000
+
+Then we start the client and perform the test:
+
+    > psping -l 16k -n 100 192.168.1.3:4000
+
+<a name="link">Links</a>
+------------------------
 
 - [Using .NET HttpClient to capture partial Responses](http://weblog.west-wind.com/posts/2014/Jan/29/Using-NET-HttpClient-to-capture-partial-Responses?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+RickStrahl+%28Rick+Strahl%27s+WebLog%29)
 - [Tracing System.Net to debug HTTP Clients](http://mikehadlow.blogspot.co.uk/2012/07/tracing-systemnet-to-debug-http-clients.html)
