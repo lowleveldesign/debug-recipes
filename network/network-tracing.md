@@ -9,6 +9,9 @@ In this recipe:
 - [Tracing using ETW  (netsh, perfview, Message Analyzer)](#etw)
 - [Network tracing in procmon](#procmon)
 - [Troubleshoot network with pspsing](#psping)
+  - [Troubleshooting connectivity](#psping-connectivity)
+  - [Measuring latency](#psping-latency)
+  - [Measuring bandwidth](#psping-bandwidth)
 - [Links](#links)
 
 
@@ -225,7 +228,7 @@ Procmon network tracing does not collect data sent or received but it will revea
 <a name="psping">Troubleshooting network with PsPing</a>
 --------------------------------------------------------
 
-### Troubleshooting connectivity
+### <a name="psping-connectivity">Troubleshooting connectivity</a>
 
 PsPing (a part of [Sysinternals toolkit](https://technet.microsoft.com/en-us/sysinternals)) has few interesting options when it comes to diagnosing network connectivity issues. The simplest usage is just a replacement for a ping.exe tool (performs ICMP ping):
 
@@ -237,7 +240,7 @@ By adding a port number at the end of the host we will measure a TCP handshake (
 
 To test UDP add **-u** option on the command line.
 
-### Troubleshooting latency
+### <a name="psping-latency">Measuring latency</a>
 
 We need to run a PsPing in a server mode on the other side (-f for creating a temporary exception in the Windows Firewall, -s to enable server listening mode):
 
@@ -246,6 +249,16 @@ We need to run a PsPing in a server mode on the other side (-f for creating a te
 Then we start the client and perform the test:
 
     > psping -l 16k -n 100 192.168.1.3:4000
+
+### <a name="psping-bandwidth">Measuring bandwidth</a>
+
+We need to run a PsPing in a server mode on the other side (-f for creating a temporary exception in the Windows Firewall, -s to enable server listening mode):
+
+    > psping -f -s 192.168.1.3:4000
+
+Then we start the client and perform the test:
+
+    > psping -b -l 16k -n 100 192.168.1.3:4000
 
 <a name="link">Links</a>
 ------------------------
