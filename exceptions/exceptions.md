@@ -6,7 +6,6 @@ Table of contents:
 
 - [Collect exception info](#collect)
   - [Using procdump](#procdump)
-  - [Using adplus](#adplus)
 - [Analyzing collected information](#analyze)
   - [Read managed exception information](#exc-managed)
   - [Read exception context](#exc-context)
@@ -18,9 +17,11 @@ Table of contents:
 
 ### <a name="procdump">Using procdump</a>
 
-From some time procdump filtering works on .NET exception names. Each exception name is prefixed with CLR exception code (E0434F4D) and contains the full name of the exception type. Look at the example below which does nothing but prints 1st chance exceptions occurring in the process 8012:
+From some time procdump uses a managed debugger engine when attaching to .NET processes. This is great because we can filter exceptions based on their nice names. Unfortunately, that works only for 1st chance exceptions (at least for .NET 4.0). 2nd chance exceptions are raised out of the .NET Framework and must be handled by a native debugger. Starting from .NET 4.0 it is no longer possible to attach both managed and native engine to the same process. Thus, if we want to make a dump on the 2nd chance exception for a .NET application, we need to use the **-g** option in order to force procdump to use the native engine.
 
-    C:\Utils> procdump -e 1 -f "" 8012
+It is often a good way to start diagnosing, by observing 1st chance exceptions occurring in a process. At this point we don't want to collect any dumps, only logs. We may achieve this by specyfing a non-existing exception name in the filter command, eg.:
+
+    C:\Utils> procdump -e 1 -f "DoesNotExist" 8012
 
     ProcDump v7.1 - Writes process dump files
     Copyright (C) 2009-2014 Mark Russinovich
@@ -53,7 +54,6 @@ From some time procdump filtering works on .NET exception names. Each exception 
     [09:03:28] Exception: E0434F4D.System.NullReferenceException ("Object reference not set to an instance of an object.")
 
 We may also observe the logs in procmon. In order to see the procdump log events in **procmon** remember to add procdump.exe and procdump64.exe to the accepted process names in procmon filters.
-
 
 To create a full memory dump when `NullReferenceException` occurs use the following command:
 

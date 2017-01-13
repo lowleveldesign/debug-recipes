@@ -22,8 +22,7 @@ Choose a recipe corresponding to your application problem (if a recipe requires 
 
 - [Unknown exceptions thrown](exceptions/exceptions.md)
 - [Memory leaks](memory/managed-memory-leaks.md)
-- [High CPU usage (IN PROGRESS)](cpu/analyzing-high-cpu-usage.md)
-- [I/O issues (IN PROGRESS)]()
+- [High CPU usage](cpu/analyzing-high-cpu-usage.md)
 - [Networking problems](network/network-tracing.md)
 - Wait analysis (deadlocks):
   - [using ETW](threading/analyzing-waits-etw.md)

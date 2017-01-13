@@ -69,8 +69,8 @@ List notead processes with threads and memory info:
      Tid Pri    Cswtch            State     User Time   Kernel Time   Elapsed Time
     9048  10   1387934   Wait:Executive  0:00:00.000   0:00:14.710    1:16:43.577
 
-Collecting traces
------------------
+Collecting data
+---------------
 
 ### Using PerfView ###
 
@@ -93,12 +93,16 @@ In order to investigate further (in case of hardware/drivers problem) you should
     xperf.exe -on PROC_THREAD+LOADER+PROFILE+INTERRUPT+DPC -StackWalk Profile
     xper -stop -d profile.etl
 
+### Using procdump ###
+
+To create a full memory dump when CPU reaches 80%:
+
+    procdump -ma -c 80 Test.exe
+
 Analyzing data
 --------------
 
 FIXME
-
-For **drivers** there is a great graph in xperfview showing you clearly driver delays (> 100ms).
 
 Links
 -----
