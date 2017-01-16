@@ -173,6 +173,8 @@ Links
 - [Response 400 (Bad Request) on Long Url](http://blogs.msdn.com/b/amyd/archive/2014/02/06/response-400-bad-request-on-long-url.aspx)
 - [Configure Debug Diagnostic 2.0 to create a memory dump when a specific exception is thrown](http://blogs.msdn.com/b/benjaminperkins/archive/2014/04/01/configure-debug-diagnostic-2-0-to-create-a-memory-dump-when-a-specific-exception-is-thrown.aspx)
 - [Collecting a memory dump with ProcDump when ASP.NET ISAPI is reported unhealthy or deadlock detected in an ASP.NET application](http://blogs.msdn.com/b/amb/archive/2015/11/06/collect-dump-with-procdump-when-asp.net-unhealthy-or-deadlock-detected.aspx)
+- [IIS 8.5 ETW Logging - library to collect W3VC ETW events](https://github.com/tomasr/iis-etw-tracing)
+- [Description of the registry keys that are used by IIS 7.0, IIS 7.5, and IIS 8.0](https://support.microsoft.com/en-us/kb/954864)
 
 ### Tutorials and labs ###
 
