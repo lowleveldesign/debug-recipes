@@ -6,6 +6,7 @@ Table of contents:
 
 - [Collect exception info](#collect)
   - [Using procdump](#procdump)
+  - [Using Windows Error Reporting](wer/wer_usage.md)
 - [Analyzing collected information](#analyze)
   - [Read managed exception information](#exc-managed)
   - [Read exception context](#exc-context)
