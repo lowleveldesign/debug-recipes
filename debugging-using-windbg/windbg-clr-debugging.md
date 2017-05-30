@@ -2,7 +2,7 @@
 Debugging .NET using WinDbg
 ===========================
 
-I prepared a cheatsheet for most common WinDbg commands used to diagnose managed application. You may get it [here](windbg-clr-cheatsheet.pdf).
+I prepared a cheatsheet for most common WinDbg commands used to diagnose managed application. You may get it [here](windbg-clr-cheatsheet.pdf). I also published a more detailed tutorial on Debugging .NET with WinDbg, which you may find on [my Google Drive](https://docs.google.com/document/d/1yMQ8NAQZEBtsfVp7AsFLSA_MkIKlYNuSowG72_nU0ek).
 
 CLR debugging setup
 -------------------
