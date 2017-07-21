@@ -10,7 +10,7 @@ I hope you will find them useful. Any contribution is welcome.
 
 ## General advice
 
-Make sure you have [valid symbols configuration](windows-debugging-configuration.md) in your system. If you are debugging a .NET application you may first [check the .NET debugging tips](clr-debugging-tips.md).
+Make sure you have [valid symbols configuration](windows-debugging-configuration.md#environment-variables) in your system. If you are debugging a .NET application you may first [check the .NET debugging tips](clr-debugging-tips.md).
 
 ---------------------
 
@@ -18,7 +18,7 @@ Make sure you have [valid symbols configuration](windows-debugging-configuration
 
 ### Applications
 
-Choose a recipe corresponding to your application problem (if a recipe requires WinDbg please have a look [how to setup .NET in WinDbg](debugging-using-windbg/windbg-clr-debugging.md) first):
+Choose a recipe corresponding to your application problem:
 
 - [Unknown exceptions thrown](exceptions/exceptions.md)
 - [Memory leaks](memory/managed-memory-leaks.md)
@@ -59,7 +59,4 @@ Problems in **.NET Web Applications**:
 ## Tools
 
 - [Visual Studio (debugging)](debugging-using-vs/README.md)
-- [WinDbg (debugger)](debugging-using-windbg/windbg-debugging.md)
-  - [.NET in WinDbg](debugging-using-windbg/windbg-clr-debugging.md)
-  - [Interesting WinDbg extensions](debugging-using-windbg/windbg-extensions.md)
 
