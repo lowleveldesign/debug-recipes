@@ -6,13 +6,9 @@ This is a repository of my notes collected while debugging various .NET and Wind
 
 I hope you will find them useful. Any contribution is welcome.
 
----------------------
-
 ## General advice
 
 Make sure you have [valid symbols configuration](windows-debugging-configuration.md#environment-variables) in your system. If you are debugging a .NET application you may first [check the .NET debugging tips](clr-debugging-tips.md).
-
----------------------
 
 ## Troubleshooting
 
