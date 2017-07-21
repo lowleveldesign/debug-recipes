@@ -20,7 +20,7 @@ Make sure you have [valid symbols configuration](windows-debugging-configuration
 
 Choose a recipe corresponding to your application problem:
 
-- [Unknown exceptions thrown](exceptions/exceptions.md)
+- [Exceptions and Windows errors](exceptions/exceptions.md)
 - [Memory leaks](memory/managed-memory-leaks.md)
 - [High CPU usage](cpu/analyzing-high-cpu-usage.md)
 - [Networking problems](network/network-tracing.md)

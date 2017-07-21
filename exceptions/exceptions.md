@@ -1,12 +1,12 @@
 
-Troubleshooting exceptions
-==========================
+Troubleshooting exceptions and Windows errors
+=============================================
 
-Table of contents:
+In this recipe:
 
 - [Collect exception info](#collect)
   - [Using procdump](#procdump)
-  - [Using Windows Error Reporting](wer/wer_usage.md)
+  - [Using Windows Error Reporting (seperate recipe)](wer/wer_usage.md)
 - [Analyzing collected information](#analyze)
   - [Read managed exception information](#exc-managed)
   - [Read exception context](#exc-context)
@@ -221,6 +221,6 @@ or **errmsg**:
 
 - [Debug exceptions using AdPlus](http://lowleveldesign.wordpress.com/2012/01/16/adplus-managed-exceptions)
 - [Decoding the parameters of a thrown C++ exception (0xE06D7363)](http://blogs.msdn.com/b/oldnewthing/archive/2010/07/30/10044061.aspx)
-- <http://support.microsoft.com/kb/313109>
-- <http://blogs.msdn.com/b/ntdebugging/archive/2013/01/30/case-of-the-unexplained-services-exe-termination.aspx>
-- <http://blogs.msdn.com/b/junfeng/archive/2008/03/03/getting-the-right-exception-context-from-a-memory-dump.aspx>
+- [HOW TO: Find the Problem Exception Stack When You Receive an UnhandledExceptionFilter Call in the Stack Trace](http://support.microsoft.com/kb/313109)
+- [Case of the Unexplained Services exe Termination](http://blogs.msdn.com/b/ntdebugging/archive/2013/01/30/case-of-the-unexplained-services-exe-termination.aspx)
+- [Getting the right exception context from a memory dump](http://blogs.msdn.com/b/junfeng/archive/2008/03/03/getting-the-right-exception-context-from-a-memory-dump.aspx)
