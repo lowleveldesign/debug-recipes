@@ -50,8 +50,6 @@ Problems in **.NET Web Applications**:
 - [Troubleshooting IIS6](iis/iis6.md)
 - [Troubleshooting IIS Express](iis/iisexpress.md)
 
----------------------
-
 ## Tools
 
 - [Visual Studio (debugging)](debugging-using-vs/README.md)
