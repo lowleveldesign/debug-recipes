@@ -27,6 +27,18 @@ Fusion log is available in all versions of .NET Framework. There is a tool named
 
 The root of all the Fusion log settings is `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Fusion`.
 
+It is possible to log bindings also of the native images - you need to select the Native Images checkbox.
+
+When writing to a folder on a hard drive fusion logs are split among categories and processes, eg.:
+
+```
+C:\TEMP\FUSLOGVW
+├───Default
+│   └───powershell.exe
+└───NativeImage
+    └───powershell.exe
+```
+
 ### Log to exception text ###
 
     HKEY_LOCAL_MACHINE\software\microsoft\fusion
