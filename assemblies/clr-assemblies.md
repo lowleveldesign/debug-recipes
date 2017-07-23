@@ -2,7 +2,7 @@
 .NET assemblies
 ===============
 
-Table of contents:
+In this recipe:
 
 - [Troubleshooting loading using ETW (in Perfview)](#perfview)
 - [Troubleshooting loading using Fusion Log](#fuslogvw)
@@ -208,6 +208,22 @@ Note that this will no longer work for .NET 4, it uses a GAC in a different fold
 For .NET4.0 GAC was moved to **c:\Windows\Microsoft.NET\assembly** and no longer supports drag&drop functionality - so it’s best to just use gacutil to manipulate GAC content. Though it’s possible to install assembly in both GAC folders as stated here: <http://stackoverflow.com/questions/7095887/registering-the-same-version-of-an-assembly-but-with-different-target-frameworks>, but I would not consider it a good practice as framework tools can’t deal with it.
 
 .NET GAC settings are stored under the registry key: HKLM\Software\Microsoft\Fusion.
+
+### Find assembly in cache ###
+
+Work only with full assembly name provided. If no name is provided lists all the assemblies in cache.
+
+    gacutil /l System.Core
+
+    The Global Assembly Cache contains the following assemblies:
+      System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL
+      System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL
+
+    Number of items = 2
+
+### Uninstall assembly from cache ###
+
+    gacutil /u MyTest.exe
 
 ## <a name="links">Links</a>
 

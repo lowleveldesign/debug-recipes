@@ -27,7 +27,6 @@ Choose a recipe corresponding to your application problem:
 - Slow database queries:
   - [using ADO.NET](ado.net/ado.net-debugging.md)
   - [using MySql connector](databases/mysql/mysql.net-connector-usage.md)
-- [Framework installation or GAC](clr-information.md)
 
 Problems in **.NET Web Applications**:
 
