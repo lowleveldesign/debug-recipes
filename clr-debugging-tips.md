@@ -198,13 +198,13 @@ Remove groups
 
 Add FullTrust for a given path:
 
-    caspol -m -q -ag All_Code -url \\trader-zrodla.srv.trader.pl\zrodla\prod\autotrader.pl\www\panel\bin\* FullTrust
+    caspol -m -q -ag All_Code -url c:\panel\bin\* FullTrust
 
 To analyze policies applied to the assembly you may run (according to <http://msdn.microsoft.com/en-us/library/vstudio/tx1dts55(v=vs.100).aspx>):
 
-    caspol all resolveperm assembly-file
+    caspol all resolveperm assembly-file
 
-    caspol enterprise resolveperm assembly-file
-    caspol machine resolveperm assembly-file
-    caspol user resolveperm assembly-file
+    caspol enterprise resolveperm assembly-file
+    caspol machine resolveperm assembly-file
+    caspol user resolveperm assembly-file
 
