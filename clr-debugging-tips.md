@@ -165,7 +165,7 @@ For .NET2.0 you could check the version of mscorwks in the file properties or, i
         File date:        00000000.00000000
         Translations:     0409.04b0
         CompanyName:      Microsoft Corporation
-        ProductName:      MicrosoftŽ .NET Framework
+        ProductName:      Microsoft .NET Framework
         InternalName:     mscorwks.dll
         OriginalFilename: mscorwks.dll
         ProductVersion:   2.0.50727.4455
@@ -193,7 +193,7 @@ List groups:
 
 Remove groups
 
-    caspol remgroup 1.1.2.
+    caspol remgroup 1.1.2.
 
 
 Add FullTrust for a given path:
