@@ -1,4 +1,4 @@
-Analysing locks
+Analyzing locks
 ===============
 
 In this recipe:
@@ -27,7 +27,7 @@ To collect traces with **xperf** run:
 
 ## <a name="analyze-trace">Analyzing ETW traces</a>
 
-Event Tracing for Windows is probably the best option when we need to analyse the thread waits. In the paragraphs below you can find information
+Event Tracing for Windows is probably the best option when we need to analyze the thread waits. In the paragraphs below you can find information
 
 ### <a name="perfview">Using PerfView</a>
 
@@ -155,7 +155,7 @@ Another command that can be useful here is **!locks**. With **-v** parameter wil
 
 ### <a name="threadpools">Examine threadpools</a>
 
-There is a special `!tp` extension command that has numerous options to analyse threadpools in processes.
+There is a special `!tp` extension command that has numerous options to analyze threadpools in processes.
 
 ### <a name="critical-sections">Examine critical sections</a>
 

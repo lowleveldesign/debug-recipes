@@ -4,8 +4,8 @@ Diagnosing managed memory leaks
 
 In this recipe:
 
-- [Collect memory snapshot](#collect-snapshot) 
-- [Analyse collected snapshots](#analze-snapshots)
+- [Collect memory snapshot](#collect-snapshot)
+- [Analyze collected snapshots](#analyze-snapshots)
   - [Using PerfView (dumps and snapshots)](#perfview)
   - [Using WinDbg (dumps only)](#windbg)
 
@@ -23,7 +23,7 @@ For a GC heap snapshot use **a perfview snapshot**:
 
 You may also use the menu option: **Memory -&gt; Take Heap Snapshot**.
 
-## <a name="analyze-snapshots">Analyse collected snapshots</a>
+## <a name="analyze-snapshots">Analyze collected snapshots</a>
 
 ### <a name="perfview">Using perfview (dumps and snapshots)</a>
 
