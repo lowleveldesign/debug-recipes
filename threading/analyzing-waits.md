@@ -1,11 +1,60 @@
-
 Analysing locks
 ===============
 
-Locks in managed apps
----------------------
+In this recipe:
 
-### Automatic detection of the dead-locks ###
+- [Collecting ETW traces](#collect-trace)
+- [Analyzing ETW traces](#analyze-trace)
+  - [Using PerfView](#perfview)
+  - [Using WPA](#wpa)
+- [Diagnosing locks in a debugger (including dumps)](#debuggers)
+  - [Automatic detection of the dead-locks (managed)](#dlk)
+  - [Correlate thread ids with thread objects (managed)](#correlate-threads)
+  - [Iterate through execution contexts assigned to threads (managed)](execution-context)
+  - [List locks (managed)](#list-locks)
+  - [Check locks in kernel mode](#locks-in-kernel)
+  - [Examine threadpools](#threadpools)
+  - [Examine critical sections](#critical-sections)
+
+## <a name="collect-trace">Collecting ETW traces</a>
+
+In **PerfView** you need to select the **Thread Time** checkbox in the collect window.
+
+To collect traces with **xperf** run:
+
+    xperf -on PROC_THREAD+LOADER+PROFILE+INTERRUPT+DPC+DISPATCHER+CSWITCH -stackwalk Profile+CSwitch+ReadyThread
+    xperf -stop -d merged.etl
+
+## <a name="analyze-trace">Analyzing ETW traces</a>
+
+Event Tracing for Windows is probably the best option when we need to analyse the thread waits. In the paragraphs below you can find information
+
+### <a name="perfview">Using PerfView</a>
+
+You need to select the ThreadTime in the collection dialog. With this setting PerfView will record context switch events as well as the usual stack dumps every 100ms.
+
+When analyzing blocks use any of the **Thread Time** views. It's best to start with the **Call Stack** view, exclude threads which seem not interesting and locate blocks which might be connected with your investigation. Then for each block time narrow the time to its start and try to guess the flow of the commands that fire it (what was executed last on each thread and what might be the cause of the wait).
+
+You may check [the post](https://lowleveldesign.wordpress.com/2015/10/01/understanding-the-thread-time-view-in-perfview/) on my blog explaining in details Thread Time view in PerfView.
+
+### <a name="wpa">Using WPA</a>
+
+You then need to look at the **CPU Usage (Precise)** graph in WPA. It's worth to add stack columns to the graph (NewThreadStack, ReadyThreadStack). Ready thread is the thread that woke the thread that was sleeping.
+
+FIXME
+
+We should start from our hanging thread and found its readying thread. Then check which thread readied this thread and so on. This chain should bring to us to the final thread which might be a system thread performing some I/O operations.
+
+When working with this view it's always worth to have in mind the thread states diagram from MSDN:
+
+![thread states](thread-states.jpg)
+
+
+FIXME: DPCs
+
+## <a name="debugger">Diagnosing locks in a debugger (including dumps)</a>
+
+### <a name="dlk">Automatic detection of the dead-locks (managed)</a>
 
 Try running the **!dlk** command from the SOSEX extension. It is pretty good in detecting dead-locks, example:
 
@@ -32,7 +81,7 @@ CLR Thread 0x1 is waiting at clr!CrstBase::SpinEnter+0x92
 CLR Thread 0x3 is waiting at System.Threading.Monitor.Enter(System.Object, Boolean ByRef)(+0x17 Native)
 ```
 
-### Correlate thread ids with thread objects ###
+### <a name="correlate-threads">Correlate thread ids with thread objects (managed)</a>
 
 The `!Threads` commands does not unfortunately show addresses of the managed thread objects on the heap. So first you need to find the MT of the `Thread` class in your appdomain, eg.
 
@@ -62,7 +111,7 @@ The printed ids corresond to the values of the ID column in `!Threads` output, e
   34    4 1388 05198440     21220 Preemptive  00000000:00000000 050d8b18 0     Ukn
 ```
 
-### Iterate through execution contexts assigned to threads ###
+### <a name="execution-context">Iterate through execution contexts assigned to threads (managed)</a>
 
 When debugging locks in code that is using tasks it is often necessary to examine execution contexts assigned to the running threads. I prepared a simple script which lists threads with their execution contexts. You only need (as in previous script) find the MT of the `Thread` class in your appdomain, eg.
 
@@ -88,13 +137,9 @@ And then paste it in the scripts below:
 
 Notice that the thread number from the output is a managed thread id and to map it to the windbg thread number you need to use the `!Threads` command.
 
-### List locks ###
+### <a name="list-locks">List locks (managed)</a>
 
 You may examine thin locks using **!DumpHeap -thinlocks**.  To find all hard locks (the ones that were created after the object header was full) use **!SyncBlk -all** command.
-
-
-Locks in native apps
---------------------
 
 There are many types of objects that the thread can wait on. You usually see many `WaitOnMultipleObjects` on many threads.
 
@@ -104,15 +149,15 @@ If you see RtlWaitForCriticalSection or other method connected with a critical s
     !cs shows all critical sections in the program (dump)
     !timers presents all timers running in system
 
-### Check locks in kernel mode ###
+### <a name="locks-in-kernel">Check locks in kernel mode</a>
 
 Another command that can be useful here is **!locks**. With **-v** parameter will display all locks accessed by threads in a process.
 
-### Examine threadpools ###
+### <a name="threadpools">Examine threadpools</a>
 
 There is a special `!tp` extension command that has numerous options to analyse threadpools in processes.
 
-### Examine critical sections ###
+### <a name="critical-sections">Examine critical sections</a>
 
 Use **!cs** comman to examine critical sections in your applications:
 
@@ -129,4 +174,5 @@ Use **!cs** comman to examine critical sections in your applications:
     SpinCount          = 0x00000000020007d0
 
 `LockCount` tells you how many threads are currently waiting on a given cs. The `OwningThread` is a thread that owns the cs at the time the command is run. You can easily identify the thread that is waiting on a given cs by issuing `kv` command and looking for critical section identifier in the call parameters.
+
 

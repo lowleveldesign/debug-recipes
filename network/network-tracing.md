@@ -15,8 +15,7 @@ In this recipe:
 - [Links](#links)
 
 
-<a name="dotnet">Traces available in .NET applications</a>
-----------------------------------------------------
+## <a name="dotnet">Traces available in .NET applications</a>
 
 All classes from `System.Net`, if configured properly, may provide a lot of interesting logs through the default System.Diagnostics mechanisms.
 
@@ -108,8 +107,7 @@ If you are using NLog in your application you may redirect the System.Net trace 
 </system.diagnostics>
 ```
 
-<a name="proxy">Logging application requests in a proxy</a>
------------------------------------------------------------
+## <a name="proxy">Logging application requests in a proxy</a>
 
 When you make a request in code you should remember to configure its proxy according to the system settings, eg.:
 
@@ -135,8 +133,7 @@ Then run [Fiddler](http://www.telerik.com/fiddler) (or any other proxy) and requ
 
 **NOTE for WCF clients**: WCF has its own proxy settings, to use the default proxy add an `useDefaultWebProxy=true` attribute to your binding.
 
-<a name="etw">ETW network traces</a>
-------------------------------------
+## <a name="etw">ETW network traces</a>
 
 ### Using PerfView ###
 
@@ -220,13 +217,11 @@ function ConvertFrom-EtlToCap([Parameter(Mandatory=$True)][String]$EtlFilePath, 
 }
 ```
 
-<a name="procmon">Procmon network tracing</a>
----------------------------------------------
+## <a name="procmon">Procmon network tracing</a>
 
 Procmon network tracing does not collect data sent or received but it will reveal all the network connections opened by processes in the system.
 
-<a name="psping">Troubleshooting network with PsPing</a>
---------------------------------------------------------
+## <a name="psping">Troubleshooting network with PsPing</a>
 
 ### <a name="psping-connectivity">Troubleshooting connectivity</a>
 
@@ -260,11 +255,8 @@ Then we start the client and perform the test:
 
     > psping -b -l 16k -n 100 192.168.1.3:4000
 
-<a name="link">Links</a>
-------------------------
+## <a name="link">Links</a>
 
-- [Using .NET HttpClient to capture partial Responses](http://weblog.west-wind.com/posts/2014/Jan/29/Using-NET-HttpClient-to-capture-partial-Responses?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+RickStrahl+%28Rick+Strahl%27s+WebLog%29)
-- [Tracing System.Net to debug HTTP Clients](http://mikehadlow.blogspot.co.uk/2012/07/tracing-systemnet-to-debug-http-clients.html)
 - [Network Tracing](http://msdn.microsoft.com/en-us/library/hyb3xww8)
 - [Event Tracing for Windows and Network Monitor](http://blogs.technet.com/b/netmon/archive/2009/05/13/event-tracing-for-windows-and-network-monitor.aspx)
 - [Windows Filtering Platform](http://www.windowsnetworking.com/articles_tutorials/new-netsh-commands-windows-7-server-2008-r2.html)

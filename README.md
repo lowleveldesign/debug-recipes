@@ -19,10 +19,8 @@ Choose a recipe corresponding to your application problem:
 - [Exceptions and Windows errors](exceptions/exceptions.md)
 - [Memory leaks](memory/managed-memory-leaks.md)
 - [High CPU usage](cpu/analyzing-high-cpu-usage.md)
+- [Wait analysis (deadlocks)](threading/analyzing-waits.md)
 - [Networking problems](network/network-tracing.md)
-- Wait analysis (deadlocks):
-  - [using ETW](threading/analyzing-waits-etw.md)
-  - [in the debugger](threading/analyzing-waits-debugger.md)
 - [Assembly not found](assemblies/clr-assemblies.md)
 - Slow database queries:
   - [using ADO.NET](ado.net/ado.net-debugging.md)

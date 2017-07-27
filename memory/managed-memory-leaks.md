@@ -2,8 +2,14 @@
 Diagnosing managed memory leaks
 ==============================
 
-Collect memory snapshot
------------------------
+In this recipe:
+
+- [Collect memory snapshot](#collect-snapshot) 
+- [Analyse collected snapshots](#analze-snapshots)
+  - [Using PerfView (dumps and snapshots)](#perfview)
+  - [Using WinDbg (dumps only)](#windbg)
+
+## <a name="collect-snapshot">Collect memory snapshot</a>
 
 To create a memory dump you may use [procdump](https://live.sysinternals.com) or [minidumper](https://github.com/goldshtn/minidumper) - a tool from Sasha Goldshtein (with my contribution):
 
@@ -17,10 +23,9 @@ For a GC heap snapshot use **a perfview snapshot**:
 
 You may also use the menu option: **Memory -&gt; Take Heap Snapshot**.
 
-Analyse collected snapshots
----------------------------
+## <a name="analyze-snapshots">Analyse collected snapshots</a>
 
-### Using perfview (dumps and snapshots) ###
+### <a name="perfview">Using perfview (dumps and snapshots)</a>
 
 You may convert a memory dump file to perfview snapshot using `PerfView HeapSnapshotFromProcessDump ProcessDumpFile [DataFile]` or using the GUI options **Memory -&gt; Take Heap Snapshot from Dump**.
 
@@ -47,8 +52,6 @@ When dump was not taken with a full memory you may receive an error similar to t
     The call to LoadLibrary(d:\symbols\mss\clr.dll\4DA3FDF5670000\sos) failed, Win32 error 0n126
         "The specified module could not be found."
     Please check your debugger configuration and/or network access.
-
-You can then try loading `psscor4` but still many commands won't be working.
 
 Identify object which used most of the memory using **!DumpHeap -stat**.
 
@@ -119,44 +122,9 @@ Load necessary **plugins**:
 Links
 -----
 
-- [Tracking down managed memory leaks (how to find a GC leak)](http://blogs.msdn.com/b/ricom/archive/2004/12/10/279612.aspx)
-  [CLR Profiler: Detecting High Memory consuming functions in .NET code](http://www.dotnetspark.com/kb/772-net-best-practice-no-1--detecting-high-memory.aspx)
-- [How to detect and avoid memory and resources leaks in .NET applications](http://madgeek.com/Articles/Leaks/Leaks.en.html)
-- [Investigating Memory Issues](http://msdn.microsoft.com/en-us/magazine/cc163528.aspx)
-- Some tools found on [https://skydrive.live.com/?cid=2b879b9ac7a9e117&sc=documents&id=2B879B9AC7A9E117%21466](https://skydrive.live.com/?cid=2b879b9ac7a9e117&sc=documents&id=2B879B9AC7A9E117%21466)
-
-### Testing ###
-
-- [NBench Testing – Garbage collection](http://www.dotnetalgorithms.com/2016/02/nbench-testing-garbage-collection/)
-- [dotMemory - .NET memory usage monitoring with unit tests](https://www.jetbrains.com/dotmemory/unit/)
-- [WMemoryProfiler - wraps cdbg to collect GC data](https://wmemoryprofiler.codeplex.com/)
-- [Visualising the .NET Garbage Collector](http://mattwarren.org/2016/06/20/Visualising-the-dotNET-Garbage-Collector/)
-
-### GC ###
-
 - [.NET Memory Basics](http://www.simple-talk.com/dotnet/.net-framework/.net-memory-management-basics/)
 - [Large Obect Heap compaction - should I use it?](https://www.simple-talk.com/dotnet/.net-framework/large-object-heap-compaction-should-you-use-it/)
-- [Garbage Collection: Automatic Memory Management in the Microsoft .NET Framework](http://msdn.microsoft.com/en-us/magazine/bb985010.aspx)
-  [Garbage Collection Part 2: Automatic Memory Management in the Microsoft .NET Framework](http://msdn.microsoft.com/en-us/magazine/bb985011.aspx)
-- [Learning How Garbage Collectors Work - Part 1](http://mattwarren.github.io/2016/02/04/learning-how-garbage-collectors-work-part-1/)
-- [Large Object Heap Uncovered (an old MSDN article)](https://blogs.msdn.microsoft.com/maoni/2016/05/31/large-object-heap-uncovered-from-an-old-msdn-article/)
-
-### Dumps ###
-
-- [Minidumper - a better way to create managed memory dumps](http://www.codeproject.com/Articles/1102423/Minidumper-a-better-way-to-create-managed-memory-d)
-- [Creating Smaller, But Still Usable, Dumps of .NET Applications](http://blogs.microsoft.co.il/sasha/2015/08/19/minidumper-smaller-dumps-net-applications/)
-- [StackDump - stack dumps for .Net Applications](http://stackdump.codeplex.com/)
-
-
-### ETW ###
-
-- [Defrag Tools: #33 - CLR GC - Part 1](http://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-33-CLR-GC-Part-1)
-- [Defrag Tools: #34 - CLR GC - Part 2](http://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-34-CLR-GC-Part-2)
-- [GC ETW events](http://blogs.msdn.com/b/maoni/archive/2014/12/22/gc-etw-events.aspx)
-- [GC ETW events - 2](http://blogs.msdn.com/b/maoni/archive/2014/12/25/gc-etw-events-2.aspx)
-- [GC ETW Events - 3](http://blogs.msdn.com/b/maoni/archive/2014/12/25/gc-etw-events-3.aspx)
-- [GC ETW Events - 4](http://blogs.msdn.com/b/maoni/archive/2014/12/30/gc-etw-events-4.aspx)
-- [Measure GC Allocations and Collections using TraceEvent](http://naveensrinivasan.com/2015/05/11/measure-gc-allocations-and-collections-using-traceevent/)
-- [ProfBugging - How to find leaks with allocation profiling](http://geekswithblogs.net/akraus1/archive/2015/03/22/161982.aspx)
-- [Make WPA Simple - Garbage Collection and JIT Times](http://geekswithblogs.net/akraus1/archive/2015/08/16/166270.aspx)
-- [Does Garbage Collection Hurt?](http://geekswithblogs.net/akraus1/archive/2014/02/17/155442.aspx) - PerfView usage to examine GC activities
+- Garbage Collection - series on MSDN ([Part 1](http://msdn.microsoft.com/en-us/magazine/bb985010.aspx), [Part 2](http://msdn.microsoft.com/en-us/magazine/bb985011.aspx))
+- Defrag Tools ([Part 1](http://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-33-CLR-GC-Part-1), [Part 2](http://channel9.msdn.com/Shows/Defrag-Tools/Defrag-Tools-34-CLR-GC-Part-2))
+- GC ETW events by Maoni Stephens (
+[Part 1](http://blogs.msdn.com/b/maoni/archive/2014/12/22/gc-etw-events.aspx),[Part 2](http://blogs.msdn.com/b/maoni/archive/2014/12/25/gc-etw-events-2.aspx), [Part 3](http://blogs.msdn.com/b/maoni/archive/2014/12/25/gc-etw-events-3.aspx), [Part 4](http://blogs.msdn.com/b/maoni/archive/2014/12/30/gc-etw-events-4.aspx))
