@@ -36,7 +36,4 @@ Dialogs available in VS to monitor threads in the application. Navigating betwee
 
 Observing GC in Visual Studio. What can be read about about an object. Analyzing memory segments belonging to GC.
 
-## [Intellitrace](intellitrace.md) ##
-
-Some notes on Intellitrace and its usage.
 
