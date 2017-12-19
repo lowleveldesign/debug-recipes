@@ -368,7 +368,7 @@ The first number in the trace output specifies the number of instructions that w
 bp Module!MyFunctionWithConditionalBreakpoint "r $t0 = 0;.foreach (v { k }) { .if ($spat(\"v\", \"*Module!ClassA:MemberFunction*\")) { r $t0 = 1;.break } }; .if($t0 = 0) { gc }"
 ```
 
-#### Break when user-mode process is created [Kernel]
+#### [Kernel] Break when user-mode process is created
 
 **bp nt!PspInsertProcess**
 
@@ -377,7 +377,7 @@ The breakpoint is hit whenever a new user-mode process is created. To know what 
     x64: dt nt!_EPROCESS @rcx ImageFileName
     x86: dt nt!_EPROCESS @eax ImageFileName
 
-#### Break in user-mode process from the kernel-mode
+#### [Kernel] Break in user-mode process from the kernel-mode
 
 You may set a breakpoint in user space, but you need to be in a valid process context:
 
