@@ -50,4 +50,5 @@ Problems in **.NET Web Applications**:
 ## Tools
 
 - [Visual Studio (debugging)](debugging-using-vs/README.md)
+- [WinDbg (debugging)](debugging-using-windbg/windbg-field-notes.md)
 
