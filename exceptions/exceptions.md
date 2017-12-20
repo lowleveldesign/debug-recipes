@@ -6,12 +6,15 @@ In this recipe:
 
 - [Collect exception info](#collect)
   - [Using procdump](#procdump)
-  - [Using Windows Error Reporting (seperate recipe)](wer/wer_usage.md)
+  - [Using Windows Error Reporting (seperate recipe)](wer/wer-usage.md)
+  - [Break on a specific Windows Error](#winerror-break)
 - [Analyzing collected information](#analyze)
   - [Read managed exception information](#exc-managed)
   - [Read exception context](#exc-context)
+  - [Read Last Windows Error](#read-last-windows-error)
   - [Exception handlers](#exc-handlers)
   - [Decoding error numbers](#exc-numbers)
+  - [Convert HRESULT to Windows Error](#hresult2winerror)
 - [Links](#links)
 
 ## <a name="collect">Collecting exceptions info in production</a>
@@ -60,6 +63,15 @@ To create a full memory dump when `NullReferenceException` occurs use the follow
 
 ```
 procdump -ma -e 1 -f "E0434F4D.System.NullReferenceException" 8012
+```
+
+
+### <a name="winerror-break">Break on a specific Windows Error</a>
+
+There is a special global variable in ntdll: **g\_dwLastErrorToBreakOn** that you may set to cause a break whenever a given last error code is set by the application. For example, to break the application execution whenever it reports the 0x4cf (ERROR\_NETWORK\_UNREACHABLE) error run:
+
+```
+ed ntdll!g_dwLastErrorToBreakOn 0x4cf
 ```
 
 ## <a name="analyze">Analyzing exceptions</a>
@@ -121,6 +133,8 @@ The  `.ecxr` debugger command instructs the debugger to restore the register con
        ExceptionCode: e0434f4d (CLR exception)
       ExceptionFlags: 00000000
     NumberParameters: 0
+
+### <a name="read-last-windows-error">Read Last Windows Error</a>
 
 To get the last error value for the current thread you may use the **!gle** command (or **!teb**). An additional **-all** parameter shows the last errors for all the threads, eg.
 
@@ -217,8 +231,22 @@ or **errmsg**:
     Error: 2 (0x00000002) (02)
     The system cannot find the file specified.
 
+### <a name="hresult2winerror">Convert HRESULT to Windows Error</a>
+
+The pseudo-code to convert HRESULT to Windows Error looks as follows:
+
+```
+a = hresult & 0x1FF0000
+if (a == 0x70000) {
+	winerror = hresult & 0xFFFF
+} else {
+	winerror = hresult
+}
+```
+
 ## <a name="links">Links</a>
 
+- [Error Code Look-up - a great tool that scans Windows header files to find a specific error code](https://www.microsoft.com/en-us/download/details.aspx?id=985)
 - [Debug exceptions using AdPlus](http://lowleveldesign.wordpress.com/2012/01/16/adplus-managed-exceptions)
 - [Decoding the parameters of a thrown C++ exception (0xE06D7363)](http://blogs.msdn.com/b/oldnewthing/archive/2010/07/30/10044061.aspx)
 - [HOW TO: Find the Problem Exception Stack When You Receive an UnhandledExceptionFilter Call in the Stack Trace](http://support.microsoft.com/kb/313109)
