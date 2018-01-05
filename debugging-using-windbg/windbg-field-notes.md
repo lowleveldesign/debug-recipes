@@ -17,8 +17,8 @@ Table of Contents
   - <a href="#critical-sections">Critical sections</a>
 - <a href="#work-with-data">Work with data</a>
   - <a href="#stack">Stack</a>
-    - <a href="stack_x64">Stack (x64)</a>
-    - <a href="stack_x86">Stack (x86)</a>
+    - <a href="#stack_x64">Stack (x64)</a>
+    - <a href="#stack_x86">Stack (x86)</a>
   - <a href="#heap">Heap</a>
 - <a href="#controlling-execution">Controlling process execution</a>
   - <a href="#controlling-the-target">Controlling the target (g, t, p)</a>
