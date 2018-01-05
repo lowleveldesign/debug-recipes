@@ -17,6 +17,8 @@ Table of Contents
   - <a href="#critical-sections">Critical sections</a>
 - <a href="#work-with-data">Work with data</a>
   - <a href="#stack">Stack</a>
+    - <a name="stack_x64">Stack (x64)</a>
+    - <a name="stack_x86">Stack (x86)</a>
   - <a href="#heap">Heap</a>
 - <a href="#controlling-execution">Controlling process execution</a>
   - <a href="#controlling-the-target">Controlling the target (g, t, p)</a>
@@ -224,15 +226,15 @@ To switch a local context to a different stack frame we can use the `.frame` com
 
 The **!for_each_frame** extension enables you to execute a single command repeatedly, once for each frame in the stack.
 
-#### Stack (x64)
+#### <a name="stack_x64">Stack (x64)</a>
 
 X64 calling convention:
 
-- **RCX, RDX, R8, R9** are used for integer and pointer arguments in that order left to right.
-- **XMM0, XMM1, XMM2, and XMM3** are used for floating point arguments.
-- Additional arguments are pushed on the stack right to left (the parameter below the return address is the first parameter from left).
-- It is the caller responsibility to clear the stack after the call.
-- **Returned** integer values are in **RAX**, float values are in **XMM0**.
+- **RCX, RDX, R8, R9** are used for integer and pointer arguments in that order left to right
+- **XMM0, XMM1, XMM2, and XMM3** are used for floating point arguments
+- Additional arguments are pushed on the stack right to left (the parameter below the return address is the first parameter from left)
+- It is the caller responsibility to clear the stack after the call
+- **Returned** integer values are in **RAX**, float values are in **XMM0**
 
 The first four integer/float parameters are passed through registers:
 
@@ -259,9 +261,65 @@ RSP + 0x10 | Argument 5
 RSP + 0x18 | Argument 6
  ...       | ...
 
-#### Stack (x86)
+#### <a name="stack_x86">Stack (x86)</a>
 
-FIXME:calling conventions
+**__stdcall (__pascall) calling convention**
+
+- Arguments pushed on stack **from right to left**
+- **Called function** pops its arguments from the stack
+
+Sample call stack might look as follows:
+
+Address    | The value is
+-----------|---------------------------
+ ...       | ...
+EBP + 0x00 | Previous EBP
+EBP + 0x04 | Return address
+RSP + 0x08 | Argument 0
+RSP + 0x0C | Argument 1
+RSP + 0x10 | Argument 2
+ ...       | ...
+
+Name decoration: 
+
+- prefix: `_` 
+- suffix: `@<num_of_bytes_in_decimal_in_argument_list>`
+
+Example: `int func(int a, double b)` will be emitted as `_func@12`
+
+**__cdecl calling convention**
+
+- Arguments pushed on stack **from right to left**
+- **Calling function** pops arguments from the stack
+
+Sample call stack looks the same as for \_\_stdcall.
+
+Name decoration:
+
+- prefix: `_`, except functions exported using C linkage
+
+**__fastcall calling convention**
+
+- **ECX, EDX** are used for integer and pointer arguments in that order left to right
+- Additional arguments are pushed on stack **from right to left**
+- **Called function** pops arguments from the stack
+
+Name decoration: 
+
+- prefix: `_` 
+- suffix: `@<num_of_bytes_in_decimal_in_argument_list>`
+
+**__clrcall calling convention**
+
+It's used only for function that will be called from the managed code. This will emit MSIL function that could not be called from
+the native code. Works only if the library is compiled with /clr switch.
+
+Similar to \_\_fastcall.
+
+**__thiscall calling convention**
+
+- Arguments pushed on stack **from right to left**, with **this** being passed via **ECX** register (for vararg functions \_\_cdecl is used, with this pushed on the stack as the last argument)
+- **Called function** pops arguments from the stack
 
 **Reading stacks in WinDbg**
 
