@@ -275,9 +275,9 @@ Address    | The value is
  ...       | ...
 EBP + 0x00 | Previous EBP
 EBP + 0x04 | Return address
-RSP + 0x08 | Argument 0
-RSP + 0x0C | Argument 1
-RSP + 0x10 | Argument 2
+EBP + 0x08 | Argument 0
+EBP + 0x0C | Argument 1
+EBP + 0x10 | Argument 2
  ...       | ...
 
 Name decoration: 
