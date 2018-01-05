@@ -261,6 +261,8 @@ RSP + 0x10 | Argument 5
 RSP + 0x18 | Argument 6
  ...       | ...
 
+**The stack has to be 16-byte aligned.** In fact, the return address has to be aligned to 16 bytes. Therefore, the stack space will be always of size 16n + 8 (example: `sub rsp, 48h` at the beginning of the function which is calling another function).
+
 #### <a name="stack_x86">Stack (x86)</a>
 
 **__stdcall (__pascall) calling convention**
@@ -344,6 +346,12 @@ The ChildEBP is the actual stack frame address. To see the first three arguments
 ```
 
 Which matches the kb output. The RetAddr is the address where program will continue when the current function call is finished.
+
+#### Links
+
+- [Moving to Windows x64 - excellent description of the x64 mode](http://ntcore.com/files/vista_x64.htm#x64_Assembly)
+- [x64 calling convention on MSDN](https://docs.microsoft.com/en-us/cpp/build/calling-convention)
+- [x86 calling conventions on MSDN](https://docs.microsoft.com/en-us/cpp/cpp/calling-conventions)
 
 ### <a name="heap">Heap</a>
 
