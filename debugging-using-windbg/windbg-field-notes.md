@@ -256,9 +256,13 @@ Address    | The value is
  ...       | ...
 RSP - 0x08 | Local variable 0
 RSP        | Return address
-RSP + 0x08 | Argument 4
-RSP + 0x10 | Argument 5
-RSP + 0x18 | Argument 6
+RSP + 0x08 | Placeholder 0
+RSP + 0x10 | Placeholder 1
+RSP + 0x18 | Placeholder 2
+RSP + 0x20 | Placeholder 3
+RSP + 0x28 | Argument 4
+RSP + 0x30 | Argument 5
+RSP + 0x38 | Argument 6
  ...       | ...
 
 **The stack has to be 16-byte aligned.** In fact, the return address has to be aligned to 16 bytes. Therefore, the stack space will be always of size 16n + 8 (example: `sub rsp, 48h` at the beginning of the function which is calling another function).
