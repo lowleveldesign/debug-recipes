@@ -165,6 +165,8 @@ To list exception handlers for the currently running method use **!exchain** com
 
 Managed exception handlers can be listed using the SOS **!EHInfo** - example of how to list ASP.NET MVC exception handlers can be found [on my blog](https://lowleveldesign.wordpress.com/2013/04/26/life-of-exception-in-asp-net/).
 
+For 64-bit binaries we can list all exception handlers offline using **dumpbin /unwindinfo** command.
+
 #### x86 applications
 
 Pointer to the exception handler is kept in fs:[0]. The prolog for a method with exception handling has the following structure:
