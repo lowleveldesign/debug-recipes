@@ -496,7 +496,7 @@ For both those commands you may limit their scope to a particular process using 
 
 ### <a name="modules">Modules</a>
 
-To find out if a given address belongs to any of the loaded dlls we may use the **!dlls -c {addr}** command.
+To find out if a given address belongs to any of the loaded dlls we may use the **!dlls -c {addr}** command. Another way would be to use the **lma {addr}** command.
 
 ### <a name="symbols">Symbols</a>
 

@@ -8,6 +8,7 @@ In this recipe:
   - [Using procdump](#procdump)
   - [Using Windows Error Reporting (seperate recipe)](wer/wer-usage.md)
   - [Break on a specific Windows Error](#winerror-break)
+  - [Automatic dumps using AeDebug registry key](#aedebug)
 - [Analyzing collected information](#analyze)
   - [Read managed exception information](#exc-managed)
   - [Read exception context](#exc-context)
@@ -73,6 +74,16 @@ There is a special global variable in ntdll: **g\_dwLastErrorToBreakOn** that yo
 ```
 ed ntdll!g_dwLastErrorToBreakOn 0x4cf
 ```
+
+### <a name="aedebug">Automatic dumps using AeDebug registry key</a>
+
+There is a special **AeDebug** key in the registry, which allows you to define what will happen when an unhandled exception occurs in an application. You may find it under the `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion` key (or `HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows NT\CurrentVersion` for 32-bit apps). The important values under this key are:
+
+- `Debugger` : `REG_SZ` - application which will be called to handle the problematic process (example value: `"c:\sysinternals\procdump.exe" -accepteula -j "c:\dumps" %ld %ld %p`), the first `%ld` parameter is replaced with the process ID and the second with the event handle
+- `Auto` : `REG_SZ` - defines if the debugger runs automatically, without prompting the user (example value: 1)
+- `UserDebuggerHotKey` : `REG_DWORD` - not sure, but it looks it enables the Debug button on the exception handling message box (example value: 1)
+
+To set WinDbg as your default AeDebug debugger, run: `windbg -I`. Although I prefer to use procdump as my system debugger. The command line to install it is `procdump -mp -i c:\dumps`, where c:\dumps is the folder where I would like to store the dumps of crashing apps.
 
 ## <a name="analyze">Analyzing exceptions</a>
 

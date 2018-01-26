@@ -6,12 +6,13 @@ In this recipe:
 
 - [WER settings](#settings)
   - [Collecting full-memory dumps](#fulldumps)
+  - [Disabling WER](#disabling)
 - [Error reporting for .NET applications](#clrapps)
 - [Links](#links)
 
 ## <a name="settings">WER settings</a>
 
-By default WER takes dump only when necessary, but this behavior can be configured and we can force WER to always create a dump by modifying `HKLM\Software\Microsoft\Windows\Windows Error Reporting\ForceQueue=1` or (`HKEY_CURRENT_USER\Software\Microsoft\Windows\Windows Error Reporting\ForceQueue`). The reports are usually saved at `%localAppData%\Microsoft\Windows\WER`, in 2 directories: `ReportArchive`, when a server is available or `ReportQueue`, when the server is not available.  If you want to keep the data locally, just set the server to a non-existing machine (`HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Windows Error Reporting\CorporateWERServer=NonExistingServer`). For system processes you need to look at **c:\ProgramData\Microsoft\Windows\WER\**. In Windows 2003 Server R2 Error Reporting stores errors in signed-in user's directory (ex. `C:\Documents and Settings\ssolnica\Local Settings\Application Data\PCHealth\ErrorRep`).
+By default WER takes dump only when necessary, but this behavior can be configured and we can force WER to always create a dump by modifying `HKLM\Software\Microsoft\Windows\Windows Error Reporting\ForceQueue=1` or (`HKEY_CURRENT_USER\Software\Microsoft\Windows\Windows Error Reporting\ForceQueue`). The reports are usually saved at `%localAppData%\Microsoft\Windows\WER`, in 2 directories: `ReportArchive`, when a server is available or `ReportQueue`, when the server is not available.  If you want to keep the data locally, just set the server to a non-existing machine (`HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Windows Error Reporting\CorporateWERServer=NonExistingServer`). For system processes you need to look at **c:\ProgramData\Microsoft\Windows\WER**. In Windows 2003 Server R2 Error Reporting stores errors in signed-in user's directory (ex. `C:\Documents and Settings\ssolnica\Local Settings\Application Data\PCHealth\ErrorRep`).
 
 ### <a name="fulldumps">Collecting full-memory dumps</a>
 
@@ -30,6 +31,10 @@ Windows Registry Editor Version 5.00
 ```
 
 There is an API available for [WER](http://msdn.microsoft.com/en-us/library/bb513636(VS.85).aspx) so that you can write your own application that will force WER reports.
+
+### <a name="disabling">Disabling WER</a>
+
+Sometimes, for instance when you use the AeDebug setting, you may want to disable WER completely. To make it happen, create a DWORD Value under the `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Windows Error Reporting` key, named `Disabled` and set its value to 1. For 32-bit apps use the `HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\Windows Error Reporting` key.
 
 ## <a name="clrapps">Error reporting for .NET applications</a>
 
