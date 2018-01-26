@@ -17,8 +17,8 @@ Table of Contents
   - <a href="#critical-sections">Critical sections</a>
 - <a href="#work-with-data">Work with data</a>
   - <a href="#stack">Stack</a>
-    - <a name="stack_x64">Stack (x64)</a>
-    - <a name="stack_x86">Stack (x86)</a>
+    - <a href="#stack_x64">Stack (x64)</a>
+    - <a href="#stack_x86">Stack (x86)</a>
   - <a href="#heap">Heap</a>
 - <a href="#controlling-execution">Controlling process execution</a>
   - <a href="#controlling-the-target">Controlling the target (g, t, p)</a>
@@ -256,10 +256,16 @@ Address    | The value is
  ...       | ...
 RSP - 0x08 | Local variable 0
 RSP        | Return address
-RSP + 0x08 | Argument 4
-RSP + 0x10 | Argument 5
-RSP + 0x18 | Argument 6
+RSP + 0x08 | Placeholder 0
+RSP + 0x10 | Placeholder 1
+RSP + 0x18 | Placeholder 2
+RSP + 0x20 | Placeholder 3
+RSP + 0x28 | Argument 4
+RSP + 0x30 | Argument 5
+RSP + 0x38 | Argument 6
  ...       | ...
+
+**The stack has to be 16-byte aligned.** In fact, the return address has to be aligned to 16 bytes. Therefore, the stack space will be always of size 16n + 8 (example: `sub rsp, 48h` at the beginning of the function which is calling another function).
 
 #### <a name="stack_x86">Stack (x86)</a>
 
@@ -275,9 +281,9 @@ Address    | The value is
  ...       | ...
 EBP + 0x00 | Previous EBP
 EBP + 0x04 | Return address
-RSP + 0x08 | Argument 0
-RSP + 0x0C | Argument 1
-RSP + 0x10 | Argument 2
+EBP + 0x08 | Argument 0
+EBP + 0x0C | Argument 1
+EBP + 0x10 | Argument 2
  ...       | ...
 
 Name decoration: 
@@ -344,6 +350,12 @@ The ChildEBP is the actual stack frame address. To see the first three arguments
 ```
 
 Which matches the kb output. The RetAddr is the address where program will continue when the current function call is finished.
+
+#### Links
+
+- [Moving to Windows x64 - excellent description of the x64 mode](http://ntcore.com/files/vista_x64.htm#x64_Assembly)
+- [x64 calling convention on MSDN](https://docs.microsoft.com/en-us/cpp/build/calling-convention)
+- [x86 calling conventions on MSDN](https://docs.microsoft.com/en-us/cpp/cpp/calling-conventions)
 
 ### <a name="heap">Heap</a>
 
