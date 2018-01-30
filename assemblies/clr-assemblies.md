@@ -205,7 +205,7 @@ This functionality is provided by a custom shell extension, shfusion.dll. It fla
 
 Note that this will no longer work for .NET 4, it uses a GAC in a different folder (**c:\windows\microsoft.net\assembly**) and that folder does not have a the same kind of shell extension, you see the raw content of the GAC folders. Don’t mess with that one.
 
-For .NET4.0 GAC was moved to **c:\Windows\Microsoft.NET\assembly** and no longer supports drag&drop functionality - so it’s best to just use gacutil to manipulate GAC content. Though it’s possible to install assembly in both GAC folders as stated here: <http://stackoverflow.com/questions/7095887/registering-the-same-version-of-an-assembly-but-with-different-target-frameworks>, but I would not consider it a good practice as framework tools can’t deal with it.
+For .NET4.0 GAC was moved to **c:\Windows\Microsoft.NET\assembly** and no longer supports drag&drop functionality - so it’s best to just use gacutil to manipulate GAC content. To **disable GAC viewer in Windows Explorer**, add a DWORD value **DisableCacheViewer** set to 1 under the **HKLM\Software\Microsoft\Fusion** key. Though it’s possible to install assembly in both GAC folders as stated here: <http://stackoverflow.com/questions/7095887/registering-the-same-version-of-an-assembly-but-with-different-target-frameworks>, but I would not consider it a good practice as framework tools can’t deal with it.
 
 .NET GAC settings are stored under the registry key: HKLM\Software\Microsoft\Fusion.
 
