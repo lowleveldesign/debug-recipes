@@ -89,7 +89,7 @@ To set WinDbg as your default AeDebug debugger, run: `windbg -I`. Although I pre
 
 ### <a name="exc-manager">Read managed exception information</a>
 
-First make sure with the `!Threads` command (SOS) that your current thread is the one with the exception context:
+First make sure with the **!Threads** command (SOS) that your current thread is the one with the exception context:
 
 ```
 0:000> !Threads
@@ -105,7 +105,7 @@ Hosted Runtime:   no
    5    2 1c74 00000000005851a0    2b220 Preemptive  0000000000000000:0000000000000000 00000000004fb970 0     Ukn (Finalizer)
 ```
 
-In the snippet above we can see that the exception was thrown on the thread no. 0 and this is our currently selected thread (in case it's not we would use `~0s` command) so we may use the `!PrintException` command from SOS (alias `!pe`), example:
+In the snippet above we can see that the exception was thrown on the thread no. 0 and this is our currently selected thread (in case it's not we would use **~0s** command) so we may use the **!PrintException** command from SOS (alias **!pe**), example:
 
 ```
 0:000> !pe
@@ -119,7 +119,7 @@ StackTraceString: <none>
 HResult: 80070057
 ```
 
-Another option is the `!wpe` command from the netext plugin.
+Another option is the **!wpe** command from the netext plugin. To see the full managed call stack, use the **!CLRStack** command. By default, the debugger will stop on an unhandled exception. If you want to stop at the moment when an exception is thrown (first-chance exception), run the **sxe clr** command at the beginning of the debugging session.
 
 ### <a name="exc-context">Read exception context</a>
 
