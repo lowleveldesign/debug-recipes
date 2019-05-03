@@ -4,45 +4,34 @@ CLR general debugging tips
 
 In this recipe:
 
-- [CLR debugging in WinDbg](#clrwindbg)
-- [Controlling JIT optimization](#jitoptimization)
-- [Check framework version](#frameworkversion)
-- [CLR Code Policies](#codepolicies)
+  - [CLR debugging in WinDbg](#clr-debugging-in-windbg)
+    - [Loading SOS](#loading-sos)
+    - [Get help for commands in .NET WinDbg extensions ###](#get-help-for-commands-in-net-windbg-extensions-)
+  - [Controlling JIT optimization](#controlling-jit-optimization)
+    - [DebuggableAttribute](#debuggableattribute)
+    - [INI file](#ini-file)
+  - [Decode managed stacks in Sysinternals](#decode-managed-stacks-in-sysinternals)
+  - [Check framework version](#check-framework-version)
+  - [CLR Code Policies](#clr-code-policies)
 
-## <a name="clrwindbg">CLR debugging in WinDbg</a>
+## CLR debugging in WinDbg
 
-### Loading SOS ###
+### Loading SOS
 
-You may use a great WinDbg plugin (**procdumpext**) by Andrew Richards for loading SOS:
-
-```
-0:000> .load c:\tools\diagnosing\Debugging Tools for Windows\_winext-x64\ProcDumpExt.dll
-=========================================================================================
- ProcDumpExt v6.4 - Copyright 2013 Andrew Richards
-=========================================================================================
-0:000> !loadsos
-```
-
-However, recently I usually use any command from **netext** (eg. **!wver**) and make it load sos automatically, eg.:
+When you are debugging on the same machine on which you collected the dump use the following commands:
 
 ```
-0:000> .load netext
-...
-0:000> !wver
-Runtime(s) Found: 1
-0: Filename: mscordacwks_Amd64_Amd64_4.6.1080.00.dll Location: C:\Windows\Microsoft.NET\Framework64\v4.0.30319\mscordacwks.dll
-.NET Version: v4.6.1080.00
-NetExt (this extension) Version: 2.1.2.5000
-0:000> .chain
-Extension DLL search Path:
-...
-Extension DLL chain:
-    netext: image 2.1.2.5000, API 1.0.0, built Thu Jan 21 17:33:00 2016
-        [path: C:\tools\diag\Debugging Tools for Windows\_winext-x64\netext.dll]
-    C:\Windows\Microsoft.NET\Framework64\v4.0.30319\SOS.dll: image 4.6.1080.0, API 1.0.0, built Tue Apr 12 03:02:38 2016
-        [path: C:\Windows\Microsoft.NET\Framework64\v4.0.30319\sos.dll]
-...
+.loadby sos mscorwks (.NET 2.0/3.5)
+.loadby sos clr      (.NET 4.0+)
+.loadby sos coreclr  (.NET Core)
 ```
+
+When you have a dump file try using `!analyze -v`. On latest windbg versions it should detect a managed application and load the correct SOS version. If it does not work, load SOS from your .NET installation and try to download a correct mscordacwks as described [here](http://blogs.microsoft.co.il/blogs/sasha/archive/2012/05/19/obtaining-mscordacwks-dll-for-clr-versions-you-don-t-have.aspx).
+
+Other issues:
+
+- [Failed to load data access DLL, 0x80004005 – OR – What is mscordacwks.dll?](http://blogs.msdn.com/b/dougste/archive/2009/02/18/failed-to-load-data-access-dll-0x80004005-or-what-is-mscordacwks-dll.aspx)
+- [How to load the specified mscordacwks.dll for managed debugging when multiple .NET runtime are loaded in one process](http://blogs.msdn.com/b/asiatech/archive/2010/09/10/how-to-load-the-specified-mscordacwks-dll-for-managed-debugging-when-multiple-net-runtime-are-loaded-in-one-process.aspx)
 
 ### Get help for commands in .NET WinDbg extensions ###
 
@@ -57,23 +46,11 @@ SOSEX help can be seen using the `!sosexhelp [command]` command.
 
 Netext help can be nicely rendered in the command window: `.browse !whelp`.
 
-### Problems while loading mscordacwks.dll ###
-
-Here are some links you may check in case you run into problems with mscordacwks:
-
-- [Obtaining mscordacwks.dll for CLR Versions You Don't Have](http://blogs.microsoft.co.il/blogs/sasha/archive/2012/05/19/obtaining-mscordacwks-dll-for-clr-versions-you-don-t-have.aspx)
-- [Automatically Load the Right SOS for the Minidump](http://www.wintellect.com/blogs/jrobbins/automatically-load-the-right-sos-for-the-minidump)
-- [Failed to load data access DLL, 0x80004005 – OR – What is mscordacwks.dll?](http://blogs.msdn.com/b/dougste/archive/2009/02/18/failed-to-load-data-access-dll-0x80004005-or-what-is-mscordacwks-dll.aspx)
-- [How to load the specified mscordacwks.dll for managed debugging when multiple .NET runtime are loaded in one process](http://blogs.msdn.com/b/asiatech/archive/2010/09/10/how-to-load-the-specified-mscordacwks-dll-for-managed-debugging-when-multiple-net-runtime-are-loaded-in-one-process.aspx)
-- [Obtaining mscordacwks.dll for CLR Versions You Don’t Have](http://blogs.microsoft.co.il/blogs/sasha/archive/2012/05/19/obtaining-mscordacwks-dll-for-clr-versions-you-don-t-have.aspx)
-- [[PL] Rozwiązywanie problemów z mscordacwks](http://zine.net.pl/blogs/mgrzeg/archive/2014/01/15/rozwi-zywanie-problem-w-z-mscordacwks.aspx)
-- [Mscordacwks/SOS debugging archive - a list of all versions of mscordacwks and SOS](http://www.sos.debugging.wellisolutions.de/)
-
-## <a name="jitoptimization">Controlling JIT optimization</a>
+## Controlling JIT optimization
 
 Assemblies can be compiled as optimized - JIT compiler takes `DebuggableAttribute` into consideration while generating the native code to execute.
 
-### DebuggableAttribute ###
+### DebuggableAttribute
 
 The definition of the `DebuggingModes` flag sent to the constructor:
 
@@ -116,7 +93,7 @@ The definition of the `DebuggingModes` flag sent to the constructor:
 
 No Debuggable attribute emitted
 
-### INI file ###
+### INI file
 
 The ini file must have the same name as the executable with only extension changed to ini, eg. my.ini file will work with my.exe application.
 
@@ -124,28 +101,13 @@ The ini file must have the same name as the executable with only extension chang
     GenerateTrackingInfo=1
     AllowOptimize=0
 
-## <a name="frameworkversion">Check framework version</a>
+## Decode managed stacks in Sysinternals
 
-### Of running application or installed in the system ###
+As of version 16.22 version, **Process Explorer** understands managed stacks and should display them correctly when you double click on a thread in a process.
 
-Show version of the framework loaded by a process with PID 5772:
+**Process Monitor**, unfortunately, lacks this feature. Pure managed modules will appear as `<unknown>` in the call stack view. However, we may fix the problem for the ngened assemblies. First, you need to generate a .pdb file for the ngened assembly, for example, `ngen createPDB c:\Windows\assembly\NativeImages_v4.0.30319_64\mscorlib\e2c5db271896923f5450a77229fb2077\mscorlib.ni.dll c:\symbols\private`. Then make sure you have this path in your `_NT_SYMBOL_PATH` variable, for example, `C:\symbols\private;SRV*C:\symbols\dbg*http://msdl.microsoft.com/download/symbols`. If procmon still does not resolve the symbols, go to Options - Configure Symbols and reload the dbghelp.dll. I observe this issue in version 3.50.
 
-    C:>clrver 5772
-    v2.0.50727
-
-Show installed framework versions:
-
-    C:>clrver
-    Versions installed on the machine:
-    v2.0.50727
-    v4.0.30319
-
-Display all processes on the machine with their loaded framework versions:
-
-    C:>clrver -all
-    5772    Program.exe             v2.0.50727
-
-### In memory dump or installed in the system ###
+## Check framework version
 
 For .NET2.0 you could check the version of mscorwks in the file properties or, if in debugger, using lmmv:
 
@@ -174,18 +136,9 @@ For .NET2.0 you could check the version of mscorwks in the file properties or, i
         LegalCopyright:   Š Microsoft Corporation.  All rights reserved.
         Comments:         Flavor=Retail
 
-For .NET4.x you need to check clr.dll (or the Release value under the `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full` key) and make use of the table below. Available .NET 4 Framework versions:
+For .NET4.x you need to check clr.dll (or the Release value under the `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full` key) and find it in the [Microsoft Docs](https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/versions-and-dependencies).
 
-.NET Version | Clr.dll Build 4.0.30319.{build}
--------------|-----------------------------------
-.NET 4.0     | 4.0.30319.0 to 4.0.30319.17000
-.NET 4.5     | 4.0.30319.17001 to 4.0.3019.19000
-.NET 4.5.1   | 4.0.3019.19001 to 4.0.30319.34000
-.NET 4.5.2   | 4.0.30319.34000 to 4.0.30319.393295
-.NET 4.6     | 4.0.30319.393295 (Windows 10) or 4.0.30319.393297 (All other OS versions)
-.NET 4.6.1   | 4.0.30319.394256
-
-## <a name="codepolicies">CLR Code Policies</a>
+## CLR Code Policies
 
 List groups:
 
@@ -194,7 +147,6 @@ List groups:
 Remove groups
 
     caspol remgroup 1.1.2.
-
 
 Add FullTrust for a given path:
 
