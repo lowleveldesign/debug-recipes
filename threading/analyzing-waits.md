@@ -3,20 +3,20 @@ Analyzing locks
 
 In this recipe:
 
-- [Collecting ETW traces](#collect-trace)
-- [Analyzing ETW traces](#analyze-trace)
-  - [Using PerfView](#perfview)
-  - [Using WPA](#wpa)
-- [Diagnosing locks in a debugger (including dumps)](#debuggers)
-  - [Automatic detection of the dead-locks (managed)](#dlk)
-  - [Correlate thread ids with thread objects (managed)](#correlate-threads)
-  - [Iterate through execution contexts assigned to threads (managed)](execution-context)
-  - [List locks (managed)](#list-locks)
-  - [Check locks in kernel mode](#locks-in-kernel)
-  - [Examine threadpools](#threadpools)
-  - [Examine critical sections](#critical-sections)
+  - [Collecting ETW traces](#collecting-etw-traces)
+  - [Analyzing ETW traces](#analyzing-etw-traces)
+    - [Using PerfView](#using-perfview)
+    - [Using WPA](#using-wpa)
+  - [Diagnosing locks in a debugger (including dumps)](#diagnosing-locks-in-a-debugger-including-dumps)
+    - [Automatic detection of the dead-locks (managed)](#automatic-detection-of-the-dead-locks-managed)
+    - [Correlate thread ids with thread objects (managed)](#correlate-thread-ids-with-thread-objects-managed)
+    - [Iterate through execution contexts assigned to threads (managed)](#iterate-through-execution-contexts-assigned-to-threads-managed)
+    - [List locks (managed)](#list-locks-managed)
+    - [Check locks in kernel mode](#check-locks-in-kernel-mode)
+    - [Examine threadpools](#examine-threadpools)
+    - [Examine critical sections](#examine-critical-sections)
 
-## <a name="collect-trace">Collecting ETW traces</a>
+## Collecting ETW traces
 
 In **PerfView** you need to select the **Thread Time** checkbox in the collect window.
 
@@ -25,11 +25,11 @@ To collect traces with **xperf** run:
     xperf -on PROC_THREAD+LOADER+PROFILE+INTERRUPT+DPC+DISPATCHER+CSWITCH -stackwalk Profile+CSwitch+ReadyThread
     xperf -stop -d merged.etl
 
-## <a name="analyze-trace">Analyzing ETW traces</a>
+## Analyzing ETW traces
 
 Event Tracing for Windows is probably the best option when we need to analyze the thread waits. In the paragraphs below you can find information
 
-### <a name="perfview">Using PerfView</a>
+### Using PerfView
 
 You need to select the ThreadTime in the collection dialog. With this setting PerfView will record context switch events as well as the usual stack dumps every 100ms.
 
@@ -37,24 +37,19 @@ When analyzing blocks use any of the **Thread Time** views. It's best to start w
 
 You may check [the post](https://lowleveldesign.wordpress.com/2015/10/01/understanding-the-thread-time-view-in-perfview/) on my blog explaining in details Thread Time view in PerfView.
 
-### <a name="wpa">Using WPA</a>
+### Using WPA
 
-You then need to look at the **CPU Usage (Precise)** graph in WPA. It's worth to add stack columns to the graph (NewThreadStack, ReadyThreadStack). Ready thread is the thread that woke the thread that was sleeping.
+There are two interesting groups of graphs to analyze in WPA: **CPU Usage (Sample)** and **CPU Usage (Precise)**. You may download my [WPA Profile](async-analysis-profile.wpaProfile) or use one of the predefined ones. 
 
-FIXME
-
-We should start from our hanging thread and found its readying thread. Then check which thread readied this thread and so on. This chain should bring to us to the final thread which might be a system thread performing some I/O operations.
+On the **CPU Usage (Precise)** graph, we should start from our hanging thread and found its readying thread. Then check which thread readied this thread and so on. This chain should bring to us to the final thread which might be a system thread performing some I/O operations.
 
 When working with this view it's always worth to have in mind the thread states diagram from MSDN:
 
 ![thread states](thread-states.jpg)
 
+## Diagnosing locks in a debugger (including dumps)
 
-FIXME: DPCs
-
-## <a name="debugger">Diagnosing locks in a debugger (including dumps)</a>
-
-### <a name="dlk">Automatic detection of the dead-locks (managed)</a>
+### Automatic detection of the dead-locks (managed)
 
 Try running the **!dlk** command from the SOSEX extension. It is pretty good in detecting dead-locks, example:
 
@@ -81,7 +76,7 @@ CLR Thread 0x1 is waiting at clr!CrstBase::SpinEnter+0x92
 CLR Thread 0x3 is waiting at System.Threading.Monitor.Enter(System.Object, Boolean ByRef)(+0x17 Native)
 ```
 
-### <a name="correlate-threads">Correlate thread ids with thread objects (managed)</a>
+### Correlate thread ids with thread objects (managed)
 
 The `!Threads` commands does not unfortunately show addresses of the managed thread objects on the heap. So first you need to find the MT of the `Thread` class in your appdomain, eg.
 
@@ -111,7 +106,7 @@ The printed ids corresond to the values of the ID column in `!Threads` output, e
   34    4 1388 05198440     21220 Preemptive  00000000:00000000 050d8b18 0     Ukn
 ```
 
-### <a name="execution-context">Iterate through execution contexts assigned to threads (managed)</a>
+### Iterate through execution contexts assigned to threads (managed)
 
 When debugging locks in code that is using tasks it is often necessary to examine execution contexts assigned to the running threads. I prepared a simple script which lists threads with their execution contexts. You only need (as in previous script) find the MT of the `Thread` class in your appdomain, eg.
 
@@ -137,7 +132,7 @@ And then paste it in the scripts below:
 
 Notice that the thread number from the output is a managed thread id and to map it to the windbg thread number you need to use the `!Threads` command.
 
-### <a name="list-locks">List locks (managed)</a>
+### List locks (managed)
 
 You may examine thin locks using **!DumpHeap -thinlocks**.  To find all hard locks (the ones that were created after the object header was full) use **!SyncBlk -all** command.
 
@@ -149,15 +144,15 @@ If you see RtlWaitForCriticalSection or other method connected with a critical s
     !cs shows all critical sections in the program (dump)
     !timers presents all timers running in system
 
-### <a name="locks-in-kernel">Check locks in kernel mode</a>
+### Check locks in kernel mode
 
 Another command that can be useful here is **!locks**. With **-v** parameter will display all locks accessed by threads in a process.
 
-### <a name="threadpools">Examine threadpools</a>
+### Examine threadpools
 
 There is a special `!tp` extension command that has numerous options to analyze threadpools in processes.
 
-### <a name="critical-sections">Examine critical sections</a>
+### Examine critical sections
 
 Use **!cs** comman to examine critical sections in your applications:
 
