@@ -4,45 +4,33 @@ Network tracing
 
 In this recipe:
 
-- [Traces available in .NET Framework](#traces-available-in-net-framework)
-  - [Available trace sources](#available-trace-sources)
-  - [Example configuration](#example-configuration)
-- [Logging application requests in a proxy](#logging-application-requests-in-a-proxy)
-- [Troubleshooting network on Windows](#troubleshooting-network-on-windows)
-  - [Wireshark (network tracing and more)](#wireshark-network-tracing-and-more)
-  - [PsPing (connectivity issues)](#psping-connectivity-issues)
-    - [Measuring latency](#measuring-latency)
-    - [Measuring bandwidth](#measuring-bandwidth)
-  - [Event Tracing for Windows with netsh/PerfView (network tracing)](#event-tracing-for-windows-with-netshperfview-network-tracing)
-- [Troubleshooting network on Linux](#troubleshooting-network-on-linux)
-  - [tcpdump (network tracing)](#tcpdump-network-tracing)
-  - [nc (connectivity issues)](#nc-connectivity-issues)
+  - [Tracing network in .NET applications](#tracing-network-in-net-applications)
+    - [.NET Core](#net-core)
+    - [Full .NET Framework](#full-net-framework)
+  - [Logging application requests in a proxy](#logging-application-requests-in-a-proxy)
+  - [Troubleshooting network on Windows](#troubleshooting-network-on-windows)
+    - [Wireshark (network tracing and more)](#wireshark-network-tracing-and-more)
+    - [PsPing (connectivity issues)](#psping-connectivity-issues)
+      - [Measuring latency](#measuring-latency)
+      - [Measuring bandwidth](#measuring-bandwidth)
+    - [Event Tracing for Windows with netsh/PerfView (network tracing)](#event-tracing-for-windows-with-netshperfview-network-tracing)
+  - [Troubleshooting network on Linux](#troubleshooting-network-on-linux)
+    - [tcpdump (network tracing)](#tcpdump-network-tracing)
+    - [nc (connectivity issues)](#nc-connectivity-issues)
 
-## Traces available in .NET Framework
+## Tracing network in .NET applications
 
-All classes from `System.Net`, if configured properly, may provide a lot of interesting logs through the default System.Diagnostics mechanisms.
+I created a [**dotnet-netrace**](https://github.com/lowleveldesign/dotnet-netrace) tool to facilitate the collection of the network traces. The paragraphs below describe in details what the application is doing.
 
-### Available trace sources
+### .NET Core
 
-The below table is copied from <http://msdn.microsoft.com/en-us/library/ty48b824.aspx>
+.NET Core provides a number of ETW and EventPipe providers to collect the network tracing events. You may check the ETW list [here](https://github.com/dotnet/corefx/blob/master/Documentation/debugging/windows-instructions.md#systemnet-namespaces). Enabling the providers could be done in PerfView or any other ETW collection tool (including dotnet-netrace).
 
-Name|Output from
-----|-----------
-`System.Net.Sockets`|Some public methods of the Socket, TcpListener, TcpClient, and Dns classes
-`System.Net`|Some public methods of the HttpWebREquest, HttpWebResponse, FtpWebRequest and FtpWebResponse classes, and SSL debug information (invalid certificates, missing issuers list and client certificate errors).
-`System.Net.HttpListener`|Some public methods of the HttpListener, HttpListenerRequest and HttpListenerResponse
-`System.Net.Cache`|Some private and internal methods in System.Net.Cache
-`System.Net.Http`|Some public methods of the HttpClient, DelegatingHandler, HttpClientHandler, HttpMessageHandler, MessageProcessingHandler, and WebRequestHandler classes
-`System.Net.WebSockets`|Some public methods of the ClientWebSocket and WebSocket classes
+FIXME: Linux
 
-Following attributes might be applied to sources to control their output:
+### Full .NET Framework
 
-Attribute name|Attribute value
---------------|---------------
-`maxdatasize`|number that defines the maximum number of bytes of network data included in each line trace. The default value is 1024
-`tracemode`|Set to **includehex** (default) to show protocol traces in hexadecimal and text format. Set to **protocolonly** to show only text.
-
-### Example configuration
+All classes from `System.Net`, if configured properly, may provide a lot of interesting logs through the default System.Diagnostics mechanisms. The list of the available trace sources is available in [Microsoft docs](https://docs.microsoft.com/en-us/dotnet/framework/network-programming/how-to-configure-network-tracing).
 
 This is a configuration sample which writes network traces to a file:
 
@@ -77,40 +65,14 @@ This is a configuration sample which writes network traces to a file:
 </system.diagnostics>
 ```
 
-If you are using NLog in your application you may redirect the System.Net trace output to the `NLogTraceListener` with the following settings:
-
-```xml
-<system.diagnostics>
-    <trace autoflush="true" />
-    <sharedListeners>
-      <add name="nlog" type="NLog.NLogTraceListener, NLog" />
-    </sharedListeners>
-    <sources>
-      <source name="System.Net.Http" switchValue="Verbose">
-        <listeners>
-          <add name="nlog" />
-        </listeners>
-      </source>
-      <source name="System.Net.HttpListener" switchValue="Verbose">
-        <listeners>
-          <add name="nlog" />
-        </listeners>
-      </source>
-      <source name="System.Net" switchValue="Verbose">
-        <listeners>
-          <add name="nlog" />
-        </listeners>
-      </source>
-      <source name="System.Net.Sockets" switchValue="Verbose">
-        <listeners>
-          <add name="nlog" />
-        </listeners>
-      </source>
-    </sources>
-</system.diagnostics>
-```
-
 ## Logging application requests in a proxy
+
+If you are on Windows, use the system settings to change the system proxy. On Linux, set the **HTTP_PROXY** and **HTTPS_PROXY** variables, for example:
+
+```bash
+export HTTP_PROXY="http://localhost:8080"
+export HTTPS_PROXY="http://localhost:8080"
+```
 
 When you make a request in code you should remember to configure its proxy according to the system settings, eg.:
 
