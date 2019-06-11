@@ -4,22 +4,25 @@ Network tracing
 
 In this recipe:
 
-- [Network traces in .NET](#dotnet)
-- [Tracing using proxy](#proxy)
-- [Tracing using ETW  (netsh, perfview, Message Analyzer)](#etw)
-- [Network tracing in procmon](#procmon)
-- [Troubleshoot network with pspsing](#psping)
-  - [Troubleshooting connectivity](#psping-connectivity)
-  - [Measuring latency](#psping-latency)
-  - [Measuring bandwidth](#psping-bandwidth)
-- [Links](#links)
+- [Traces available in .NET Framework](#traces-available-in-net-framework)
+  - [Available trace sources](#available-trace-sources)
+  - [Example configuration](#example-configuration)
+- [Logging application requests in a proxy](#logging-application-requests-in-a-proxy)
+- [Troubleshooting network on Windows](#troubleshooting-network-on-windows)
+  - [Wireshark (network tracing and more)](#wireshark-network-tracing-and-more)
+  - [PsPing (connectivity issues)](#psping-connectivity-issues)
+    - [Measuring latency](#measuring-latency)
+    - [Measuring bandwidth](#measuring-bandwidth)
+  - [Event Tracing for Windows with netsh/PerfView (network tracing)](#event-tracing-for-windows-with-netshperfview-network-tracing)
+- [Troubleshooting network on Linux](#troubleshooting-network-on-linux)
+  - [tcpdump (network tracing)](#tcpdump-network-tracing)
+  - [nc (connectivity issues)](#nc-connectivity-issues)
 
-
-## <a name="dotnet">Traces available in .NET applications</a>
+## Traces available in .NET Framework
 
 All classes from `System.Net`, if configured properly, may provide a lot of interesting logs through the default System.Diagnostics mechanisms.
 
-### Available trace sources ###
+### Available trace sources
 
 The below table is copied from <http://msdn.microsoft.com/en-us/library/ty48b824.aspx>
 
@@ -39,7 +42,7 @@ Attribute name|Attribute value
 `maxdatasize`|number that defines the maximum number of bytes of network data included in each line trace. The default value is 1024
 `tracemode`|Set to **includehex** (default) to show protocol traces in hexadecimal and text format. Set to **protocolonly** to show only text.
 
-### Example configuration ###
+### Example configuration
 
 This is a configuration sample which writes network traces to a file:
 
@@ -107,7 +110,7 @@ If you are using NLog in your application you may redirect the System.Net trace 
 </system.diagnostics>
 ```
 
-## <a name="proxy">Logging application requests in a proxy</a>
+## Logging application requests in a proxy
 
 When you make a request in code you should remember to configure its proxy according to the system settings, eg.:
 
@@ -124,28 +127,61 @@ or in the configuration file:
 ```xml
   <system.net>
     <defaultProxy>
-      <proxy autoDetect="False" proxyaddress="http://127.0.0.1:8888" bypassonlocal="False" usesystemdefault="False" />
+      <proxy autoDetect="False" proxyaddress="http://127.0.0.1:8080" bypassonlocal="False" usesystemdefault="False" />
     </defaultProxy>
   </system.net>
 ```
 
-Then run [Fiddler](http://www.telerik.com/fiddler) (or any other proxy) and requests data should be logged in the sessions window. Unfortunately this approach won't work for requests to applications served on the local server. A workaround is to use one of the Fiddler's localhost alternatives in the url: `ipv4.fiddler`, `ipv6.fiddler` or `localhost.fiddler` (more [here](http://docs.telerik.com/fiddler/Configure-Fiddler/Tasks/MonitorLocalTraffic)).
+Then run [Fiddler](http://www.telerik.com/fiddler) (or [Burp Suite](https://portswigger.net/burp/) or any other proxy) and requests data should be logged in the sessions window. Unfortunately this approach won't work for requests to applications served on the local server. A workaround is to use one of the Fiddler's localhost alternatives in the url: `ipv4.fiddler`, `ipv6.fiddler` or `localhost.fiddler` (more [here](http://docs.telerik.com/fiddler/Configure-Fiddler/Tasks/MonitorLocalTraffic)).
 
 **NOTE for WCF clients**: WCF has its own proxy settings, to use the default proxy add an `useDefaultWebProxy=true` attribute to your binding.
 
-## <a name="etw">ETW network traces</a>
+## Troubleshooting network on Windows
 
-### Using PerfView ###
+### Wireshark (network tracing and more)
 
-There are two options in PerfView to collect network traces next to the usual trace: **NetMon** and **Net Capture**:
+In my opinion, the best tool to analyze network traffic on Windows is [Wireshark](https://www.wireshark.org/). There are only two problems with it:
 
-![perfview-options](perfview-netmon-option.png)
+- requires a driver - this could be a problem on servers
+- does not log the process ID in the trace
 
-I recommend checking the NetMon option as it will generate a seperate .etl file containing just the network traces. We may later open this file in [Message Analyzer](https://www.microsoft.com/en-us/download/details.aspx?id=44226) and analyze the collected data.
+We can easily solve the second issue by [combining the Wireshark trace with the Process Monitor logs](https://lowleveldesign.org/2018/05/11/correlate-pids-with-network-packets-in-wireshark/).
 
-### Using netsh ###
+### PsPing (connectivity issues)
 
-Starting from Windows 7 (2008 Server) you don't need to install anything (such as WinPcap or Network Monitor) on the server to collect network traces. You can simply use `netsh trace {start|stop}` command which will create an ETW session with the interesting ETW providers enabled. Few diagnostics scenarios are available and you may list them using `netsh trace show scenarios`:
+PsPing (a part of [Sysinternals toolkit](https://technet.microsoft.com/en-us/sysinternals)) has few interesting options when it comes to diagnosing network connectivity issues. The simplest usage is just a replacement for a ping.exe tool (performs ICMP ping):
+
+    > psping www.google.com
+
+By adding a port number at the end of the host we will measure a TCP handshake (or discover a closed port on the remote host):
+
+    > psping www.google.com:80
+
+To test UDP add **-u** option on the command line.
+
+#### Measuring latency
+
+We need to run a PsPing in a server mode on the other side (-f for creating a temporary exception in the Windows Firewall, -s to enable server listening mode):
+
+    > psping -f -s 192.168.1.3:4000
+
+Then we start the client and perform the test:
+
+    > psping -l 16k -n 100 192.168.1.3:4000
+
+#### Measuring bandwidth
+
+We need to run a PsPing in a server mode on the other side (-f for creating a temporary exception in the Windows Firewall, -s to enable server listening mode):
+
+    > psping -f -s 192.168.1.3:4000
+
+Then we start the client and perform the test:
+
+    > psping -b -l 16k -n 100 192.168.1.3:4000
+
+### Event Tracing for Windows with netsh/PerfView (network tracing)
+
+Starting with Windows 7 (2008 Server) you don't need to install anything (such as WinPcap or Network Monitor) on the server to collect network traces. You can simply use `netsh trace {start|stop}` command which will create an ETW session with the interesting ETW providers enabled. Few diagnostics scenarios are available and you may list them using `netsh trace show scenarios`:
 
 ```
 PS Temp> netsh trace show scenarios
@@ -197,74 +233,40 @@ Many interesting capture filters are available, you may use `netsh trace show Ca
 
     netsh trace stop
 
-### Analyze ###
+**PerfView** also provides a way to collect network trace (under the hood it uses netsh command). There are two options to collect network traces in PerfView: **NetMon** and **Net Capture**:
 
-When we have an .etl file with network trace it's time to analyze it. You can open it in [Message Analyzer](http://blogs.technet.com/b/messageanalyzer/), though Message Analyzer consumes a lot of memory to process the .etl file and it just won't work for bigger trace files. That's why I usually prefer to **convert the .etl file to the .cap format** and perform all analysis in [Wireshark](https://www.wireshark.org/). Message Analyzer comes with a very interesting Powershell module named PEF which is a command line interface for this application. To create the .cap file from the .etl file call:
+![perfview-options](perfview-netmon-option.png)
 
-```powershell
-New-PefTraceSession -Path {full-path-to-the-cap-file} -SaveOnStop | Add-PefMessageProvider -Source {full-path-to-the-etl-file} | Start-PefTraceSession
+I recommend checking the NetMon option as it will generate a seperate .etl file containing just the network traces. We may later open this file in [Message Analyzer](https://www.microsoft.com/en-us/download/details.aspx?id=44226) and analyze the collected data.
+
+## Troubleshooting network on Linux
+
+### tcpdump (network tracing)
+
+Most commonly used tool to collect network traces on Linux is **tcpdump**. The BPF language is quite complex and allows various filtering options. A great explanation of its syntax can be found [here](http://www.biot.com/capstats/bpf.html). Below, you may find example session configurations.
+
+View traffic only between two hosts:
+
+```
+tcpdump host 192.168.0.1 && host 192.168.0.2
 ```
 
-I created also a function which you may add to your Powershell profile:
+View traffic in a particular network:
 
-```powershell
-function ConvertFrom-EtlToCap([Parameter(Mandatory=$True)][String]$EtlFilePath, [String]$CapFilePath) {
-    $EtlFilePath = Resolve-Path $EtlFilePath
-    if ([String]::IsNullOrEmpty($CapFilePath)) {
-        $CapFilePath = $EtlFilePath.Substring(0, $EtlFilePath.Length - 3) + 'cap'
-    }
-    New-PefTraceSession -Path $CapFilePath -SaveOnStop | Add-PefMessageProvider -Source $EtlFilePath | Start-PefTraceSession
-}
+```
+tcpdump net 192.168.0.1/24
 ```
 
-## <a name="procmon">Procmon network tracing</a>
+Dump traffic to a file and rotate it every 1KB:
 
-Procmon network tracing does not collect data sent or received but it will reveal all the network connections opened by processes in the system.
+```
+tcpdump -C 1024 -w test.pcap
+```
 
-## <a name="psping">Troubleshooting network with PsPing</a>
+### nc (connectivity issues)
 
-### <a name="psping-connectivity">Troubleshooting connectivity</a>
+To check if there is anything listening on a TCP port 80 on a remote host, run:
 
-PsPing (a part of [Sysinternals toolkit](https://technet.microsoft.com/en-us/sysinternals)) has few interesting options when it comes to diagnosing network connectivity issues. The simplest usage is just a replacement for a ping.exe tool (performs ICMP ping):
-
-    > psping www.google.com
-
-By adding a port number at the end of the host we will measure a TCP handshake (or discover a closed port on the remote host):
-
-    > psping www.google.com:80
-
-To test UDP add **-u** option on the command line.
-
-### <a name="psping-latency">Measuring latency</a>
-
-We need to run a PsPing in a server mode on the other side (-f for creating a temporary exception in the Windows Firewall, -s to enable server listening mode):
-
-    > psping -f -s 192.168.1.3:4000
-
-Then we start the client and perform the test:
-
-    > psping -l 16k -n 100 192.168.1.3:4000
-
-### <a name="psping-bandwidth">Measuring bandwidth</a>
-
-We need to run a PsPing in a server mode on the other side (-f for creating a temporary exception in the Windows Firewall, -s to enable server listening mode):
-
-    > psping -f -s 192.168.1.3:4000
-
-Then we start the client and perform the test:
-
-    > psping -b -l 16k -n 100 192.168.1.3:4000
-
-## <a name="link">Links</a>
-
-- [Network Tracing](http://msdn.microsoft.com/en-us/library/hyb3xww8)
-- [Event Tracing for Windows and Network Monitor](http://blogs.technet.com/b/netmon/archive/2009/05/13/event-tracing-for-windows-and-network-monitor.aspx)
-- [Windows Filtering Platform](http://www.windowsnetworking.com/articles_tutorials/new-netsh-commands-windows-7-server-2008-r2.html)
-- [Using HTTP ETW tracing to troubleshoot HTTP issues](http://blogs.msdn.com/b/benjaminperkins/archive/2014/03/10/using-http-etw-tracing-to-troubleshoot-http-issues.aspx)
-
-### Tools and libraries ###
-
-- [Wireshark](https://www.wireshark.org/)
-- [Nmap Project's packet sniffing library for Windows, based on WinPcap/Libpcap improved with NDIS 6 and LWF](https://github.com/nmap/npcap)
-- [Network Miner - a network packet collector](http://www.netresec.com/?page=NetworkMiner)
-
+```
+nc -vnz 192.168.0.20 80
+```
