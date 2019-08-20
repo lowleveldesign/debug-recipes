@@ -60,6 +60,7 @@ As there is no base pointer in x64 the debugger uses something called unwind inf
 ### x86 (stdcall and pascall)
 
 Arguments: right to left
+
 Stack-maintenance: called function pops its arguments from the stack
 
 ![x86-calling-convention](x86.jpg)
@@ -84,7 +85,9 @@ Example: `int func(int a, double b)` will be emitted as `_func@12`
 ### x86 (cdecl)
 
 Arguments: from right to left
+
 Stack-maintenance: calling function pops arguments from the stack
+
 Name decoration:
 
 - prefix: `_`, except functions exported using C linkage
@@ -92,7 +95,9 @@ Name decoration:
 ### x86 (fastcall)
 
 Arguments: first 2 DWORD or smaller arguments are passed in ECX and EDX registers; all other arguments are passed right to left
+
 Stack-maintenance: called function pops arguments from the stack
+
 Name decoration: 
 
 - prefix: `_` 
@@ -105,6 +110,7 @@ Similar to fastcall. Two registers are used by the x86 jitter (ecx, edx). Large 
 ### x86 (thiscall)
 
 Arguments: right to left, with this being passed via ECX register (for vararg functions cdecl is being used, with `this` pushed on the stack as the last)
+
 Stack-maintenance: called function pops arguments from the stack
 
 ## Use reversing tools
