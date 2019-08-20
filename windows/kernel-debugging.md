@@ -1,13 +1,32 @@
-## Windows Kernel Debugging (TCP)
 
-When debugging a Gen 2 VM remember to turn off the secure booting: 
+# Windows Kernel Debugging
+
+In this recipe:
+
+- [Setup Windows Kernel Debugging over network](#setup-windows-kernel-debugging-over-network)
+  - [Network card compatibility check](#network-card-compatibility-check)
+- [Control processes in the debugger](#control-processes-in-the-debugger)
+  - [Break when user-mode process is created](#break-when-user-mode-process-is-created)
+  - [Break in user-mode process from the kernel-mode](#break-in-user-mode-process-from-the-kernel-mode)
+
+## Setup Windows Kernel Debugging over network
+
+*HYPER-V note*: When debugging a Gen 2 VM remember to turn off the secure booting: 
 **Set-VMFirmware -VMName "Windows 2012 R2" -EnableSecureBoot Off -Confirm**
 
-C:\Windows\system32>**bcdedit /dbgsettings NET HOSTIP:172.25.121.1 PORT:60000**
+Turn on network deubugging (HOSTIP is the address of the machine on which we will run the debugger):
+
+C:\Windows\system32>**bcdedit /dbgsettings NET HOSTIP:192.168.0.2 PORT:60000**
 Key=3ma3qyz02ptls.23uxbvnd0e2zh.1gnwiqb6v3mpb.mjltos9cf63x
 
 C:\Windows\system32>**bcdedit /debug {current} on**
 The operation completed successfully.
+
+Then on the host machine, run windbg, select **Attach to kernel** and fill the port and key textboxes:
+
+![windbg-attach-kernel](windbg-attach-kernel.png)
+
+### Network card compatibility check
 
 Starting from Debugging Tools for Windows 10 we have an additional tool: **kdnet.exe**. By running it on the guest you may see if your network card supports kernel debugging and get the instructions for the host machine: 
 
@@ -29,3 +48,70 @@ obj,target=DELAPTOP
 Then make sure to SHUTDOWN (not restart) the VM so that the new settings will
 take effect.  Run shutdown -s -t 0 from this command prompt.
 ```
+
+## Control processes in the debugger
+
+### Break when user-mode process is created
+
+**bp nt!PspInsertProcess**
+
+The breakpoint is hit whenever a new user-mode process is created. To know what process is it we may access the \_EPROCESS structure ImageFileName field.
+
+    x64: dt nt!_EPROCESS @rcx ImageFileName
+    x86: dt nt!_EPROCESS @eax ImageFileName
+
+### Break in user-mode process from the kernel-mode
+
+You may set a breakpoint in user space, but you need to be in a valid process context:
+
+```
+kd> !process 0 0 notepad.exe
+PROCESS ffffe0014f80d680
+    SessionId: 2  Cid: 0e44    Peb: 7ff7360ef000  ParentCid: 0aac
+    DirBase: 2d497000  ObjectTable: ffffc00054529240  HandleCount: 
+    Image: notepad.exe
+
+kd> .process /i ffffe0014f80d680
+You need to continue execution (press 'g' ) for the context
+to be switched. When the debugger breaks in again, you will be in
+the new process context.
+
+kd> g
+```
+
+Then when you are in a given process context, set the breakpoint:
+
+```
+kd> .reload /user
+kd> !process -1 0
+PROCESS ffffe0014f80d680
+    SessionId: 2  Cid: 0e44    Peb: 7ff7360ef000  ParentCid: 0aac
+    DirBase: 2d497000  ObjectTable: ffffc00054529240  HandleCount: 
+    Image: notepad.exe
+
+kd> x kernel32!CreateFileW
+00007ffa`d8502508 KERNEL32!CreateFileW ()
+kd> bp 00007ffa`d8502508
+```
+
+Alternative way (which does not require process context switching) is to use data execution breakpoints, eg.:
+
+```
+kd> !process 0 0 notepad.exe
+PROCESS ffffe0014ca22480
+    SessionId: 2  Cid: 0614    Peb: 7ff73628f000  ParentCid: 0d88
+    DirBase: 5607b000  ObjectTable: ffffc0005c2dfc40  HandleCount: 
+    Image: notepad.exe
+
+kd> .process /r /p ffffe0014ca22480
+Implicit process is now ffffe001`4ca22480
+.cache forcedecodeuser done
+Loading User Symbols
+..........................
+
+kd> x KERNEL32!CreateFileW
+00007ffa`d8502508 KERNEL32!CreateFileW ()
+kd> ba e1 00007ffa`d8502508
+```
+
+For both those commands you may limit their scope to a particular process using /p switch.

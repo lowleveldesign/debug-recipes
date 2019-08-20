@@ -1,35 +1,31 @@
 
-WinDbg Field Notes
-==================
+# WinDbg Field Notes
 
-Table of Contents
------------------
+In this recipe:
 
-- <a href="#general-usage">General usage</a>
-  - <a href="#shortcuts-and-tips">Shortcuts and tips</a>
-  - <a href="#scripting-the-debugger">Scripting the debugger</a>
-  - <a href="#windbg-as-postmortem">Install windbg as postmortem debugger</a>
-  - <a href="#remore-debugging">Remote debugging</a>
-- <a href="#system-objects">System objects in the debugger</a>
-  - <a href="#processes">Processes</a>
-  - <a href="#handles">Handles</a>
-  - <a href="#threads">Threads</a>
-  - <a href="#critical-sections">Critical sections</a>
-- <a href="#work-with-data">Work with data</a>
-  - <a href="#stack">Stack</a>
-    - <a href="#stack_x64">Stack (x64)</a>
-    - <a href="#stack_x86">Stack (x86)</a>
-  - <a href="#heap">Heap</a>
-- <a href="#controlling-execution">Controlling process execution</a>
-  - <a href="#controlling-the-target">Controlling the target (g, t, p)</a>
-  - <a href="#watch-trace">Watch trace</a>
-  - <a href="#breakpoints">Breakpoints</a>
-- <a href="#symbols-and-modules">Symbols and modules</a>
-  - <a href="#modules">Modules</a>
-  - <a href="#symbols">Symbols</a>
+- [General usage](#general-usage)
+  - [Shortcuts and tips](#shortcuts-and-tips)
+  - [Scripting the debugger](#scripting-the-debugger)
+  - [Install windbg as postmortem debugger](#install-windbg-as-postmortem-debugger)
+  - [Remote debugging](#remote-debugging)
+- [System objects in the debugger](#system-objects-in-the-debugger)
+  - [Processes](#processes)
+  - [Handles](#handles)
+  - [Threads](#threads)
+  - [Critical sections](#critical-sections)
+- [Work with data](#work-with-data)
+  - [Stack](#stack)
+  - [Heap](#heap)
+- [Controlling process execution](#controlling-process-execution)
+  - [Controlling the target (g, t, p)](#controlling-the-target-g-t-p)
+  - [Watch trace](#watch-trace)
+  - [Breakpoints](#breakpoints)
+    - [Break when a specific funtion is in the call stack](#break-when-a-specific-funtion-is-in-the-call-stack)
+- [Symbols and modules](#symbols-and-modules)
+  - [Modules](#modules)
+  - [Symbols](#symbols)
 
-<a name="general-usage">General usage</a>
------------------------------------------
+## General usage
 
 First, some very useful start commands:
 
@@ -45,19 +41,19 @@ You can also use **vercommand** to show how the debugger was called
 
 **.lastevent** shows the last reason why the debugger stopped and **.eventlog** shows a number of recent events.
 
-### <a name="shortcuts-and-tips">Shortcuts and tips</a>
+### Shortcuts and tips
 
 There is a great **SHIFT + [UP ARROW]** that completes a command from previously executed commands (much as F8 in cmd).
 
 You may create your own command shortcuts tree with the `.cmdtree` command.
 
-To make **a comment** you can either use `.echo comment` command or one of the comment commands: `$$ comment`, `* comment`. The difference between last two is that `*` sign comments everything till the end of line, when `$$` signs comment text till the semicolon (or end of line), eg.: <code>r eax; $$ some text; r ebx; * more text; r ecx</code> will print eax, ebx but not ecx. An `.echo` command is ended if the debugger encounters a semicolon (unless the semicolon occurs within a quoted string). Additionally text in `.echo` command gets interpreted.
+To make **a comment** you can either use `.echo comment` command or one of the comment commands: `$$ comment`, `* comment`. The difference between last two is that `*` sign comments everything till the end of line, when `$$` signs comment text till the semicolon (or end of line), e.g.: `r eax; $$ some text; r ebx; * more text; r ecx` will print eax, ebx but not ecx. An `.echo` command is ended if the debugger encounters a semicolon (unless the semicolon occurs within a quoted string). Additionally text in `.echo` command gets interpreted.
 
 There is a special **pde** extension which contains commands that will help you to work with string in the debugger. For instance to look for zero-terminated (either unicode or ascii) string use: `!pde.ssz brown`. To change a text in memory use **!ezu**, example: `ezu  "test string"`. The extension works on committed memory.
 
 Another interesting command is **!grep** which allows you to filter output of other commands: `!grep _NT !peb`.
 
-### <a name="scripting-the-debugger">Scripting the debugger</a>
+### Scripting the debugger
 
 **.expr** prints the current expression evaluator (MASM or C++). You may use the **/s** to change it. The **?** command uses the default evaluator, **??** always uses C++ evaluator. Also you can mix the evaluators in one expression by using **@@c++(expression)** or **@@masm(expression)** syntax, for example: **? @@c++(@$peb->ImageSubsystemMajorVersion) + @@masm(0y1)**.
 
@@ -69,22 +65,21 @@ if there was no space between poi( and addr it would fail.
 
 Based on http://blogs.msdn.com/b/debuggingtoolbox/archive/2009/01/31/special-command-advanced-programming-techniques-for-windbg-scripts.aspx
 
-### <a name="windbg-as-postmortem">Install windbg as postmortem debugger</a>
+### Install windbg as postmortem debugger
 
 **windbg -iae**
 
 This registration step populates the AeDebug registry key: **[HKEY\_LOCAL\_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug]**
 
-### <a name="remore-debugging">Remote debugging</a>
+### Remote debugging
 
 You may attach to the currently running session by using **-remote** switch, eg.: **windbg -remote "npipe:pipe=svcpipe,server=localhost"**
 
 To terminate the entire session and exit the debugging server, use the **q (Quit)** command. To exit from one debugging client without terminating the server, you must issue a command from that specific client. If this client is KD or CDB, use the **CTRL+B** key to exit. If you are using a script to run KD or CDB, use **.remote_exit (Exit Debugging Client)**.
 
-<a name="system-objects">System objects in the debugger</a>
------------------------------------------------------------
+## System objects in the debugger
 
-### <a name="processes">Processes</a>
+### Processes
 
 Each time you break into the kernel-mode debugger one of the processes will be active. You may check which one is it by running **!process -1 0** command. If you are going to work with user-mode memory space you need to reload the process modules symbols (otherwise you will see symbols from the last reload). You may do so while switching process context with **.process /i** or **.process /r /p** or manually with the command: **.reload /user**.  The first two command allow you to select which process's page directory is used to interpret virtual addresses. After you set the process context, you can use this context in any command that takes addresses.
 
@@ -94,7 +89,7 @@ Each time you break into the kernel-mode debugger one of the processes will be a
 
 **!peb** shows loaded modules, environment variables, command line arg, and more.
 
-### <a name="handles">Handles</a>
+### Handles
 
 There is a special debugger extension command `!handle` that allows you to find system handles reserved by a process: **!handle [Handle [UMFlags [TypeName]]]**
 
@@ -108,7 +103,7 @@ Handle 1c0
 7 handles of type File
 ```
 
-### <a name="threads">Threads</a>
+### Threads
 
 Each thread has its own register values. These values are stored in the CPU registers when the thread is executing and are stored in memory when another thread is executing. You can set the register context using .thread command:
 
@@ -149,7 +144,7 @@ or
 
 **!tls Slot** extension displays a thread local storage slot (or -1 for all slots)
 
-### <a name="critical-sections">Critical sections</a>
+### Critical sections
 
 Display information about a particular critical section: **!critsec {address}**
 
@@ -199,8 +194,7 @@ Finally, we may use the raw output:
     [+0x01e] SpareUSHORT      : 0x0 [Type: unsigned short]
 ```
 
-<a name="work-with-data">Work with data</a>
--------------------------------------------
+## Work with data
 
 When you have private symbols you may list local variables with the **dv** command.
 
@@ -208,7 +202,7 @@ Additionally the **dt** command allows you to work with type symbols. You may ei
 
 With windbg 10.0 a new very interesting command was introduced: **dx**. It uses a navigation expressions just like Visual Studio (you may define your own file .natvis files). You load the interesting .natvis file with the **.nvload** command.
 
-### <a name="stack">Stack</a>
+### Stack
 
 Stack grows from high addresses to lower. Thus, when you see addresses bigger than the frame base (such as `ebp+C`) they usually refer to the function arguments. Smaller addresses (such as `ebp-20`) usually refer to local function variables.
 
@@ -226,108 +220,7 @@ To switch a local context to a different stack frame we can use the `.frame` com
 
 The **!for_each_frame** extension enables you to execute a single command repeatedly, once for each frame in the stack.
 
-#### <a name="stack_x64">Stack (x64)</a>
-
-X64 calling convention:
-
-- **RCX, RDX, R8, R9** are used for integer and pointer arguments in that order left to right
-- **XMM0, XMM1, XMM2, and XMM3** are used for floating point arguments
-- Additional arguments are pushed on the stack right to left (the parameter below the return address is the first parameter from left)
-- It is the caller responsibility to clear the stack after the call
-- **Returned** integer values are in **RAX**, float values are in **XMM0**
-
-The first four integer/float parameters are passed through registers:
-
-Argument 0
-Argument 1
-Argument 2
-Argument 3
-
-Condition   | Argument 0 | Argument 1 | Argument 2 | Argument 3
-------------|------------|------------|------------|------------
-If integer  | RCX        | RDX        | R8         | R9
-If float    | XMM0       | XMM1       | XMM2       | XMM3
-
-Parameters less than 64 bits are not zero extended and the high bits may contain garbage. Just before the return address there is a “shadow space” 32 bytes long allocated on the stack. It is not initialized and it is up to the called function to save its arguments in it. So the stack might look as follows:
-
-
-Address    | The value is
------------|---------------------------
- ...       | ...
-RSP - 0x08 | Local variable 0
-RSP        | Return address
-RSP + 0x08 | Placeholder 0
-RSP + 0x10 | Placeholder 1
-RSP + 0x18 | Placeholder 2
-RSP + 0x20 | Placeholder 3
-RSP + 0x28 | Argument 4
-RSP + 0x30 | Argument 5
-RSP + 0x38 | Argument 6
- ...       | ...
-
-**The stack has to be 16-byte aligned.** In fact, the return address has to be aligned to 16 bytes. Therefore, the stack space will be always of size 16n + 8 (example: `sub rsp, 48h` at the beginning of the function which is calling another function).
-
-#### <a name="stack_x86">Stack (x86)</a>
-
-**__stdcall (__pascall) calling convention**
-
-- Arguments pushed on stack **from right to left**
-- **Called function** pops its arguments from the stack
-
-Sample call stack might look as follows:
-
-Address    | The value is
------------|---------------------------
- ...       | ...
-EBP + 0x00 | Previous EBP
-EBP + 0x04 | Return address
-EBP + 0x08 | Argument 0
-EBP + 0x0C | Argument 1
-EBP + 0x10 | Argument 2
- ...       | ...
-
-Name decoration: 
-
-- prefix: `_` 
-- suffix: `@<num_of_bytes_in_decimal_in_argument_list>`
-
-Example: `int func(int a, double b)` will be emitted as `_func@12`
-
-**__cdecl calling convention**
-
-- Arguments pushed on stack **from right to left**
-- **Calling function** pops arguments from the stack
-
-Sample call stack looks the same as for \_\_stdcall.
-
-Name decoration:
-
-- prefix: `_`, except functions exported using C linkage
-
-**__fastcall calling convention**
-
-- **ECX, EDX** are used for integer and pointer arguments in that order left to right
-- Additional arguments are pushed on stack **from right to left**
-- **Called function** pops arguments from the stack
-
-Name decoration: 
-
-- prefix: `_` 
-- suffix: `@<num_of_bytes_in_decimal_in_argument_list>`
-
-**__clrcall calling convention**
-
-It's used only for function that will be called from the managed code. This will emit MSIL function that could not be called from
-the native code. Works only if the library is compiled with /clr switch.
-
-Similar to \_\_fastcall.
-
-**__thiscall calling convention**
-
-- Arguments pushed on stack **from right to left**, with **this** being passed via **ECX** register (for vararg functions \_\_cdecl is used, with this pushed on the stack as the last argument)
-- **Called function** pops arguments from the stack
-
-**Reading stacks in WinDbg**
+Reading stack in Windbg
 
 ```
 0:000> kb
@@ -351,27 +244,19 @@ The ChildEBP is the actual stack frame address. To see the first three arguments
 
 Which matches the kb output. The RetAddr is the address where program will continue when the current function call is finished.
 
-#### Links
-
-- [Moving to Windows x64 - excellent description of the x64 mode](http://ntcore.com/files/vista_x64.htm#x64_Assembly)
-- [x64 calling convention on MSDN](https://docs.microsoft.com/en-us/cpp/build/calling-convention)
-- [x86 calling conventions on MSDN](https://docs.microsoft.com/en-us/cpp/cpp/calling-conventions)
-
-### <a name="heap">Heap</a>
+### Heap
 
 FIXME
 
-<a name="controlling-execution">Controlling process execution</a>
------------------------------------------------------------------
+## Controlling process execution
 
-
-### <a name="controlling-the-target">Controlling the target (g, t, p)</a>
+### Controlling the target (g, t, p)
 
 To go up the funtion use **gu** command. We can go to a specified address using **ga [address]**. We can also step or trace to a specified address using accordingly **pa** and **ta** commands.
 
 Useful commands are **pc** and **tc** which step or trace to **the next call statement**. **pt** and **tt** step or trace to **the next return statement**.
 
-### <a name="watch-trace">Watch trace</a>
+### Watch trace
 
 **wt** is a very powerful command and might be excellent at revealing what the function under the cursor is doing, eg. (-oa displays the actual address of the call sites, -or displays the return register values):
 
@@ -430,7 +315,7 @@ Calls  System Call
 
 The first number in the trace output specifies the number of instructions that were executed from the beginning of the trace in a given function (it is always incrementing), the second number specifies the number of instructions executed in the child functions (it is also always incrementing), and the third represents the depth of the function in the stack (parameter -l).
 
-### <a name="breakpoints">Breakpoints</a>
+### Breakpoints
 
 #### Break when a specific funtion is in the call stack
 
@@ -438,78 +323,12 @@ The first number in the trace output specifies the number of instructions that w
 bp Module!MyFunctionWithConditionalBreakpoint "r $t0 = 0;.foreach (v { k }) { .if ($spat(\"v\", \"*Module!ClassA:MemberFunction*\")) { r $t0 = 1;.break } }; .if($t0 = 0) { gc }"
 ```
 
-#### [Kernel] Break when user-mode process is created
+## Symbols and modules
 
-**bp nt!PspInsertProcess**
-
-The breakpoint is hit whenever a new user-mode process is created. To know what process is it we may access the \_EPROCESS structure ImageFileName field.
-
-    x64: dt nt!_EPROCESS @rcx ImageFileName
-    x86: dt nt!_EPROCESS @eax ImageFileName
-
-#### [Kernel] Break in user-mode process from the kernel-mode
-
-You may set a breakpoint in user space, but you need to be in a valid process context:
-
-```
-kd> !process 0 0 notepad.exe
-PROCESS ffffe0014f80d680
-    SessionId: 2  Cid: 0e44    Peb: 7ff7360ef000  ParentCid: 0aac
-    DirBase: 2d497000  ObjectTable: ffffc00054529240  HandleCount: 
-    Image: notepad.exe
-
-kd> .process /i ffffe0014f80d680
-You need to continue execution (press 'g' ) for the context
-to be switched. When the debugger breaks in again, you will be in
-the new process context.
-
-kd> g
-```
-
-Then when you are in a given process context, set the breakpoint:
-
-```
-kd> .reload /user
-kd> !process -1 0
-PROCESS ffffe0014f80d680
-    SessionId: 2  Cid: 0e44    Peb: 7ff7360ef000  ParentCid: 0aac
-    DirBase: 2d497000  ObjectTable: ffffc00054529240  HandleCount: 
-    Image: notepad.exe
-
-kd> x kernel32!CreateFileW
-00007ffa`d8502508 KERNEL32!CreateFileW ()
-kd> bp 00007ffa`d8502508
-```
-
-Alternative way (which does not require process context switching) is to use data execution breakpoints, eg.:
-
-```
-kd> !process 0 0 notepad.exe
-PROCESS ffffe0014ca22480
-    SessionId: 2  Cid: 0614    Peb: 7ff73628f000  ParentCid: 0d88
-    DirBase: 5607b000  ObjectTable: ffffc0005c2dfc40  HandleCount: 
-    Image: notepad.exe
-
-kd> .process /r /p ffffe0014ca22480
-Implicit process is now ffffe001`4ca22480
-.cache forcedecodeuser done
-Loading User Symbols
-..........................
-
-kd> x KERNEL32!CreateFileW
-00007ffa`d8502508 KERNEL32!CreateFileW ()
-kd> ba e1 00007ffa`d8502508
-```
-
-For both those commands you may limit their scope to a particular process using /p switch.
-
-<a name="symbols-and-modules">Symbols and modules</a>
------------------------------------------------------
-
-### <a name="modules">Modules</a>
+### Modules
 
 To find out if a given address belongs to any of the loaded dlls we may use the **!dlls -c {addr}** command. Another way would be to use the **lma {addr}** command.
 
-### <a name="symbols">Symbols</a>
+### Symbols
 
 FIXME

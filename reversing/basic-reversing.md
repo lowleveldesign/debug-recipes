@@ -33,6 +33,26 @@ Parameters less than 64 bits long are not zero extended; the high bits contain g
 
 ![x64-calling-convention](x64.jpg)
 
+Condition   | Argument 0 | Argument 1 | Argument 2 | Argument 3
+------------|------------|------------|------------|------------
+If integer  | RCX        | RDX        | R8         | R9
+If float    | XMM0       | XMM1       | XMM2       | XMM3
+
+
+Address    | The value is
+-----------|---------------------------
+ ...       | ...
+RSP - 0x08 | Local variable 0
+RSP        | Return address
+RSP + 0x08 | Placeholder 0
+RSP + 0x10 | Placeholder 1
+RSP + 0x18 | Placeholder 2
+RSP + 0x20 | Placeholder 3
+RSP + 0x28 | Argument 4
+RSP + 0x30 | Argument 5
+RSP + 0x38 | Argument 6
+ ...       | ...
+
 It is also the caller's responsibility to clean the stack after the call. Integer return values (similar to x86) are returned in RAX if 64 bits or less. Floating point return values are returned in XMM0.
 
 As there is no base pointer in x64 the debugger uses something called unwind info, which is embedded into the binary. You may dump the unwind info with dumpbin /unwindinfo. Within the debugger we may use the .fnent command. Excellent article about it can be found [here](https://blogs.msdn.microsoft.com/ntdebugging/2010/5/12/x64-manual-stack-reconstruction-and-stack-walking/).
@@ -44,15 +64,39 @@ Stack-maintenance: called function pops its arguments from the stack
 
 ![x86-calling-convention](x86.jpg)
 
+Address    | The value is
+-----------|---------------------------
+ ...       | ...
+EBP + 0x00 | Previous EBP
+EBP + 0x04 | Return address
+EBP + 0x08 | Argument 0
+EBP + 0x0C | Argument 1
+EBP + 0x10 | Argument 2
+ ...       | ...
+
+Name decoration: 
+
+- prefix: `_` 
+- suffix: `@<num_of_bytes_in_decimal_in_argument_list>`
+
+Example: `int func(int a, double b)` will be emitted as `_func@12`
+
 ### x86 (cdecl)
 
 Arguments: from right to left
 Stack-maintenance: calling function pops arguments from the stack
+Name decoration:
+
+- prefix: `_`, except functions exported using C linkage
 
 ### x86 (fastcall)
 
 Arguments: first 2 DWORD or smaller arguments are passed in ECX and EDX registers; all other arguments are passed right to left
 Stack-maintenance: called function pops arguments from the stack
+Name decoration: 
+
+- prefix: `_` 
+- suffix: `@<num_of_bytes_in_decimal_in_argument_list>`
 
 ### x86 (clrcall)
 

@@ -14,8 +14,6 @@ Make sure you have [valid symbols configuration](windows-debugging-configuration
 
 ### Applications
 
-Choose a recipe corresponding to your application problem:
-
 - [Exceptions and Windows errors](exceptions/exceptions.md)
 - [Memory leaks](memory/managed-memory-leaks.md)
 - [High CPU usage](cpu/analyzing-high-cpu-usage.md)
@@ -30,6 +28,12 @@ Problems in **.NET Web Applications**:
 
 - Slow requests / tracing: [ASP.NET](asp.net/asp.net-profiling.md), [Nancy](nancy/nancy-diagnostics.md)
 - Unknown errors: [ASP.NET](asp.net/asp.net-debugging.md)
+
+### Systems
+
+Troubleshooting Windows:
+
+- [Debugging Windows kernel](windows/kernel-debugging.md)
 
 ### Databases
 
