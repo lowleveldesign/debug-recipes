@@ -29,9 +29,7 @@ Problems in **.NET Web Applications**:
 - Slow requests / tracing: [ASP.NET](asp.net/asp.net-profiling.md), [Nancy](nancy/nancy-diagnostics.md)
 - Unknown errors: [ASP.NET](asp.net/asp.net-debugging.md)
 
-### Systems
-
-Troubleshooting Windows:
+### System
 
 - [Debugging Windows kernel](windows/kernel-debugging.md)
 
