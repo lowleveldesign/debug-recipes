@@ -1,26 +1,25 @@
 
-Troubleshooting exceptions and Windows errors
-=============================================
+# Troubleshooting exceptions and Windows errors
 
 In this recipe:
 
-- [Collect exception info](#collect)
-  - [Using procdump](#procdump)
-  - [Using Windows Error Reporting (seperate recipe)](wer/wer-usage.md)
-  - [Break on a specific Windows Error](#winerror-break)
-  - [Automatic dumps using AeDebug registry key](#aedebug)
-- [Analyzing collected information](#analyze)
-  - [Read managed exception information](#exc-managed)
-  - [Read exception context](#exc-context)
+- [Collecting exceptions info in production](#collecting-exceptions-info-in-production)
+  - [Using procdump](#using-procdump)
+  - [Automatic dumps using AeDebug registry key](#automatic-dumps-using-aedebug-registry-key)
+  - [Break on a specific Windows Error in a debugger](#break-on-a-specific-windows-error-in-a-debugger)
+- [Analyzing exceptions](#analyzing-exceptions)
+  - [Read managed exception information](#read-managed-exception-information)
+  - [Read exception context](#read-exception-context)
   - [Read Last Windows Error](#read-last-windows-error)
-  - [Exception handlers](#exc-handlers)
-  - [Decoding error numbers](#exc-numbers)
-  - [Convert HRESULT to Windows Error](#hresult2winerror)
+  - [Exception handlers](#exception-handlers)
+    - [x86 applications](#x86-applications)
+  - [Decoding error numbers](#decoding-error-numbers)
+  - [Convert HRESULT to Windows Error](#convert-hresult-to-windows-error)
 - [Links](#links)
 
-## <a name="collect">Collecting exceptions info in production</a>
+## Collecting exceptions info in production
 
-### <a name="procdump">Using procdump</a>
+### Using procdump
 
 From some time procdump uses a managed debugger engine when attaching to .NET processes. This is great because we can filter exceptions based on their nice names. Unfortunately, that works only for 1st chance exceptions (at least for .NET 4.0). 2nd chance exceptions are raised out of the .NET Framework and must be handled by a native debugger. Starting from .NET 4.0 it is no longer possible to attach both managed and native engine to the same process. Thus, if we want to make a dump on the 2nd chance exception for a .NET application, we need to use the **-g** option in order to force procdump to use the native engine.
 
@@ -62,20 +61,9 @@ We may also observe the logs in procmon. In order to see the procdump log events
 
 To create a full memory dump when `NullReferenceException` occurs use the following command:
 
-```
-procdump -ma -e 1 -f "E0434F4D.System.NullReferenceException" 8012
-```
+    procdump -ma -e 1 -f "E0434F4D.System.NullReferenceException" 8012
 
-
-### <a name="winerror-break">Break on a specific Windows Error</a>
-
-There is a special global variable in ntdll: **g\_dwLastErrorToBreakOn** that you may set to cause a break whenever a given last error code is set by the application. For example, to break the application execution whenever it reports the 0x4cf (ERROR\_NETWORK\_UNREACHABLE) error run:
-
-```
-ed ntdll!g_dwLastErrorToBreakOn 0x4cf
-```
-
-### <a name="aedebug">Automatic dumps using AeDebug registry key</a>
+### Automatic dumps using AeDebug registry key
 
 There is a special **AeDebug** key in the registry, which allows you to define what will happen when an unhandled exception occurs in an application. You may find it under the `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion` key (or `HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows NT\CurrentVersion` for 32-bit apps). The important values under this key are:
 
@@ -85,43 +73,45 @@ There is a special **AeDebug** key in the registry, which allows you to define w
 
 To set WinDbg as your default AeDebug debugger, run: `windbg -I`. Although I prefer to use procdump as my system debugger. The command line to install it is `procdump -mp -i c:\dumps`, where c:\dumps is the folder where I would like to store the dumps of crashing apps.
 
-## <a name="analyze">Analyzing exceptions</a>
+### Break on a specific Windows Error in a debugger
 
-### <a name="exc-manager">Read managed exception information</a>
+There is a special global variable in ntdll: **g\_dwLastErrorToBreakOn** that you may set to cause a break whenever a given last error code is set by the application. For example, to break the application execution whenever it reports the 0x4cf (ERROR\_NETWORK\_UNREACHABLE) error run:
+
+    ed ntdll!g_dwLastErrorToBreakOn 0x4cf
+
+## Analyzing exceptions
+
+### Read managed exception information
 
 First make sure with the **!Threads** command (SOS) that your current thread is the one with the exception context:
 
-```
-0:000> !Threads
-ThreadCount:      2
-UnstartedThread:  0
-BackgroundThread: 1
-PendingThread:    0
-DeadThread:       0
-Hosted Runtime:   no
-                                                                                                        Lock
-       ID OSID ThreadOBJ           State GC Mode     GC Alloc Context                  Domain           Count Apt Exception
-   0    1 1ec8 000000000055adf0    2a020 Preemptive  0000000002253560:0000000002253FD0 00000000004fb970 0     Ukn System.ArgumentException 0000000002253438
-   5    2 1c74 00000000005851a0    2b220 Preemptive  0000000000000000:0000000000000000 00000000004fb970 0     Ukn (Finalizer)
-```
+    0:000> !Threads
+    ThreadCount:      2
+    UnstartedThread:  0
+    BackgroundThread: 1
+    PendingThread:    0
+    DeadThread:       0
+    Hosted Runtime:   no
+                                                                                                            Lock
+           ID OSID ThreadOBJ           State GC Mode     GC Alloc Context                  Domain           Count Apt Exception
+       0    1 1ec8 000000000055adf0    2a020 Preemptive  0000000002253560:0000000002253FD0 00000000004fb970 0     Ukn System.ArgumentException 0000000002253438
+       5    2 1c74 00000000005851a0    2b220 Preemptive  0000000000000000:0000000000000000 00000000004fb970 0     Ukn (Finalizer)
 
 In the snippet above we can see that the exception was thrown on the thread no. 0 and this is our currently selected thread (in case it's not we would use **~0s** command) so we may use the **!PrintException** command from SOS (alias **!pe**), example:
 
-```
-0:000> !pe
-Exception object: 0000000002253438
-Exception type:   System.ArgumentException
-Message:          v should not be null
-InnerException:   <none>
-StackTrace (generated):
-<none>
-StackTraceString: <none>
-HResult: 80070057
-```
+    0:000> !pe
+    Exception object: 0000000002253438
+    Exception type:   System.ArgumentException
+    Message:          v should not be null
+    InnerException:   <none>
+    StackTrace (generated):
+    <none>
+    StackTraceString: <none>
+    HResult: 80070057
 
 Another option is the **!wpe** command from the netext plugin. To see the full managed call stack, use the **!CLRStack** command. By default, the debugger will stop on an unhandled exception. If you want to stop at the moment when an exception is thrown (first-chance exception), run the **sxe clr** command at the beginning of the debugging session.
 
-### <a name="exc-context">Read exception context</a>
+### Read exception context
 
 The  `.ecxr` debugger command instructs the debugger to restore the register context to what it was when the initial fault that led to the SEH exception took place. When an SEH exception is dispatched, the OS builds an internal structure called an exception record  It also conveniently saves the register context at the time of the initial fault in a context record structure.
 
@@ -145,7 +135,7 @@ The  `.ecxr` debugger command instructs the debugger to restore the register con
       ExceptionFlags: 00000000
     NumberParameters: 0
 
-### <a name="read-last-windows-error">Read Last Windows Error</a>
+### Read Last Windows Error
 
 To get the last error value for the current thread you may use the **!gle** command (or **!teb**). An additional **-all** parameter shows the last errors for all the threads, eg.
 
@@ -160,7 +150,7 @@ To get the last error value for the current thread you may use the **!gle** comm
 
 Based on <http://blogs.msdn.com/b/friis/archive/2012/09/19/c-compiler-or-visual-basic-net-compilers-fail-with-error-code-1073741502-when-generating-assemblies-for-your-asp-net-site.aspx>
 
-### <a name="exc-handlers">Exception handlers</a>
+### Exception handlers
 
 To list exception handlers for the currently running method use **!exchain** command, eg.:
 
@@ -205,61 +195,51 @@ Example session of retrieving the exception handler:
     0072ef84  0072f058
     0072ef88  744064f9
 
-### <a name="exc-numbers">Decoding error numbers</a>
+### Decoding error numbers
 
-If you receive an error message with an error number like this:
+If you receive an error message with a cryptic error number like this:
 
-    Compiler Error Message: The compiler failed with error code -1073741502.
+```
+Compiler Error Message: The compiler failed with error code -1073741502.
+```
 
-you can run windbg starting any process you like, eg. `windbg notepad.exe` and get heximal number of an error:
+You need to find its corresponding error message. An invaluable tool for this purpose is [**err.exe or Error Code Look-up**](https://www.microsoft.com/en-us/download/details.aspx?id=985). It looks for the specific value in Windows headers, additionally performing the convertion to hex, for example:
 
-    0:000> .formats -0n1073741502
-    Evaluate expression:
-    Hex: c0000142
-    Decimal: -1073741502
-    Octal: 30000000502
-    Binary: 11000000 00000000 00000001 01000010
-    Chars: ...B
-    Time: ***** Invalid
-    Float: low -2.00008 high -1.#QNAN
-    Double: -1.#QNAN
+      PS me> err -1073741502
+    # for decimal -1073741502 / hex 0xc0000142 :
+      STATUS_DLL_INIT_FAILED                                        ntstatus.h
+    # {DLL Initialization Failed}
+    # Initialization of the dynamic link library %hs failed. The
+    # process is terminating abnormally.
+    ...
 
-Then find an error description using the hex error number and the **!error** command:
+If you are in WinDbg, you may use the **!error** command:
 
     0:000> !error c0000142
     Error code: (NTSTATUS) 0xc0000142 (3221225794) - {DLL Initialization Failed} Initialization of the dynamic link library %hs failed. The process is terminating abnormally.
 
-More error codes and error messages are served by the Andrew Richards **!pde.err** command from the PDE extension.
+Even more error codes and error messages are contained in the **!pde.err** command from the PDE extension.
 
-On the command line you may use the **net** command:
+Finally, there is a subcommand in the **net** command to decode Windows error numbers (and only error numbers):
 
     > net helpmsg 2
-
     The system cannot find the file specified.
 
-or **errmsg**:
-
-    PS Windows> errmsg.exe 2
-
-    Error: 2 (0x00000002) (02)
-    The system cannot find the file specified.
-
-### <a name="hresult2winerror">Convert HRESULT to Windows Error</a>
+### Convert HRESULT to Windows Error
 
 The pseudo-code to convert HRESULT to Windows Error looks as follows:
 
-```
-a = hresult & 0x1FF0000
-if (a == 0x70000) {
-	winerror = hresult & 0xFFFF
-} else {
-	winerror = hresult
-}
-```
+    a = hresult & 0x1FF0000
+    if (a == 0x70000) {
+    	winerror = hresult & 0xFFFF
+    } else {
+    	winerror = hresult
+    }
 
-## <a name="links">Links</a>
+Converting Windows Error to HRESULT is straightforward: `hresult = 0x80070000 | winerror`.
 
-- [Error Code Look-up - a great tool that scans Windows header files to find a specific error code](https://www.microsoft.com/en-us/download/details.aspx?id=985)
+## Links
+
 - [Debug exceptions using AdPlus](http://lowleveldesign.wordpress.com/2012/01/16/adplus-managed-exceptions)
 - [Decoding the parameters of a thrown C++ exception (0xE06D7363)](http://blogs.msdn.com/b/oldnewthing/archive/2010/07/30/10044061.aspx)
 - [HOW TO: Find the Problem Exception Stack When You Receive an UnhandledExceptionFilter Call in the Stack Trace](http://support.microsoft.com/kb/313109)

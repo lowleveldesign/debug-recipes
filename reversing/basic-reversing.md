@@ -117,6 +117,8 @@ Stack-maintenance: called function pops arguments from the stack
 
 ### Ghidra
 
+**Ghidra does not understand full `_NT_SYMBOL_PATH` syntax** and it will parse only the first location from this variable.
+
 When you need to understand the logic in an application, a simple assembly listing might not be enough. There are various tools available in the market that can disassemble and nicely output the assembly code, but my favourite one is [**Ghidra**](https://ghidra-sre.org/), an open-source reverse engineering software released by NSA. It even has a decompiler and supports lots of platforms. The section below contains a set of basic shortcuts to help you find your way around in this tool. 
 
 | Shortcut      | Description       |

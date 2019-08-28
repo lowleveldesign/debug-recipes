@@ -6,9 +6,9 @@ Windows Debugging Configuration
 
 ### \_NT\_SYMBOL\_PATH
 
-I set it to: `C:\symbols\private;SRV*C:\symbols\dbg*http://msdl.microsoft.com/download/symbols`.
+I set it to: `SRV*C:\symbols\dbg*http://msdl.microsoft.com/download/symbols`.
 
-This variables specify where the windows debuggers will look for symbol files. It may contain multiple locations but they need to be separated with semi colon (;) and are searched from left to right. If you include the string `cache*localsymbolcache` in your symbol path, the specified directory localsymbolcache will be used to store any symbols loaded from any element that appears in your symbol path to the right of this string. This allows you to use a local cache for symbols downloaded from any location, not just those downloaded by a symbol server.
+This variables specify where the windows debuggers will look for symbol files. It may contain multiple locations but they need to be separated with semi colon (;) and are searched from left to right (if you are using Ghidra, [the first location is important](reversing/basic-reversing.md#ghidra)). If you include the string `cache*localsymbolcache` in your symbol path, the specified directory localsymbolcache will be used to store any symbols loaded from any element that appears in your symbol path to the right of this string. This allows you to use a local cache for symbols downloaded from any location, not just those downloaded by a symbol server.
 
 For example, if you set your symbol path with the following .sympath command, the directory c:\symbols\private will be used to store files from both of the \\private shares, but not from \\someshare:
 
