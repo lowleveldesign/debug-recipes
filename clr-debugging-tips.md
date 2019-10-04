@@ -6,13 +6,14 @@ In this recipe:
 
   - [CLR debugging in WinDbg](#clr-debugging-in-windbg)
     - [Loading SOS](#loading-sos)
-    - [Get help for commands in .NET WinDbg extensions ###](#get-help-for-commands-in-net-windbg-extensions-)
+    - [Get help for commands in .NET WinDbg extensions](#get-help-for-commands-in-net-windbg-extensions-)
+    - [Loading symbol files for .NET Core](#loading-symbol-files-for-net-core)
   - [Controlling JIT optimization](#controlling-jit-optimization)
     - [DebuggableAttribute](#debuggableattribute)
     - [INI file](#ini-file)
   - [Decode managed stacks in Sysinternals](#decode-managed-stacks-in-sysinternals)
   - [Check framework version](#check-framework-version)
-  - [CLR Code Policies](#clr-code-policies)
+  - [CLR Code Policies (obsolete)](#clr-code-policies-obsolete)
 
 ## CLR debugging in WinDbg
 
@@ -33,7 +34,7 @@ Other issues:
 - [Failed to load data access DLL, 0x80004005 – OR – What is mscordacwks.dll?](http://blogs.msdn.com/b/dougste/archive/2009/02/18/failed-to-load-data-access-dll-0x80004005-or-what-is-mscordacwks-dll.aspx)
 - [How to load the specified mscordacwks.dll for managed debugging when multiple .NET runtime are loaded in one process](http://blogs.msdn.com/b/asiatech/archive/2010/09/10/how-to-load-the-specified-mscordacwks-dll-for-managed-debugging-when-multiple-net-runtime-are-loaded-in-one-process.aspx)
 
-### Get help for commands in .NET WinDbg extensions ###
+### Get help for commands in .NET WinDbg extensions
 
 SOS commands sometimes get overriden by other extensions help files. In such a case just use `!sos.help <cmd>` command, eg.
 
@@ -45,6 +46,16 @@ SOS commands sometimes get overriden by other extensions help files. In such a c
 SOSEX help can be seen using the `!sosexhelp [command]` command.
 
 Netext help can be nicely rendered in the command window: `.browse !whelp`.
+
+### Loading symbol files for .NET Core
+
+I noticed that Microsoft public symbol servers sometimes do not have .NET Core dlls symbols. That does not allow WinDbg to decode native .NET stacks. Fortunately, we may solve this problem by precaching symbol files using the [dotnet-symbol](https://github.com/dotnet/symstore/tree/master/src/dotnet-symbol) tool. Assuming we set our [`_NT_SYMBOL_PATH`](windows-debugging-configuration.md) to `SRV*C:\symbols\dbg*http://msdl.microsoft.com/download/symbols`, we need to run dotnet-symbol setting the **--cache-directory** parameter to our symbol cache folder (for example, `C:\symbols\dbg`):
+
+```
+dotnet-symbol --recurse-subdirectories --cache-directory c:\symbols\dbg -o C:\temp\toremove "C:\Program Files\dotnet\shared\Microsoft.NETCore.App\3.0.0\*"
+```
+
+We may later remove the `C:\temp\toremove` folder as all PDB files are indexed in the cache directory. The output folder contains both DLL and PDB files, takes lots of space, and is often not required.
 
 ## Controlling JIT optimization
 
@@ -89,7 +100,7 @@ The definition of the `DebuggingModes` flag sent to the constructor:
 
     0x0002 = IgnoreSymbolStoreSequencePoints
 
-**<none>**
+**\*nothing\***
 
 No Debuggable attribute emitted
 
@@ -138,7 +149,7 @@ For .NET2.0 you could check the version of mscorwks in the file properties or, i
 
 For .NET4.x you need to check clr.dll (or the Release value under the `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full` key) and find it in the [Microsoft Docs](https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/versions-and-dependencies).
 
-## CLR Code Policies
+## CLR Code Policies (obsolete)
 
 List groups:
 

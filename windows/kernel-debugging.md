@@ -51,6 +51,21 @@ take effect.  Run shutdown -s -t 0 from this command prompt.
 
 ## Control processes in the debugger
 
+### Get process information
+
+We can use the `!process` command to locate a process by its image name:
+
+    0: kd> !process 0 0 LINQPad.UserQuery.exe
+    PROCESS ffffda07cd4da4c0
+        SessionId: 6  Cid: 3168    Peb: 4b61e15000  ParentCid: 1e5c
+        DirBase: 1e6165002  ObjectTable: ffffb2813a6dcd00  HandleCount: 529.
+        Image: LINQPad.UserQuery.exe
+
+    PROCESS ffffda07bfa49080
+        SessionId: 6  Cid: 427c    Peb: c0d32c9000  ParentCid: 1e5c
+        DirBase: 3b2173002  ObjectTable: ffffb2812cd5ad40  HandleCount: 397.
+        Image: LINQPad.UserQuery.exe
+
 ### Break when user-mode process is created
 
 **bp nt!PspInsertProcess**
