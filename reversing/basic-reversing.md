@@ -138,6 +138,8 @@ Marks:
 | Ctrl+D        | Set bookmark |
 | Ctrl+Alt+B    | Next bookmark |
 
+Other popular shortcuts are listed in [the official Ghidra CheatSheet](https://ghidra-sre.org/CheatSheet.html).
+
 To rebase an image, open the memory window, click on the button with a house icon and type the new base address.
 
 ### IDA Freeware

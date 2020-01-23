@@ -98,6 +98,16 @@ Then run [Fiddler](http://www.telerik.com/fiddler) (or [Burp Suite](https://port
 
 **NOTE for WCF clients**: WCF has its own proxy settings, to use the default proxy add an `useDefaultWebProxy=true` attribute to your binding.
 
+If you want to trace HTTPS traffic you probably also need to **install the Root CA** of your proxy. On Windows, install the certificate to the Third-Party Root Certification Authorities. On Ubuntu Linux, run the following commands:
+
+```bash
+sudo mkdir /usr/share/ca-certificates/extra
+sudo cp mitmproxy.crt /usr/share/ca-certificates/extra/mitmproxy.crt
+sudo dpkg-reconfigure ca-certificates
+```
+
+*NOTE for Python*: if there is Python code that you need to trace, use `export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt` to force Python to validate TLS certs with your system cert store.
+
 ## Troubleshooting network on Windows
 
 ### Wireshark (network tracing and more)
