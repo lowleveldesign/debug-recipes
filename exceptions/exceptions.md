@@ -79,6 +79,8 @@ There is a special global variable in ntdll: **g\_dwLastErrorToBreakOn** that yo
 
     ed ntdll!g_dwLastErrorToBreakOn 0x4cf
 
+You may find the list of errors in [the Windows documentation](https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes).
+
 ## Analyzing exceptions
 
 ### Read managed exception information
