@@ -1,32 +1,6 @@
 Visual Studio
 =============
 
-Keyboard shortcuts
-------------------
-
-- **LAlt + Shift + L** - locate an item in the solution explorer (requires resharper :/)
-- **Ctrl + F2** - locates the focus on the NavigationBar of the editor and enables you to select classes and their members in the code file
-- **Shift + LAlt + F12** - select a word and press this shortcut and you will quick find symbols referencing it
-- **Ctrl + LAlt + <down>** - a drop down in the right up corner that shows all opened files
-- **Alt + LF12** - show a peek window with the method definition
-
-### Debugging ###
-
-- **Ctrl + LAlt + P** - attach to a process
-- **Ctrl + LAlt + M** - Memory 1 window
-- **Ctrl + LAlt + D** - Disassembly window
-
-Extensibility
--------------
-
-### Macros
-
-To assign a key to the macro use _Tools->Customize..._ menu.
-
-### Themes ###
-
-You can download themes from <https://studiostyl.es/> and import them into Visual Studio using Tools - Settings - Import Export Settings...
-
 Debugging
 ---------
 
@@ -133,16 +107,3 @@ There are also some NTSD commands accessible (also in native mode):
 **.unloadall** - unloads all loaded extensions
 
 **.foreach** ???
-
-Issues
-------
-
-### Slowly closing tabs ###
-
-Deleting .suo file helps if VS hangs while closing tabs.
-
-Links
------
-
-- [Powershell cmdlets](http://www.wintellect.com/CS/blogs/jrobbins/archive/2012/03/30/using-nuget-powershell-to-replace-missing-macros-in-dev-11.aspx)
-- [Concurrency Visualizer for Visual Studio 2015 is now available on the gallery](http://blogs.msdn.com/b/visualstudioalm/archive/2015/09/18/concurrency-visualizer-for-visual-studio-2015-is-now-available-on-the-gallery.aspx)

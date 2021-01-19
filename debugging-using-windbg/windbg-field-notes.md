@@ -91,7 +91,7 @@ Each time you break into the kernel-mode debugger one of the processes will be a
 
 ### Handles
 
-There is a special debugger extension command `!handle` that allows you to find system handles reserved by a process: **!handle [Handle [UMFlags [TypeName]]]**
+There is a special debugger extension command **!handle** that allows you to find system handles reserved by a process: **!handle [Handle [UMFlags [TypeName]]]**
 
 To list all handles reserved by a process use -1 (in kernel mode) or 0 (in user-mode) - you filter further by seeting a type of a handle: Event, Section, File, Port, Directory, SymbolicLink, Mutant, WindowStation, Semaphore, Key, Token, Process, Thread, Desktop, IoCompletion, Timer, Job, and WaitablePort, ex.:
 
@@ -244,10 +244,6 @@ The ChildEBP is the actual stack frame address. To see the first three arguments
 
 Which matches the kb output. The RetAddr is the address where program will continue when the current function call is finished.
 
-### Heap
-
-FIXME
-
 ## Controlling process execution
 
 ### Controlling the target (g, t, p)
@@ -325,10 +321,10 @@ bp Module!MyFunctionWithConditionalBreakpoint "r $t0 = 0;.foreach (v { k }) { .i
 
 ## Symbols and modules
 
-### Modules
+The `lm` command lists all modules with symbol load info. To examine a specific module, use `lmvm {module-name}`.
 
-To find out if a given address belongs to any of the loaded dlls we may use the **!dlls -c {addr}** command. Another way would be to use the **lma {addr}** command.
+To find out if a given address belongs to any of the loaded dlls we may use the **!dlls -c {addr}** command. Another way would be to use the **lma {addr}** command. 
 
-### Symbols
+The `.sympath` command shows the symbol search path and allows its modification. To force load symbols for a given module use `.reload /f {module-name}`.
 
-FIXME
+To resolve a function address, use `x {module-name}!{function}` and to find the nearest symbol use `ln {address}`.

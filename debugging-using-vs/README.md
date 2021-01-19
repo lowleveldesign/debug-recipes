@@ -8,10 +8,6 @@ A list of tips & tricks which might be useful when debugging .NET applications. 
 
 Common keyboard shortcuts, configuration.
 
-## [Plugins I use](vs-plugins.md) ##
-
-List of plugins I use.
-
 ## [Debugger configuration tips](vs-configuration-tips.md) ##
 
 Which options should be enabled for the best debugging experience in VS.

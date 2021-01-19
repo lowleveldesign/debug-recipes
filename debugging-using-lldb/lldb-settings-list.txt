@@ -1,0 +1,190 @@
+Top level variables:
+
+  auto-confirm                 -- If true all confirmation prompts will receive their default reply.
+  auto-indent                  -- If true, LLDB will auto indent/outdent code. Currently only supported in the REPL (default: true).
+  auto-one-line-summaries      -- If true, LLDB will automatically display small structs in one-liner format (default: true).
+  disassembly-format           -- The default disassembly format string to use when disassembling instruction sequences.
+  escape-non-printables        -- If true, LLDB will automatically escape non-printable and escape characters when formatting strings.
+  frame-format                 -- The default frame format string to use when displaying stack frame information for threads.
+  frame-format-unique          -- The default frame format string to use when displaying stack frameinformation for threads from thread backtrace unique.
+  highlight-source             -- If true, LLDB will highlight the displayed source code.
+  notify-void                  -- Notify the user explicitly if an expression returns void (default: false).
+  print-decls                  -- If true, LLDB will print the values of variables declared in an expression. Currently only supported in the REPL (default:
+                                  true).
+  prompt                       -- The debugger command line prompt displayed for the user.
+  script-lang                  -- The script language to be used for evaluating user-written scripts.
+  stop-disassembly-count       -- The number of disassembly lines to show when displaying a stopped context.
+  stop-disassembly-display     -- Control when to display disassembly when displaying a stopped context.
+  stop-line-count-after        -- The number of sources lines to display that come after the current source line when displaying a stopped context.
+  stop-line-count-before       -- The number of sources lines to display that come before the current source line when displaying a stopped context.
+  stop-show-column             -- If true, LLDB will use the column information from the debug info to mark the current position when displaying a stopped
+                                  context.
+  stop-show-column-ansi-prefix -- When displaying the column marker in a color-enabled (i.e. ANSI) terminal, use the ANSI terminal code specified in this
+                                  format at the immediately before the column to be marked.
+  stop-show-column-ansi-suffix -- When displaying the column marker in a color-enabled (i.e. ANSI) terminal, use the ANSI terminal code specified in this
+                                  format immediately after the column to be marked.
+  tab-size                     -- The tab size to use when indenting code in multi-line input mode (default: 4).
+  term-width                   -- The maximum number of columns to use for displaying text.
+  thread-format                -- The default thread format string to use when displaying thread information.
+  thread-stop-format           -- The default thread format  string to use when displaying thread information as part of the stop display.
+  use-color                    -- Whether to use Ansi color codes or not.
+  use-external-editor          -- Whether to use an external editor or not.
+
+'target' variables:
+
+  arg0                                -- The first argument passed to the program in the argument array which can be different from the executable itself.
+  auto-apply-fixits                   -- Automatically apply fix-it hints to expressions.
+  auto-import-clang-modules           -- Automatically load Clang modules referred to by the program.
+  breakpoints-use-platform-avoid-list -- Consult the platform module avoid list when setting non-module specific breakpoints.
+  clang-module-search-paths           -- List of directories to be searched when locating modules for Clang.
+  debug-file-search-paths             -- List of directories to be searched when locating debug symbol files. See also symbols.enable-external-lookup.
+  default-arch                        -- Default architecture to choose, when there's a choice.
+  detach-on-error                     -- debugserver will detach (rather than killing) a process if it loses connection with lldb.
+  disable-aslr                        -- Disable Address Space Layout Randomization (ASLR)
+  disable-stdio                       -- Disable stdin/stdout for process (e.g. for a GUI application)
+  x86-disassembly-flavor              -- The default disassembly flavor to use for x86 or x86-64 targets.
+  display-expression-in-crashlogs     -- Expressions that crash will show up in crash logs if the host system supports executable specific crash log strings
+                                         and this setting is set to true.
+  display-recognized-arguments        -- Show recognized arguments in variable listings by default.
+  display-runtime-support-values      -- If true, LLDB will show variables that are meant to support the operation of a language's runtime support.
+  enable-synthetic-value              -- Should synthetic values be used by default whenever available.
+  env-vars                            -- A list of all the environment variables to be passed to the executable's environment, and their values.
+  error-path                          -- The file/path to be used by the executable program for writing its standard error.
+  exec-search-paths                   -- Executable search paths to use when locating executable files whose paths don't match the local file system.
+  expr-prefix                         -- Path to a file containing expressions to be prepended to all expressions.
+  hex-immediate-style                 -- Which style to use for printing hexadecimal disassembly values.
+  import-std-module                   -- Import the C++ std module to improve debugging STL containers.
+  inherit-env                         -- Inherit the environment from the process that is running LLDB.
+  inline-breakpoint-strategy          -- The strategy to use when settings breakpoints by file and line. Breakpoint locations can end up being inlined by the
+                                         compiler, so that a compile unit 'a.c' might contain an inlined function from another source file. Usually this is
+                                         limited to breakpoint locations from inlined functions from header or other include files, or more accurately
+                                         non-implementation source files. Sometimes code might #include implementation files and cause inlined breakpoint
+                                         locations in inlined implementation files. Always checking for inlined breakpoint locations can be expensive (memory
+                                         and time), so if you have a project with many headers and find that setting breakpoints is slow, then you can change
+                                         this setting to headers. This setting allows you to control exactly which strategy is used when setting file and line
+                                         breakpoints.
+  input-path                          -- The file/path to be used by the executable program for reading its standard input.
+  language                            -- The language to use when interpreting expressions entered in commands.
+  load-cwd-lldbinit                   -- Allow LLDB to .lldbinit files from the current directory automatically.
+  load-script-from-symbol-file        -- Allow LLDB to load scripting resources embedded in symbol files when available.
+  max-children-count                  -- Maximum number of children to expand in any level of depth.
+  max-memory-read-size                -- Maximum number of bytes that 'memory read' will fetch before --force must be specified.
+  max-string-summary-length           -- Maximum number of characters to show when using %s in summary strings.
+  max-zero-padding-in-float-format    -- The maximum number of zeroes to insert when displaying a very small float before falling back to scientific notation.
+  memory-module-load-level            -- Loading modules from memory can be slow as reading the symbol tables and other data can take a long time depending on
+                                         your connection to the debug target. This setting helps users control how much information gets loaded when loading
+                                         modules from memory.'complete' is the default value for this setting which will load all sections and symbols by
+                                         reading them from memory (slowest, most accurate). 'partial' will load sections and attempt to find function bounds
+                                         without downloading the symbol table (faster, still accurate, missing symbol names). 'minimal' is the fastest setting
+                                         and will load section data with no symbols, but should rarely be used as stack frames in these memory regions will be
+                                         inaccurate and not provide any context (fastest).
+  move-to-nearest-code                -- Move breakpoints to nearest code.
+  non-stop-mode                       -- Disable lock-step debugging, instead control threads independently.
+  notify-about-fixits                 -- Print the fixed expression text.
+  output-path                         -- The file/path to be used by the executable program for writing its standard output.
+  prefer-dynamic-value                -- Should printed values be shown as their dynamic value.
+  preload-symbols                     -- Enable loading of symbol tables before they are needed.
+  require-hardware-breakpoint         -- Require all breakpoints to be hardware breakpoints.
+  run-args                            -- A list containing all the arguments to be passed to the executable when it is run. Note that this does NOT include the
+                                         argv[0] which is in target.arg0.
+  save-jit-objects                    -- Save intermediate object files generated by the LLVM JIT
+  skip-prologue                       -- Skip function prologues when setting breakpoints by name.
+  source-map                          -- Source path remappings are used to track the change of location between a source file when built, and where it exists
+                                         on the current system.  It consists of an array of duples, the first element of each duple is some part (starting at
+                                         the root) of the path to the file when it was built, and the second is where the remainder of the original build
+                                         hierarchy is rooted on the local system.  Each element of the array is checked in order and the first one that results
+                                         in a match wins.
+  trap-handler-names                  -- A list of trap handler function names, e.g. a common Unix user process one is _sigtramp.
+  use-fast-stepping                   -- Use a fast stepping algorithm based on running from branch to branch rather than instruction single-stepping.
+  use-hex-immediates                  -- Show immediates in disassembly as hexadecimal.
+
+'target.experimental' variables:
+
+  inject-local-vars -- If true, inject local variables explicitly into the expression text. This will fix symbol resolution when there are name collisions
+                       between ivars and local variables. But it can make expressions run much more slowly.
+
+'target.process' variables:
+
+  detach-keeps-stopped              -- If true, detach will attempt to keep the process stopped.
+  disable-memory-cache              -- Disable reading and caching of memory in fixed-size units.
+  extra-startup-command             -- A list containing extra commands understood by the particular process plugin used.  For instance, to turn on debugserver
+                                       logging set this to 'QSetLogging:bitmask=LOG_DEFAULT;'
+  ignore-breakpoints-in-expressions -- If true, breakpoints will be ignored during expression evaluation.
+  memory-cache-line-size            -- The memory cache line size
+  python-os-plugin-path             -- A path to a python OS plug-in module file that contains a OperatingSystemPlugIn class.
+  stop-on-exec                      -- If true, stop when a shared library is loaded or unloaded.
+  stop-on-sharedlibrary-events      -- If true, stop when a shared library is loaded or unloaded.
+  unwind-on-error-in-expressions    -- If true, errors in expression evaluation will unwind the stack back to the state before the call.
+  utility-expression-timeout        -- The time in seconds to wait for LLDB-internal utility expressions.
+  optimization-warnings             -- If true, warn when stopped in code that is optimized where stepping and variable availability may not behave as expected.
+
+'target.process.thread' variables:
+
+  trace-thread           -- If true, this thread will single-step and log execution.
+  max-backtrace-depth    -- Maximum number of frames to backtrace.
+  step-avoid-libraries   -- A list of libraries that source stepping won't stop in.
+  step-avoid-regexp      -- A regular expression defining functions step-in won't stop in.
+  step-in-avoid-nodebug  -- If true, step-in will not stop in functions with no debug information.
+  step-out-avoid-nodebug -- If true, when step-in/step-out/step-over leave the current frame, they will continue to step out till they come to a function with
+                            debug information. Passing a frame argument to step-out will override this option.
+
+'platform' variables:
+
+  module-cache-directory -- Root directory for cached modules.
+  use-module-cache       -- Use module cache.
+
+'symbols' variables:
+
+  clang-modules-cache-path -- The path to the clang modules cache directory (-fmodules-cache-path).
+  enable-external-lookup   -- Control the use of external tools and repositories to locate symbol files. Directories listed in target.debug-file-search-paths
+                              and directory of the executable are always checked first for separate debug info files. Then depending on this setting: On macOS,
+                              Spotlight would be also used to locate a matching .dSYM bundle based on the UUID of the executable. On NetBSD, directory
+                              /usr/libdata/debug would be also searched. On platforms other than NetBSD directory /usr/lib/debug would be also searched.
+
+'interpreter' variables:
+
+  echo-commands                -- If true, commands will be echoed before they are evaluated.
+  echo-comment-commands        -- If true, commands will be echoed even if they are pure comment lines.
+  expand-regex-aliases         -- If true, regular expression alias commands will show the expanded command that will be executed. This can be used to debug
+                                  new regular expression alias commands.
+  prompt-on-quit               -- If true, LLDB will prompt you before quitting if there are any live processes being debugged. If false, LLDB will quit
+                                  without asking in any case.
+  space-repl-prompts           -- If true, blank lines will be printed between between REPL submissions.
+  stop-command-source-on-error -- If true, LLDB will stop running a 'command source' script upon encountering an error.
+
+'plugin' variables:
+
+
+'plugin.jit-loader' variables:
+
+
+'plugin.jit-loader.gdb' variables:
+
+  enable -- Enable GDB's JIT compilation interface (default: enabled on all platforms except macOS)
+
+'plugin.process' variables:
+
+
+'plugin.process.gdb-remote' variables:
+
+  packet-timeout           -- Specify the default packet timeout in seconds.
+  target-definition-file   -- The file that provides the description for remote target registers.
+  use-g-packet-for-reading -- Specify if the server should use 'g' packets to read registers.
+  use-libraries-svr4       -- If true, the libraries-svr4 feature will be used to get a hold of the process's loaded modules.
+
+'plugin.symbol-file' variables:
+
+
+'plugin.symbol-file.dwarf' variables:
+
+  ignore-file-indexes    -- Ignore indexes present in the object files and always index DWARF manually.
+  comp-dir-symlink-paths -- If the DW_AT_comp_dir matches any of these paths the symbolic links will be resolved at DWARF parse time.
+
+'plugin.structured-data' variables:
+
+
+'plugin.structured-data.darwin-log' variables:
+
+  auto-enable-options -- Specify the options to 'plugin structured-data darwin-log enable' that should be applied when automatically enabling logging on
+                         startup/attach.
+  enable-on-startup   -- Enable Darwin os_log collection when debugged process is launched or attached.

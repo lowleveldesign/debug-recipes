@@ -169,5 +169,3 @@ Use **!cs** comman to examine critical sections in your applications:
     SpinCount          = 0x00000000020007d0
 
 `LockCount` tells you how many threads are currently waiting on a given cs. The `OwningThread` is a thread that owns the cs at the time the command is run. You can easily identify the thread that is waiting on a given cs by issuing `kv` command and looking for critical section identifier in the call parameters.
-
-

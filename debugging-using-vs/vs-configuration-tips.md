@@ -29,6 +29,10 @@ It is also worth to check the next two options so you will be able to investigat
 
 I tend to use the Immediate Window as the only source of output information while debugging.
 
+#### CHECK: Enable Source Link support
+
+[Source Link](https://github.com/dotnet/sourcelink/blob/master/README.md) is great and we should use it!
+
 Symbols
 -------
 
@@ -36,10 +40,13 @@ I usually set the `_NT_SYMBOL_PATH` environment variable so that other tools (su
 
     @setx /M _NT_SYMBOL_PATH SRV*C:\symbols\dbg*http://msdl.microsoft.com/download/symbols
 
+I also recommend checking the **NuGet.org Symbol Server** box in the Visual Studio symbol configuration. That will enable source debugging for NuGet packages which published Symbol Packages.
+
 Windows arrangement
 -------------------
 
-Finally, learn the best windows arrangement that will suit your needs. My debugger looks as follows:
+Finally, find the best windows arrangement that will suit your needs. Make sure that you see the threads running in your process. It is also worth to have the Output/Immediate window shown as Debug log land there.
 
-![myenv](vs-configuration-myenvironment.png)
+My windows arrangement looks as follows:
 
+![](vs-configuration-myenvironment.png)

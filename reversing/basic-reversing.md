@@ -3,17 +3,7 @@
 
 In this recipe:
 
-- [Collect basic information about the executable (Windows)](#collect-basic-information-about-the-executable-windows)
-- [Understand calling conventions](#understand-calling-conventions)
-  - [AMD64](#amd64)
-  - [x86 (stdcall and pascall)](#x86-stdcall-and-pascall)
-  - [x86 (cdecl)](#x86-cdecl)
-  - [x86 (fastcall)](#x86-fastcall)
-  - [x86 (clrcall)](#x86-clrcall)
-  - [x86 (thiscall)](#x86-thiscall)
-- [Use reversing tools](#use-reversing-tools)
-  - [Ghidra](#ghidra)
-  - [IDA Freeware](#ida-freeware)
+FIXME
 
 ## Collect basic information about the executable (Windows)
 
@@ -24,6 +14,10 @@ In this recipe:
 - dump PE file headers: `dumpbin /headers file.dll`
 
 A great tool to track dependencies between PE files is [**Dependencies**](https://github.com/lucasg/Dependencies), a rewrite of the [Dependency Walker](http://www.dependencywalker.com/).
+
+## Collect basic information about the executable (Linux)
+
+To dump **symbol tables**, we can use the `readelf -s {path}` command. The **.dynsym** table lists the dynamic symbols (required by the dynamic linker), while the **.symtab** lists all the  symbols, local and dynamic. Alternatively, we could use `objdump -t` (static symbols) or `objdump -T` (dynamic symbols).
 
 ## Understand calling conventions
 
