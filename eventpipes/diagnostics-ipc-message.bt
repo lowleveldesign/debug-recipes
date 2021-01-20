@@ -1,0 +1,69 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: Event Pipes data dump
+//   Authors: Sebastian Solnica
+//   Version: 1.0
+//  Category: .NET
+//------------------------------------------------
+
+typedef enum <ubyte> {
+    Dump        = 0x01,
+    EventPipe   = 0x02,
+    Profiler    = 0x03,
+    Process     = 0x04,
+    Server      = 0xFF,
+} CommandSet;
+
+typedef enum <ubyte> {
+    OK    = 0x00,
+    Error = 0xFF,
+} ServerCommandId;
+
+typedef enum <ubyte> {
+    // reserved = 0x00,
+    StopTracing     = 0x01, // stop a given session
+    CollectTracing  = 0x02, // create/start a given session
+    CollectTracing2 = 0x03, // create/start a given session with/without rundown
+} EventPipeCommandId;
+
+typedef enum <ubyte> {
+    // reserved     = 0x00,
+    CreateCoreDump  = 0x01,
+    // future
+} DumpCommandId;
+
+typedef enum <ubyte> {
+    // reserved     = 0x00,
+    AttachProfiler  = 0x01,
+    // future
+} ProfilerCommandId;
+
+typedef enum <byte> {
+    ProcessInfo   = 0x00,
+    ResumeRuntime = 0x01,
+    // future
+} ProcessCommandId;
+
+typedef struct {
+    byte magic[14] <bgcolor=cYellow>;
+    uint16 size;
+    CommandSet command_set <bgcolor=cBlue, fgcolor=cWhite>;
+    if (command_set == Dump) {
+        DumpCommandId command_id <bgcolor=cBlue, fgcolor=cWhite>;
+    } else if (command_set == EventPipe) {
+        EventPipeCommandId command_id <bgcolor=cBlue, fgcolor=cWhite>;
+    } else if (command_set == Profiler) {
+        ProfilerCommandId command_id <bgcolor=cBlue, fgcolor=cWhite>;
+    } else if (command_set == Process) {
+        ProcessCommandId command_id <bgcolor=cBlue, fgcolor=cWhite>;
+    } else if (command_set == Server) {
+        ServerCommandId command_id <bgcolor=cBlue, fgcolor=cWhite>;
+    } else {
+        ubyte command_id;
+    }
+    uint16 reserved;
+    byte payload[size - 20];
+} IPC_Message;
+
+IPC_Message header[2] <optimize=false>;

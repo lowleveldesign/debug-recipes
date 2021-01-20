@@ -212,6 +212,24 @@ Set a breakpoint at an address: `0x7ffff7272cbb` (**breakpoint set**):
 Breakpoint 2: where = libcoreclr.so`IpcStream::DiagnosticsIpc::Create(char const*, IpcStream::DiagnosticsIpc::ConnectionMode, void (*)(char const*, unsigned int)) + 331 at diagnosticsipc.cpp:64:14, address = 0x00007ffff7272cbb
 ```
 
+### Debug events (including exceptions)
+
+Stop the debugger when the debugee receives `SIGSTOP` (**process handle**):
+
+```
+(lldb) process handle -s true SIGSTOP
+NAME         PASS   STOP   NOTIFY
+===========  =====  =====  ======
+SIGSTOP      false  true   true
+```
+
+Stop the debugger when C++ exception occurs (**breakpoint**):
+
+```
+(lldb) breakpoint set -E C++
+Breakpoint 1: 2 locations.
+```
+
 ## Symbols and modules
 
 List all modules in a process (**image list**):
