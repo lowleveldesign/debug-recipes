@@ -62,7 +62,9 @@ With no options provided, it creates a memory dump with heap, which equals to `c
 
 ## Analysis
 
-### Show threads call stacks
+We usually start the analysis by looking at the threads running in a process. The call stacks help us identify blocked threads. In the next step, we need to find the lock objects and relations between threads.
+
+### Listing threads call stacks
 
 To list native stacks for all the threads in **WinDbg**, run: `~*k` or `~*e!dumpstack`. If you are interested only in managed stacks, you may use the `~*e!clrstack` SOS command. There is also a great `!pstacks` command from the [gsose extension](https://github.com/chrisnas/DebuggingExtensions) that groups call stacks for managed threads.
 
@@ -83,7 +85,7 @@ To list native stacks for all the threads in **WinDbg**, run: `~*k` or `~*e!dump
 
 In **LLDB**, we may show native call stacks for all the threads with the `bt all` command. Unfortunately, if we want to use `dumpstack` or `clrstack` commands, we need to manually switch between threads with the `thread select` command.
 
-### List locks in user mode
+### Finding locks in memory dumps
 
 You may examine thin locks using **!DumpHeap -thinlocks**.  To find all sync blocks, use the **!SyncBlk -all** command.
 
@@ -136,8 +138,6 @@ CLR Thread 0x1 is waiting at clr!CrstBase::SpinEnter+0x92
 CLR Thread 0x3 is waiting at System.Threading.Monitor.Enter(System.Object, Boolean ByRef)(+0x17 Native)
 ```
 
-### Iterate through execution contexts assigned to threads (managed)
-
 When debugging locks in code that is using tasks it is often necessary to examine execution contexts assigned to the running threads. I prepared a simple script which lists threads with their execution contexts. You only need (as in previous script) find the MT of the `Thread` class in your appdomain, eg.
 
 ```
@@ -162,6 +162,6 @@ And then paste it in the scripts below:
 
 Notice that the thread number from the output is a managed thread id and to map it to the windbg thread number you need to use the `!Threads` command.
 
-### Check locks in kernel mode
+### Find locks in kernel mode
 
 Another command that can be useful here is **!locks**. With **-v** parameter will display all locks accessed by threads in a process.

@@ -4,19 +4,19 @@ Network tracing
 
 In this recipe:
 
-  - [Tracing network in .NET applications](#tracing-network-in-net-applications)
-    - [.NET Core](#net-core)
-    - [Full .NET Framework](#full-net-framework)
-  - [Logging application requests in a proxy](#logging-application-requests-in-a-proxy)
-  - [Troubleshooting network on Windows](#troubleshooting-network-on-windows)
-    - [Wireshark (network tracing and more)](#wireshark-network-tracing-and-more)
-    - [PsPing (connectivity issues)](#psping-connectivity-issues)
-      - [Measuring latency](#measuring-latency)
-      - [Measuring bandwidth](#measuring-bandwidth)
-    - [Event Tracing for Windows with netsh/PerfView (network tracing)](#event-tracing-for-windows-with-netshperfview-network-tracing)
-  - [Troubleshooting network on Linux](#troubleshooting-network-on-linux)
-    - [tcpdump (network tracing)](#tcpdump-network-tracing)
-    - [nc (connectivity issues)](#nc-connectivity-issues)
+- [Tracing network in .NET applications](#tracing-network-in-net-applications)
+  - [.NET Core](#net-core)
+  - [Full .NET Framework](#full-net-framework)
+- [Logging application requests in a proxy](#logging-application-requests-in-a-proxy)
+- [Troubleshooting network on Windows](#troubleshooting-network-on-windows)
+  - [Wireshark (network tracing and more)](#wireshark-network-tracing-and-more)
+  - [PsPing (connectivity issues)](#psping-connectivity-issues)
+    - [Measuring latency](#measuring-latency)
+    - [Measuring bandwidth](#measuring-bandwidth)
+  - [Event Tracing for Windows with netsh/PerfView (network tracing)](#event-tracing-for-windows-with-netshperfview-network-tracing)
+- [Troubleshooting network on Linux](#troubleshooting-network-on-linux)
+  - [tcpdump (network tracing)](#tcpdump-network-tracing)
+  - [nc (connectivity issues)](#nc-connectivity-issues)
 
 ## Tracing network in .NET applications
 
