@@ -12,8 +12,6 @@ Make sure you have [valid symbols configuration](windows-debugging-configuration
 
 ## Troubleshooting
 
-### Native and managed
-
 ### Applications
 
 - [Exceptions and Windows errors](exceptions/exceptions.md)
@@ -45,7 +43,7 @@ Make sure you have [valid symbols configuration](windows-debugging-configuration
 | I/O problems | [X](databases/mssqlserver/mssqlserver-troubleshooting-io.md) |  |
 | Server problems | [X](databases/mssqlserver/mssqlserver-troubleshooting-server.md) | [X](databases/mysql/mysql-troubleshooting-server.md) |
 
-### IIS (Archived)
+### IIS (:floppy_disk: Archived)
 
 - [Troubleshooting IIS7+](iis/iis7up.md)
 - [Troubleshooting IIS6](iis/iis6.md)
@@ -55,4 +53,4 @@ Make sure you have [valid symbols configuration](windows-debugging-configuration
 
 - [WinDbg](debugging-using-windbg/windbg-field-notes.md)
 - [LLDB](debugging-using-lldb/lldb-field-notes.md)
-- [Visual Studio (debugging)](debugging-using-vs/README.md) (Archived)
+- [Visual Studio (debugging)](debugging-using-vs/README.md) (:floppy_disk: Archived)
