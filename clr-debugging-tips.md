@@ -4,16 +4,17 @@ CLR general debugging tips
 
 In this recipe:
 
-  - [CLR debugging in WinDbg](#clr-debugging-in-windbg)
+- [CLR debugging in WinDbg](#clr-debugging-in-windbg)
     - [Loading SOS](#loading-sos)
-    - [Get help for commands in .NET WinDbg extensions](#get-help-for-commands-in-net-windbg-extensions-)
+    - [Get help for commands in .NET WinDbg extensions](#get-help-for-commands-in-net-windbg-extensions)
     - [Loading symbol files for .NET Core](#loading-symbol-files-for-net-core)
-  - [Controlling JIT optimization](#controlling-jit-optimization)
+- [Controlling JIT optimization](#controlling-jit-optimization)
     - [DebuggableAttribute](#debuggableattribute)
-    - [INI file](#ini-file)
-  - [Decode managed stacks in Sysinternals](#decode-managed-stacks-in-sysinternals)
-  - [Check framework version](#check-framework-version)
-  - [CLR Code Policies (obsolete)](#clr-code-policies-obsolete)
+    - [Disabling JIT optimization (.NET Core)](#disabling-jit-optimization-net-core)
+    - [Disabling JIT optimization (.NET Framework)](#disabling-jit-optimization-net-framework)
+- [Decode managed stacks in Sysinternals](#decode-managed-stacks-in-sysinternals)
+- [Check framework version (Old .NET Framework)](#check-framework-version-old-net-framework)
+- [CLR Code Policies (obsolete)](#clr-code-policies-obsolete)
 
 ## CLR debugging in WinDbg
 
@@ -104,9 +105,17 @@ The definition of the `DebuggingModes` flag sent to the constructor:
 
 No Debuggable attribute emitted
 
-### INI file
+### Disabling JIT optimization (.NET Core)
 
-The ini file must have the same name as the executable with only extension changed to ini, eg. my.ini file will work with my.exe application.
+For .NET Core, set the `COMPlus_JITMinOpts` variable:
+
+```
+export COMPlus_JITMinOpts=1
+```
+
+### Disabling JIT optimization (.NET Framework)
+
+You need to create an ini file. The ini file must have the same name as the executable with only extension changed to ini, eg. my.ini file will work with my.exe application.
 
     [.NET Framework Debugging Control]
     GenerateTrackingInfo=1
@@ -118,7 +127,7 @@ As of version 16.22 version, **Process Explorer** understands managed stacks and
 
 **Process Monitor**, unfortunately, lacks this feature. Pure managed modules will appear as `<unknown>` in the call stack view. However, we may fix the problem for the ngened assemblies. First, you need to generate a .pdb file for the ngened assembly, for example, `ngen createPDB c:\Windows\assembly\NativeImages_v4.0.30319_64\mscorlib\e2c5db271896923f5450a77229fb2077\mscorlib.ni.dll c:\symbols\private`. Then make sure you have this path in your `_NT_SYMBOL_PATH` variable, for example, `C:\symbols\private;SRV*C:\symbols\dbg*http://msdl.microsoft.com/download/symbols`. If procmon still does not resolve the symbols, go to Options - Configure Symbols and reload the dbghelp.dll. I observe this issue in version 3.50.
 
-## Check framework version
+## Check framework version (Old .NET Framework)
 
 For .NET2.0 you could check the version of mscorwks in the file properties or, if in debugger, using lmmv:
 

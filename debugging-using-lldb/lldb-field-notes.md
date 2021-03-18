@@ -212,6 +212,8 @@ Set a breakpoint at an address: `0x7ffff7272cbb` (**breakpoint set**):
 Breakpoint 2: where = libcoreclr.so`IpcStream::DiagnosticsIpc::Create(char const*, IpcStream::DiagnosticsIpc::ConnectionMode, void (*)(char const*, unsigned int)) + 331 at diagnosticsipc.cpp:64:14, address = 0x00007ffff7272cbb
 ```
 
+Set a breakpoint before the managed `Main` method is run: `break set -n RunMainInternal -s libcoreclr.so`.
+
 ### Debug events (including exceptions)
 
 Stop the debugger when the debugee receives `SIGSTOP` (**process handle**):

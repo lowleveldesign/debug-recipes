@@ -2,9 +2,9 @@
 Debug Recipes
 =============
 
-This is a repository of my notes collected while debugging various .NET and Windows problems. You can find here commands with example usages, scripts and other debugging materials.  It is still being constructed so some notes might not be finished - use on your own responsibility. Try using **the project search box** while looking for a particular subject.
+This is a repository of my notes collected while debugging various application problems. You can find here commands with example usages, scripts and other debugging materials. Try using **the project search box** while looking for a particular subject.
 
-I hope you will find them useful. Any contribution is welcome.
+I hope you will find the materials useful. Any contribution is welcome.
 
 ## General advice
 
@@ -12,10 +12,12 @@ Make sure you have [valid symbols configuration](windows-debugging-configuration
 
 ## Troubleshooting
 
+### Native and managed
+
 ### Applications
 
 - [Exceptions and Windows errors](exceptions/exceptions.md)
-- [Memory leaks](memory/managed-memory-leaks.md)
+- [Managed memory leaks](memory/managed-memory-leaks.md)
 - [High CPU usage](cpu/analyzing-high-cpu-usage.md)
 - [Wait analysis (deadlocks)](threading/analyzing-waits.md)
 - [Networking problems](network/network-tracing.md)
@@ -24,7 +26,7 @@ Make sure you have [valid symbols configuration](windows-debugging-configuration
   - [using ADO.NET](ado.net/ado.net-debugging.md)
   - [using MySql connector](databases/mysql/mysql.net-connector-usage.md)
 
-Problems in **.NET Web Applications**:
+### .NET Web Applications
 
 - Slow requests / tracing: [ASP.NET](asp.net/asp.net-profiling.md), [Nancy](nancy/nancy-diagnostics.md)
 - Unknown errors: [ASP.NET](asp.net/asp.net-debugging.md)
@@ -43,14 +45,14 @@ Problems in **.NET Web Applications**:
 | I/O problems | [X](databases/mssqlserver/mssqlserver-troubleshooting-io.md) |  |
 | Server problems | [X](databases/mssqlserver/mssqlserver-troubleshooting-server.md) | [X](databases/mysql/mysql-troubleshooting-server.md) |
 
-## Tools
-
-- [Visual Studio (debugging)](debugging-using-vs/README.md)
-- [WinDbg](debugging-using-windbg/windbg-field-notes.md)
-- [LLDB](debugging-using-lldb/lldb-field-notes.md)
-
-### IIS
+### IIS (Archived)
 
 - [Troubleshooting IIS7+](iis/iis7up.md)
 - [Troubleshooting IIS6](iis/iis6.md)
 - [Troubleshooting IIS Express](iis/iisexpress.md)
+
+## Tools
+
+- [WinDbg](debugging-using-windbg/windbg-field-notes.md)
+- [LLDB](debugging-using-lldb/lldb-field-notes.md)
+- [Visual Studio (debugging)](debugging-using-vs/README.md) (Archived)
