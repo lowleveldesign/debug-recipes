@@ -2,8 +2,8 @@
 Troubleshooting CPU problems in .NET applications
 =================================================
 
-Enumerating processes and threads
----------------------------------
+
+## Enumerating processes and threads
 
 There are several tools which you can use to enumerate processes running on the system, including:
 
@@ -19,22 +19,9 @@ The easiest way is to just call pslist with the process name (wildcards are supp
 
     PS temp> pslist notepad
 
-    PsList v1.4 - Process information lister
-    Copyright (C) 2000-2016 Mark Russinovich
-    Sysinternals - www.sysinternals.com
-
-    Process information for TEMP:
-
-    Name                Pid Pri Thd  Hnd   Priv        CPU Time    Elapsed Time
-    notepad            2588   8   1   48   3056     0:00:14.679     1:02:16.667
-
 You may as well use the sysytem util tasklist.exe, but the syntax is much less friendly:
 
     PS temp> tasklist /FI "IMAGENAME eq notepad.exe"
-
-    Image Name                     PID Session Name        Session#    Mem Usage
-    ========================= ======== ================ =========== ============
-    notepad.exe                   2588 Console                    1      6 676 K
 
 ### List processes remotely (command line)
 
@@ -69,8 +56,7 @@ List notead processes with threads and memory info:
      Tid Pri    Cswtch            State     User Time   Kernel Time   Elapsed Time
     9048  10   1387934   Wait:Executive  0:00:00.000   0:00:14.710    1:16:43.577
 
-Collecting data
----------------
+## Collecting data
 
 ### Using PerfView ###
 
@@ -99,13 +85,45 @@ To create a full memory dump when CPU reaches 80%:
 
     procdump -ma -c 80 Test.exe
 
-Analyzing data
---------------
+
+## Collecting ETW traces
+
+In **PerfView** you need to select the **Thread Time** checkbox in the collect window.
+
+To collect traces with **xperf** run:
+
+    xperf -on PROC_THREAD+LOADER+PROFILE+INTERRUPT+DPC+DISPATCHER+CSWITCH -stackwalk Profile+CSwitch+ReadyThread
+    xperf -stop -d merged.etl
+
+## Analyzing ETW traces
+
+Event Tracing for Windows is probably the best option when we need to analyze the thread waits. In the paragraphs below you can find information
+
+### Using PerfView
+
+You need to select the ThreadTime in the collection dialog. With this setting PerfView will record context switch events as well as the usual stack dumps every 100ms.
+
+When analyzing blocks use any of the **Thread Time** views. It's best to start with the **Call Stack** view, exclude threads which seem not interesting and locate blocks which might be connected with your investigation. Then for each block time narrow the time to its start and try to guess the flow of the commands that fire it (what was executed last on each thread and what might be the cause of the wait).
+
+You may check [the post](https://lowleveldesign.wordpress.com/2015/10/01/understanding-the-thread-time-view-in-perfview/) on my blog explaining in details Thread Time view in PerfView.
+
+### Using WPA
+
+There are two interesting groups of graphs to analyze in WPA: **CPU Usage (Sample)** and **CPU Usage (Precise)**. You may download my [WPA Profile](async-analysis-profile.wpaProfile) or use one of the predefined ones. 
+
+On the **CPU Usage (Precise)** graph, we should start from our hanging thread and found its readying thread. Then check which thread readied this thread and so on. This chain should bring to us to the final thread which might be a system thread performing some I/O operations.
+
+When working with this view it's always worth to have in mind the thread states diagram from MSDN:
+
+![thread states](thread-states.jpg)
+
+
+
+## Analyzing data
 
 FIXME
 
-Links
------
+## Links
 
 - <http://samsaffron.com/archive/2009/11/11/Diagnosing+runaway+CPU+in+a+Net+production+application>
 - [.Net contention scenario using PerfView](http://blogs.msdn.com/b/rihamselim/archive/2014/02/25/net-contention-scenario-using-perfview.aspx)

@@ -19,9 +19,8 @@ Make sure you have [valid symbols configuration](windows-debugging-configuration
 - [Exceptions and Windows errors](exceptions/exceptions.md)
 - [Network connectivity problems](network/network-tracing.md)
 - [Managed memory leaks](memory/managed-memory-leaks.md)
-- [High CPU usage](cpu/analyzing-high-cpu-usage.md)
-- [Application freezes and waits](cpu/wait-analysis.md)
-- [Diagnosing deadlocks](deadlocks/diagnosing-deadlocks.md)
+- [Monitoring CPU usage (on- and off-CPU time)](cpu/monitoring-cpu-usage.md)
+- [(Dead)locks](deadlocks/diagnosing-deadlocks.md)
 - [Assembly loading issues](assemblies/clr-assemblies.md)
 
 ### Database connectivity
