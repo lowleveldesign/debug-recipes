@@ -26,7 +26,7 @@ I created a [**dotnet-netrace**](https://github.com/lowleveldesign/dotnet-netrac
 
 .NET Core provides a number of ETW and EventPipe providers to collect the network tracing events. You may check the ETW list [here](https://github.com/dotnet/corefx/blob/master/Documentation/debugging/windows-instructions.md#systemnet-namespaces). Enabling the providers could be done in PerfView or any other ETW collection tool (including dotnet-netrace).
 
-FIXME: Linux
+FIXME: Linux and examples
 
 ### Full .NET Framework
 
@@ -242,3 +242,15 @@ To check if there is anything listening on a TCP port 80 on a remote host, run:
 ```
 nc -vnz 192.168.0.20 80
 ```
+
+#### Measuring bandwidth
+
+**iperf** tests TCP bandwidth on Linux
+
+We need to start the iperf server (-s) (the -e option is to enable enhanced output and -l sets the TCP read buffer size):
+
+    $ iperf -s -l 128k -p 8080 -e
+
+Then we run the client for 30s (-t) using two parallel threads (-P) and showing interval summaries every 2s (-i):
+
+    $ iperf -c 172.30.102.167 -p 8080 -l 128k -P 2 -i 2 -t 30

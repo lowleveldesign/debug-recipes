@@ -6,7 +6,7 @@ This is a repository of my notes collected while debugging various application p
 
 I hope you will find the materials useful. Any contribution is welcome.
 
-The :floppy_disk: icon before a section name means that materials in a given section are no longer updated and may be outdated.
+**The :floppy_disk: icon before a section name means that materials in a given section are no longer updated and may be outdated.**
 
 ## General advice
 
@@ -14,21 +14,19 @@ Make sure you have [valid symbols configuration](windows-debugging-configuration
 
 ## Troubleshooting
 
-### Application execution
+### Application execution problems
 
 - [Exceptions and Windows errors](exceptions/exceptions.md)
-
-### Applications
-
+- [Network connectivity problems](network/network-tracing.md)
 - [Managed memory leaks](memory/managed-memory-leaks.md)
 - [High CPU usage](cpu/analyzing-high-cpu-usage.md)
-- [Wait analysis (deadlocks)](threading/analyzing-waits.md)
-- [Networking problems](network/network-tracing.md)
-- [Assembly not found](assemblies/clr-assemblies.md)
+- [Application freezes and waits](cpu/wait-analysis.md)
+- [Diagnosing deadlocks](deadlocks/diagnosing-deadlocks.md)
+- [Assembly loading issues](assemblies/clr-assemblies.md)
 
 ### Database connectivity
 
-- :floppy_disk: [ADO.NET debugging](ado.net/ado.net-debugging.md)
+- :floppy_disk: [Debugging ADO.NET](ado.net/ado.net-debugging.md)
 - :floppy_disk: [Tracing MySql connector](databases/mysql/mysql.net-connector-usage.md)
 
 ### .NET Web Applications
