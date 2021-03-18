@@ -39,9 +39,7 @@ To create a managed heap memory dump, run:
 
 ### dotnet-dump (.NET Core)
 
-[dotnet-dump](https://docs.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-dump) is one of the .NET diagnostics CLI tools.
-
-You may download it using curl or wget, for example: `curl -JLO https://aka.ms/dotnet-dump/win-x64`.
+[dotnet-dump](https://docs.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-dump) is one of the .NET diagnostics CLI tools. You may download it using curl or wget, for example: `curl -JLO https://aka.ms/dotnet-dump/win-x64`.
 
 To create a full memory dump, run one of the commands:
 
@@ -89,15 +87,9 @@ In **LLDB**, we may show native call stacks for all the threads with the `bt all
 
 You may examine thin locks using **!DumpHeap -thinlocks**.  To find all sync blocks, use the **!SyncBlk -all** command.
 
-There are many types of objects that the thread can wait on. You usually see many `WaitOnMultipleObjects` on many threads.
+There are many types of objects that the thread can wait on. You usually see `WaitOnMultipleObjects` on many threads.
 
-If you see RtlWaitForCriticalSection or other method connected with a critical section it might indicate that the program hang. In order to find the cause of this situation you may use following commands:
-
-    !locks shows the contained lock, use ~~[<thread>] to switch to a given thread
-    !cs shows all critical sections in the program (dump)
-    !timers presents all timers running in system
-
-Use **!cs** comman to examine details of a critical section:
+If you see `RtlWaitForCriticalSection` it might indicate that the thread is waiting on a critical section. Its adress should be in the call stack. And we may list the critical sections using the `!cs` command. With the -s option, we may examine details of a specific critical section:
 
     0:033> !cs -s 000000001a496f50
     -----------------------------------------
@@ -113,7 +105,9 @@ Use **!cs** comman to examine details of a critical section:
 
 `LockCount` tells you how many threads are currently waiting on a given cs. The `OwningThread` is a thread that owns the cs at the time the command is run. You can easily identify the thread that is waiting on a given cs by issuing `kv` command and looking for critical section identifier in the call parameters.
 
-On .NET Framework, you may use the **!dlk** command from the SOSEX extension. It is pretty good in detecting dead-locks, example:
+We can also look for synchronization object handles using the `!handle` command. For example, we may list all the Mutant objects in a process by using the `!handle 0 f Mutant` command.
+
+On .NET Framework, you may also use the **!dlk** command from the SOSEX extension. It is pretty good in detecting deadlocks, example:
 
 ```
 0:007> .load sosex
