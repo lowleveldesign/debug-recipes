@@ -4,7 +4,7 @@ Troubleshooting deadlocks
 
 In this recipe:
 
-- [Dump collection](#dump-collection)
+- [Memory dump collection](#memory-dump-collection)
   - [Procdump (Windows)](#procdump-windows)
   - [minidumper (Windows, .NET Framework)](#minidumper-windows-net-framework)
   - [dotnet-dump (.NET Core)](#dotnet-dump-net-core)
@@ -14,7 +14,7 @@ In this recipe:
   - [Finding locks in memory dumps](#finding-locks-in-memory-dumps)
   - [Find locks in kernel mode](#find-locks-in-kernel-mode)
 
-## Dump collection
+## Memory dump collection
 
 There are many tools you may use to collect the memory dump. Below I list the ones I use most often.
 
