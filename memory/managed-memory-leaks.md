@@ -4,13 +4,13 @@ Diagnosing managed memory leaks
 
 In this recipe:
 
-- [Collect memory snapshot](#collect-memory-snapshot)
-- [Analyze collected snapshots](#analyze-collected-snapshots)
+- [Collecting memory snapshots](#collecting-memory-snapshots)
+- [Analyzing collected snapshots](#analyzing-collected-snapshots)
   - [Using perfview (memory dumps and GC snapshots)](#using-perfview-memory-dumps-and-gc-snapshots)
   - [Using windbg (memory dumps)](#using-windbg-memory-dumps)
   - [Using dotnet-gcdump (GC dumps)](#using-dotnet-gcdump-gc-dumps)
 
-## Collect memory snapshot
+## Collecting memory snapshots
 
 If we are interested only in GC Heaps, we may create the GC Heap snapshot using **PerfView**:
 
@@ -23,9 +23,9 @@ For .NET Core applications, we have a CLI tool: **dotnet-gcdump**, which you may
     dotnet-gcdump -p <process-id>
     dotnet-gcdump -n <process-name>
 
-Sometimes managed heap is not enough to diagnose the memory leak. In such situations, we need to create a memory dump, as described in the [deadlocks recipe](deadlocks/diagnosing-deadlocks.md). 
+Sometimes managed heap is not enough to diagnose the memory leak. In such situations, we need to create a memory dump, as described in the [deadlocks recipe](../deadlocks/diagnosing-deadlocks.md#dump-collection). 
 
-## Analyze collected snapshots
+## Analyzing collected snapshots
 
 ### Using perfview (memory dumps and GC snapshots)
 

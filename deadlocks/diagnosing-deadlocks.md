@@ -5,27 +5,26 @@ Troubleshooting deadlocks
 In this recipe:
 
 - [Dump collection](#dump-collection)
-  - [Procdump](#procdump)
-  - [minidumper (.NET Framework)](#minidumper-net-framework)
+  - [Procdump (Windows)](#procdump-windows)
+  - [minidumper (Windows, .NET Framework)](#minidumper-windows-net-framework)
   - [dotnet-dump (.NET Core)](#dotnet-dump-net-core)
   - [createdump (.NET Core)](#createdump-net-core)
 - [Analysis](#analysis)
-  - [Show threads call stacks](#show-threads-call-stacks)
-  - [List locks in user mode](#list-locks-in-user-mode)
-  - [Iterate through execution contexts assigned to threads (managed)](#iterate-through-execution-contexts-assigned-to-threads-managed)
-  - [Check locks in kernel mode](#check-locks-in-kernel-mode)
+  - [Listing threads call stacks](#listing-threads-call-stacks)
+  - [Finding locks in memory dumps](#finding-locks-in-memory-dumps)
+  - [Find locks in kernel mode](#find-locks-in-kernel-mode)
 
 ## Dump collection
 
 There are many tools you may use to collect the memory dump. Below I list the ones I use most often.
 
-### Procdump
+### Procdump (Windows)
 
 To create a full memory dump you may use [procdump](https://live.sysinternals.com):
 
     procdump -ma <process-name-or-id>
 
-### minidumper (.NET Framework)
+### minidumper (Windows, .NET Framework)
 
 [Minidumper](https://github.com/goldshtn/minidumper) is a tool from Sasha Goldshtein (with my contribution). It has options very similar to procdump, but may create more compact memory dumps.
 
