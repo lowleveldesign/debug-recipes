@@ -2,11 +2,13 @@
 Debug Recipes
 =============
 
-This is a repository of my notes collected while debugging various application problems. You can find here commands with example usages, scripts and other debugging materials. Try using **the project search box** while looking for a particular subject.
+This is a repository of my field notes collected while debugging various application problems. You can find here commands with example usages, scripts and other debugging materials. Try using **the project search box** while looking for a particular subject.
+
+**The :floppy_disk: icon before a section name means that materials in a given section are no longer updated and may be outdated.**
 
 I hope you will find the materials useful. Any contribution is welcome.
 
-**The :floppy_disk: icon before a section name means that materials in a given section are no longer updated and may be outdated.**
+🌶 I also authored the [.NET Diagnostics Expert](https://diagnosticsexpert.com/?utm_source=debugrecipes&utm_medium=banner&utm_campaign=general) course at Dotnetos Academy. It covers many troubleshooting topics and contains more and well-organized diagnostics materials. 🌶
 
 ## General advice
 

@@ -13,10 +13,13 @@ In this recipe:
   - [PsPing (connectivity issues)](#psping-connectivity-issues)
     - [Measuring latency](#measuring-latency)
     - [Measuring bandwidth](#measuring-bandwidth)
-  - [Event Tracing for Windows with netsh/PerfView (network tracing)](#event-tracing-for-windows-with-netshperfview-network-tracing)
+  - [pktmon (network tracing)](#pktmon-network-tracing)
+  - [netsh/PerfView (network tracing)](#netshperfview-network-tracing)
 - [Troubleshooting network on Linux](#troubleshooting-network-on-linux)
   - [tcpdump (network tracing)](#tcpdump-network-tracing)
   - [nc (connectivity issues)](#nc-connectivity-issues)
+- [iperf (connectivity issues)](#iperf-connectivity-issues)
+  - [Measuring bandwidth](#measuring-bandwidth-1)
 
 ## Tracing network in .NET applications
 
@@ -151,9 +154,33 @@ Then we start the client and perform the test:
 
     > psping -b -l 16k -n 100 192.168.1.3:4000
 
-### Event Tracing for Windows with netsh/PerfView (network tracing)
+### pktmon (network tracing)
 
-Starting with Windows 7 (2008 Server) you don't need to install anything (such as WinPcap or Network Monitor) on the server to collect network traces. You can simply use `netsh trace {start|stop}` command which will create an ETW session with the interesting ETW providers enabled. Few diagnostics scenarios are available and you may list them using `netsh trace show scenarios`:
+Starting with Window 10 (Server 2019), we have a new tool in our arsenal. Pktmon groups packets per components in the network stack, which is especially helpful in monitoring virtualized applications.
+
+```powershell
+# List active components in the network stack
+pktmon component list
+
+# Create a filter for TCP traffic for the 172.29.235.111 IP and the 8080 port
+pktmon filter add -t tcp -i 172.29.235.111 -p 8080
+
+# Show the configured filters
+pktmon filter list
+
+# Start the logging session (--etw) for all the components (-c)
+pktmon start --etw -c all
+
+# Start the logging session (--etw) for all NICs only (-c)
+pktmon start --etw -c nics
+
+# Stop the tracing session
+pktmon stop
+```
+
+### netsh/PerfView (network tracing)
+
+Starting with Windows 7 (Server 2008) you don't need to install anything (such as WinPcap or Network Monitor) on the server to collect network traces. You can simply use `netsh trace {start|stop}` command which will create an ETW session with the interesting ETW providers enabled. Few diagnostics scenarios are available and you may list them using `netsh trace show scenarios`:
 
 ```
 PS Temp> netsh trace show scenarios
@@ -242,6 +269,8 @@ To check if there is anything listening on a TCP port 80 on a remote host, run:
 ```
 nc -vnz 192.168.0.20 80
 ```
+
+## iperf (connectivity issues)
 
 #### Measuring bandwidth
 

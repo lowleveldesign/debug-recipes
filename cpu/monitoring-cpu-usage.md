@@ -2,68 +2,85 @@
 Troubleshooting CPU problems in .NET applications
 =================================================
 
+In this recipe:
+
+FIXME
+
 ## Enumerating processes and threads
 
-There are several tools which you can use to enumerate processes running on the system, including:
+There are several tools which you can use to monitor processes running on the system and I list my favorite ones in the sections below.
+
+Tools on Windows:
 
 - Task manager (system)
 - tasklist.exe (system)
-- Process Explorer ([Sysinternals](https://technet.microsoft.com/en-us/sysinternals/))
+- [Process Explorer](https://docs.microsoft.com/en-us/sysinternals/downloads/process-explorer) (part of Sysinternals)
 - [Process Hacker](http://processhacker.sourceforge.net/) - **my favourite GUI tool**
-- pslist.exe ([Sysinternals](https://technet.microsoft.com/en-us/sysinternals/)) - **my favourite command line tool**
+- [pslist](https://docs.microsoft.com/en-us/sysinternals/downloads/pslist) (part of Sysinternals](https://technet.microsoft.com/en-us/sysinternals/)) - **my favourite command line tool**
 
-### Filter processes by the process name (command line)
+Tools on Linux:
+
+- top, ps, pgrep (from procps package)
+- pidstat (from sysstat package)
+- [htop](https://htop.dev/)
+
+### Usage examples (Windows)
 
 The easiest way is to just call pslist with the process name (wildcards are supported)
 
-    PS temp> pslist notepad
+```powershell
+# find processes named notepad
+pslist notepad
+tasklist /FI "IMAGENAME eq notepad.exe"
 
-You may as well use the sysytem util tasklist.exe, but the syntax is much less friendly:
+# list processes remotely
+pslist -s 5 \\test-server -u myaccount
 
-    PS temp> tasklist /FI "IMAGENAME eq notepad.exe"
+# show detailed information about a process
+pslist -x notepad
+```
 
-### List processes remotely (command line)
+### Usage examples (Linux)
 
-pslist is able to list the processes remotely:
+```bash
+# show all processes (-e) running in the system with some details (-F)
+ps -eF
 
-    PS powershell> pslist -s 5 \\test-server -u myaccount
+# show all processes in a tree (--forest)
+ps -e --forest
 
-    pslist v1.3 - Sysinternals PsList
-    Copyright (C) 2000-2012 Mark Russinovich
-    23:45:22 2013-09-29 Process information for test-server
+# show processes whose effective user ID (-u) is root and select only specific columns (-o)
+ps -u root -o pid,%cpu,cmd
 
-    Name                Pid CPU Thd  Hnd   Priv        CPU Time    Elapsed Time
-    w3wp               9892  96 324 4483 1313512    15:13:27.546     1:16:50.323
-    System                4   0 134 6757     44     6:10:54.515   345:35:56.865
-    smss                360   0   4   29    284     0:00:00.125   345:35:56.865
-    ...
+# sort all processes (--sort) by their CPU usage (from highest to lowest)
+ps -e -o pid,%cpu,rss,cmd --sort -%cpu
 
-### Show detailed information about a process (command line)
+# filter processes with pgrep and show their info with ps
+pgrep bash | xargs ps -F -p
 
-List notead processes with threads and memory info:
+# show CPU usage for all the processes (-p ALL) and refresh every second
+pidstat -p ALL 1
+```
 
-    PS temp> pslist -x notepad
+## Collecting process traces
 
-    PsList v1.4 - Process information lister
-    Copyright (C) 2000-2016 Mark Russinovich
-    Sysinternals - www.sysinternals.com
+The are two tracing 
 
-    Process and thread information for TEMP:
+### Using dotnet-trace
 
-    Name                Pid      VM      WS    Priv Priv Pk   Faults   NonP Page
-    notepad            2588   68860    6676    3056    3056     1736      7  134
-     Tid Pri    Cswtch            State     User Time   Kernel Time   Elapsed Time
-    9048  10   1387934   Wait:Executive  0:00:00.000   0:00:14.710    1:16:43.577
 
-## Collecting data
 
-### Using PerfView ###
+dotnet-trace collect --providers='FolderWatcher:0x3:5' -- .\FolderWatcher.exe d:\temp
+
+### Using PerfView (Windows)
 
 We can use PerfView to collect traces when CPU usage is higher than 90%:
 
     perfview collect /merge /zip /AcceptEULA "/StopOnPerfCounter=Processor:% Processor Time:_Total>90" /nogui /NoNGenRundown /DelayAfterTriggerSec=30
 
-### Using xperf ###
+In **PerfView** you need to select the **Thread Time** checkbox in the collect window.
+
+### :floppy_disk: Using xperf (Windows)
 
 A simple way would be to just collect the CPU profiling events (adding necessary flags for call stacks):
 
@@ -78,23 +95,12 @@ In order to investigate further (in case of hardware/drivers problem) you should
     xperf.exe -on PROC_THREAD+LOADER+PROFILE+INTERRUPT+DPC -StackWalk Profile
     xper -stop -d profile.etl
 
-### Using procdump ###
-
-To create a full memory dump when CPU reaches 80%:
-
-    procdump -ma -c 80 Test.exe
-
-
-## Collecting ETW traces
-
-In **PerfView** you need to select the **Thread Time** checkbox in the collect window.
-
 To collect traces with **xperf** run:
 
     xperf -on PROC_THREAD+LOADER+PROFILE+INTERRUPT+DPC+DISPATCHER+CSWITCH -stackwalk Profile+CSwitch+ReadyThread
     xperf -stop -d merged.etl
 
-## Analyzing ETW traces
+## Analyzing traces
 
 Event Tracing for Windows is probably the best option when we need to analyze the thread waits. In the paragraphs below you can find information
 
@@ -115,12 +121,6 @@ On the **CPU Usage (Precise)** graph, we should start from our hanging thread an
 When working with this view it's always worth to have in mind the thread states diagram from MSDN:
 
 ![thread states](thread-states.jpg)
-
-
-
-## Analyzing data
-
-FIXME
 
 ## Links
 
