@@ -4,19 +4,22 @@ Network tracing
 
 In this recipe:
 
-  - [Tracing network in .NET applications](#tracing-network-in-net-applications)
-    - [.NET Core](#net-core)
-    - [Full .NET Framework](#full-net-framework)
-  - [Logging application requests in a proxy](#logging-application-requests-in-a-proxy)
-  - [Troubleshooting network on Windows](#troubleshooting-network-on-windows)
-    - [Wireshark (network tracing and more)](#wireshark-network-tracing-and-more)
-    - [PsPing (connectivity issues)](#psping-connectivity-issues)
-      - [Measuring latency](#measuring-latency)
-      - [Measuring bandwidth](#measuring-bandwidth)
-    - [Event Tracing for Windows with netsh/PerfView (network tracing)](#event-tracing-for-windows-with-netshperfview-network-tracing)
-  - [Troubleshooting network on Linux](#troubleshooting-network-on-linux)
-    - [tcpdump (network tracing)](#tcpdump-network-tracing)
-    - [nc (connectivity issues)](#nc-connectivity-issues)
+- [Tracing network in .NET applications](#tracing-network-in-net-applications)
+  - [.NET Core](#net-core)
+  - [Full .NET Framework](#full-net-framework)
+- [Logging application requests in a proxy](#logging-application-requests-in-a-proxy)
+- [Troubleshooting network on Windows](#troubleshooting-network-on-windows)
+  - [Wireshark (network tracing and more)](#wireshark-network-tracing-and-more)
+  - [PsPing (connectivity issues)](#psping-connectivity-issues)
+    - [Measuring latency](#measuring-latency)
+    - [Measuring bandwidth](#measuring-bandwidth)
+  - [pktmon (network tracing)](#pktmon-network-tracing)
+  - [netsh/PerfView (network tracing)](#netshperfview-network-tracing)
+- [Troubleshooting network on Linux](#troubleshooting-network-on-linux)
+  - [tcpdump (network tracing)](#tcpdump-network-tracing)
+  - [nc (connectivity issues)](#nc-connectivity-issues)
+- [iperf (connectivity issues)](#iperf-connectivity-issues)
+  - [Measuring bandwidth](#measuring-bandwidth-1)
 
 ## Tracing network in .NET applications
 
@@ -26,7 +29,7 @@ I created a [**dotnet-netrace**](https://github.com/lowleveldesign/dotnet-netrac
 
 .NET Core provides a number of ETW and EventPipe providers to collect the network tracing events. You may check the ETW list [here](https://github.com/dotnet/corefx/blob/master/Documentation/debugging/windows-instructions.md#systemnet-namespaces). Enabling the providers could be done in PerfView or any other ETW collection tool (including dotnet-netrace).
 
-FIXME: Linux
+FIXME: Linux and examples
 
 ### Full .NET Framework
 
@@ -151,9 +154,33 @@ Then we start the client and perform the test:
 
     > psping -b -l 16k -n 100 192.168.1.3:4000
 
-### Event Tracing for Windows with netsh/PerfView (network tracing)
+### pktmon (network tracing)
 
-Starting with Windows 7 (2008 Server) you don't need to install anything (such as WinPcap or Network Monitor) on the server to collect network traces. You can simply use `netsh trace {start|stop}` command which will create an ETW session with the interesting ETW providers enabled. Few diagnostics scenarios are available and you may list them using `netsh trace show scenarios`:
+Starting with Window 10 (Server 2019), we have a new tool in our arsenal. Pktmon groups packets per components in the network stack, which is especially helpful in monitoring virtualized applications.
+
+```powershell
+# List active components in the network stack
+pktmon component list
+
+# Create a filter for TCP traffic for the 172.29.235.111 IP and the 8080 port
+pktmon filter add -t tcp -i 172.29.235.111 -p 8080
+
+# Show the configured filters
+pktmon filter list
+
+# Start the logging session (--etw) for all the components (-c)
+pktmon start --etw -c all
+
+# Start the logging session (--etw) for all NICs only (-c)
+pktmon start --etw -c nics
+
+# Stop the tracing session
+pktmon stop
+```
+
+### netsh/PerfView (network tracing)
+
+Starting with Windows 7 (Server 2008) you don't need to install anything (such as WinPcap or Network Monitor) on the server to collect network traces. You can simply use `netsh trace {start|stop}` command which will create an ETW session with the interesting ETW providers enabled. Few diagnostics scenarios are available and you may list them using `netsh trace show scenarios`:
 
 ```
 PS Temp> netsh trace show scenarios
@@ -242,3 +269,17 @@ To check if there is anything listening on a TCP port 80 on a remote host, run:
 ```
 nc -vnz 192.168.0.20 80
 ```
+
+## iperf (connectivity issues)
+
+#### Measuring bandwidth
+
+**iperf** tests TCP bandwidth on Linux
+
+We need to start the iperf server (-s) (the -e option is to enable enhanced output and -l sets the TCP read buffer size):
+
+    $ iperf -s -l 128k -p 8080 -e
+
+Then we run the client for 30s (-t) using two parallel threads (-P) and showing interval summaries every 2s (-i):
+
+    $ iperf -c 172.30.102.167 -p 8080 -l 128k -P 2 -i 2 -t 30

@@ -46,6 +46,22 @@ typedef enum <byte> {
 } ProcessCommandId;
 
 typedef struct {
+    uint32 length;
+    wchar_t text[length];
+} WString <read=DisplayWString>;
+
+string DisplayWString (WString &ws) {
+    return ws.text;
+}
+
+typedef struct {
+    uint64 keywords <format=hex>;
+    uint32 loglevel;
+    WString provider_name <bgcolor=cLtRed>;
+    WString filter_data <bgcolor=cLtGreen>;
+} ProviderConfig;
+
+typedef struct {
     byte magic[14] <bgcolor=cYellow>;
     uint16 size;
     CommandSet command_set <bgcolor=cBlue, fgcolor=cWhite>;
@@ -63,7 +79,16 @@ typedef struct {
         ubyte command_id;
     }
     uint16 reserved;
-    byte payload[size - 20];
+    if (command_set == EventPipe && command_id == CollectTracing2) {
+        uint32 circularBufferMB;
+        uint32 format;
+        byte requestRundown;
+        uint32 providers_count;
+        ProviderConfig providers[providers_count];
+    } else {
+        byte payload[size - 20];
+    }
 } IPC_Message;
 
-IPC_Message header[2] <optimize=false>;
+IPC_Message client_msg;
+IPC_Message server_msg;

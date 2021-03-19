@@ -1,9 +1,21 @@
 
-# Basic reversing
+Basic reversing
+===============
 
 In this recipe:
 
-FIXME
+- [Collect basic information about the executable (Windows)](#collect-basic-information-about-the-executable-windows)
+- [Collect basic information about the executable (Linux)](#collect-basic-information-about-the-executable-linux)
+- [Understand calling conventions](#understand-calling-conventions)
+  - [AMD64](#amd64)
+  - [x86 (stdcall and pascall)](#x86-stdcall-and-pascall)
+  - [x86 (cdecl)](#x86-cdecl)
+  - [x86 (fastcall)](#x86-fastcall)
+  - [x86 (clrcall)](#x86-clrcall)
+  - [x86 (thiscall)](#x86-thiscall)
+- [Use reversing tools](#use-reversing-tools)
+  - [Ghidra](#ghidra)
+  - [IDA Freeware](#ida-freeware)
 
 ## Collect basic information about the executable (Windows)
 
