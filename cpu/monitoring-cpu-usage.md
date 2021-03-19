@@ -2,7 +2,6 @@
 Troubleshooting CPU problems in .NET applications
 =================================================
 
-
 ## Enumerating processes and threads
 
 There are several tools which you can use to enumerate processes running on the system, including:
