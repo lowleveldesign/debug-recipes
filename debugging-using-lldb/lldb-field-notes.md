@@ -14,6 +14,8 @@ In this recipe:
   - [Breakpoints](#breakpoints)
 - [Symbols and modules](#symbols-and-modules)
 
+Check also the fantastic cheatsheet @kkokosa prepared at [goodies.dotnetos.org](https://goodies.dotnetos.org/), based on the [.NET Diagnostics Expert course](https://diagnosticsexpert.com/?utm_source=debugrecipes&utm_medium=banner&utm_campaign=general) materials.
+
 ## System objects in the debugger
 
 ### Processes
