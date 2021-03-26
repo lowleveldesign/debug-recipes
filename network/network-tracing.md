@@ -23,13 +23,41 @@ In this recipe:
 
 ## Tracing network in .NET applications
 
-I created a [**dotnet-netrace**](https://github.com/lowleveldesign/dotnet-netrace) tool to facilitate the collection of the network traces. The paragraphs below describe in details what the application is doing.
+I created a [**wtrace-dotnet**](https://github.com/lowleveldesign/wtrace-dotnet) tool to facilitate the collection of .NET events, including network traces. The paragraphs below describe in details what the application is doing.
 
 ### .NET Core
 
-.NET Core provides a number of ETW and EventPipe providers to collect the network tracing events. You may check the ETW list [here](https://github.com/dotnet/corefx/blob/master/Documentation/debugging/windows-instructions.md#systemnet-namespaces). Enabling the providers could be done in PerfView or any other ETW collection tool (including dotnet-netrace).
+.NET Core provides a number of ETW and EventPipes providers to collect the network tracing events. Enabling the providers could be done in dotnet-trace, PerfView, or wtrace-dotnet. They use only two keywords (`Default = 0x1` and `Debug = 0x2`) and, as usual, we may filter the events by the log level (from 1 (critical) to 5 (verbose)).
 
-FIXME: Linux and examples
+In **.NET 5**, the providers were renamed and currently we can use the following names:
+
+- `Private.InternalDiagnostics.System.Net.Primitives` - cookie container, cache credentials logs
+- `Private.InternalDiagnostics.System.Net.Sockets` - logs describing operations on sockets, connection status events, 
+- `Private.InternalDiagnostics.System.Net.NameResolution`
+- `Private.InternalDiagnostics.System.Net.Mail`
+- `Private.InternalDiagnostics.System.Net.Requests` - logs from `System.Net.Requests` classes
+- `Private.InternalDiagnostics.System.Net.HttpListener`
+- `Private.InternalDiagnostics.System.Net.WinHttpHandler`
+- `Private.InternalDiagnostics.System.Net.Http` - `HttpClient` and HTTP handler logs, authentication events
+- `Private.InternalDiagnostics.System.Net.Security` - `SecureChannel` (TLS) events, Windows SSPI logs
+
+For previous .NET Core versions, the names were as follows:
+
+- `Microsoft-System-Net-Primitives`
+- `Microsoft-System-Net-Sockets`
+- `Microsoft-System-Net-NameResolution`
+- `Microsoft-System-Net-Mail`
+- `Microsoft-System-Net-Requests`
+- `Microsoft-System-Net-HttpListener`
+- `Microsoft-System-Net-WinHttpHandler`
+- `Microsoft-System-Net-Http`
+- `Microsoft-System-Net-Security`
+
+I prepared sample [network.rsp](./network.rsp) and [network5.rsp](./network5.rsp) files that enable all these event sources and the Kestrel one. You may use these files with **dotnet-trace**, for example:
+
+```
+$ dotnet-trace collect -n dotnet @network.rsp
+```
 
 ### Full .NET Framework
 

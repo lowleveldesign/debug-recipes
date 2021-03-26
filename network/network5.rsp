@@ -1,0 +1,2 @@
+--providers
+Private.InternalDiagnostics.System.Net.Primitives,Private.InternalDiagnostics.System.Net.Sockets,Private.InternalDiagnostics.System.Net.NameResolution,Private.InternalDiagnostics.System.Net.Mail,Private.InternalDiagnostics.System.Net.Requests,Private.InternalDiagnostics.System.Net.HttpListener,Private.InternalDiagnostics.System.Net.WinHttpHandler,Private.InternalDiagnostics.System.Net.Http,Private.InternalDiagnostics.System.Net.Security,Microsoft-AspNetCore-Server-Kestrel
