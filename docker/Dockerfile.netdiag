@@ -1,0 +1,14 @@
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS base
+
+RUN apt-get update && apt-get install -y lldb; \
+    dotnet tool install -g dotnet-symbol; \
+    dotnet tool install -g dotnet-sos; \
+    /root/.dotnet/tools/dotnet-sos install
+
+RUN dotnet tool install -g dotnet-counters; \
+  dotnet tool install -g dotnet-trace; \
+  dotnet tool install -g dotnet-dump; \
+  dotnet tool install -g dotnet-gcdump; \
+  echo 'export PATH="$PATH:/root/.dotnet/tools"' >> /root/.bashrc
+
+ENTRYPOINT ["/bin/bash"]

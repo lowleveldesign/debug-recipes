@@ -4,17 +4,61 @@ CLR general debugging tips
 
 In this recipe:
 
+- [Debugging/tracing a containerized .NET application (Docker)](#debuggingtracing-a-containerized-net-application-docker)
 - [CLR debugging in WinDbg](#clr-debugging-in-windbg)
-    - [Loading SOS](#loading-sos)
-    - [Get help for commands in .NET WinDbg extensions](#get-help-for-commands-in-net-windbg-extensions)
-    - [Loading symbol files for .NET Core](#loading-symbol-files-for-net-core)
+  - [Loading SOS](#loading-sos)
+  - [Get help for commands in .NET WinDbg extensions](#get-help-for-commands-in-net-windbg-extensions)
+  - [Loading symbol files for .NET Core](#loading-symbol-files-for-net-core)
 - [Controlling JIT optimization](#controlling-jit-optimization)
-    - [DebuggableAttribute](#debuggableattribute)
-    - [Disabling JIT optimization (.NET Core)](#disabling-jit-optimization-net-core)
-    - [Disabling JIT optimization (.NET Framework)](#disabling-jit-optimization-net-framework)
+  - [DebuggableAttribute](#debuggableattribute)
+  - [Disabling JIT optimization (.NET Core)](#disabling-jit-optimization-net-core)
+  - [Disabling JIT optimization (.NET Framework)](#disabling-jit-optimization-net-framework)
 - [Decode managed stacks in Sysinternals](#decode-managed-stacks-in-sysinternals)
 - [Check framework version (Old .NET Framework)](#check-framework-version-old-net-framework)
 - [CLR Code Policies (obsolete)](#clr-code-policies-obsolete)
+
+## Debugging/tracing a containerized .NET application (Docker)
+
+With the introduction of EventPipes in .NET Core 2.1, the easiest approach is to create a shared `/tmp` volume and use a sidecar diagnostics container. I prepared a [Dockerfile.netdiag](docker/Dockerfile.netdiag) which you may use to create a .NET diagnostics Docker image, for example:
+
+```
+$ docker build -t netdiag -f .\Dockerfile.netdiag .
+```
+
+Then, create a `/tmp` volume and mount it into your .NET application container, for example:
+
+```
+$ docker volume create dotnet-tmp
+
+$ docker run --rm --name helloserver --mount "source=dotnet-tmp,target=/tmp" -p 13000:13000 helloserver 13000
+```
+
+And you are ready to run the diagnostics container and diagnose the remote application:
+
+```
+$ docker run --rm -it --mount "source=dotnet-tmp,target=/tmp" --pid=container:helloserver netdiag
+
+root@d4bfaa3a9322:/# dotnet-trace ps
+         1 dotnet     /usr/share/dotnet/dotnet 
+```
+
+If you only want to trace the application with **dotnet-trace**, consider using the [Dockerfile.nettrace](docker/Dockerfile.nettrace) file. The nettrace container will automatically start the tracing session enabling the providers from the input.rsp file. It also assumes the destination process name is dotnet:
+
+```
+$ docker build -t nettrace -f .\Dockerfile.nettrace .
+
+$ docker run --rm --pid=container:helloserver --mount "source=dotnet-tmp,target=/tmp" -v "$pwd/:/work" -it nettrace
+
+Provider Name                           Keywords            Level               Enabled By
+Microsoft-Windows-DotNETRuntime         0x00000014C14FCCBD  Informational(4)    --providers
+Microsoft-DotNETCore-SampleProfiler     0x0000F00000000000  Informational(4)    --providers
+
+Process        : /usr/share/dotnet/dotnet
+Output File    : /work/trace.nettrace
+[00:00:00:02]   Recording trace 261.502  (KB)
+Press <Enter> or <Ctrl+C> to exit...11   (KB)
+Stopping the trace. This may take up to minutes depending on the application being traced.
+```
 
 ## CLR debugging in WinDbg
 
@@ -28,7 +72,9 @@ When you are debugging on the same machine on which you collected the dump use t
 .loadby sos coreclr  (.NET Core)
 ```
 
-When you have a dump file try using `!analyze -v`. On latest windbg versions it should detect a managed application and load the correct SOS version. If it does not work, load SOS from your .NET installation and try to download a correct mscordacwks as described [here](http://blogs.microsoft.co.il/blogs/sasha/archive/2012/05/19/obtaining-mscordacwks-dll-for-clr-versions-you-don-t-have.aspx).
+Windbg Preview should load the SOS extension automatically for .NET Core apps/dumps. Check with the `.chain` command if it is there.
+
+If it's not loaded, try using `!analyze -v`. On latest windbg versions it should detect a managed application and load the correct SOS version. If it does not work, load SOS from your .NET installation and try to download a correct mscordacwks as described [here](http://blogs.microsoft.co.il/blogs/sasha/archive/2012/05/19/obtaining-mscordacwks-dll-for-clr-versions-you-don-t-have.aspx).
 
 Other issues:
 
