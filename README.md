@@ -32,6 +32,7 @@ Make sure you have [valid symbols configuration](windows-debugging-configuration
 
 ### .NET Web Applications
 
+- [Diagnosing ASP.NET Core](asp.net-core/asp.net-core-troubleshooting.md)
 - :floppy_disk: [Profiling ASP.NET](asp.net/asp.net-profiling.md)
 - :floppy_disk: [Diagnosing Nancy](nancy/nancy-diagnostics.md)
 - :floppy_disk: [Debugging ASP.NET](asp.net/asp.net-debugging.md)
