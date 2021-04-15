@@ -15,10 +15,12 @@
   <Namespace>Titanium.Web.Proxy.Network</Namespace>
 </Query>
 
-private ConcertoCertificateCache concertoCerts = new ConcertoCertificateCache();
+
+string rootCertPath =  Path.Combine(Path.GetDirectoryName(Util.CurrentQueryPath)!, "certs", "RootCA.pem");
 
 void Main()
 {
+    using var concertoCerts = new ConcertoCertificateCache(rootCertPath);
     var proxyServer = new ProxyServer(userTrustRootCertificate: false);
 
     proxyServer.CertificateManager.SaveFakeCertificates = true;
@@ -29,7 +31,7 @@ void Main()
     proxyServer.BeforeResponse += OnBeforeResponse;
     proxyServer.AfterResponse += OnAfterResponse;
 
-    var httpProxy = new ExplicitProxyEndPoint(IPAddress.Any, 8080, true);
+    var httpProxy = new ExplicitProxyEndPoint(IPAddress.Loopback, 8080, true);
 
     proxyServer.AddEndPoint(httpProxy);
     proxyServer.Start();
@@ -39,7 +41,12 @@ void Main()
             endPoint.GetType().Name, endPoint.IpAddress, endPoint.Port);
 
     // wait here (You can use something else as a wait function, I am using this as a demo)
-    Console.Read();
+    string command;
+    while ((command = Console.ReadLine()) != "quit") {
+        if (command == "clear") {
+            Util.ClearResults();
+        }
+    }
 
     // Unsubscribe & Quit
     proxyServer.OnServerConnectionCreate -= OnConnect;
@@ -52,14 +59,14 @@ void Main()
 
 // Define other methods and classes here
 
-public async Task OnConnect(object sender, Socket e)
+public Task OnConnect(object sender, Socket e)
 {
     Console.WriteLine($"Connect: {e.LocalEndPoint} -> {e.RemoteEndPoint}");
 
-    await Task.CompletedTask;
+    return Task.CompletedTask;
 }
 
-public async Task OnBeforeRequest(object sender, SessionEventArgs ev)
+public Task OnBeforeRequest(object sender, SessionEventArgs ev)
 {
     // Before the request to the remote server
     var request = ev.HttpClient.Request;
@@ -70,7 +77,7 @@ public async Task OnBeforeRequest(object sender, SessionEventArgs ev)
                 ["Content-Type"] = new HttpHeader("Content-Type", "application/x-x509-ca-cert"),
                 ["Content-Disposition"] = new HttpHeader("Content-Disposition", "inline; filename=titanium-ca-cert.pem")
             };
-            ev.Ok(File.ReadAllBytes(concertoCerts.RootCertPath), headers, true);
+            ev.Ok(File.ReadAllBytes(rootCertPath), headers, true);
         } else {
             var headers = new Dictionary<string, HttpHeader>() {
                 ["Content-Type"] = new HttpHeader("Content-Type", "text/html"),
@@ -78,7 +85,8 @@ public async Task OnBeforeRequest(object sender, SessionEventArgs ev)
             ev.Ok("<html><body><h1><a href=\"/cert/pem\">PEM</a></h1></body></html>");
         }
     }
-    await Task.CompletedTask;
+
+    return Task.CompletedTask;
 }
 
 public async Task OnBeforeResponse(object sender, SessionEventArgs ev)
@@ -91,19 +99,19 @@ public async Task OnBeforeResponse(object sender, SessionEventArgs ev)
 
     Util.Highlight(request.Url).Dump();
     Util.RawHtml("<pre style=\"font-family: Consolas\">" + request.HeaderText + "</pre>").Dump();
-//    if (request.HasBody) {
-//        (await ev.GetRequestBodyAsString()).Dump();
-//    }
+    if (request.HasBody) {
+        (await ev.GetRequestBodyAsString()).Dump();
+    }
     Util.RawHtml("<pre style=\"font-family: Consolas\">" + response.HeaderText + "</pre>").Dump();
-//    try {
-//        if (response.HasBody) {
-//            var resp = (await ev.GetResponseBodyAsString());
-//            $"Response to request: {request.RequestUri}".Dump();
-//            resp.Dump();
-//        }
-//    } catch (Exception ex) {
-//        ex.ToString().Dump();
-//    }
+    try {
+        if (response.HasBody) {
+            var resp = (await ev.GetResponseBodyAsString());
+            $"Response to request: {request.RequestUri}".Dump();
+            resp.Dump();
+        }
+    } catch (Exception ex) {
+        ex.ToString().Dump();
+    }
     await Task.CompletedTask;
 }
 
@@ -114,38 +122,39 @@ public async Task OnAfterResponse(object sender, SessionEventArgs ev)
     await Task.CompletedTask;
 }
 
-internal sealed class ConcertoCertificateCache : ICertificateCache
+internal sealed class ConcertoCertificateCache : ICertificateCache, IDisposable
 {
     private readonly CertificateChainWithPrivateKey rootCert;
-    private readonly string rootCertPath;
+    private readonly Dictionary<string, X509Certificate2> cache = new();
 
-    public ConcertoCertificateCache()
+    public ConcertoCertificateCache(string rootCertPath)
     {
-        rootCertPath = GetCertificatePath("RootCA");
         if (File.Exists(rootCertPath)) {
             rootCert = CertificateFileStore.LoadCertificate(rootCertPath);
         } else {
             rootCert = CertificateCreator.CreateCACertificate(name: "Titanium");
             CertificateFileStore.SaveCertificate(rootCert, rootCertPath);
         }
+        cache.Add("RootCA", ConvertConcertoCertToWindows(rootCert));
     }
 
     public CertificateChainWithPrivateKey RootCert => rootCert;
 
-    public string RootCertPath => rootCertPath;
-
     public X509Certificate2 LoadCertificate(string subjectName, X509KeyStorageFlags storageFlags)
     {
-        Console.WriteLine($"Loading cert for {subjectName}");
-        subjectName = subjectName.Replace("$x$", "*");
-        var cert = CertificateCreator.CreateCertificate(new[] { subjectName }, rootCert);
-
-        return ConvertConcertoCertToWindows(cert);
+        lock (cache) {
+            if (!cache.TryGetValue(subjectName, out var cert)) {
+                Console.WriteLine($"Loading cert for {subjectName}");
+                subjectName = subjectName.Replace("$x$", "*");
+                cert = ConvertConcertoCertToWindows(CertificateCreator.CreateCertificate(new[] { subjectName }, rootCert));
+            }
+            return cert;
+        }
     }
 
     public X509Certificate2 LoadRootCertificate(string pathOrName, string password, X509KeyStorageFlags storageFlags)
     {
-        return ConvertConcertoCertToWindows(rootCert);
+        return cache["RootCA"];
     }
 
     private X509Certificate2 ConvertConcertoCertToWindows(CertificateChainWithPrivateKey certificateChain)
@@ -166,11 +175,6 @@ internal sealed class ConcertoCertificateCache : ICertificateCache
         }
     }
 
-    private string GetCertificatePath(string subjectName)
-    {
-        return Path.Combine(Path.GetDirectoryName(Util.CurrentQueryPath), "certs", subjectName + ".pem");
-    }
-
     public void SaveCertificate(string subjectName, X509Certificate2 certificate)
     {
         // we are not implementing it on purpose
@@ -184,5 +188,12 @@ internal sealed class ConcertoCertificateCache : ICertificateCache
     public void Clear()
     {
         // we are not implementing it on purpose
+    }
+
+    public void Dispose()
+    {
+        foreach (var c in cache.Values) {
+            c.Dispose();
+        }
     }
 }
