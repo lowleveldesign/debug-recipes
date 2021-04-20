@@ -4,14 +4,30 @@
 
 In this recipe:
 
-- [Troubleshooting loading using ETW (in Perfview)](#perfview)
-- [Troubleshooting loading using Fusion Log](#fuslogvw)
-- [Working with assembly signaures (sn.exe)](#sn)
-- [Examine/modify assemblies bitness (corflags.exe)](#corflags)
-- [GAC](#gac)
+- [Troubleshooting loading with EventPipes/ETW (.NET Core)](#troubleshooting-loading-with-eventpipesetw-net-core)
+- [Troubleshooting loading using ETW (.NET Framework)](#troubleshooting-loading-using-etw-net-framework)
+- [Troubleshooting loading using Fusion Log (.NET Framework)](#troubleshooting-loading-using-fusion-log-net-framework)
+  - [Log to exception text](#log-to-exception-text)
+  - [Log failures to disk](#log-failures-to-disk)
+  - [Log all binds to disk](#log-all-binds-to-disk)
+  - [Log disabled](#log-disabled)
+- [Decompile, view metadata (ildasm.exe)](#decompile-view-metadata-ildasmexe)
+- [Working with assembly signaures (sn.exe)](#working-with-assembly-signaures-snexe)
+- [Examine/modify assemblies bitness (corflags.exe)](#examinemodify-assemblies-bitness-corflagsexe)
+- [GAC (.NET Framework)](#gac-net-framework)
+  - [Find assembly in cache](#find-assembly-in-cache)
+  - [Uninstall assembly from cache](#uninstall-assembly-from-cache)
 - [Links](#links)
 
-## <a name="perfview">Troubleshooting loading using ETW (in Perfview)</a>
+## Troubleshooting loading with EventPipes/ETW (.NET Core)
+
+The **Loader** keyword (`0x8`) in the **Microsoft-Windows-DotNETRuntime** provider enables events relating to **loading and unloading** of **appdomains**, **assemblies** and **modules**.
+
+Starting with **.NET 5**, the new **AssemblyLoader** keyword (`0x4`) gives us a detailed view of the **assembly resolution process**. Additionally, we can group the activity events per assembly using the `ActivityID`.
+
+    dotnet-trace collect --providers Microsoft-Windows-DotNETRuntime:C -- testapp.exe
+
+## Troubleshooting loading using ETW (.NET Framework)
 
 I think that currently the most efficient way to diagnose problems with assembly loading is to collect ETW events from the .NET ETW provider. There is a bunch of them under the **Microsoft-Windows-DotNETRuntimePrivate/Binding/** category.
 
@@ -21,7 +37,7 @@ For this purpose you may use the [**PerfView**](https://www.microsoft.com/en-us/
 
 Select all of the events and press ENTER. PerfView will immediately print the instances of the selected events in the grid on the right. You may later search or filter the grid with the help of the search boxes above it.
 
-## <a name="fuslogvw">Troubleshooting loading using Fusion Log</a>
+## Troubleshooting loading using Fusion Log (.NET Framework)
 
 Fusion log is available in all versions of .NET Framework. There is a tool named **fuslogvw** which you may use to set the fusion log configuration but this tool might not be available on a server. In such a case just apply the registry settings described below.
 
@@ -39,7 +55,7 @@ C:\TEMP\FUSLOGVW
     └───powershell.exe
 ```
 
-### Log to exception text ###
+### Log to exception text
 
     HKEY_LOCAL_MACHINE\software\microsoft\fusion
         EnableLog    REG_DWORD    0x1
@@ -49,7 +65,7 @@ Command:
     reg delete HKLM\Software\Microsoft\Fusion /va
     reg add HKLM\Software\Microsoft\Fusion /v EnableLog /t REG_DWORD /d 0x1
 
-### Log failures to disk ###
+### Log failures to disk
 
     HKEY_LOCAL_MACHINE\software\microsoft\fusion
         LogFailures    REG_DWORD    0x1
@@ -61,7 +77,7 @@ Command:
     reg add HKLM\Software\Microsoft\Fusion /v LogFailures /t REG_DWORD /d 0x1
     reg add HKLM\Software\Microsoft\Fusion /v LogPath /t REG_SZ /d "C:\logs\fuslogvw"
 
-### Log all binds to disk ###
+### Log all binds to disk
 
     HKEY_LOCAL_MACHINE\software\microsoft\fusion
         LogPath    REG_SZ    c:\logs\fuslogvw
@@ -73,7 +89,7 @@ Command:
     reg add HKLM\Software\Microsoft\Fusion /v ForceLog /t REG_DWORD /d 0x1
     reg add HKLM\Software\Microsoft\Fusion /v LogPath /t REG_SZ /d "C:\logs\fuslogvw"
 
-### Log disabled ###
+### Log disabled
 
     HKEY_LOCAL_MACHINE\software\microsoft\fusion
         LogPath    REG_SZ    c:\logs\fuslogvw
@@ -82,13 +98,13 @@ Command:
 
     reg delete HKLM\Software\Microsoft\Fusion /va
 
-## <a name="">Decompile, view metadata (ildasm.exe)</a>
+## Decompile, view metadata (ildasm.exe)
 
-### ildasm /OUT:<outputfile> ###
+### ildasm /OUT:<outputfile>
 
 Prints the disassembled information into the provided file.
 
-### ildasm /METADATA[=<specifier>] ###
+### ildasm /METADATA[=<specifier>]
 
 Gathers metadata defined in the assembly. Possible specifiers:
 
@@ -144,9 +160,9 @@ Example output:
     // 		1 Parameters
     // 			(1) ParamToken : (08000001) Name : args flags: [none] (00000000)
 
-## <a name="sn">Working with assembly signaures (sn.exe)</a>
+## Working with assembly signaures (sn.exe)
 
-### Display public key of an assembly (sn.exe -Tp) ###
+### Display public key of an assembly (sn.exe -Tp)
 
 Display/check token for public key of <assembly> (**-Tp**)
 
@@ -165,7 +181,7 @@ Display/check token for public key of <assembly> (**-Tp**)
     Public key token is d687cd68612aadaa
 
 
-## <a name="corfags">Examine/modify assemblies bitness (corflags.exe)</a>
+## Examine/modify assemblies bitness (corflags.exe)
 
 Remove the 32BIT flag:
 
@@ -197,7 +213,7 @@ Remove the 32BIT flag:
     32BIT     : 0
     Signed    : 0
 
-## <a name="gac">GAC</a>
+## GAC (.NET Framework)
 
 For .NET2.0/3.5 gac was located in **c:\Windows\assembly** folder with a drag/drop option for installing/uninstalling assemblies. According to <http://stackoverflow.com/questions/10013047/gacutil-vs-manually-editing-c-windows-assembly>:
 
@@ -209,7 +225,7 @@ For .NET4.0 GAC was moved to **c:\Windows\Microsoft.NET\assembly** and no longer
 
 .NET GAC settings are stored under the registry key: HKLM\Software\Microsoft\Fusion.
 
-### Find assembly in cache ###
+### Find assembly in cache
 
 Work only with full assembly name provided. If no name is provided lists all the assemblies in cache.
 
@@ -221,11 +237,11 @@ Work only with full assembly name provided. If no name is provided lists all the
 
     Number of items = 2
 
-### Uninstall assembly from cache ###
+### Uninstall assembly from cache
 
     gacutil /u MyTest.exe
 
-## <a name="links">Links</a>
+## Links
 
 - [How to enable assembly bind failure logging (Fusion) in .NET](http://stackoverflow.com/questions/255669/how-to-enable-assembly-bind-failure-logging-fusion-in-net)
 - [Working with Assemblies in the GAC](http://blogs.telerik.com/aspnet-ajax/posts/13-09-19/working-with-assemblies-in-the-global-assembly-cache)
