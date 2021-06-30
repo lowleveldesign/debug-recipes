@@ -37,9 +37,11 @@ For this purpose you may use the [**PerfView**](https://www.microsoft.com/en-us/
 
 Select all of the events and press ENTER. PerfView will immediately print the instances of the selected events in the grid on the right. You may later search or filter the grid with the help of the search boxes above it.
 
-## Troubleshooting loading using Fusion Log (.NET Framework)
+## Troubleshooting loading using Fusion log (.NET Framework)
 
-Fusion log is available in all versions of .NET Framework. There is a tool named **fuslogvw** which you may use to set the fusion log configuration but this tool might not be available on a server. In such a case just apply the registry settings described below.
+Fusion log is available in all versions of the .NET Framework. There is a tool named **fuslogvw** in .NET SDK, which you may use to set the Fusion log configuration. Andreas Wäscher implemented an easier-to-use version of this tool, with a modern UI, named [Fusion++](https://github.com/awaescher/Fusion). You may download the precompiled version from the [release page](https://github.com/awaescher/Fusion/releases/).
+
+If using neither of the above tools is possible (for example, you are in a restricted environment), you may configure the Fusion log through registry settings.
 
 The root of all the Fusion log settings is `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Fusion`.
 
