@@ -84,11 +84,13 @@ typedef struct {
         uint32 format;
         byte requestRundown;
         uint32 providers_count;
-        ProviderConfig providers[providers_count];
+        ProviderConfig providers[providers_count] <optimize=false>;
     } else {
         byte payload[size - 20];
     }
 } IPC_Message;
+
+LittleEndian();
 
 IPC_Message client_msg;
 IPC_Message server_msg;

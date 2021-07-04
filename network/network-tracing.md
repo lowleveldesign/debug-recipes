@@ -23,11 +23,11 @@ In this recipe:
 
 ## Tracing network in .NET applications
 
-I created a [**wtrace-dotnet**](https://github.com/lowleveldesign/wtrace-dotnet) tool to facilitate the collection of .NET events, including network traces. The paragraphs below describe in details what the application is doing.
+I created a [**dotnet-wtrace**](https://github.com/lowleveldesign/dotnet-wtrace) tool to facilitate the collection of .NET events, including network traces. The paragraphs below describe in details what the application is doing.
 
 ### .NET Core
 
-.NET Core provides a number of ETW and EventPipes providers to collect the network tracing events. Enabling the providers could be done in dotnet-trace, PerfView, or wtrace-dotnet. They use only two keywords (`Default = 0x1` and `Debug = 0x2`) and, as usual, we may filter the events by the log level (from 1 (critical) to 5 (verbose)).
+.NET Core provides a number of ETW and EventPipes providers to collect the network tracing events. Enabling the providers could be done in dotnet-trace, PerfView, or dotnet-wtrace. They use only two keywords (`Default = 0x1` and `Debug = 0x2`) and, as usual, we may filter the events by the log level (from 1 (critical) to 5 (verbose)).
 
 In **.NET 5**, the providers were renamed and currently we can use the following names:
 
