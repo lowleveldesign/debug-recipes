@@ -93,4 +93,6 @@ typedef struct {
 LittleEndian();
 
 IPC_Message client_msg;
-IPC_Message server_msg;
+if (!FEof()) {
+    IPC_Message server_msg;
+}
