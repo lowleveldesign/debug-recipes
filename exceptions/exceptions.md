@@ -11,6 +11,7 @@ In this recipe:
   - [Read managed exception information](#read-managed-exception-information)
   - [Read exception context](#read-exception-context)
   - [Read Last Windows Error](#read-last-windows-error)
+  - [Scanning the stack for native exception records](#scanning-the-stack-for-native-exception-records)
   - [Exception handlers](#exception-handlers)
     - [x86 applications](#x86-applications)
   - [Decoding error numbers](#decoding-error-numbers)
@@ -115,7 +116,7 @@ Another option is the **!wpe** command from the netext plugin. To see the full m
 
 ### Read exception context
 
-The  `.ecxr` debugger command instructs the debugger to restore the register context to what it was when the initial fault that led to the SEH exception took place. When an SEH exception is dispatched, the OS builds an internal structure called an exception record  It also conveniently saves the register context at the time of the initial fault in a context record structure.
+The  `.ecxr` debugger command instructs the debugger to restore the register context to what it was when the initial fault that led to the SEH exception took place. When an SEH exception is dispatched, the OS builds an internal structure called an exception record. It also conveniently saves the register context at the time of the initial fault in a context record structure.
 
     0:003> dt ntdll!_EXCEPTION_RECORD
        +0x000 ExceptionCode    : Int4B
@@ -125,6 +126,19 @@ The  `.ecxr` debugger command instructs the debugger to restore the register con
        +0x010 NumberParameters : Uint4B
        +0x014 ExceptionInformation : [15] Uint4B
     0:003> dt ntdll!_CONTEXT
+
+The `EXCEPTION_RECORD` definition from MS docs:
+
+```
+typedef struct _EXCEPTION_RECORD {
+  DWORD                    ExceptionCode;
+  DWORD                    ExceptionFlags;
+  struct _EXCEPTION_RECORD *ExceptionRecord;
+  PVOID                    ExceptionAddress;
+  DWORD                    NumberParameters;
+  ULONG_PTR                ExceptionInformation[EXCEPTION_MAXIMUM_PARAMETERS];
+} EXCEPTION_RECORD;
+```
 
 **.lastevent** will also show you information about the last error that occured (if the debugger stopped because of the exception). You may then examine the exception record using the **.exr** command, eg.:
 
@@ -136,6 +150,28 @@ The  `.ecxr` debugger command instructs the debugger to restore the register con
        ExceptionCode: e0434f4d (CLR exception)
       ExceptionFlags: 00000000
     NumberParameters: 0
+
+If we look at the raw memory, we will find that **.exr** changes the order of the `EXCEPTION_RECORD` fields, for example:
+
+```
+0:049> .exr 0430af24
+ExceptionAddress: abe8f04d
+   ExceptionCode: c0000005 (Access violation)
+  ExceptionFlags: 00000000
+NumberParameters: 2
+   Parameter[0]: 00000000
+   Parameter[1]: abe8f04d
+```
+
+```
+0430af24  c0000005 <- exception code
+0430af28  00000000
+0430af2c  00000000
+0430af30  abe8f04d <- exception address (code address)
+0430af34  00000002 <- parameters number
+0430af38  00000000
+0430af3c  abe8f04d
+```
 
 ### Read Last Windows Error
 
@@ -151,6 +187,22 @@ To get the last error value for the current thread you may use the **!gle** comm
     LastStatusValue: (NTSTATUS) 0 - STATUS_SUCCESS
 
 Based on <http://blogs.msdn.com/b/friis/archive/2012/09/19/c-compiler-or-visual-basic-net-compilers-fail-with-error-code-1073741502-when-generating-assemblies-for-your-asp-net-site.aspx>
+
+### Scanning the stack for native exception records
+
+Sometimes, when the memory dump was incorrectly collected, we may not see the exception information and the `.exr -1` does not work. When this happens, there is still a chance that the original exception is somewhere in the stack. Using the `.foreach` command, we may scan the stack and try all the addresses to see if any of them is a valid exception record. For example:
+
+```
+.foreach /ps1 ($addr { dd /c1 @esp L100 }) { .echo $addr; .exr $addr }
+
+0430af24
+ExceptionAddress: abe8f04d
+   ExceptionCode: c0000005 (Access violation)
+  ExceptionFlags: 00000000
+NumberParameters: 2
+   Parameter[0]: 00000000
+   Parameter[1]: abe8f04d
+```
 
 ### Exception handlers
 

@@ -63,13 +63,39 @@ when using **.if** , **.foreach** somtimes the names are not resolved - use spac
 
 if there was no space between poi( and addr it would fail.
 
-Based on http://blogs.msdn.com/b/debuggingtoolbox/archive/2009/01/31/special-command-advanced-programming-techniques-for-windbg-scripts.aspx
+
+We can also execute commands from a script file. We use the **$$** command family for that purpose. The **-c** option allows us to run a command on a debugger start. So if we pass the **$$\<** command with a file path, windbg will read the file and execute the commands from it as if they were entered manually, for example:
+
+```
+PS> windbgx -c "$$<test.txt" notepad
+```
+
+And the test.txt content:
+
+```
+sxe -c ".echo advapi32; g" ld:advapi32
+g
+```
+
+We may use the **$$\>args\<** command variant when we want to pass arguments to our script.
 
 ### Install windbg as postmortem debugger
 
-**windbg -iae**
+The **windbg -iae** command registers windb as the automatic system debugger - it will launch anytime an application crashes. The modified AeDebug registry keys:
 
-This registration step populates the AeDebug registry key: **[HKEY\_LOCAL\_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug]**
+```
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion
+HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows NT\CurrentVersion
+```
+
+However, we may also use configure those keys manually and use windbg to, for example, create a memory on an app crash: 
+
+```
+REG_SZ Debugger = ...\...\windbg -c ".dump /ma /u C:\dumps\crash.dmp; qd" -p %ld -e %ld -g
+REG_SZ Auto = 1
+```
+
+If we miss the **-g** option, windbg will inject a remote thread with a breakpoint instruction, which will hide our original exception. In such case, we might need to [scan the stack to find the original exception record](../exceptions/exceptions.md#scanning-the-stack-for-native-exception-records). 
 
 ### Remote debugging
 
