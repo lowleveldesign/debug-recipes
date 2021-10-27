@@ -260,6 +260,8 @@ Many interesting capture filters are available, you may use `netsh trace show Ca
 
     netsh trace stop
 
+We can then **convert the .etl file to .pcapng** with the [etl2pcapng](https://github.com/microsoft/etl2pcapng) tool, and open them in Wireshark.
+
 **PerfView** also provides a way to collect network trace (under the hood it uses netsh command). There are two options to collect network traces in PerfView: **NetMon** and **Net Capture**:
 
 ![perfview-options](perfview-netmon-option.png)
