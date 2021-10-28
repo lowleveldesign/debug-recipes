@@ -22,8 +22,6 @@ In this recipe:
   - [Breakpoints](#breakpoints)
     - [Break when a specific funtion is in the call stack](#break-when-a-specific-funtion-is-in-the-call-stack)
 - [Symbols and modules](#symbols-and-modules)
-  - [Modules](#modules)
-  - [Symbols](#symbols)
 
 ## General usage
 
@@ -354,3 +352,15 @@ To find out if a given address belongs to any of the loaded dlls we may use the 
 The `.sympath` command shows the symbol search path and allows its modification. To force load symbols for a given module use `.reload /f {module-name}`.
 
 To resolve a function address, use `x {module-name}!{function}` and to find the nearest symbol use `ln {address}`.
+
+When we don't have access to the symbol server, we may create a list of required symbols with the **symchk** tool, and download them later on a different host. First, we need to prepare the manifest, for example:
+
+```
+symchk /id test.dmp /om test.dmp.sym
+```
+
+Then copy it to the machine with the symbol server access, and download the required symbols, for example:
+
+```
+symchk /im test.dmp.sym /s SRV*C:\symbols*https://msdl.microsoft.com/download/symbols
+```
