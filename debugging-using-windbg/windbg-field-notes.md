@@ -13,7 +13,7 @@ In this recipe:
   - [Handles](#handles)
   - [Threads](#threads)
   - [Critical sections](#critical-sections)
-- [Work with data](#work-with-data)
+- [Work with memory](#work-with-memory)
   - [Stack](#stack)
   - [Heap](#heap)
 - [Controlling process execution](#controlling-process-execution)
@@ -218,13 +218,65 @@ Finally, we may use the raw output:
     [+0x01e] SpareUSHORT      : 0x0 [Type: unsigned short]
 ```
 
-## Work with data
+## Work with memory
 
-When you have private symbols you may list local variables with the **dv** command.
+### General memory commands
 
-Additionally the **dt** command allows you to work with type symbols. You may either list them, eg.: `dt notepad!g_*` or dump a data address using a given type format, eg.: `dt nt!_PEG 0x13123`.
+The `!address` command shows information about a specific region of memory, for example:
 
-With windbg 10.0 a new very interesting command was introduced: **dx**. It uses a navigation expressions just like Visual Studio (you may define your own file .natvis files). You load the interesting .natvis file with the **.nvload** command.
+```
+0:000> !address 0x00fd7df8
+
+Usage:                  Image
+Base Address:           00fd6000
+End Address:            00fdc000
+Region Size:            00006000 (  24.000 kB)
+State:                  00001000          MEM_COMMIT
+Protect:                00000002          PAGE_READONLY
+Type:                   01000000          MEM_IMAGE
+Allocation Base:        00fb0000
+Allocation Protect:     00000080          PAGE_EXECUTE_WRITECOPY
+Image Path:             prog.exe
+Module Name:            prog
+Loaded Image Name:      c:\test\prog.exe
+Mapped Image Name:      
+More info:              lmv m prog
+More info:              !lmi prog
+More info:              ln 0xfd7df8
+More info:              !dh 0xfb0000
+```
+
+Additionally, it can display regions of memory of specific type, for example:
+
+```
+0:000> !address -f:FileMap
+
+  BaseAddr EndAddr+1 RgnSize     Type       State                 Protect             Usage
+-----------------------------------------------------------------------------------------------
+  9a0000   9b0000    10000 MEM_MAPPED  MEM_COMMIT  PAGE_READWRITE                     MappedFile "PageFile"
+  9b0000   9b1000     1000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      MappedFile "PageFile"
+  9c0000   9c1000     1000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      MappedFile "PageFile"
+  d50000   e19000    c9000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      MappedFile "\Device\HarddiskVolume3\Windows\System32\locale.nls"
+  ff0000   ff1000     1000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      MappedFile "PageFile"
+7f995000 7fa90000    fb000 MEM_MAPPED  MEM_RESERVE                                    MappedFile "PageFile"
+7fae0000 7fae1000     1000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      MappedFile "PageFile"
+
+0:000> !address -f:MEM_MAPPED
+
+  BaseAddr EndAddr+1 RgnSize     Type       State                 Protect             Usage
+-----------------------------------------------------------------------------------------------
+  9a0000   9b0000    10000 MEM_MAPPED  MEM_COMMIT  PAGE_READWRITE                     MappedFile "PageFile"
+  9b0000   9b1000     1000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      MappedFile "PageFile"
+  9c0000   9c1000     1000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      MappedFile "PageFile"
+  9d0000   9ed000    1d000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      Other      [API Set Map]
+  9f0000   9f4000     4000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      Other      [System Default Activation Context Data]
+  d50000   e19000    c9000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      MappedFile "\Device\HarddiskVolume3\Windows\System32\locale.nls"
+  ff0000   ff1000     1000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      MappedFile "PageFile"
+7f990000 7f995000     5000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      Other      [Read Only Shared Memory]
+7f995000 7fa90000    fb000 MEM_MAPPED  MEM_RESERVE                                    MappedFile "PageFile"
+7fae0000 7fae1000     1000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      MappedFile "PageFile"
+7faf0000 7fb13000    23000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      Other      [NLS Tables]
+```
 
 ### Stack
 
@@ -267,6 +319,14 @@ The ChildEBP is the actual stack frame address. To see the first three arguments
 ```
 
 Which matches the kb output. The RetAddr is the address where program will continue when the current function call is finished.
+
+### Variables
+
+When you have private symbols you may list local variables with the **dv** command.
+
+Additionally the **dt** command allows you to work with type symbols. You may either list them, eg.: `dt notepad!g_*` or dump a data address using a given type format, eg.: `dt nt!_PEG 0x13123`.
+
+With windbg 10.0 a new very interesting command was introduced: **dx**. It uses a navigation expressions just like Visual Studio (you may define your own file .natvis files). You load the interesting .natvis file with the **.nvload** command.
 
 ## Controlling process execution
 
