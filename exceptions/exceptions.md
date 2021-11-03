@@ -72,7 +72,9 @@ There is a special **AeDebug** key in the registry, which allows you to define w
 - `Auto` : `REG_SZ` - defines if the debugger runs automatically, without prompting the user (example value: 1)
 - `UserDebuggerHotKey` : `REG_DWORD` - not sure, but it looks it enables the Debug button on the exception handling message box (example value: 1)
 
-To set WinDbg as your default AeDebug debugger, run: `windbg -I`. Although I prefer to use procdump as my system debugger. The command line to install it is `procdump -mp -i c:\dumps`, where c:\dumps is the folder where I would like to store the dumps of crashing apps.
+To set **WinDbg** as your default AeDebug debugger, run: `windbg -I`. After running this command, WinDbg will launch on application crashes. You may also automate WinDbg to create a memory dump and then allow process to terminate, for example: `windbg -c ".dump /ma /u c:\dumps\crash.dmp; qd" -p %ld -e %ld -g`.
+
+My favourite tool to use as the automatic debugger is **procdump**. The command line to install it is `procdump -mp -i c:\dumps`, where c:\dumps is the folder where I would like to store the dumps of crashing apps.
 
 ### Break on a specific Windows Error in a debugger
 
