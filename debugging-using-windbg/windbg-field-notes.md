@@ -403,6 +403,16 @@ The first number in the trace output specifies the number of instructions that w
 bp Module!MyFunctionWithConditionalBreakpoint "r $t0 = 0;.foreach (v { k }) { .if ($spat(\"v\", \"*Module!ClassA:MemberFunction*\")) { r $t0 = 1;.break } }; .if($t0 = 0) { gc }"
 ```
 
+#### Create breakpoints for all methods in the C++ object virtual table
+
+This could be useful when debugging COM interfaces, as in the example below. When we know the number of methods in the interface and the address of the virtual table, we may set the breakpoint using the .for loop, for example:
+
+```
+.for (r $t0 = 0; @$t0 < 5; r $t0= @$t0 + 1) { bp poi(5f4d8948 + @$t0 * @$ptrsize) }
+```
+
+![](vtbl-breakpoints.png)
+
 ## Symbols and modules
 
 The `lm` command lists all modules with symbol load info. To examine a specific module, use `lmvm {module-name}`.
@@ -424,3 +434,7 @@ Then copy it to the machine with the symbol server access, and download the requ
 ```
 symchk /im test.dmp.sym /s SRV*C:\symbols*https://msdl.microsoft.com/download/symbols
 ```
+
+## Memory dumps
+
+To create a memory dump, we use the **.dump** command. The /m parameter defines what information will land in the dump. When debugging a full memory dump (`/ma`), we can convert it to a smaller memory dump using again the .dump command, for example, `.dump /mpi c:\tmp\smaller.dmp`.
