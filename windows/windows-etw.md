@@ -65,6 +65,42 @@ If you want to record events from the kernel provider you need to name the sessi
 
 `logman start "NT Kernel Logger" -p "Windows Kernel Trace" "(process,thread,file,fileio)" -o c:\kernel.etl -ets & timeout -1 & logman stop "NT Kernel Logger" -ets`
 
+To see the available Kernel provider options, you may run:
+
+```
+> logman query providers "Windows Kernel Trace"
+
+Provider                                 GUID
+-------------------------------------------------------------------------------
+Windows Kernel Trace                     {9E814AAD-3204-11D2-9A82-006008A86939}
+
+Value               Keyword              Description
+-------------------------------------------------------------------------------
+0x0000000000000001  process              Process creations/deletions
+0x0000000000000002  thread               Thread creations/deletions
+0x0000000000000004  img                  Image load
+0x0000000000000008  proccntr             Process counters
+0x0000000000000010  cswitch              Context switches
+0x0000000000000020  dpc                  Deferred procedure calls
+0x0000000000000040  isr                  Interrupts
+0x0000000000000080  syscall              System calls
+0x0000000000000100  disk                 Disk IO
+0x0000000000000200  file                 File details
+0x0000000000000400  diskinit             Disk IO entry
+0x0000000000000800  dispatcher           Dispatcher operations
+0x0000000000001000  pf                   Page faults
+0x0000000000002000  hf                   Hard page faults
+0x0000000000004000  virtalloc            Virtual memory allocations
+0x0000000000010000  net                  Network TCP/IP
+0x0000000000020000  registry             Registry details
+0x0000000000100000  alpc                 ALPC
+0x0000000000200000  splitio              Split IO
+0x0000000000800000  driver               Driver delays
+0x0000000001000000  profile              Sample based profiling
+0x0000000002000000  fileiocompletion     File IO completion
+0x0000000004000000  fileio               File IO
+```
+
 ### Convert .etl file to .evtx
 
 `tracerpt -of EVTX test.etl -o test.evtx -summary test-summary.xml`
