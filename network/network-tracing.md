@@ -196,11 +196,11 @@ pktmon filter add -t tcp -i 172.29.235.111 -p 8080
 # Show the configured filters
 pktmon filter list
 
-# Start the logging session (--etw) for all the components (-c)
-pktmon start --etw -c all
+# Start the capturing session (-c) for all the components (--comp)
+pktmon start -c --comp all
 
-# Start the logging session (--etw) for all NICs only (-c)
-pktmon start --etw -c nics
+# Start the logging session (--capture) for all NICs only (-comp)
+pktmon start --capture --comp nics
 
 # Stop the tracing session
 pktmon stop
