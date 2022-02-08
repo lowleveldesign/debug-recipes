@@ -97,7 +97,9 @@ If we miss the **-g** option, windbg will inject a remote thread with a breakpoi
 
 ### Remote debugging
 
-You may attach to the currently running session by using **-remote** switch, eg.: **windbg -remote "npipe:pipe=svcpipe,server=localhost"**
+To start a remote session of windbg, you may use the **-server** switch, e.g.: **windbg -server "npipe:pipe=svcpipe" notepad**.
+
+You may attach to the currently running session by using **-remote** switch, e.g.: **windbg -remote "npipe:pipe=svcpipe,server=localhost"**
 
 To terminate the entire session and exit the debugging server, use the **q (Quit)** command. To exit from one debugging client without terminating the server, you must issue a command from that specific client. If this client is KD or CDB, use the **CTRL+B** key to exit. If you are using a script to run KD or CDB, use **.remote_exit (Exit Debugging Client)**.
 
