@@ -10,6 +10,7 @@ In this recipe:
 - [Analyzing exceptions](#analyzing-exceptions)
   - [Read managed exception information](#read-managed-exception-information)
   - [Read exception context](#read-exception-context)
+  - [Find the C++ exception object in the SEH exception record](#find-the-c-exception-object-in-the-seh-exception-record)
   - [Read Last Windows Error](#read-last-windows-error)
   - [Scanning the stack for native exception records](#scanning-the-stack-for-native-exception-records)
   - [Exception handlers](#exception-handlers)
@@ -102,8 +103,9 @@ First make sure with the **!Threads** command (SOS) that your current thread is 
        0    1 1ec8 000000000055adf0    2a020 Preemptive  0000000002253560:0000000002253FD0 00000000004fb970 0     Ukn System.ArgumentException 0000000002253438
        5    2 1c74 00000000005851a0    2b220 Preemptive  0000000000000000:0000000000000000 00000000004fb970 0     Ukn (Finalizer)
 
-In the snippet above we can see that the exception was thrown on the thread no. 0 and this is our currently selected thread (in case it's not we would use **~0s** command) so we may use the **!PrintException** command from SOS (alias **!pe**), example:
+In the snippet above we can see that the exception was thrown on the thread no. 0 and this is our currently selected thread (in case it's not we would use **\~0s** command) so we may use the **!PrintException** command from SOS (alias **!pe**), example:
 
+```
     0:000> !pe
     Exception object: 0000000002253438
     Exception type:   System.ArgumentException
@@ -113,6 +115,7 @@ In the snippet above we can see that the exception was thrown on the thread no. 
     <none>
     StackTraceString: <none>
     HResult: 80070057
+```
 
 Another option is the **!wpe** command from the netext plugin. To see the full managed call stack, use the **!CLRStack** command. By default, the debugger will stop on an unhandled exception. If you want to stop at the moment when an exception is thrown (first-chance exception), run the **sxe clr** command at the beginning of the debugging session.
 
@@ -173,6 +176,83 @@ NumberParameters: 2
 0430af34  00000002 <- parameters number
 0430af38  00000000
 0430af3c  abe8f04d
+```
+
+### Find the C++ exception object in the SEH exception record
+
+*(Tested on MSVC140)*
+
+The second parameter of the exception record parameters should contain the C++ exception object. Let's have a look at an example debugging session of a 32-bit application:
+
+```
+0:000> sxe eh
+
+0:000> g
+(1884.3e6c): C++ EH exception - code e06d7363 (first/second chance not available)
+First chance exceptions are reported before any exception handling.
+This exception may be expected and handled.
+Time Travel Position: 71:0
+eax=00f3fb30 ebx=00c1d000 ecx=00000003 edx=00000000 esi=009a1019 edi=009a1019
+eip=76f48cd0 esp=00f3fb28 ebp=00f3fb8c iopl=0         nv up ei pl nz ac pe nc
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000216
+ntdll!RtlRaiseException:
+76f48cd0 55              push    ebp
+
+0:000> .exr -1
+ExceptionAddress: 76f48cd0 (ntdll!RtlRaiseException)
+   ExceptionCode: e06d7363 (C++ EH exception)
+  ExceptionFlags: 00000001
+NumberParameters: 3
+   Parameter[0]: 19930520
+   Parameter[1]: 00f3fbd8
+   Parameter[2]: 009ab96c
+  pExceptionObject: 00000000
+  _s_ThrowInfo    : 00000000
+```
+
+If it's the first chance exception, we can find the exception record at the top of the stack:
+
+```
+0:000> dps @esp
+00f3fb28  7657ec52 KERNELBASE!RaiseException+0x62
+00f3fb2c  00f3fb30
+00f3fb30  e06d7363
+00f3fb34  00000001
+00f3fb38  00000000
+00f3fb3c  7657ebf0 KERNELBASE!RaiseException
+00f3fb40  00000003
+00f3fb44  19930520
+00f3fb48  00f3fbd8
+00f3fb4c  009ab96c exceptions!_TI3?AVinvalid_argumentstd
+```
+
+With dx and the `MSVCP140D!EHExceptionRecord` symbol, we may decode the exception record parameters:
+
+```
+0:000> dx -r2 (MSVCP140D!EHExceptionRecord*)0x00f3fb30
+(MSVCP140D!EHExceptionRecord*)0x00f3fb30                 : 0xf3fb30 [Type: EHExceptionRecord *]
+    [+0x000] ExceptionCode    : 0xe06d7363 [Type: unsigned long]
+    [+0x004] ExceptionFlags   : 0x1 [Type: unsigned long]
+    [+0x008] ExceptionRecord  : 0x0 [Type: _EXCEPTION_RECORD *]
+    [+0x00c] ExceptionAddress : 0x7657ebf0 [Type: void *]
+    [+0x010] NumberParameters : 0x3 [Type: unsigned long]
+    [+0x014] params           [Type: EHExceptionRecord::EHParameters]
+        [+0x000] magicNumber      : 0x19930520 [Type: unsigned long]
+        [+0x004] pExceptionObject : 0xf3fbd8 [Type: void *]
+        [+0x008] pThrowInfo       : 0x9ab96c [Type: _s_ThrowInfo *]
+```
+
+As you can see, the second parameter points to the C++ exception object. If we know its type, we may dump its properties, for example:
+
+```
+0:000> dt exceptions!std::invalid_argument 00f3fbd8 
+   +0x000 __VFN_table : 0x009a9db8 
+   +0x004 _Data            : __std_exception_data
+
+0:000> dx -r1 (*((exceptions!__std_exception_data *)0xf3fbdc))
+(*((exceptions!__std_exception_data *)0xf3fbdc))                 [Type: __std_exception_data]
+    [+0x000] _What            : 0x1449748 : "arg1" [Type: char *]
+    [+0x004] _DoFree          : true [Type: bool]
 ```
 
 ### Read Last Windows Error
