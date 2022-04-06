@@ -119,6 +119,61 @@ Arguments: right to left, with this being passed via ECX register (for vararg fu
 
 Stack-maintenance: called function pops arguments from the stack
 
+## Reversing in WinDbg
+
+### Collect information about an PE image
+
+`lmvm {module_name}` shows some information about a module, notably the base address:
+
+```
+0:009> lmvm notepad
+Browse full module list
+start             end                 module name
+00007ff6`27650000 00007ff6`276c6000   Notepad  C (no symbols)           
+    Loaded symbol image file: C:\Program Files\WindowsApps\Microsoft.WindowsNotepad_11.2112.32.0_x64__8wekyb3d8bbwe\Notepad\Notepad.exe
+    Image path: C:\Program Files\WindowsApps\Microsoft.WindowsNotepad_11.2112.32.0_x64__8wekyb3d8bbwe\Notepad\Notepad.exe
+    Image name: Notepad.exe
+    Browse all global symbols  functions  data
+    Timestamp:        Fri Feb  4 19:47:08 2022 (61FD74AC)
+    CheckSum:         00000000
+    ImageSize:        00076000
+    File version:     11.2112.32.0
+    Product version:  11.2112.32.0
+    File flags:       0 (Mask 3F)
+    File OS:          4 Unknown Win32
+    File type:        1.0 App
+    File date:        00000000.00000000
+    Translations:     0000.04b0
+    Information from resource tables:
+```
+
+`!lmi {module_name | base_address}` displays low-level information about a module in a readable format:
+
+```
+0:009> !lmi 00007ff6`27650000
+Loaded Module Info: [00007ff6`27650000] 
+         Module: Notepad
+   Base Address: 00007ff627650000
+     Image Name: C:\Program Files\WindowsApps\Microsoft.WindowsNotepad_11.2112.32.0_x64__8wekyb3d8bbwe\Notepad\Notepad.exe
+   Machine Type: 34404 (X64)
+     Time Stamp: 61fd74ac Fri Feb  4 19:47:08 2022
+           Size: 76000
+       CheckSum: 0
+Characteristics: 22  
+Debug Data Dirs: Type  Size     VA  Pointer
+             CODEVIEW    41, 4f254,   4e654 RSDS - GUID: {A41B5EAD-0A45-4E4F-A353-E105818B8A1A}
+               Age: 1, Pdb: D:\a\1\b\Release\x64\Notepad\Notepad.pdb
+           VC_FEATURE    14, 4f298,   4e698 [Data not mapped]
+                 POGO   400, 4f2ac,   4e6ac [Data not mapped]
+                ILTCG     0,     0,       0  [Debug data not mapped]
+     Image Type: FILE     - Image read successfully from debugger.
+                 C:\Program Files\WindowsApps\Microsoft.WindowsNotepad_11.2112.32.0_x64__8wekyb3d8bbwe\Notepad\Notepad.exe
+    Symbol Type: NONE     - PDB not found from symbol search path.
+    Load Report: no symbols loaded
+```
+
+`!dh {module_name | base_address}` shows information from the PE header
+
 ## Use reversing tools
 
 ### Ghidra

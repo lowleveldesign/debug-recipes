@@ -57,8 +57,10 @@ Make sure you have [valid symbols configuration](windows-debugging-configuration
 - :floppy_disk: [Troubleshooting IIS6](iis/iis6.md)
 - :floppy_disk: [Troubleshooting IIS Express](iis/iisexpress.md)
 
-## Tools
+## Tools & techiniques
 
 - [WinDbg](debugging-using-windbg/windbg-field-notes.md)
 - [LLDB](debugging-using-lldb/lldb-field-notes.md)
 - :floppy_disk: [Visual Studio (debugging)](debugging-using-vs/README.md)
+- [Basic reversing tips](reversing/basic-reversing.md)
+- [Reversing in PowerShell](reversing/reversing-in-powershell.md)

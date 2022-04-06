@@ -397,6 +397,14 @@ Calls  System Call
 
 The first number in the trace output specifies the number of instructions that were executed from the beginning of the trace in a given function (it is always incrementing), the second number specifies the number of instructions executed in the child functions (it is also always incrementing), and the third represents the depth of the function in the stack (parameter -l).
 
+If the **wt** command does not work, you may achieve similar results manually with the help of the target controlling commands:
+
+- stepping until a specified address: **ta**, **pa**
+- stepping until the next branching instruction: **th**, **ph**
+- stepping until the next call instruction: **tc**, **pc**
+- stepping until the next return: **tt**, **pt**
+- stepping until the next return or call instruction: **tct**, **pct**
+
 ### Breakpoints
 
 #### Break when a specific funtion is in the call stack
@@ -428,7 +436,7 @@ To resolve a function address, use `x {module-name}!{function}` and to find the 
 When we don't have access to the symbol server, we may create a list of required symbols with the **symchk** tool, and download them later on a different host. First, we need to prepare the manifest, for example:
 
 ```
-symchk /id test.dmp /om test.dmp.sym
+symchk /id test.dmp /om test.dmp.sym /s C:\non-existing
 ```
 
 Then copy it to the machine with the symbol server access, and download the required symbols, for example:
