@@ -10,6 +10,21 @@ $win32 = [System.Uri].Assembly.GetType('Microsoft.Win32.UnsafeNativeMethods')
 $win32::DestroyWindow($hwnd)
 ```
 
+Manual PInvoke:
+
+```powershell
+Add-Type -TypeDefinition @"
+using System.Runtime.InteropServices;
+
+public static class NativeImports
+{
+    [DllImport("User32.dll", CharSet=System.Runtime.InteropServices.CharSet.Auto)]
+    public static extern bool DestroyWindow(HandleRef hWnd);
+}
+"@
+[NativeImports]::DestroyWindow($hwnd)
+```
+
 A more complicated scenario when I create a Windows hook (FIXME: test):
 
 ```powershell

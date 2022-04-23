@@ -178,6 +178,31 @@ NumberParameters: 2
 0430af3c  abe8f04d
 ```
 
+If you need to diagnose **Windows Runtime Error**, for example:
+
+```
+(2f88.3358): Windows Runtime Originate Error - code 40080201 (first chance)
+```
+
+You may enable first chance notification for this error: `sxe 40080201`. When stopped, retrieve the
+exception context and the third parameter should contain an error message, for exmple:
+
+```
+0:008> .exr -1
+ExceptionAddress: 77942822 (KERNELBASE!RaiseException+0x00000062)
+   ExceptionCode: 40080201 (Windows Runtime Originate Error)
+  ExceptionFlags: 00000000
+NumberParameters: 3
+   Parameter[0]: 80040155
+   Parameter[1]: 00000052
+   Parameter[2]: 0dddf680
+
+0:008> du 0dddf680
+0dddf680  "Failed to find proxy registratio"
+0dddf6c0  "n for IID: {xxxxxxxx-xxxx-xxxx-x"
+0dddf700  "xxx-xxxxxxxxxxxx}."
+```
+
 ### Find the C++ exception object in the SEH exception record
 
 *(Tested on MSVC140)*
