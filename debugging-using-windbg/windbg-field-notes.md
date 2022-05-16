@@ -77,6 +77,12 @@ g
 
 We may use the **$$\>args\<** command variant when we want to pass arguments to our script.
 
+When I need to analyze multiple many dump files, I often use PowerShell to call WinDbg with the commands I want to run. In each WinDbg session I pass the ouput of the commands to the windbg.log file, for example:
+
+```
+Get-ChildItem .\dumps | % { Start-Process -Wait -FilePath windbg-x64\windbg.exe -ArgumentList @("-loga", "windbg.log", "-y", "`"SRV*C:\dbg\symbols*https://msdl.microsoft.com/download/symbols`"", "-c", "`".exr -1; .ecxr; k; q`"", "-z", $_.FullName) }
+```
+
 ### Install windbg as postmortem debugger
 
 The **windbg -iae** command registers windb as the automatic system debugger - it will launch anytime an application crashes. The modified AeDebug registry keys:
@@ -444,6 +450,16 @@ Then copy it to the machine with the symbol server access, and download the requ
 ```
 symchk /im test.dmp.sym /s SRV*C:\symbols*https://msdl.microsoft.com/download/symbols
 ```
+
+### Loading arbitrary DLL into WinDbg for analysis
+
+WinDbg does not allow analyzing an arbitrary DLL, but it's easily fixable. We may use **rundll32.exe** as our debugging target and wait until the DLL gets loaded, for example:
+
+```
+windbgx -c "sxe ld:jscript9.dll;g" rundll32.exe .\jscript9.dll,TestFunction
+```
+
+*The TestFunction in the snippet could be any string. Rundll32.exe loads the DLL before validating the exported function address.*
 
 ## Memory dumps
 
