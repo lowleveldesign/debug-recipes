@@ -199,8 +199,8 @@ pktmon filter list
 # Start the capturing session (-c) for all the components (--comp)
 pktmon start -c --comp all
 
-# Start the logging session (--capture) for all NICs only (-comp)
-pktmon start --capture --comp nics
+# Start the capture session (-c) for all NICs only (--comp), logging the entire packets (--pkt-size 0), overwriting the older packets when the output file reaches 512MB (-m circular -s 512)
+pktmon start -c --comp nics --pkt-size 0 -m circular -s 512 -f c:\network-trace.etl
 
 # Stop the tracing session
 pktmon stop
