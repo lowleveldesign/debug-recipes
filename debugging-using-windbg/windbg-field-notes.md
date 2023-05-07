@@ -1,232 +1,106 @@
 
-# WinDbg Field Notes
+# WinDbg field notes
 
-In this recipe:
+**Table of contents:**
 
-- [General usage](#general-usage)
-  - [Shortcuts and tips](#shortcuts-and-tips)
-  - [Scripting the debugger](#scripting-the-debugger)
-  - [Install windbg as postmortem debugger](#install-windbg-as-postmortem-debugger)
-  - [Remote debugging](#remote-debugging)
-- [System objects in the debugger](#system-objects-in-the-debugger)
-  - [Processes](#processes)
-  - [Handles](#handles)
-  - [Threads](#threads)
-  - [Critical sections](#critical-sections)
-- [Work with memory](#work-with-memory)
-  - [Stack](#stack)
-  - [Heap](#heap)
-- [Controlling process execution](#controlling-process-execution)
-  - [Controlling the target (g, t, p)](#controlling-the-target-g-t-p)
-  - [Watch trace](#watch-trace)
-  - [Breakpoints](#breakpoints)
-    - [Break when a specific funtion is in the call stack](#break-when-a-specific-funtion-is-in-the-call-stack)
+<!-- MarkdownTOC -->
+
+- [Installing WinDbg](#installing-windbg)
+    - [WinDbgX \(WinDbgNext, formely WinDbg Preview\)](#windbgx-windbgnext-formely-windbg-preview)
+    - [Classic WinDbg](#classic-windbg)
+- [Getting information about the debugging session](#getting-information-about-the-debugging-session)
 - [Symbols and modules](#symbols-and-modules)
+- [Working with memory](#working-with-memory)
+    - [General memory commands](#general-memory-commands)
+    - [Stack](#stack)
+    - [Variables](#variables)
+    - [Working with strings](#working-with-strings)
+- [System objects in the debugger](#system-objects-in-the-debugger)
+    - [Processes](#processes)
+    - [Handles](#handles)
+    - [Threads](#threads)
+    - [Critical sections](#critical-sections)
+- [Controlling process execution](#controlling-process-execution)
+    - [Controlling the target \(g, t, p\)](#controlling-the-target-g-t-p)
+    - [Watch trace](#watch-trace)
+- [Scripting the debugger](#scripting-the-debugger)
+    - [The dx command](#the-dx-command)
+- [Time Travel Debugging \(TTD\)](#time-travel-debugging-ttd)
+- [Installing WinDbg as the Windows AE debugger](#installing-windbg-as-the-windows-ae-debugger)
+- [Remote debugging](#remote-debugging)
+- [Links](#links)
+    - [Extensions](#extensions)
+    - [Script repositories](#script-repositories)
 
-## General usage
+<!-- /MarkdownTOC -->
 
-First, some very useful start commands:
+## Installing WinDbg
 
-**| - pipe** command displays a path to the process image
+### WinDbgX (WinDbgNext, formely WinDbg Preview)
 
-You can also use **vercommand** to show how the debugger was called
+On modern systems **download the [appinstaller](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/)** file and choose **Install** in the context menu.
 
-**||** display information what type of debugging we are in
+If you are on Windows Server 2019 and you don't see the Install option in the context menu, there is a big chance you're missing the App Installer package on your system. The steps below list the steps required to install it.
 
-**vertarget** shows dump time, OS version, process lifetime, and more
-
-**version** additionally shows version of the debugging libraries used in the session. The **.time** command displays information about the system time variable (session time).
-
-**.lastevent** shows the last reason why the debugger stopped and **.eventlog** shows a number of recent events.
-
-### Shortcuts and tips
-
-There is a great **SHIFT + [UP ARROW]** that completes a command from previously executed commands (much as F8 in cmd).
-
-You may create your own command shortcuts tree with the `.cmdtree` command.
-
-To make **a comment** you can either use `.echo comment` command or one of the comment commands: `$$ comment`, `* comment`. The difference between last two is that `*` sign comments everything till the end of line, when `$$` signs comment text till the semicolon (or end of line), e.g.: `r eax; $$ some text; r ebx; * more text; r ecx` will print eax, ebx but not ecx. An `.echo` command is ended if the debugger encounters a semicolon (unless the semicolon occurs within a quoted string). Additionally text in `.echo` command gets interpreted.
-
-There is a special **pde** extension which contains commands that will help you to work with string in the debugger. For instance to look for zero-terminated (either unicode or ascii) string use: `!pde.ssz brown`. To change a text in memory use **!ezu**, example: `ezu  "test string"`. The extension works on committed memory.
-
-Another interesting command is **!grep** which allows you to filter output of other commands: `!grep _NT !peb`.
-
-### Scripting the debugger
-
-**.expr** prints the current expression evaluator (MASM or C++). You may use the **/s** to change it. The **?** command uses the default evaluator, **??** always uses C++ evaluator. Also you can mix the evaluators in one expression by using **@@c++(expression)** or **@@masm(expression)** syntax, for example: **? @@c++(@$peb->ImageSubsystemMajorVersion) + @@masm(0y1)**.
-
-**#FIELD_OFFSET(Type, Field)** is an interesting operator which returns the offset of the field in the type, eg. **? \#FIELD_OFFSET(\_PEB, ImageSubsystemMajorVersion)**.
-
-when using **.if** , **.foreach** somtimes the names are not resolved - use spaces between them, eg. `foreach (addr {!DumpHeap -mt 71d75b24 -short}) { .if (dwo(poi( addr + 5c ) + c)) { !do addr } }`
-
-if there was no space between poi( and addr it would fail.
-
-
-We can also execute commands from a script file. We use the **$$** command family for that purpose. The **-c** option allows us to run a command on a debugger start. So if we pass the **$$\<** command with a file path, windbg will read the file and execute the commands from it as if they were entered manually, for example:
+From the [winget-cli release site](https://github.com/microsoft/winget-cli/releases), download **DesktopAppInstallerPolicies.zip** and **Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle**. Unzip the policies to `C:\Windows\PolicyDefinitions` (you may skip the localizations you don't have on your system). Next, run **gpedit.msc** and enable the **Enable App Installer** policy under "Computer Configuration\Administrative Templates\Windows Components\Desktop App Installer". Now, we are ready to install AppInstaller:
 
 ```
-PS> windbgx -c "$$<test.txt" notepad
+Add-AppxPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
 ```
 
-And the test.txt content:
+If it reports no issues, then you should now see the Install option in the context menu and be able to install the WinDbg package (you may need to allow local app installs in the Developer Settings).
+
+If you see an error about a missing **Microsoft.UI.Xaml.2.7** package:
 
 ```
-sxe -c ".echo advapi32; g" ld:advapi32
-g
+Add-AppxPackage : Deployment failed with HRESULT: 0x80073CF3, Package failed updates, dependency or conflict validation. Windows cannot install package Microsoft.DesktopAppInstaller_1.19.10173.0_x64__8wekyb3d8bbwe because this package depends on a framework that could not be found. Provide the framework "Microsoft.UI.Xaml.2.7" published by "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US", with neutral or x64 processor architecture and minimum version 7.2109.13004.0, along with this package to install. The frameworks with name "Microsoft.UI.Xaml.2.7" currently installed are: {}
 ```
 
-We may use the **$$\>args\<** command variant when we want to pass arguments to our script.
-
-When I need to analyze multiple many dump files, I often use PowerShell to call WinDbg with the commands I want to run. In each WinDbg session I pass the ouput of the commands to the windbg.log file, for example:
+A solution, as described in [this GitHub comment](https://github.com/microsoft/winget-cli/issues/1861#issuecomment-1021240355), is to download the [Microsoft.UI.Xaml](https://www.nuget.org/packages/Microsoft.UI.Xaml/) package version 2.7.x and extract the `tools\AppX\{arch}\Release\Microsoft.UI.Xaml.2.7.appx` out of it. Then run:
 
 ```
-Get-ChildItem .\dumps | % { Start-Process -Wait -FilePath windbg-x64\windbg.exe -ArgumentList @("-loga", "windbg.log", "-y", "`"SRV*C:\dbg\symbols*https://msdl.microsoft.com/download/symbols`"", "-c", "`".exr -1; .ecxr; k; q`"", "-z", $_.FullName) }
+Add-AppxPackage .\Microsoft.UI.Xaml.2.7.appx
 ```
 
-### Install windbg as postmortem debugger
-
-The **windbg -iae** command registers windb as the automatic system debugger - it will launch anytime an application crashes. The modified AeDebug registry keys:
+Another missing package could be **Microsoft.VCLibs.140.00.UWPDesktop**:
 
 ```
-HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion
-HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows NT\CurrentVersion
+Add-AppxPackage : Deployment failed with HRESULT: 0x80073CF3, Package failed updates, dependency or conflict validation. Windows cannot install package Microsoft.DesktopAppInstaller_1.19.10173.0_x64__8wekyb3d8bbwe because this package depends on a framework that could not be found. Provide the framework "Microsoft.VCLibs.140.00.UWPDesktop" published by "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US", with neutral or x64 processor architecture and minimum version 14.0.30704.0, along with this package to install. The frameworks with name "Microsoft.VCLibs.14 0.00.UWPDesktop" currently installed are: {}
 ```
 
-However, we may also use configure those keys manually and use windbg to, for example, create a memory on an app crash: 
+You may download the valid appx package from the location on the [documentation page](https://learn.microsoft.com/en-us/troubleshoot/developer/visualstudio/cpp/libraries/c-runtime-packages-desktop-bridge#how-to-install-and-update-desktop-framework-packages) and, again, install it with the Add-AppxPackage command.
+
+### Classic WinDbg
+
+If you need to debug on an old system with no support for WinDbgX, you need to **download Windows SDK and install the Debugging Tools for Windows** feature. The executables will be in the Debuggers folder, for example, `c:\Program Files (x86)\Windows Kits\10\Debuggers`.
+
+## Getting information about the debugging session
+
+The **|** command displays a path to the process image. You may run **vercommand** to check how the debugger was launched. The **vertarget** command shows the OS version, the process lifetime, and more, for example, the dump time when debugging a memory dump. The **.time** command displays information about the system time variable (session time).
+
+**.lastevent** shows the last reason why the debugger stopped and **.eventlog** displays the recent events.
+
+## Symbols and modules
+
+The **lm** command lists all modules with symbol load info. To examine a specific module, use **lmvm {module-name}**. To find out if a given address belongs to any of the loaded dlls you may use the **!dlls -c {addr}** command. Another way would be to use the **lma {addr}** command.
+
+The **.sympath** command shows the symbol search path and allows its modification. Use **.reload /f {module-name}** to reload symbols for a given module.
+
+The **x {module-name}!{function}** command resolves a function address, and **ln {address}** finds the nearest symbol.
+
+When we don't have access to the symbol server, we may create a list of required symbols with **symchk.exe** (part of the Debugging Tools for Windows installation) and download them later on a different host. First, we need to prepare the manifest, for example:
 
 ```
-REG_SZ Debugger = ...\...\windbg -c ".dump /ma /u C:\dumps\crash.dmp; qd" -p %ld -e %ld -g
-REG_SZ Auto = 1
+symchk /id test.dmp /om test.dmp.sym /s C:\non-existing
 ```
 
-If we miss the **-g** option, windbg will inject a remote thread with a breakpoint instruction, which will hide our original exception. In such case, we might need to [scan the stack to find the original exception record](../exceptions/exceptions.md#scanning-the-stack-for-native-exception-records). 
-
-### Remote debugging
-
-To start a remote session of windbg, you may use the **-server** switch, e.g.: **windbg -server "npipe:pipe=svcpipe" notepad**.
-
-You may attach to the currently running session by using **-remote** switch, e.g.: **windbg -remote "npipe:pipe=svcpipe,server=localhost"**
-
-To terminate the entire session and exit the debugging server, use the **q (Quit)** command. To exit from one debugging client without terminating the server, you must issue a command from that specific client. If this client is KD or CDB, use the **CTRL+B** key to exit. If you are using a script to run KD or CDB, use **.remote_exit (Exit Debugging Client)**.
-
-## System objects in the debugger
-
-### Processes
-
-Each time you break into the kernel-mode debugger one of the processes will be active. You may check which one is it by running **!process -1 0** command. If you are going to work with user-mode memory space you need to reload the process modules symbols (otherwise you will see symbols from the last reload). You may do so while switching process context with **.process /i** or **.process /r /p** or manually with the command: **.reload /user**.  The first two command allow you to select which process's page directory is used to interpret virtual addresses. After you set the process context, you can use this context in any command that takes addresses.
-
-**.process [/i] [/p [/r] ] [/P] [Process]**
-
-**/i** means invasive debugging and allows you to control the process from the kernel debugger. **/r** reloads user-mode symbols after the process context has been set (the behavior is the same as **.reload /user**). **/p** translates all transition page table entries (PTEs) for this process to physical addresses before access.
-
-**!peb** shows loaded modules, environment variables, command line arg, and more.
-
-### Handles
-
-There is a special debugger extension command **!handle** that allows you to find system handles reserved by a process: **!handle [Handle [UMFlags [TypeName]]]**
-
-To list all handles reserved by a process use -1 (in kernel mode) or 0 (in user-mode) - you filter further by seeting a type of a handle: Event, Section, File, Port, Directory, SymbolicLink, Mutant, WindowStation, Semaphore, Key, Token, Process, Thread, Desktop, IoCompletion, Timer, Job, and WaitablePort, ex.:
+Then copy it to the machine with the symbol server access, and download the required symbols, for example:
 
 ```
-0:000> !handle 0 1 File
-...
-Handle 1c0
-  Type         	File
-7 handles of type File
+symchk /im test.dmp.sym /s SRV*C:\symbols*https://msdl.microsoft.com/download/symbols
 ```
 
-### Threads
-
-Each thread has its own register values. These values are stored in the CPU registers when the thread is executing and are stored in memory when another thread is executing. You can set the register context using .thread command:
-
-**.thread [/p [/r] ] [/P] [/w] [Thread]**
-
-or
-
-**.trap [Address]**
-**.cxr [Options] [Address]**
-
-**To list all threads** in a current process use **~** command. Dot (.) in the first column signals a currently selected thread and hash (#) points to a thread on which an exception occurred.
-
-**!runaway** shows the time consumed by each thread:
-
-```
-0:029> !runaway 7
- User Mode Time
-  Thread       Time
-   0:bfc       0 days 0:00:00.031
-   3:10c       0 days 0:00:00.000
-   2:844       0 days 0:00:00.000
-   1:15bc      0 days 0:00:00.000
- Kernel Mode Time
-  Thread       Time
-   0:bfc       0 days 0:00:00.046
-   3:10c       0 days 0:00:00.000
-   2:844       0 days 0:00:00.000
-   1:15bc      0 days 0:00:00.000
- Elapsed Time
-  Thread       Time
-   0:bfc       0 days 0:27:19.817
-   1:15bc      0 days 0:27:19.810
-   2:844       0 days 0:27:19.809
-   3:10c       0 days 0:27:19.809
-```
-
-**~~[thread-id]** - in case you would like to use the system thread id you may with this syntax.
-
-**!tls Slot** extension displays a thread local storage slot (or -1 for all slots)
-
-### Critical sections
-
-Display information about a particular critical section: **!critsec {address}**
-
-**!locks** extension in Ntsdexts.dll displays a list of critical sections associated with the current process.
-
-**!cs -lso [Address]**  - display information about critical sections (-l - only locked critical sections, -o - owner's stack, -s  - initialization stack, if available)
-
-**!critsec Address** - information about a specific critical section
-
-```
-0:000> !cs -lso
------------------------------------------
-DebugInfo          = 0x77294380
-Critical section   = 0x772920c0 (ntdll!LdrpLoaderLock+0x0)
-LOCKED
-LockCount          = 0x10
-WaiterWoken        = No
-OwningThread       = 0x00002c78
-RecursionCount     = 0x1
-LockSemaphore      = 0x194
-SpinCount          = 0x00000000
------------------------------------------
-DebugInfo          = 0x00581850
-Critical section   = 0x5164a394 (AcLayers!NS_VirtualRegistry::csRegCriticalSection+0x0)
-LOCKED
-LockCount          = 0x4
-WaiterWoken        = No
-OwningThread       = 0x0000206c
-RecursionCount     = 0x1
-LockSemaphore      = 0x788
-SpinCount          = 0x00000000
-```
-
-Finally, we may use the raw output:
-
-```
-0:000> dx -r1 ((ole32!_RTL_CRITICAL_SECTION_DEBUG *)0x581850)
-((ole32!_RTL_CRITICAL_SECTION_DEBUG *)0x581850)                 : 0x581850 [Type: _RTL_CRITICAL_SECTION_DEBUG *]
-    [+0x000] Type             : 0x0 [Type: unsigned short]
-    [+0x002] CreatorBackTraceIndex : 0x0 [Type: unsigned short]
-    [+0x004] CriticalSection  : 0x5164a394 [Type: _RTL_CRITICAL_SECTION *]
-    [+0x008] ProcessLocksList [Type: _LIST_ENTRY]
-    [+0x010] EntryCount       : 0x0 [Type: unsigned long]
-    [+0x014] ContentionCount  : 0x6 [Type: unsigned long]
-    [+0x018] Flags            : 0x0 [Type: unsigned long]
-    [+0x01c] CreatorBackTraceIndexHigh : 0x0 [Type: unsigned short]
-    [+0x01e] SpareUSHORT      : 0x0 [Type: unsigned short]
-```
-
-## Work with memory
+## Working with memory
 
 ### General memory commands
 
@@ -302,7 +176,7 @@ To switch a local context to a different stack frame we can use the `.frame` com
 .frame [/c] [/r] = BasePtr StackPtr InstructionPtr
 ```
 
-The **!for_each_frame** extension enables you to execute a single command repeatedly, once for each frame in the stack.
+The **!for_each_frame** extension command enables you to execute a single command repeatedly, once for each frame in the stack.
 
 Reading stack in Windbg
 
@@ -335,6 +209,133 @@ When you have private symbols you may list local variables with the **dv** comma
 Additionally the **dt** command allows you to work with type symbols. You may either list them, eg.: `dt notepad!g_*` or dump a data address using a given type format, eg.: `dt nt!_PEG 0x13123`.
 
 With windbg 10.0 a new very interesting command was introduced: **dx**. It uses a navigation expressions just like Visual Studio (you may define your own file .natvis files). You load the interesting .natvis file with the **.nvload** command.
+
+**#FIELD_OFFSET(Type, Field)** is an interesting operator which returns the offset of the field in the type, eg. **? \#FIELD_OFFSET(\_PEB, ImageSubsystemMajorVersion)**.
+
+### Working with strings
+
+The **!du** command from the PDE extension shows strings up to 4GB (the default du command stops when it hits the range limit).
+
+The PDE extension also contains the **!ssz** command to look for zero-terminated (either unicode or ascii) strings. To change a text in memory use **!ezu**, for example: `ezu  "test string"`. The extension works on committed memory.
+
+Another interesting command is **!grep**, which allows you to filter the output of other commands: `!grep _NT !peb`.
+
+## System objects in the debugger
+
+### Processes
+
+Each time you break into the kernel-mode debugger one of the processes will be active. You may check which one is it by running **!process -1 0** command. If you are going to work with user-mode memory space you need to reload the process modules symbols (otherwise you will see symbols from the last reload). You may do so while switching process context with **.process /i** or **.process /r /p** or manually with the command: **.reload /user**.  The first two command allow you to select which process's page directory is used to interpret virtual addresses. After you set the process context, you can use this context in any command that takes addresses.
+
+**.process [/i] [/p [/r] ] [/P] [Process]**
+
+**/i** means invasive debugging and allows you to control the process from the kernel debugger. **/r** reloads user-mode symbols after the process context has been set (the behavior is the same as **.reload /user**). **/p** translates all transition page table entries (PTEs) for this process to physical addresses before access.
+
+**!peb** shows loaded modules, environment variables, command line arg, and more.
+
+### Handles
+
+There is a special debugger extension command **!handle** that allows you to find system handles reserved by a process: **!handle [Handle [UMFlags [TypeName]]]**
+
+To list all handles reserved by a process use -1 (in kernel mode) or 0 (in user-mode) - you filter further by seeting a type of a handle: Event, Section, File, Port, Directory, SymbolicLink, Mutant, WindowStation, Semaphore, Key, Token, Process, Thread, Desktop, IoCompletion, Timer, Job, and WaitablePort, ex.:
+
+```
+0:000> !handle 0 1 File
+...
+Handle 1c0
+  Type          File
+7 handles of type File
+```
+
+### Threads
+
+Each thread has its own register values. These values are stored in the CPU registers when the thread is executing and are stored in memory when another thread is executing. You can set the register context using .thread command:
+
+**.thread [/p [/r] ] [/P] [/w] [Thread]**
+
+or
+
+**.trap [Address]**
+**.cxr [Options] [Address]**
+
+**To list all threads** in a current process use **~** command. Dot (.) in the first column signals a currently selected thread and hash (#) points to a thread on which an exception occurred.
+
+**!runaway** shows the time consumed by each thread:
+
+```
+0:029> !runaway 7
+ User Mode Time
+  Thread       Time
+   0:bfc       0 days 0:00:00.031
+   3:10c       0 days 0:00:00.000
+   2:844       0 days 0:00:00.000
+   1:15bc      0 days 0:00:00.000
+ Kernel Mode Time
+  Thread       Time
+   0:bfc       0 days 0:00:00.046
+   3:10c       0 days 0:00:00.000
+   2:844       0 days 0:00:00.000
+   1:15bc      0 days 0:00:00.000
+ Elapsed Time
+  Thread       Time
+   0:bfc       0 days 0:27:19.817
+   1:15bc      0 days 0:27:19.810
+   2:844       0 days 0:27:19.809
+   3:10c       0 days 0:27:19.809
+```
+
+**\~\~\[thread-id\]** - in case you would like to use the system thread id you may with this syntax.
+
+**!tls Slot** extension displays a thread local storage slot (or -1 for all slots)
+
+### Critical sections
+
+Display information about a particular critical section: **!critsec {address}**
+
+**!locks** extension in Ntsdexts.dll displays a list of critical sections associated with the current process.
+
+**!cs -lso [Address]**  - display information about critical sections (-l - only locked critical sections, -o - owner's stack, -s  - initialization stack, if available)
+
+**!critsec Address** - information about a specific critical section
+
+```
+0:000> !cs -lso
+-----------------------------------------
+DebugInfo          = 0x77294380
+Critical section   = 0x772920c0 (ntdll!LdrpLoaderLock+0x0)
+LOCKED
+LockCount          = 0x10
+WaiterWoken        = No
+OwningThread       = 0x00002c78
+RecursionCount     = 0x1
+LockSemaphore      = 0x194
+SpinCount          = 0x00000000
+-----------------------------------------
+DebugInfo          = 0x00581850
+Critical section   = 0x5164a394 (AcLayers!NS_VirtualRegistry::csRegCriticalSection+0x0)
+LOCKED
+LockCount          = 0x4
+WaiterWoken        = No
+OwningThread       = 0x0000206c
+RecursionCount     = 0x1
+LockSemaphore      = 0x788
+SpinCount          = 0x00000000
+```
+
+Finally, we may use the raw output:
+
+```
+0:000> dx -r1 ((ole32!_RTL_CRITICAL_SECTION_DEBUG *)0x581850)
+((ole32!_RTL_CRITICAL_SECTION_DEBUG *)0x581850)                 : 0x581850 [Type: _RTL_CRITICAL_SECTION_DEBUG *]
+    [+0x000] Type             : 0x0 [Type: unsigned short]
+    [+0x002] CreatorBackTraceIndex : 0x0 [Type: unsigned short]
+    [+0x004] CriticalSection  : 0x5164a394 [Type: _RTL_CRITICAL_SECTION *]
+    [+0x008] ProcessLocksList [Type: _LIST_ENTRY]
+    [+0x010] EntryCount       : 0x0 [Type: unsigned long]
+    [+0x014] ContentionCount  : 0x6 [Type: unsigned long]
+    [+0x018] Flags            : 0x0 [Type: unsigned long]
+    [+0x01c] CreatorBackTraceIndexHigh : 0x0 [Type: unsigned short]
+    [+0x01e] SpareUSHORT      : 0x0 [Type: unsigned short]
+```
 
 ## Controlling process execution
 
@@ -411,56 +412,117 @@ If the **wt** command does not work, you may achieve similar results manually wi
 - stepping until the next return: **tt**, **pt**
 - stepping until the next return or call instruction: **tct**, **pct**
 
-### Breakpoints
+## Scripting the debugger
 
-#### Break when a specific funtion is in the call stack
+WinDbg contains several meta-commands (starting with a dot) that allow you to control the debugger actions. The current evaluator plays an important role in interpreting the symbols in the provided command. The **.expr** command prints the current expression evaluator (MASM or C++). You may use the **/s** to change it. The **?** command uses the default evaluator, and **??** always uses the C++ evaluator. Also, you can mix the evaluators in one expression by using **@@c++(expression)** or **@@masm(expression)** syntax, for example: **? @@c++(@$peb->ImageSubsystemMajorVersion) + @@masm(0y1)**.
 
-```
-bp Module!MyFunctionWithConditionalBreakpoint "r $t0 = 0;.foreach (v { k }) { .if ($spat(\"v\", \"*Module!ClassA:MemberFunction*\")) { r $t0 = 1;.break } }; .if($t0 = 0) { gc }"
-```
-
-#### Create breakpoints for all methods in the C++ object virtual table
-
-This could be useful when debugging COM interfaces, as in the example below. When we know the number of methods in the interface and the address of the virtual table, we may set the breakpoint using the .for loop, for example:
+When using **.if** and **.foreach**, sometimes the names are not resolved - use spaces between them. For example, the command would fail if there was no space between poi( and addr in the code below.
 
 ```
-.for (r $t0 = 0; @$t0 < 5; r $t0= @$t0 + 1) { bp poi(5f4d8948 + @$t0 * @$ptrsize) }
+.foreach (addr {!DumpHeap -mt 71d75b24 -short}) { .if (dwo(poi( addr + 5c ) + c)) { !do addr } }
 ```
 
-![](vtbl-breakpoints.png)
-
-## Symbols and modules
-
-The `lm` command lists all modules with symbol load info. To examine a specific module, use `lmvm {module-name}`.
-
-To find out if a given address belongs to any of the loaded dlls we may use the **!dlls -c {addr}** command. Another way would be to use the **lma {addr}** command. 
-
-The `.sympath` command shows the symbol search path and allows its modification. To force load symbols for a given module use `.reload /f {module-name}`.
-
-To resolve a function address, use `x {module-name}!{function}` and to find the nearest symbol use `ln {address}`.
-
-When we don't have access to the symbol server, we may create a list of required symbols with the **symchk** tool, and download them later on a different host. First, we need to prepare the manifest, for example:
+We can also execute commands from a script file. We use the **$$** command family for that purpose. The **-c** option allows us to run a command on a debugger launch. So if we pass the **$$\<** command with a file path, windbg will read the file and execute the commands from it as if they were entered manually, for example:
 
 ```
-symchk /id test.dmp /om test.dmp.sym /s C:\non-existing
+PS> windbgx -c "$$<test.txt" notepad
 ```
 
-Then copy it to the machine with the symbol server access, and download the required symbols, for example:
+And the test.txt content:
 
 ```
-symchk /im test.dmp.sym /s SRV*C:\symbols*https://msdl.microsoft.com/download/symbols
+sxe -c ".echo advapi32; g" ld:advapi32
+g
 ```
 
-### Loading arbitrary DLL into WinDbg for analysis
+We may use the **$$\>args\<** command variant to pass arguments to our script.
 
-WinDbg does not allow analyzing an arbitrary DLL, but it's easily fixable. We may use **rundll32.exe** as our debugging target and wait until the DLL gets loaded, for example:
+When analyzing multiple files, I often use PowerShell to call WinDbg with the commands I want to run. In each WinDbg session, I pass the output of the commands to the windbg.log file, for example:
 
 ```
-windbgx -c "sxe ld:jscript9.dll;g" rundll32.exe .\jscript9.dll,TestFunction
+Get-ChildItem .\dumps | % { Start-Process -Wait -FilePath windbg-x64\windbg.exe -ArgumentList @("-loga", "windbg.log", "-y", "`"SRV*C:\dbg\symbols*https://msdl.microsoft.com/download/symbols`"", "-c", "`".exr -1; .ecxr; k; q`"", "-z", $_.FullName) }
 ```
 
-*The TestFunction in the snippet could be any string. Rundll32.exe loads the DLL before validating the exported function address.*
+You may create your own command shortcuts tree with the `.cmdtree` command.
 
-## Memory dumps
+To make a **comment**, you can use one of the comment commands: **$$ comment**, **\* comment**. The difference between them is that **\*** comments everything till the end of the line, while **$$** comments text till the semicolon (or end of a line), e.g., `r eax; $$ some text; r ebx; * more text; r ecx` will print eax, ebx but not ecx. The **.echo** command ends if the debugger encounters a semicolon (unless the semicolon occurs within a quoted string).
 
-To create a memory dump, we use the **.dump** command. The /m parameter defines what information will land in the dump. When debugging a full memory dump (`/ma`), we can convert it to a smaller memory dump using again the .dump command, for example, `.dump /mpi c:\tmp\smaller.dmp`.
+### The dx command
+
+The **dx** command allows us to query the Debugger Object Model. There is a set of root objects from which we may start our query, including: **@$cursession**, **@$curprocess**, **@$curthread**, **@$curstack**, and **@$curframe**. **dx Debugger.State** shows the current state of the debugger.
+
+Other example queries with explanations:
+
+```
+* Find kernel32 exports that contain the 'RegGetVal' string (by Tim Misiak)
+dx @$curprocess.Modules["kernel32"].Contents.Exports.Where(exp => exp.Name.Contains("RegGetVal"))
+
+* Show the address of the exported RegGetValueW function (by Tim Misiak)
+dx -r1 @$curprocess.Modules["kernel32"].Contents.Exports.Single(exp => exp.Name == "RegGetValueW").CodeAddress
+
+* Set a breakpoint on every exported function of the bindfltapi module
+dx @$curprocess.Modules["bindfltapi"].Contents.Exports.Select(m =>  Debugger.Utility.Control.ExecuteCommand($"bp {m.CodeAddress}"))
+```
+
+Please check the [script repositories](#script-repositories) I list at the end of this recipe for even more dx usage examples.
+
+## Time Travel Debugging (TTD)
+
+[TTD](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/time-travel-debugging-overview), added in WinDbg Preview, is a fantastic way to debug application code. After collecting a debug trace, we may examine it as much as possible, going deeper and deeper into the call stacks.
+
+Additionally, TTD is one of the session properties which we can query. Axel Souchet in [this post](https://blahcat.github.io/posts/2018/11/02/some-time-travel-musings.html) presents some interesting TTD queries. I list some of them below, but I recommend checking the article to learn more.
+
+```
+0:000> dx @$cursession.TTD
+
+0:000> dx @$cursession.TTD.Calls("user32!GetMessage*")
+@$cursession.TTD.Calls("user32!GetMessage*").Count() : 0x1e8
+
+// Isolate the address(es) newly allocated as RWX
+0:000> dx @$cursession.TTD.Calls("Kernel*!VirtualAlloc*").Where( f => f.Parameters[3] == 0x40 ).Select( f => new {Address : f.ReturnValue } )
+
+// Time-Travel to when the 1st byte is executed
+0:000> dx @$cursession.TTD.Memory(0xAddressFromAbove, 0xAddressFromAbove+1, "e")[0].TimeStart.SeekTo()
+```
+
+## Installing WinDbg as the Windows AE debugger
+
+The **windbx -I** (**windbg -iae**) command registers WinDbg as the automatic system debugger - it will launch anytime an application crashes. The modified AeDebug registry keys:
+
+```
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug
+HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows NT\CurrentVersion\AeDebug
+```
+
+However, we may also use configure those keys manually and use WinDbg to, for example, create a memory dump at an application crash: 
+
+```
+REG_SZ Debugger = "C:\Users\me\AppData\Local\Microsoft\WindowsApps\WinDbgX.exe" -c ".dump /ma /u C:\dumps\crash.dmp; qd" -p %ld -e %ld -g
+REG_SZ Auto = 1
+```
+
+If you miss the **-g** option, WinDbg will inject a remote thread with a breakpoint instruction, which will hide our original exception. In such case, you might need to [scan the stack to find the original exception record](../exceptions/exceptions.md#scanning-the-stack-for-native-exception-records)). 
+
+## Remote debugging
+
+To start a remote session of WinDbg, you may use the **-server** switch, e.g.: **windbg(x) -server "npipe:pipe=svcpipe" notepad**.
+
+You may attach to the currently running session by using **-remote** switch, e.g.: **windbg(x) -remote "npipe:pipe=svcpipe,server=localhost"**
+
+To terminate the entire session and exit the debugging server, use the **q (Quit)** command. To exit from one debugging client without terminating the server, you must issue a command from that specific client. If this client is KD or CDB, use the **CTRL+B** key to exit. If you are using a script to run KD or CDB, use **.remote_exit (Exit Debugging Client)**.
+
+## Links
+
+### Extensions
+
+- [PDE](https://onedrive.live.com/?authkey=%21AJeSzeiu8SQ7T4w&id=DAE128BD454CF957%217152&cid=DAE128BD454CF957) - contains [lots of useful commands](./pde.help.txt)
+- [MEX](https://www.microsoft.com/en-us/download/details.aspx?id=53304) - another extension with [many helper commands](./mex.help.txt)
+- [comon](https://github.com/lowleveldesign/comon) - a WinDbg extension to help you debug COM services (authored by me)
+- [many others](https://github.com/anhkgg/awesome-windbg-extensions) - a list of interesting WinDbg extensions gathered by @anhkgg 
+
+### Script repositories
+
+- [TimMisiak/WinDbgCookbook](https://github.com/TimMisiak/WinDbgCookbook)
+- [hugsy/windbg_js_scripts](https://github.com/hugsy/windbg_js_scripts)
+- [0vercl0k/windbg-scripts](https://github.com/0vercl0k/windbg-scripts)
+- [yardenshafir/WinDbg_Scripts](https://github.com/yardenshafir/WinDbg_Scripts)

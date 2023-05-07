@@ -3,11 +3,17 @@
 
 In this recipe:
 
+<!-- MarkdownTOC -->
+
 - [Setup Windows Kernel Debugging over network](#setup-windows-kernel-debugging-over-network)
-  - [Network card compatibility check](#network-card-compatibility-check)
+    - [Network card compatibility check](#network-card-compatibility-check)
+- [Setup Kernel debugging in QEMU/KVM](#setup-kernel-debugging-in-qemukvm)
 - [Control processes in the debugger](#control-processes-in-the-debugger)
-  - [Break when user-mode process is created](#break-when-user-mode-process-is-created)
-  - [Break in user-mode process from the kernel-mode](#break-in-user-mode-process-from-the-kernel-mode)
+    - [Get process information](#get-process-information)
+    - [Break when user-mode process is created](#break-when-user-mode-process-is-created)
+    - [Break in user-mode process from the kernel-mode](#break-in-user-mode-process-from-the-kernel-mode)
+
+<!-- /MarkdownTOC -->
 
 ## Setup Windows Kernel Debugging over network
 
@@ -48,6 +54,34 @@ obj,target=DELAPTOP
 Then make sure to SHUTDOWN (not restart) the VM so that the new settings will
 take effect.  Run shutdown -s -t 0 from this command prompt.
 ```
+
+## Setup Kernel debugging in QEMU/KVM
+
+The tutorial at <https://resources.infosecinstitute.com/topic/kernel-debugging-qemu-windbg/> helped me a lot to achieve this.
+
+The main idea is to use the Unix pipe. One side (debugger host) must have the serial port in the bind mode and the other side (client) in a connect mode. Example configuration in QEMU:
+
+```xml
+<serial type="unix">
+  <source mode="bind" path="/tmp/dbgpipe"/>
+  <target type="isa-serial" port="1">
+    <model name="isa-serial"/>
+  </target>
+  <alias name="serial1"/>
+</serial>
+```
+
+```xml
+<serial type="unix">
+  <source mode="connect" path="/tmp/dbgpipe"/>
+  <target type="isa-serial" port="1">
+    <model name="isa-serial"/>
+  </target>
+  <alias name="serial1"/>
+</serial>
+```
+
+The serial1 on virtualized Windows appears as the COM2 port.
 
 ## Control processes in the debugger
 

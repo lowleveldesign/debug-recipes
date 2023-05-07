@@ -203,6 +203,8 @@ NumberParameters: 3
 0dddf700  "xxx-xxxxxxxxxxxx}."
 ```
 
+We may automate this step by using the **$exr_param2** pseudo-register, for example `sxe -c "du @$exr_param1 L40; g" eh"`
+
 ### Find the C++ exception object in the SEH exception record
 
 *(Tested on MSVC140)*

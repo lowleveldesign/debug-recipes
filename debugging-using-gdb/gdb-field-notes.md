@@ -1,4 +1,23 @@
 
+## General
+
+To ptrace any process, you may add ptrace capability to gdb:
+
+```
+sudo setcap cap_sys_ptrace=eip $(which gdb)
+```
+
+set disassembly-flavor intel
+
+## Symbols
+
+https://sourceware.org/elfutils/Debuginfod.html
+
+
+
+```
+set debuginfod enable on
+```
 
 ## Breakpoints
 
@@ -26,9 +45,13 @@ j {line} - jump to a given line
 info threads - list the active threads
 thread {num} - switch focus to thread {num}
 
+set disassemble-next-line on
+show disassemble-next-line
+
 ## Code
 
 l [func] - show code lines of func
+disassemble - show assembly code
 
 ## Stack
 
