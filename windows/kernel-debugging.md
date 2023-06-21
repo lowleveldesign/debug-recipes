@@ -83,6 +83,11 @@ The main idea is to use the Unix pipe. One side (debugger host) must have the se
 
 The serial1 on virtualized Windows appears as the COM2 port.
 
+```
+bcdedit /debug {current} on
+bcdedit /dbgsettings SERIAL DEBUGPORT:2 BAUDRATE:115200
+```
+
 ## Control processes in the debugger
 
 ### Get process information
