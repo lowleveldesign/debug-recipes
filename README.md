@@ -18,7 +18,6 @@ Make sure you have [valid symbols configuration](windows-debugging-configuration
 
 - [WinDbg](debugging-using-windbg/windbg-field-notes.md)
 - [LLDB](debugging-using-lldb/lldb-field-notes.md)
-- [PowerShell](powershell/powershell-recipes.md)
 - :floppy_disk: [Visual Studio debugger](debugging-using-vs/README.md)
 
 ## Troubleshooting
