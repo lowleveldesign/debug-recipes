@@ -8,6 +8,7 @@ In this recipe:
 - [Setup Windows Kernel Debugging over network](#setup-windows-kernel-debugging-over-network)
     - [Network card compatibility check](#network-card-compatibility-check)
 - [Setup Kernel debugging in QEMU/KVM](#setup-kernel-debugging-in-qemukvm)
+- [Kernel Debug output](#kernel-debug-output)
 - [Control processes in the debugger](#control-processes-in-the-debugger)
     - [Get process information](#get-process-information)
     - [Break when user-mode process is created](#break-when-user-mode-process-is-created)
@@ -87,6 +88,10 @@ The serial1 on virtualized Windows appears as the COM2 port.
 bcdedit /debug {current} on
 bcdedit /dbgsettings SERIAL DEBUGPORT:2 BAUDRATE:115200
 ```
+
+## Kernel Debug output
+
+Starting from Vista Microsoft turned off the default kernel debug logging and in order to use it you need to enable it manually. This can be done by modifying: `HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Debug Print Filter` key. The `DEFAULT` value is set to 0. Thish is actually a bitmask and Info level is represented by the third bit so setting `DEFAULT` to 8 will enable Info logs on debug output.
 
 ## Control processes in the debugger
 
