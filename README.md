@@ -18,7 +18,6 @@ I prepared a short guide on configuring Windows for effective troubleshooting, s
 
 - [WinDbg](debugging-using-windbg/windbg-field-notes.md)
 - [LLDB](debugging-using-lldb/lldb-field-notes.md)
-- [PowerShell](powershell/powershell-recipes.md)
 - :floppy_disk: [Visual Studio debugger](debugging-using-vs/README.md)
 
 ## Troubleshooting
