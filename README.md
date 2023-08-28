@@ -12,7 +12,7 @@ I hope you will find the materials helpful. Any contribution is welcome.
 
 ## General advice
 
-Make sure you have [valid symbols configuration](windows-debugging-configuration.md#environment-variables) in your system. If you are debugging a .NET application you may first [check the .NET debugging tips](clr-debugging-tips.md).
+I prepared a short guide on configuring Windows for effective troubleshooting, so please [check it out](https://wtrace.net/guides/configuring-windows-for-effective-troubleshooting/). If you are debugging a .NET application you may also [check the .NET debugging tips](clr-debugging-tips.md).
 
 ## Tools & techniques
 
