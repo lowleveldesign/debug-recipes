@@ -1,0 +1,187 @@
+0: kd> !Kdexts.help
+acpicache [flags]            - Displays cached ACPI tables
+acpiinf                      - Displays ACPI Information structure
+acpiirqarb                   - Displays ACPI IRQ Arbiter data
+acpiresconflict              - Displays detail on resource conflicts that cause
+                               bugcheck 0xA5 (ACPI_ROOT_PCI_RESOURCE_FAILURE)
+ahcache [flags]              - Displays application compatibility cache
+amli <command|?> [params]    - Use AMLI debugger extensions
+apc [[proc|thre] <address>]  - Displays Asynchronous Procedure Calls
+arbiter [flags]              - Displays all arbiters and arbitrated ranges
+arblist <address> [flags]    - Dump set of resources being arbitrated
+bcb <address>                - Display the Buffer Control Block
+biosreslist <address>        - Dump PnpBios/ACPI resource list
+blockeddrv                   - Dumps the list of blocked drivers in the system
+bpid <pid>                   - Tells winlogon to do a user-mode break into
+                               process <pid>
+bugdump                      - Display bug check dump data
+bushnd [address]             - Dump a HAL "BUS HANDLER" structure
+ca <address> [flags]         - Dump the control area of a section
+calldata <table name>        - Dump call data hash table
+cchelp                       - Display Cache Manager debugger extensions
+chklowmem                    - Tests if PAE system booted with /LOWMEM switch
+cmreslist <CM Resource List> - Dump CM resource list
+cpuinfo [id]                 - Displays CPU information for specified processor
+dbgprint                     - Displays contents of DbgPrint buffer
+dblink <address> [count] [bias] - Dumps a list via its blinks
+dflink <address> [count] [bias] - Dumps a list via its flinks
+deadlock [1]                 - Display Driver Verifier deadlock detection info
+defwrites                    - Dumps deferred write queue & cache write
+                               throttle analysis
+devext [<address> <type>]    - Dump device extension of specified type
+devhandles [<address>]       - Dumps open handles against the specified device
+devinst                      - dumps the device reference table
+devnode <device node> [flags] [service] - Dump the device node
+devobj <device>              - Dump the device object and Irp queue
+devpowerstate [device node]  - Dumps the device node with the power state and all attached devices
+devstack <device>            - Dump device stack associated w/device object
+dma [<adapter> [flags]]      - Displays Direct Memory Access subsystem info
+dpa [options]                - Displays pool allocations
+dpcs [processor]             - Dumps the queued DPCs
+dpcwatchdog                  - Dumps the DPC history of all processsors
+driveinfo <drive>[:]         - Dump drive volume information for specific drive
+drivers                      - Display info about loaded system modules
+drvobj <driver> [flags]      - Dump the driver object and related information
+dskheap                      - Dump desktop heap
+e820reslist <List>           - Dump an ACPI_BIOS_MULTI_NODE resource list
+errlog                       - Dump the error log contents
+exqueue [flags] [partition]  - Dump the ExWorkerQueues
+exrlog                       - Display the exception log
+facs                         - Dumps the Firmware ACPI Control Structure
+fadt                         - Dumps the Fixed ACPI Description Table
+filecache                    - Dumps information about the file system cache
+filelock <address>           - Dump a file lock structure - address is either
+                               the filelock or a fileobject
+filetime                     - Dumps 64-bit FILETIME as a human-readable time
+findautochkblockers          - Dumps file handles and file-names which are
+                               preventing autochk from running
+finddata <address> <offset>  - Find cached data at given offset in FILE_OBJECT
+findhandle <object> <process | 0> - Find handles referring to the specified object
+findthreads [-v] [-t <addr>]|[-i <addr>]|[-d <addr>]|[-a <addr> [-e <addr>|-l <length>]] - Find threads with stack-locations referencing a given object/memory range
+fpsearch <address>           - Find a freed special pool allocation
+frag [flags]                 - Kernel mode pool fragmentation
+frozen                       - Show processor states (Current,Frozen,Running)
+gbl                          - Dumps the ACPI Global Lock
+gentable <address> [flags]   - Dumps the given rtl_generic_table
+handle <addr> <flags> <process> <TypeName> -  Dumps handle for a process
+help                         - Displays this list
+hidppd <address> <flags>     - Dump Preparsed Data of HID device
+ib <port>                    - Read a byte from an I/O port
+id <port>                    - Read a double-word from an I/O port
+idt <vector>                 - Dump ISRs referenced by each IDT entry
+ioresdes <address>           - Display IO_RESOURCE_DESCRIPTOR structure
+ioreslist <IO Resource List> - Dump IO resource requirements list
+ipi                          - Dump IPI processors state
+ipmi                         - Prints usage for IPMI driver debugger extension
+iw <port>                    - Read a word from an I/O port
+irp <address> <dumplevel>    - Dump IRP at specified address
+irpfind [pooltype] [restart addr] [<irpsearch> <address>]
+                             - Search pool for active IRPs
+irql [processor]             - Display current IRQL for processor
+isainfo <address> [flags]    - Display ISA Bus and Card info
+job <address> [flags]        - Dump JobObject at address, processes in job
+joblist [flags]              - Displays all active job objects
+lbt                          - Dump legacy bus information table
+loadermemorylist <address>   - Display OSLOADER memory allocation list
+locks [-v] <address>         - Dump kernel mode resource locks
+logonsession [<LUID> [level]]  - Display logon sessions
+lookaside <address> <options> <depth> - Dump lookaside lists
+lpc                          - Dump lpc ports and messages
+mapic                        - Dumps the ACPI Multiple APIC Table
+mca <address>                - Display Machine Check Architecture registers
+memlist                      - Scans physical memory lists for consistency
+memusage                     - Dumps the page frame database table
+nsobj   <address>            - Dumps an ACPI Namespace Object
+nstree [<address>]           - Dumps an ACPI Namespace Object tree
+numa                         - Display Non-Uniform Memory Access nodes
+numa_hal                     - Display HAL NUMA info
+ob <port>                    - Write a byte to an I/O port
+object <-r | Path | address | 0 TypeName>  - Dumps an object manager object
+obtrace <address|object>     - Display object trace information
+od <port>                    - Write a double-word to an I/O port
+openmaps <shared cache map > - Dumps the active views for a shared cache map
+ow <port>                    - Write a word to an I/O port
+pcitree                      - Dump the PCI tree structure
+pcm <address>                - Detects valid address for Private Cache Map
+pagefile                     - Dumps pagefile information and related device stacks
+pcmcia [1]                   - Displays PCMCIA devices and their states
+pcr [processor]              - Dumps the Processor Control Registers
+pfn                          - Dumps the page frame database entry for the
+                               physical page
+pnpaction                    - Dump PNP action queue
+pnpcompletion                - Dump PNP completion queue
+pnpevent <event entry>       - Dump PNP events
+pnplocks                     - Dump PNP locks
+pnpthreads                   - Dump active Pnp thread if any
+pnptriage                    - 'x' command for Pnp - dumps basic info useful for triage
+pocaps                       - Dumps System Power Capabilities.
+podev <devobj>               - Dumps power relevent data in device object
+polist [<devobj>]            - Dumps power Irp serial list entries
+ponode                       - Dumps power Device Node stack (devnodes in
+                               power order)
+pool [<0|-1|address> [detail]] - Dump kernel mode heap
+poolfind Tag [pooltype] -    - Finds occurrences of the specified Tag
+poolused [flags [TAG]]       - Dump usage by pool tag
+popolicy [<address> [flags]] - Dumps System Power Policy.
+poproc [<address> [flags]]   - Dumps Processor Power State.
+poprocpolicy [<address> [flags]] - Dumps Processor Power Policy.
+poreqlist [<devobj>]         - Dumps PoRequestedPowerIrp created Power Irps
+posettings [/?]              - Dumps the power settings database
+potrigger <address>          - Dumps POP_ACTION_TRIGGER.
+powertriage                  - Dumps basic information useful for triage of power related issues
+pplookaside [processor] [lookasidelist] - Dumps PerProcessor LookasideLists.
+ppmhelp                      - Display help for ppm debugger commands.
+prcb [processor]             - Displays the Processor Control Block
+process [<address>] [flags] [image name] - Dumps process at specified address
+pte <address>                - Dump PDE and PTE for the entered address
+ptov PhysicalPageNumber      - Dump all valid physical<->virtual mappings
+                               for the given page directory
+qlocks                       - Dumps state of all queued spin locks
+range <RtlRangeList>         - Dump RTL_RANGE_LIST
+ready                        - Dumps state of all READY system threads
+reg [<command> [params]]     - Registry extensions
+rellist <relation list> [flags] - Dump PNP relation lists
+remlock                      - Dump a remove lock structure
+rsdt                         - Displays the ACPI Root System Description Table
+running [-t] [-i]            - Displays the running threads in the system
+scm <address>                - Detects valid address for Shared Cache Map
+session [-?] [-s] <id> [flags] [image name] - Dumps sessions
+sprocess [<id|-1> [flags]]   - Displays session processes
+srb <address>                - Dump Srb at specified address
+stacks <detail-level>        - Dump summary of current kernel stacks
+swd                          - Dump Software Watchdog state
+sysinfo                      - Dump SMBios, ACPI, and CPU info
+sysptes                      - Dumps the system PTEs
+thread [<address> [flags]]   - Dump current thread, specified thread, or stack
+                               containing address
+timer                        - Dumps timer tree
+tokenleak [<0>|<1> <ProcessCid> <BreakCount> <MethodWatch>]
+                             - Activates token leak tracking
+tunnel <address>             - Dump a file property tunneling cache
+trueref <address> [<process>] - Displays the refcount of the specified object
+tz [<address> <flags>]       - Dumps Thermal Zones. No Args dumps All TZs
+tzinfo <address>             - Dumps Thermal Zone Information.
+ubc [*|<bpid>]               - Clears a user-space breakpoint
+ubd [*|<bpid>]               - Disables a user-space breakpoint
+ube [*|<bpid>]               - Enables a user-space breakpoint
+ubl                          - Lists all user-space breakpoint
+ubp <address>                - Sets a user-space breakpoint
+vad                          - Dumps VADs
+verifier                     - Displays Driver Verifier settings and status
+version                      - Version of extension dll
+vm                           - Dumps virtual management values
+vpb <address>                - Dumps volume parameter block
+vtop DirBase address         - Dumps physical page for virtual address
+whatperftime <perf>          - Converts performance time to HH:MM:SS.mmm
+whattime <ticks>             - Converts ticks to HH:MM:SS.mmm
+wsle [<flags> [address]]     - Display Working Set List Entries
+zombies [<flags> [address]]  - Find all zombie processes
+
+X64-specific:
+
+apic [base]                  - Dump local apic
+apicerr                      - Dumps local apic error log
+ioapic [base]                - Dump io apic
+mtrr                         - Dumps MTRR
+
+Type ".hh [command]" for more detailed help

@@ -10,17 +10,22 @@ I hope you will find the materials helpful. Any contribution is welcome.
 
 :point_right: I also authored the **[.NET Diagnostics Expert](https://diagnosticsexpert.com/?utm_source=debugrecipes&utm_medium=banner&utm_campaign=general) course**, available at  Dotnetos :hot_pepper: Academy. Apart from the theory, it contains lots of demos and troubleshooting guidelines. Check it out if you're interested in learning .NET troubleshooting. 👈
 
-## General advice
+General advice
+--------------
 
 I prepared a short guide on configuring Windows for effective troubleshooting, so please [check it out](https://wtrace.net/guides/configuring-windows-for-effective-troubleshooting/). If you are debugging a .NET application you may also [check the .NET debugging tips](clr-debugging-tips.md).
 
-## Tools & techniques
+Tools & techniques
+------------------
 
 - [WinDbg](debugging-using-windbg/windbg-field-notes.md)
 - [LLDB](debugging-using-lldb/lldb-field-notes.md)
 - :floppy_disk: [Visual Studio debugger](debugging-using-vs/README.md)
+- [PerfView](tracing-using-perfview/perfview.md)
+- [WPT](tracing-using-wpt/wpt.md)
 
-## Troubleshooting
+Troubleshooting
+---------------
 
 ### Application execution problems
 
@@ -42,10 +47,6 @@ I prepared a short guide on configuring Windows for effective troubleshooting, s
 - :floppy_disk: [Profiling ASP.NET](asp.net/asp.net-profiling.md)
 - :floppy_disk: [Diagnosing Nancy](nancy/nancy-diagnostics.md)
 - :floppy_disk: [Debugging ASP.NET](asp.net/asp.net-debugging.md)
-
-### System
-
-- [Debugging Windows kernel](windows/kernel-debugging.md)
 
 ### Databases
 

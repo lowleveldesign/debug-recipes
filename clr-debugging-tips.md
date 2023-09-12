@@ -94,9 +94,9 @@ SOSEX help can be seen using the `!sosexhelp [command]` command.
 
 Netext help can be nicely rendered in the command window: `.browse !whelp`.
 
-### Loading symbol files for .NET Core
+### Manually loading symbol files for .NET Core
 
-I noticed that Microsoft public symbol servers sometimes do not have .NET Core dlls symbols. That does not allow WinDbg to decode native .NET stacks. Fortunately, we may solve this problem by precaching symbol files using the [dotnet-symbol](https://github.com/dotnet/symstore/tree/master/src/dotnet-symbol) tool. Assuming we set our [`_NT_SYMBOL_PATH`](windows-debugging-configuration.md) to `SRV*C:\symbols\dbg*http://msdl.microsoft.com/download/symbols`, we need to run dotnet-symbol setting the **--cache-directory** parameter to our symbol cache folder (for example, `C:\symbols\dbg`):
+I noticed that sometimes Microsoft public symbol servers do not have .NET Core dlls symbols. That does not allow WinDbg to decode native .NET stacks. Fortunately, we may solve this problem by precaching symbol files using the [dotnet-symbol](https://github.com/dotnet/symstore/tree/master/src/dotnet-symbol) tool. Assuming we set our `_NT_SYMBOL_PATH` to `SRV*C:\symbols\dbg*http://msdl.microsoft.com/download/symbols`, we need to run dotnet-symbol with the **--cache-directory** parameter pointing to our symbol cache folder (for example, `C:\symbols\dbg`):
 
 ```
 dotnet-symbol --recurse-subdirectories --cache-directory c:\symbols\dbg -o C:\temp\toremove "C:\Program Files\dotnet\shared\Microsoft.NETCore.App\3.0.0\*"
