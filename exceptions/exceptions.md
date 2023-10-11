@@ -302,7 +302,7 @@ Based on <http://blogs.msdn.com/b/friis/archive/2012/09/19/c-compiler-or-visual-
 Sometimes, when the memory dump was incorrectly collected, we may not see the exception information and the `.exr -1` does not work. When this happens, there is still a chance that the original exception is somewhere in the stack. Using the `.foreach` command, we may scan the stack and try all the addresses to see if any of them is a valid exception record. For example:
 
 ```
-.foreach /ps1 ($addr { dd /c1 @esp L100 }) { .echo $addr; .exr $addr }
+.foreach /ps1 ($addr { dp /c1 @$csp L100 }) { .echo $addr; .exr $addr }
 
 0430af24
 ExceptionAddress: abe8f04d
