@@ -38,6 +38,7 @@
     - [Javascript engine](#javascript-engine)
     - [Run a command for all the processes](#run-a-command-for-all-the-processes)
     - [Attach to multiple processes at once](#attach-to-multiple-processes-at-once)
+    - [Inject a DLL into a process being debugged](#inject-a-dll-into-a-process-being-debugged)
 - [Time Travel Debugging \(TTD\)](#time-travel-debugging-ttd)
 - [Misc tips](#misc-tips)
     - [Convert memory dump from one format to another](#convert-memory-dump-from-one-format-to-another)
@@ -92,7 +93,7 @@ If you need to debug on an old system with no support for WinDbgX, you need to *
 
 ### Setup Windows Kernel Debugging over network
 
-*HYPER-V note*: When debugging a Gen 2 VM remember to turn off the secure booting: 
+*HYPER-V note*: When debugging a Gen 2 VM remember to turn off the secure booting:
 **Set-VMFirmware -VMName "Windows 2012 R2" -EnableSecureBoot Off -Confirm**
 
 Turn on network deubugging (HOSTIP is the address of the machine on which we will run the debugger):
@@ -109,7 +110,7 @@ Then on the host machine, run windbg, select **Attach to kernel** and fill the p
 
 **Network card compatibility check**
 
-Starting from Debugging Tools for Windows 10 we have an additional tool: **kdnet.exe**. By running it on the guest you may see if your network card supports kernel debugging and get the instructions for the host machine: 
+Starting from Debugging Tools for Windows 10 we have an additional tool: **kdnet.exe**. By running it on the guest you may see if your network card supports kernel debugging and get the instructions for the host machine:
 
 ```
 C:\tools\x64>kdnet 172.25.121.1 60000
@@ -182,14 +183,14 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug
 HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows NT\CurrentVersion\AeDebug
 ```
 
-However, we may also use configure those keys manually and use WinDbg to, for example, create a memory dump at an application crash: 
+However, we may also use configure those keys manually and use WinDbg to, for example, create a memory dump at an application crash:
 
 ```
 REG_SZ Debugger = "C:\Users\me\AppData\Local\Microsoft\WindowsApps\WinDbgX.exe" -c ".dump /ma /u C:\dumps\crash.dmp; qd" -p %ld -e %ld -g
 REG_SZ Auto = 1
 ```
 
-If you miss the **-g** option, WinDbg will inject a remote thread with a breakpoint instruction, which will hide our original exception. In such case, you might need to [scan the stack to find the original exception record](../exceptions/exceptions.md#scanning-the-stack-for-native-exception-records)). 
+If you miss the **-g** option, WinDbg will inject a remote thread with a breakpoint instruction, which will hide our original exception. In such case, you might need to [scan the stack to find the original exception record](../exceptions/exceptions.md#scanning-the-stack-for-native-exception-records)).
 
 ## Getting information about the debugging session
 
@@ -238,7 +239,7 @@ Allocation Protect:     00000080          PAGE_EXECUTE_WRITECOPY
 Image Path:             prog.exe
 Module Name:            prog
 Loaded Image Name:      c:\test\prog.exe
-Mapped Image Name:      
+Mapped Image Name:
 More info:              lmv m prog
 More info:              !lmi prog
 More info:              ln 0xfd7df8
@@ -299,7 +300,7 @@ Reading stack in Windbg
 
 ```
 0:000> kb
- # ChildEBP RetAddr  Args to Child              
+ # ChildEBP RetAddr  Args to Child
 00 0019da88 73ed875c 0019e064 00020019 0019daf4 ntdll!NtOpenKeyEx
 01 0019dd20 73ebfc52 0019dfd4 00020019 00000003 KERNELBASE!BaseRegOpenClassKeyFromLocation+0x21c
 02 0019def8 73ed851e 00000000 00020019 0019e064 KERNELBASE!BaseRegOpenClassKey+0x93
@@ -423,7 +424,7 @@ Handle 1c0
 
 ### Threads
 
-The **!thread {addr}** command shows details about a specific thread. 
+The **!thread {addr}** command shows details about a specific thread.
 
 Each thread has its own register values. These values are stored in the CPU registers when the thread is executing and are stored in memory when another thread is executing. You can set the register context using .thread command:
 
@@ -640,7 +641,7 @@ You may set a breakpoint in user space, but you need to be in a valid process co
 kd> !process 0 0 notepad.exe
 PROCESS ffffe0014f80d680
     SessionId: 2  Cid: 0e44    Peb: 7ff7360ef000  ParentCid: 0aac
-    DirBase: 2d497000  ObjectTable: ffffc00054529240  HandleCount: 
+    DirBase: 2d497000  ObjectTable: ffffc00054529240  HandleCount:
     Image: notepad.exe
 
 kd> .process /i ffffe0014f80d680
@@ -658,7 +659,7 @@ kd> .reload /user
 kd> !process -1 0
 PROCESS ffffe0014f80d680
     SessionId: 2  Cid: 0e44    Peb: 7ff7360ef000  ParentCid: 0aac
-    DirBase: 2d497000  ObjectTable: ffffc00054529240  HandleCount: 
+    DirBase: 2d497000  ObjectTable: ffffc00054529240  HandleCount:
     Image: notepad.exe
 
 kd> x kernel32!CreateFileW
@@ -672,7 +673,7 @@ Alternative way (which does not require process context switching) is to use dat
 kd> !process 0 0 notepad.exe
 PROCESS ffffe0014ca22480
     SessionId: 2  Cid: 0614    Peb: 7ff73628f000  ParentCid: 0d88
-    DirBase: 5607b000  ObjectTable: ffffc0005c2dfc40  HandleCount: 
+    DirBase: 5607b000  ObjectTable: ffffc0005c2dfc40  HandleCount:
     Image: notepad.exe
 
 kd> .process /r /p ffffe0014ca22480
@@ -745,7 +746,7 @@ dx @$curprocess.Modules["bindfltapi"].Contents.Exports.Select(m =>  Debugger.Uti
 
 The referance for the host object is [here](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/native-objects-in-javascript-extensions-debugger-objects).
 
-I tried to understand the **host object** so I wrote a little test script (<windbg-scripting.js>):
+I tried to understand the **host object** so I wrote [a little test script](windbg-scripting.js):
 
 ```
 0:000> .scriptload c:\temp\windbg-scripting.js
@@ -789,6 +790,45 @@ dx -r2 @$cursession.Processes.Where(p => p.Name == "test.exe").Select(p => Debug
 ```
 $ Get-Process -Name disp+work | where Id -ne 6612 | % { ".attach -b 0n$($_.Id)" } | Out-File -Encoding ascii c:\tmp\attach_all.txt
 $ windbgx.exe -c "`$`$<C:\tmp\attach_all.txt" -pn winver.exe
+```
+
+### Inject a DLL into a process being debugged
+
+In the example below we will inject shell32.dll into a target process by using the **.call** command. We start by allocating some space for the DLL name and filling it up:
+
+```
+0:000> .dvalloc 0x1a
+Allocated 1000 bytes starting at 00000279`c1be0000
+0:000> ezu 00000279`c1be0000 "shell32.dll"
+0:000> du 00000279`c1be0000
+00000279`c1be0000  "shell32.dll"
+```
+
+The .call command requires private symbols. Microsoft does not publish public symbols for KernelBase!LoadLibraryW, but we may create them (thanks to the [SymbolBuilderComposition extension](https://github.com/microsoft/WinDbg-Samples/tree/master/TargetComposition/SymBuilder)):
+
+```
+0:000> ? kernelbase!LoadLibraryW - kernelbase
+Evaluate expression: 533568 = 00000000`00082440
+
+0:000> .load c:\dbg64ex\SymbolBuilderComposition.dll
+
+0:000> dx @$sym = Debugger.Utility.SymbolBuilder.CreateSymbols("kernelbase.dll")
+
+0:000> dx @$fnLoadLibraryW = @$sym.Functions.Create("LoadLibraryW", "void*", 0x0000000000082440, 0x8)
+0:000> dx @$param =  @$fnLoadLibraryW.Parameters.Add("lpLibFileName", "wchar_t*")
+0:000> dx @$param.LiveRanges.Add(0, 8, "@rcx")
+
+0:000> .reload /f kernelbase.dll
+
+0:000> .call kernelbase!LoadLibraryW(0x00000279`c1be0000)
+
+0:000> ~.g
+
+0:000> lm
+start             end                 module name
+...
+00007ff9`b3390000 00007ff9`b3be9000   SHELL32    (deferred)
+...
 ```
 
 ## Time Travel Debugging (TTD)
