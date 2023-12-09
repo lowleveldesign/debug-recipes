@@ -44,7 +44,6 @@
     - [Convert memory dump from one format to another](#convert-memory-dump-from-one-format-to-another)
     - [Loading arbitrary DLL into WinDbg for analysis](#loading-arbitrary-dll-into-windbg-for-analysis)
     - [Keyboard and mouse shortcuts](#keyboard-and-mouse-shortcuts)
-    - [Inject a DLL with WinDbg commands](#inject-a-dll-with-windbg-commands)
     - [Check registry keys inside debugger](#check-registry-keys-inside-debugger)
 
 <!-- /MarkdownTOC -->
@@ -862,23 +861,15 @@ When debugging a full memory dump (**/ma**), we may convert it to a smaller memo
 
 ### Loading arbitrary DLL into WinDbg for analysis
 
-WinDbg does not allow analyzing an arbitrary DLL, but it's easily fixable. We may use **rundll32.exe** as our debugging target and wait until the DLL gets loaded, for example:
+WinDbg allows analysis of an arbitrary PE file if we load it as a crash dump (the **Open dump file** menu option or the **-z** command-line argument), for example: `windbgx -z C:\Windows\System32\shell32.dll`. WinDbg will load a DLL/EXE as a data file.
 
-```
-windbgx -c "sxe ld:jscript9.dll;g" rundll32.exe .\jscript9.dll,TestFunction
-```
-
-The TestFunction in the snippet could be any string. Rundll32.exe loads the DLL before validating the exported function address.
+Alternatively, if we want to normally load the DLL, we may use **rundll32.exe** as our debugging target and wait until the DLL gets loaded, for example: `windbgx -c "sxe ld:jscript9.dll;g" rundll32.exe .\jscript9.dll,TestFunction`. The TestFunction in the snippet could be any string. Rundll32.exe loads the DLL before validating the exported function address.
 
 ### Keyboard and mouse shortcuts
 
 The **SHIFT + \[UP ARROW\]** completes the current command from previously executed commands (much as F8 in cmd).
 
 If you double-click on a word in the command window in WinDbgX, the debugger will **highlight** all occurrences of the selected term. You may highlight other words with different colors if you press the ctrl key when double-clicking on them. To unhighlight a given word, double-click on it again, pressing the ctrl key.
-
-### Inject a DLL with WinDbg commands
-
-FIXME: CreateRemoteThread, .dvalloc, .call
 
 ### Check registry keys inside debugger
 
