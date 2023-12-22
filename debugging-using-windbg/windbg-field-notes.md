@@ -54,35 +54,7 @@
 
 On modern systems **download the [appinstaller](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/)** file and choose **Install** in the context menu.
 
-If you are on Windows Server 2019 and you don't see the Install option in the context menu, there is a big chance you're missing the App Installer package on your system. The steps below list the steps required to install it.
-
-From the [winget-cli release site](https://github.com/microsoft/winget-cli/releases), download **DesktopAppInstallerPolicies.zip** and **Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle**. Unzip the policies to `C:\Windows\PolicyDefinitions` (you may skip the localizations you don't have on your system). Next, run **gpedit.msc** and enable the **Enable App Installer** policy under "Computer Configuration\Administrative Templates\Windows Components\Desktop App Installer". Now, we are ready to install AppInstaller:
-
-```
-Add-AppxPackage Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle
-```
-
-If it reports no issues, then you should now see the Install option in the context menu and be able to install the WinDbg package (you may need to allow local app installs in the Developer Settings).
-
-If you see an error about a missing **Microsoft.UI.Xaml.2.7** package:
-
-```
-Add-AppxPackage : Deployment failed with HRESULT: 0x80073CF3, Package failed updates, dependency or conflict validation. Windows cannot install package Microsoft.DesktopAppInstaller_1.19.10173.0_x64__8wekyb3d8bbwe because this package depends on a framework that could not be found. Provide the framework "Microsoft.UI.Xaml.2.7" published by "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US", with neutral or x64 processor architecture and minimum version 7.2109.13004.0, along with this package to install. The frameworks with name "Microsoft.UI.Xaml.2.7" currently installed are: {}
-```
-
-A solution, as described in [this GitHub comment](https://github.com/microsoft/winget-cli/issues/1861#issuecomment-1021240355), is to download the [Microsoft.UI.Xaml](https://www.nuget.org/packages/Microsoft.UI.Xaml/) package version 2.7.x and extract the `tools\AppX\{arch}\Release\Microsoft.UI.Xaml.2.7.appx` out of it. Then run:
-
-```
-Add-AppxPackage .\Microsoft.UI.Xaml.2.7.appx
-```
-
-Another missing package could be **Microsoft.VCLibs.140.00.UWPDesktop**:
-
-```
-Add-AppxPackage : Deployment failed with HRESULT: 0x80073CF3, Package failed updates, dependency or conflict validation. Windows cannot install package Microsoft.DesktopAppInstaller_1.19.10173.0_x64__8wekyb3d8bbwe because this package depends on a framework that could not be found. Provide the framework "Microsoft.VCLibs.140.00.UWPDesktop" published by "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US", with neutral or x64 processor architecture and minimum version 14.0.30704.0, along with this package to install. The frameworks with name "Microsoft.VCLibs.14 0.00.UWPDesktop" currently installed are: {}
-```
-
-You may download the valid appx package from the location on the [documentation page](https://learn.microsoft.com/en-us/troubleshoot/developer/visualstudio/cpp/libraries/c-runtime-packages-desktop-bridge#how-to-install-and-update-desktop-framework-packages) and, again, install it with the Add-AppxPackage command.
+If you are on Windows Server 2019 and you don't see the Install option in the context menu, there is a big chance you're missing the App Installer package on your system. In that case, you may use install_windbgx.ps1 script provided by @Izybkr
 
 ### Classic WinDbg
 
