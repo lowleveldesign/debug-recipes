@@ -300,7 +300,7 @@ Scenario |  Pattern | Remarks
 Group requests | `^Request ID->ALL Requests` | Useful when we want to group all requests to analyze, for example, CPU times
 Group requests by URL | `Request ID * URL:{*}->$1` | Useful when we want to group requests by URL to analyze, for example, CPU times
 Group threads | `^Thread (%)-> ALL Threads` | Useful when we don't want to split the call stacks by threads in the call tree
-Group async calls | `{%}!{%}+<>c__DisplayClass*+<<{%}>b__*>d.MoveNext()->($1) $2 async $3` | Christophe Nasarre presented this grouping pattern
+Group async calls | {% raw %} `{%}!{%}+<>c__DisplayClass*+<<{%}>b__*>d.MoveNext()->($1) $2 async $3` {% endraw %} | Christophe Nasarre presented this grouping pattern
 
 
 ## Issues
