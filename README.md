@@ -1,6 +1,6 @@
 
-Debug Recipes (:floppy_disk: ARCHIVED)
-======================================
+:floppy_disk: Archived Debug Recipes
+====================================
 
 It is a repository of my field notes collected while debugging various .NET application problems on Windows (mainly) and Linux. They do not contain much theory but rather describe tools and scripts with some usage examples.
 
