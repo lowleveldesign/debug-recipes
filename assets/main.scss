@@ -1,0 +1,81 @@
+---
+# Only the main Sass file needs front matter (the dashes are enough)
+---
+
+$brand-color: #CA4E07;
+$credits-color: #707070;
+
+@import "minima";
+
+.post-title {
+  @include relative-font-size(2.5);
+  letter-spacing: -1px;
+  line-height: 1;
+
+  @include media-query($on-laptop) {
+    @include relative-font-size(2.0);
+  }
+}
+
+.post-content {
+  table {
+    table-layout: fixed;
+  }
+
+  table th {
+    text-align: center;
+  }
+
+  table td {
+    vertical-align: top;
+  }
+}
+
+.site-title {
+  @include relative-font-size(1.4);
+  font-weight: 700;
+  line-height: $base-line-height * $base-font-size * 2.25;
+  letter-spacing: -1px;
+  margin-bottom: 0;
+  float: left;
+  text-transform: uppercase;
+
+  &, &:visited {
+    color: $brand-color;
+  }
+}
+
+.site-nav {
+  .page-link {
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+}
+
+.feature-image {
+  background-color: black;
+  background-repeat: no-repeat;
+  margin-bottom: 10px;
+  padding-top: 50px;
+  height: 300px;
+
+  .wrapper {
+    color: #ffffff;
+
+    h1 {
+      font-size: 4rem;
+      font-weight: 900;
+      margin-bottom: 0px
+    }
+
+    p {
+      font-size: 1.2rem;
+    }
+  }
+}
+
+p.credits {
+  color: $credits-color;
+  padding-top: 10px;
+  margin-top: 40px;
+}

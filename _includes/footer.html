@@ -1,0 +1,31 @@
+<footer class="site-footer h-card">
+  <data class="u-url" href="{{ "/" | relative_url }}"></data>
+
+  <div class="wrapper">
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <p>
+          {%- if site.author -%}
+          {{ site.author | escape }}
+          {%- else -%}
+          {{ site.title | escape }}
+          {%- endif -%}
+        </p>
+        <p>{{- site.description | escape -}}</p>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="contact-list">
+          <li><a href="/subscribe"><strong>Newsletter</strong></a></li>
+          <li><a class="u-email" href="/privacy-policy">Privacy policy</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        {%- include social.html -%}
+      </div>
+    </div>
+
+  </div>
+
+</footer>

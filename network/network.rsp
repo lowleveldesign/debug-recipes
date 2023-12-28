@@ -1,2 +1,0 @@
---providers
-Microsoft-System-Net-Primitives,Microsoft-System-Net-Sockets,Microsoft-System-Net-NameResolution,Microsoft-System-Net-Mail,Microsoft-System-Net-Requests,Microsoft-System-Net-HttpListener,Microsoft-System-Net-WinHttpHandler,Microsoft-System-Net-Http,Microsoft-System-Net-Security,Microsoft-AspNetCore-Server-Kestrel

@@ -1,0 +1,32 @@
+title: wtrace.net
+author: © wtrace.net 2023
+email: contact@wtrace.net
+description: >- # this means to ignore newlines until "baseurl:"
+  Tools and materials for software and system troubleshooting 
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "" # the base hostname & protocol for your site, e.g. http://example.com
+
+github_username:  lowleveldesign
+rss: News feed
+
+permalink: pretty
+
+defaults:
+  - 
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      permalink: /:year/:month/:day/:title
+
+# Build settings
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-redirect-from
+
+header_pages:
+  - guides.md
+  - tools.md
+  - about.md

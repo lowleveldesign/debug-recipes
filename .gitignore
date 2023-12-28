@@ -1,1 +1,6 @@
-network/certs
+_site
+.sass-cache
+.jekyll-cache
+.jekyll-metadata
+vendor
+draft_*
