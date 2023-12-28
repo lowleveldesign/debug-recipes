@@ -8,3 +8,7 @@ I am **Sebastian Solnica**, a software engineer with over 15 years of experience
 <p class="credits">
 <em><strong>Credits:</strong> this site uses modified icons from the <a href="https://github.com/feathericons/feather">feather set</a>.</em>
 </p>
+
+<p class="credits">
+<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png"></a><br>The published materials are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
+</p>

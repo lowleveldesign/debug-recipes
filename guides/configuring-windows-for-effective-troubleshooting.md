@@ -113,7 +113,3 @@ These dumps can take up a lot of disk space over time, so you should either dele
 ## Installing ETW tools
 
 The last set of utilities I want to mention in this guide are tools for working with [Event Tracing for Windows (ETW)](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/event-tracing-for-windows--etw-). Using ETW traces is a powerful way to learn how the system and processes operate. **Windows Performance Toolkit**, available as part of the [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/), includes collectors such as xperf.exe and wpr.exe, as well as viewers like wpa.exe. It has a bit steep learning curve, so you may also want to check out [PerfView](https://github.com/microsoft/perfview/releases), [UIforETW](https://github.com/google/UIforETW/releases), and [wtrace](https://github.com/lowleveldesign/wtrace/releases) (especially the last one!) which provide more approachable interface to ETW events collection and analysis in the supported troubleshooting scenarios.
-
-<p class="credits">
-<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
-</p>

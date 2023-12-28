@@ -5,6 +5,9 @@ title: Diagnosing .NET applications
 
 WIP
 
+:point_right: I also authored the **[.NET Diagnostics Expert](https://diagnosticsexpert.com/?utm_source=debugrecipes&utm_medium=banner&utm_campaign=general) course**, available at  Dotnetos :hot_pepper: Academy. Apart from the theory, it contains lots of demos and troubleshooting guidelines. Check it out if you're interested in learning .NET troubleshooting. 👈
+
+
 **Table of contents:**
 
 <!-- MarkdownTOC -->

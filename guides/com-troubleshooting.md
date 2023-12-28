@@ -409,6 +409,3 @@ Finally, to find who is keeping our managed object alive, we could use the **!gc
 - [COM+ revisited](https://lowleveldesign.wordpress.com/2022/01/17/com-revisited/) by me :)
 - [Calling Local Windows RPC Servers from .NET](https://googleprojectzero.blogspot.com/2019/12/calling-local-windows-rpc-servers-from.html) by James Forshaw
 
-<p class="credits">
-<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
-</p>
