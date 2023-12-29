@@ -1,9 +1,7 @@
 ---
 layout: page
-title: Configuring Windows for Effective Troubleshooting
+title: Configuring Windows for effective troubleshooting
 ---
-
-This guide presents Windows settings and tools for effective problems troubleshooting on Windows.
 
 **Table of contents:**
 

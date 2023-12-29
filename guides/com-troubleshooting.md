@@ -1,6 +1,6 @@
 ---
 layout: page
-title: COM Troubleshooting
+title: COM troubleshooting
 redirect_from:
     - /articles/com-troubleshooting/
     - /articles/com-troubleshooting

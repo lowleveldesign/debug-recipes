@@ -3,8 +3,6 @@ layout: page
 title: Using WinDbg
 ---
 
-WIP
-
 **Table of contents:**
 
 <!-- MarkdownTOC -->
@@ -32,23 +30,25 @@ WIP
 - [Controlling process execution](#controlling-process-execution)
     - [Controlling the target \(g, t, p\)](#controlling-the-target-g-t-p)
     - [Watch trace](#watch-trace)
-    - [Break when a specific function is in the call stack](#break-when-a-specific-function-is-in-the-call-stack)
-    - [Break on a specific function enter and leave](#break-on-a-specific-function-enter-and-leave)
-    - [Break for all methods in the C++ object virtual table](#break-for-all-methods-in-the-c-object-virtual-table)
-    - [Break when user-mode process is created \(kernel-mode\)](#break-when-user-mode-process-is-created-kernel-mode)
-    - [Set a user-mode breakpoint in kernel-mode](#set-a-user-mode-breakpoint-in-kernel-mode)
+    - [Breaking when a specific function is in the call stack](#breaking-when-a-specific-function-is-in-the-call-stack)
+    - [Breaking on a specific function enter and leave](#breaking-on-a-specific-function-enter-and-leave)
+    - [Breaking for all methods in the C++ object virtual table](#breaking-for-all-methods-in-the-c-object-virtual-table)
+    - [Breaking when a user-mode process is created \(kernel-mode\)](#breaking-when-a-user-mode-process-is-created-kernel-mode)
+    - [Setting a user-mode breakpoint in kernel-mode](#setting-a-user-mode-breakpoint-in-kernel-mode)
 - [Scripting the debugger](#scripting-the-debugger)
     - [The dx command](#the-dx-command)
     - [Javascript engine](#javascript-engine)
-    - [Run a command for all the processes](#run-a-command-for-all-the-processes)
-    - [Attach to multiple processes at once](#attach-to-multiple-processes-at-once)
-    - [Inject a DLL into a process being debugged](#inject-a-dll-into-a-process-being-debugged)
+    - [Running a command for all the processes](#running-a-command-for-all-the-processes)
+    - [Attaching to multiple processes at once](#attaching-to-multiple-processes-at-once)
+    - [Injecting a DLL into a process being debugged](#injecting-a-dll-into-a-process-being-debugged)
 - [Time Travel Debugging \(TTD\)](#time-travel-debugging-ttd)
+    - [Installation](#installation)
+    - [Collection](#collection)
+    - [Usage](#usage)
 - [Misc tips](#misc-tips)
-    - [Convert memory dump from one format to another](#convert-memory-dump-from-one-format-to-another)
-    - [Loading arbitrary DLL into WinDbg for analysis](#loading-arbitrary-dll-into-windbg-for-analysis)
+    - [Converting a memory dump from one format to another](#converting-a-memory-dump-from-one-format-to-another)
+    - [Loading an arbitrary DLL into WinDbg for analysis](#loading-an-arbitrary-dll-into-windbg-for-analysis)
     - [Keyboard and mouse shortcuts](#keyboard-and-mouse-shortcuts)
-    - [Check registry keys inside debugger](#check-registry-keys-inside-debugger)
 
 <!-- /MarkdownTOC -->
 
@@ -56,28 +56,27 @@ WIP
 
 ### WinDbgX (WinDbgNext, formely WinDbg Preview)
 
-On modern systems **download the [appinstaller](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/)** file and choose **Install** in the context menu.
-
-If you are on Windows Server 2019 and you don't see the Install option in the context menu, there is a big chance you're missing the App Installer package on your system. In that case, you may use [a PowerShell script provided by @Izybkr](https://github.com/microsoftfeedback/WinDbg-Feedback/issues/19#issuecomment-1513926394).
+On modern systems download the [appinstaller](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/) file and choose Install in the context menu. If you are on Windows Server 2019 and you don't see the Install option in the context menu, there is a big chance you're missing the App Installer package on your system. In that case, you may use [a PowerShell script provided by @Izybkr](https://github.com/microsoftfeedback/WinDbg-Feedback/issues/19#issuecomment-1513926394).
 
 ### Classic WinDbg
 
-If you need to debug on an old system with no support for WinDbgX, you need to **download Windows SDK and install the Debugging Tools for Windows** feature. The executables will be in the Debuggers folder, for example, `c:\Program Files (x86)\Windows Kits\10\Debuggers`.
+If you need to debug on an old system with no support for WinDbgX, you need to **download Windows SDK and install the Debugging Tools for Windows** feature. Executables will be in the Debuggers folder, for example, `c:\Program Files (x86)\Windows Kits\10\Debuggers`.
 
 ## Configuring a debugging session
 
 ### Setup Windows Kernel Debugging over network
 
-*HYPER-V note*: When debugging a Gen 2 VM remember to turn off the secure booting:
-**Set-VMFirmware -VMName "Windows 2012 R2" -EnableSecureBoot Off -Confirm**
+*HYPER-V note*: When debugging a Gen 2 VM remember to turn off the secure booting: `Set-VMFirmware -VMName "Windows 2012 R2" -EnableSecureBoot Off -Confirm`
 
-Turn on network deubugging (HOSTIP is the address of the machine on which we will run the debugger):
+Turn on network debugging (HOSTIP is the address of the machine on which we will run the debugger):
 
-C:\Windows\system32>**bcdedit /dbgsettings NET HOSTIP:192.168.0.2 PORT:60000**
+```
+C:\Windows\system32> bcdedit /dbgsettings NET HOSTIP:192.168.0.2 PORT:60000
 Key=3ma3qyz02ptls.23uxbvnd0e2zh.1gnwiqb6v3mpb.mjltos9cf63x
 
-C:\Windows\system32>**bcdedit /debug {current} on**
+C:\Windows\system32> bcdedit /debug {current} on
 The operation completed successfully.
+```
 
 Then on the host machine, run windbg, select **Attach to kernel** and fill the port and key textboxes.
 
@@ -89,7 +88,7 @@ Starting from Debugging Tools for Windows 10 we have an additional tool: **kdnet
 C:\tools\x64>kdnet 172.25.121.1 60000
 
 Enabling network debugging on Microsoft Hypervisor Virtual Machine.
-Key=1a88vu15z4lta.8q4ler06jr8v.1fv4h88r9e0ob.1139s57nv8obj
+Key=xxxx
 
 To finish setting up KDNET for this VM, run the following command from an
 elevated command prompt running on the Windows hyper-v host.  (NOT this VM!)
@@ -97,8 +96,7 @@ powershell -ExecutionPolicy Bypass kdnetdebugvm.ps1 -vmguid DD4F4AFE-9B5F-49AD-8
 775-20863740C942 -port 60000
 
 To debug this vm, run the following command on your debugger host machine.
-windbg -k net:port=60000,key=1a88vu15z4lta.8q4ler06jr8v.1fv4h88r9e0ob.1139s57nv8
-obj,target=DELAPTOP
+windbg -k net:port=60000,key=xxxx,target=DELAPTOP
 
 Then make sure to SHUTDOWN (not restart) the VM so that the new settings will
 take effect.  Run shutdown -s -t 0 from this command prompt.
@@ -141,9 +139,9 @@ bcdedit /dbgsettings SERIAL DEBUGPORT:2 BAUDRATE:115200
 
 ### Remote debugging
 
-To start a remote session of WinDbg, you may use the **-server** switch, e.g.: **windbg(x) -server "npipe:pipe=svcpipe" notepad**.
+To start a remote session of WinDbg, you may use the **-server** switch, e.g.: `windbg(x) -server "npipe:pipe=svcpipe" notepad`.
 
-You may attach to the currently running session by using **-remote** switch, e.g.: **windbg(x) -remote "npipe:pipe=svcpipe,server=localhost"**
+You may attach to the currently running session by using **-remote** switch, e.g.: `windbg(x) -remote "npipe:pipe=svcpipe,server=localhost"`
 
 To terminate the entire session and exit the debugging server, use the **q (Quit)** command. To exit from one debugging client without terminating the server, you must issue a command from that specific client. If this client is KD or CDB, use the **CTRL+B** key to exit. If you are using a script to run KD or CDB, use **.remote_exit (Exit Debugging Client)**.
 
@@ -156,18 +154,18 @@ HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug
 HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows NT\CurrentVersion\AeDebug
 ```
 
-However, we may also use configure those keys manually and use WinDbg to, for example, create a memory dump at an application crash:
+However, we may also use configure those keys manually and use WinDbg to, for example, create a memory dump when the application crashes:
 
 ```
 REG_SZ Debugger = "C:\Users\me\AppData\Local\Microsoft\WindowsApps\WinDbgX.exe" -c ".dump /ma /u C:\dumps\crash.dmp; qd" -p %ld -e %ld -g
 REG_SZ Auto = 1
 ```
 
-If you miss the **-g** option, WinDbg will inject a remote thread with a breakpoint instruction, which will hide our original exception. In such case, you might need to [scan the stack to find the original exception record](../exceptions/exceptions.md#scanning-the-stack-for-native-exception-records)).
+If you miss the **-g** option, WinDbg will inject a remote thread with a breakpoint instruction, which will hide our original exception. In such case, you might need to scan the stack to find the original exception record.
 
 ## Getting information about the debugging session
 
-The **|** command displays a path to the process image. You may run **vercommand** to check how the debugger was launched. The **vertarget** command shows the OS version, the process lifetime, and more, for example, the dump time when debugging a memory dump. The **.time** command displays information about the system time variable (session time).
+The **\|** command displays a path to the process image. You may run **vercommand** to check how the debugger was launched. The **vertarget** command shows the OS version, the process lifetime, and more, for example, the dump time when debugging a memory dump. The **.time** command displays information about the system time variable (session time).
 
 **.lastevent** shows the last reason why the debugger stopped and **.eventlog** displays the recent events.
 
@@ -189,6 +187,25 @@ Then copy it to the machine with the symbol server access, and download the requ
 
 ```
 symchk /im test.dmp.sym /s SRV*C:\symbols*https://msdl.microsoft.com/download/symbols
+```
+
+In WinDbgX, we may also list and filter modules with the **@$curprocess.Modules** property, for example:
+
+```
+0:000> dx @$curprocess.Modules["win32u.dll"]
+@$curprocess.Modules["win32u.dll"]                 : C:\WINDOWS\System32\win32u.dll
+    BaseAddress      : 0x7ffa0e2c0000
+    Name             : C:\WINDOWS\System32\win32u.dll
+    Size             : 0x26000
+    Attributes      
+    Contents        
+    Symbols          : [SymbolModule]win32u
+
+0:000> dx @$curprocess.Modules["win32u.dll"].Contents.Exports
+@$curprocess.Modules["win32u.dll"].Contents.Exports                
+    [0x0]            : Function export of 'NtBindCompositionSurface'
+    [0x1]            : Function export of 'NtCloseCompositionInputSink'
+    ...
 ```
 
 ## Working with memory
@@ -253,11 +270,11 @@ Additionally, it can display regions of memory of specific type, for example:
 
 ### Stack
 
-Stack grows from high addresses to lower. Thus, when you see addresses bigger than the frame base (such as `ebp+C`) they usually refer to the function arguments. Smaller addresses (such as `ebp-20`) usually refer to local function variables.
+Stack grows from high addresses to lower. Thus, when you see addresses bigger than the frame base (such as ebp+C) they usually refer to the function arguments. Smaller addresses (such as ebp-20) usually refer to local function variables.
 
 To display stack frames use the **k** command. The **kP** command will additionally print function arguments if private symbols are available. The **kbM** command outputs stack frames with first three parameters passed on the stack (those will be first three parameters of the function in x86).
 
-When there are many threads running in a process it's common that some of them have same call stacks. To better organize list call stacks we can use the **!uniqstack** command. Adding **-b** parameter adds first three parameters to the output, **-v** displays all parameters (but requires private symbols).
+When there are many threads running in a process it's common that some of them have the same call stacks. To better organize call stacks we can use the **!uniqstack** command. Adding **-b** parameter adds first three parameters to the output, **-v** displays all parameters (but requires private symbols).
 
 To switch a local context to a different stack frame we can use the `.frame` command:
 
@@ -269,37 +286,35 @@ To switch a local context to a different stack frame we can use the `.frame` com
 
 The **!for_each_frame** extension command enables you to execute a single command repeatedly, once for each frame in the stack.
 
-Reading stack in Windbg
+In WinDbgX, we may access the call stack frames using **dx @$curstack.Frames**, for example:
 
 ```
-0:000> kb
- # ChildEBP RetAddr  Args to Child
-00 0019da88 73ed875c 0019e064 00020019 0019daf4 ntdll!NtOpenKeyEx
-01 0019dd20 73ebfc52 0019dfd4 00020019 00000003 KERNELBASE!BaseRegOpenClassKeyFromLocation+0x21c
-02 0019def8 73ed851e 00000000 00020019 0019e064 KERNELBASE!BaseRegOpenClassKey+0x93
-03 0019dfa8 73ed7fe7 00000000 00020019 0019e064 KERNELBASE!LocalBaseRegOpenKey+0x18e
-04 0019e010 73ed7e9c 00000292 0019e138 00000000 KERNELBASE!RegOpenKeyExInternalW+0x137
-05 0019e034 74310cf8 00000292 0019e138 00000000 KERNELBASE!RegOpenKeyExW+0x1c
-```
+0:000> dx @$curstack.Frames
+@$curstack.Frames                
+    [0x0]            : ntdll!LdrpDoDebuggerBreak + 0x30 [Switch To]
+    [0x1]            : ntdll!LdrpInitializeProcess + 0x1cfa [Switch To]
+    [0x2]            : ntdll!_LdrpInitialize + 0x56298 [Switch To]
+    [0x3]            : ntdll!LdrpInitializeInternal + 0x6b [Switch To]
+    [0x4]            : ntdll!LdrInitializeThunk + 0xe [Switch To]
 
-The ChildEBP is the actual stack frame address. To see the first three arguments to the `RegOpenKeyExInternalW` you may issue:
-
+0:000> dx @$curstack.Frames[0].Attributes                
+    InstructionOffset : 0x7ffa1102b784
+    ReturnOffset     : 0x7ffa1102e9d6
+    FrameOffset      : 0xea5055f370
+    StackOffset      : 0xea5055f340
+    FuncTableEntry   : 0x0
+    Virtual          : 1
+    FrameNumber      : 0x0
+    SourceInformation
 ```
-0:000> dpu 0019e034+8 L3
-0019e03c  00000292
-0019e040  0019e138 "CLSID\{2BB89983-7EE7-4EBF-858F-9B11D4BD07D6}"
-0019e044  00000000
-```
-
-Which matches the kb output. The RetAddr is the address where program will continue when the current function call is finished.
 
 ### Variables
 
 When you have private symbols you may list local variables with the **dv** command.
 
-Additionally the **dt** command allows you to work with type symbols. You may either list them, eg.: `dt notepad!g_*` or dump a data address using a given type format, eg.: `dt nt!_PEG 0x13123`.
+Additionally the **dt** command allows you to work with type symbols. You may either list them, eg.: `dt notepad!g_*` or dump a data address using a given type format, eg.: `dt nt!_PEB 0x13123`.
 
-With windbg 10.0 a new very interesting command was introduced: **dx**. It uses a navigation expressions just like Visual Studio (you may define your own file .natvis files). You load the interesting .natvis file with the **.nvload** command.
+The **dx** command allows you to dump local variables or read them from any place in the memory. It uses a navigation expressions just like Visual Studio (you may define your own file .natvis files). You load the interesting .natvis file with the **.nvload** command.
 
 **#FIELD_OFFSET(Type, Field)** is an interesting operator which returns the offset of the field in the type, eg. **? \#FIELD_OFFSET(\_PEB, ImageSubsystemMajorVersion)**.
 
@@ -369,17 +384,13 @@ We may then analyze the object header to learn some more details about the objec
 
 ### Processes (kernel-mode)
 
-Each time you break into the kernel-mode debugger one of the processes will be active. You may check which one is it by running **!process -1 0** command. If you are going to work with user-mode memory space you need to reload the process modules symbols (otherwise you will see symbols from the last reload). You may do so while switching process context with **.process /i** or **.process /r /p** or manually with the command: **.reload /user**.  The first two command allow you to select which process's page directory is used to interpret virtual addresses. After you set the process context, you can use this context in any command that takes addresses.
-
-**.process [/i] [/p [/r] ] [/P] [Process]**
-
-**/i** means invasive debugging and allows you to control the process from the kernel debugger. **/r** reloads user-mode symbols after the process context has been set (the behavior is the same as **.reload /user**). **/p** translates all transition page table entries (PTEs) for this process to physical addresses before access.
+Each time you break into the kernel-mode debugger, one of the processes will be active. You may learn which one by running the **!process -1 0** command. If you are going to work with user-mode memory space you need to reload the process modules symbols (otherwise you will see symbols from the last reload). You may do so while switching process context with **.process /i** or **.process /r /p**, or ,manually, with the command: **.reload /user**. **/i** means invasive debugging and allows you to control the process from the kernel debugger. **/r** reloads user-mode symbols after the process context has been set (the behavior is the same as **.reload /user**). **/p** translates all transition page table entries (PTEs) for this process to physical addresses before access.
 
 **!peb** shows loaded modules, environment variables, command line arg, and more.
 
-The **!process 0 0 {image}** command finds a proces using its image name, np.: `!process 0 0 LINQPad.UserQuery.exe`.
+The **!process 0 0 {image}** command finds a proces using its image name, e.g.: `!process 0 0 LINQPad.UserQuery.exe`.
 
-When we know the process ID, we may use **!process {PID | address} 0x7** (the 0x7 flag will list all the threads with their stacks)
+When we know the process ID, we may use **!process {PID \| address} 0x7** (the 0x7 flag will list all the threads with their stacks)
 
 ### Handles
 
@@ -408,7 +419,7 @@ or
 **.trap [Address]**
 **.cxr [Options] [Address]**
 
-For WOW64 processes, the **\w** parameter (**.thread \w**) will additionally switch to the x86 context. After loading the thread context, the commands opearating on stack should start working (remember to be in the right process context).
+For WOW64 processes, the **/w** parameter (**.thread /w**) will additionally switch to the x86 context. After loading the thread context, the commands opearating on stack should start working (remember to be in the right process context).
 
 **To list all threads** in a current process use **~** command (user-mode). Dot (.) in the first column signals a currently selected thread and hash (#) points to a thread on which an exception occurred.
 
@@ -566,13 +577,13 @@ If the **wt** command does not work, you may achieve similar results manually wi
 - stepping until the next return or call instruction: **tct**, **pct**
 
 
-### Break when a specific function is in the call stack
+### Breaking when a specific function is in the call stack
 
 ```
 bp Module!MyFunctionWithConditionalBreakpoint "r $t0 = 0;.foreach (v { k }) { .if ($spat(\"v\", \"*Module!ClassA:MemberFunction*\")) { r $t0 = 1;.break } }; .if($t0 = 0) { gc }"
 ```
 
-### Break on a specific function enter and leave
+### Breaking on a specific function enter and leave
 
 The trick is to set a one-time breakpoint on the return address (**bp /1 @$ra**) when the main breakpoint is hit, for example:
 
@@ -589,7 +600,7 @@ bp kernelbase!CloseHandle ".printf \"CloseHandle(%p)\\n\", @rcx;g"
 
 Remove the 'g' commands from the above samples if you want the debugger to stop.
 
-### Break for all methods in the C++ object virtual table
+### Breaking for all methods in the C++ object virtual table
 
 This could be useful when debugging COM interfaces, as in the example below. When we know the number of methods in the interface and the address of the virtual table, we may set the breakpoint using the .for loop, for example:
 
@@ -597,7 +608,7 @@ This could be useful when debugging COM interfaces, as in the example below. Whe
 .for (r $t0 = 0; @$t0 < 5; r $t0= @$t0 + 1) { bp poi(5f4d8948 + @$t0 * @$ptrsize) }
 ```
 
-### Break when user-mode process is created (kernel-mode)
+### Breaking when a user-mode process is created (kernel-mode)
 
 **bp nt!PspInsertProcess**
 
@@ -606,7 +617,7 @@ The breakpoint is hit whenever a new user-mode process is created. To know what 
     x64: dt nt!_EPROCESS @rcx ImageFileName
     x86: dt nt!_EPROCESS @eax ImageFileName
 
-### Set a user-mode breakpoint in kernel-mode
+### Setting a user-mode breakpoint in kernel-mode
 
 You may set a breakpoint in user space, but you need to be in a valid process context:
 
@@ -694,8 +705,6 @@ When analyzing multiple files, I often use PowerShell to call WinDbg with the co
 Get-ChildItem .\dumps | % { Start-Process -Wait -FilePath windbg-x64\windbg.exe -ArgumentList @("-loga", "windbg.log", "-y", "`"SRV*C:\dbg\symbols*https://msdl.microsoft.com/download/symbols`"", "-c", "`".exr -1; .ecxr; k; q`"", "-z", $_.FullName) }
 ```
 
-You may create your own command shortcuts tree with the `.cmdtree` command.
-
 To make a **comment**, you can use one of the comment commands: **$$ comment**, **\* comment**. The difference between them is that **\*** comments everything till the end of the line, while **$$** comments text till the semicolon (or end of a line), e.g., `r eax; $$ some text; r ebx; * more text; r ecx` will print eax, ebx but not ecx. The **.echo** command ends if the debugger encounters a semicolon (unless the semicolon occurs within a quoted string).
 
 ### The dx command
@@ -719,53 +728,20 @@ dx @$curprocess.Modules["bindfltapi"].Contents.Exports.Select(m =>  Debugger.Uti
 
 The referance for the host object is [here](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/native-objects-in-javascript-extensions-debugger-objects).
 
-I tried to understand the **host object** so I wrote [a little test script](windbg-scripting.js):
-
-```
-0:000> .scriptload c:\temp\windbg-scripting.js
-
-field    currentApiVersionSupported : object
-  field    majorVersion : number
-  field    minorVersion : number
-field    currentApiVersionInitialized : object
-  field    majorVersion : number
-  field    minorVersion : number
-field    diagnostics : object
-  function debugBreak
-  function debugLog
-  function logObjectCollection
-  field    logUnhandledExceptions : boolean
-field    metadata : object
-  function defineMetadata
-  function valueWithMetadata
-function typeSignatureRegistration
-function typeSignatureExtension
-function namedModelRegistration
-function namedModelParent
-function functionAlias
-function namespacePropertyParent
-function optionalRecord
-function apiVersionSupport
-function resourceFileName
-function allowOutsidePropertyWrites
-function Int64
-function parseInt64
-```
-
-### Run a command for all the processes
+### Running a command for all the processes
 
 ```
 dx -r2 @$cursession.Processes.Where(p => p.Name == "test.exe").Select(p => Debugger.Utility.Control.ExecuteCommand("|~[0n" + p.Id + "]s;bp testlib!TestMethod \".lastevent; r @rdx; u poi(@rdx); g\""))
 ```
 
-### Attach to multiple processes at once
+### Attaching to multiple processes at once
 
 ```
 $ Get-Process -Name disp+work | where Id -ne 6612 | % { ".attach -b 0n$($_.Id)" } | Out-File -Encoding ascii c:\tmp\attach_all.txt
 $ windbgx.exe -c "`$`$<C:\tmp\attach_all.txt" -pn winver.exe
 ```
 
-### Inject a DLL into a process being debugged
+### Injecting a DLL into a process being debugged
 
 In the example below we will inject shell32.dll into a target process by using the **.call** command. We start by allocating some space for the DLL name and filling it up:
 
@@ -806,9 +782,33 @@ start             end                 module name
 
 ## Time Travel Debugging (TTD)
 
-[TTD](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/time-travel-debugging-overview), added in WinDbg Preview, is a fantastic way to debug application code. After collecting a debug trace, we may examine it as much as possible, going deeper and deeper into the call stacks.
+### Installation
 
-Additionally, TTD is one of the session properties which we can query. Axel Souchet in [this post](https://blahcat.github.io/posts/2018/11/02/some-time-travel-musings.html) presents some interesting TTD queries. I list some of them below, but I recommend checking the article to learn more.
+[TTD](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/time-travel-debugging-overview), added in WinDbg Preview, is a fantastic way to debug application code. After collecting a debug trace, we may examine it as much as we need to, going deeper and deeper into the call stacks.
+
+### Collection
+
+If you have WinDbgX, you may use TTD by checking the "Record with Time Travel Debugging" checkbox when you start a new process or attach to a running one. When you stop the TTD trace in WinDbgX it will terminate the target process (TTD.exe, described later, can detach from a process without killing it).
+
+It is also possible to [install the TTD collector](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/time-travel-debugging-ttd-exe-command-line-util) and run the collection from the command line, for example:
+
+```shell
+# launch a new winver.exe process and record the trace in C:\logs
+TTD.exe -accepteula winver.exe -out c:\logs
+
+# attach and trace the process with ID 1234 and all its newly started children
+TTD.exe -accepteula -attach 1234 -children -out c:\logs
+
+# attach and trace the process with ID 1234 to a ring buffer, backed by a trace file of maximum size 1024 MB
+TTD.exe -accepteula -attach 1234 -ring -maxFile 1024 -out c:\logs
+
+# record a trace of the running and newly started winver processes, add a timestamp to the trace file names
+TTD.exe -accepteula -monitor winver.exe -timestampFilename -out c:\logs
+```
+
+### Usage
+
+TTD is one of the session object properties which we can query. Axel Souchet in [this post](https://blahcat.github.io/posts/2018/11/02/some-time-travel-musings.html) presents some interesting TTD queries. I list some of them below, but I recommend checking the article to learn more.
 
 ```
 0:000> dx @$cursession.TTD
@@ -825,7 +825,7 @@ Additionally, TTD is one of the session properties which we can query. Axel Souc
 
 ## Misc tips
 
-### Convert memory dump from one format to another
+### Converting a memory dump from one format to another
 
 When debugging a full memory dump (**/ma**), we may convert it to a smaller memory dump using again the **.dump** command, for example:
 
@@ -833,7 +833,7 @@ When debugging a full memory dump (**/ma**), we may convert it to a smaller memo
 .dump /mpi c:\tmp\smaller.dmp
 ```
 
-### Loading arbitrary DLL into WinDbg for analysis
+### Loading an arbitrary DLL into WinDbg for analysis
 
 WinDbg allows analysis of an arbitrary PE file if we load it as a crash dump (the **Open dump file** menu option or the **-z** command-line argument), for example: `windbgx -z C:\Windows\System32\shell32.dll`. WinDbg will load a DLL/EXE as a data file.
 
@@ -844,7 +844,3 @@ Alternatively, if we want to normally load the DLL, we may use **rundll32.exe** 
 The **SHIFT + \[UP ARROW\]** completes the current command from previously executed commands (much as F8 in cmd).
 
 If you double-click on a word in the command window in WinDbgX, the debugger will **highlight** all occurrences of the selected term. You may highlight other words with different colors if you press the ctrl key when double-clicking on them. To unhighlight a given word, double-click on it again, pressing the ctrl key.
-
-### Check registry keys inside debugger
-
-FIXME: !dreg
