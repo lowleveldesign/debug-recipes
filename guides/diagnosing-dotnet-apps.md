@@ -20,6 +20,12 @@ title: Diagnosing .NET applications
     - [Check runtime version](#check-runtime-version)
     - [Debugging/tracing a containerized .NET application \(Docker\)](#debuggingtracing-a-containerized-net-application-docker)
 - [Diagnosing exceptions](#diagnosing-exceptions)
+    - [Collecting a TTD trace](#collecting-a-ttd-trace)
+    - [Collecting a memory dump](#collecting-a-memory-dump)
+    - [Analysing exception information](#analysing-exception-information)
+- [Diagnosing hangs](#diagnosing-hangs)
+    - [Listing threads call stacks](#listing-threads-call-stacks)
+    - [Finding locks in memory dumps](#finding-locks-in-memory-dumps)
 - [Diagnosing waits or high CPU usage](#diagnosing-waits-or-high-cpu-usage)
 - [Diagnosing managed memory leaks](#diagnosing-managed-memory-leaks)
     - [Collecting memory snapshots](#collecting-memory-snapshots)
@@ -192,10 +198,169 @@ Stopping the trace. This may take up to minutes depending on the application bei
 
 ## Diagnosing exceptions
 
-FIXME: TTD and dumps https://learn.microsoft.com/en-us/dotnet/core/diagnostics/collect-dumps-crash, .NET Core 
-The 
-My favorite way of automating the memory dump c is by usinf
+### Collecting a TTD trace
 
+FIXME
+
+### Collecting a memory dump
+
+FIXME
+
+[dotnet-dump](https://docs.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-dump) is one of the .NET diagnostics CLI tools. You may download it using curl or wget, for example: `curl -JLO https://aka.ms/dotnet-dump/win-x64`.
+
+To create a full memory dump, run one of the commands:
+
+    dotnet-dump collect -p <process-id>
+    dotnet-dump collect -n <process-name>
+
+You may create a heap-only memory dump by adding a `--type=Heap` option.
+
+Createdump shares the location with the coreclr library, for example, for .NET 5: `/usr/share/dotnet/shared/Microsoft.NETCore.App/5.0.3/createdump` or `c:\Program Files\dotnet\shared\Microsoft.NETCore.App\5.0.3\createdump.exe`.
+
+dumps https://learn.microsoft.com/en-us/dotnet/core/diagnostics/collect-dumps-crash, .NET Core 
+
+To create a full memory dump, run:
+
+    createdump --full <process-id>
+
+With no options provided, it creates a memory dump with heap, which equals to `createdump --withheap <pid>`
+
+### Analysing exception information
+
+First make sure with the **!Threads** command (SOS) that your current thread is the one with the exception context:
+
+```
+0:000> !Threads
+ThreadCount:      2
+UnstartedThread:  0
+BackgroundThread: 1
+PendingThread:    0
+DeadThread:       0
+Hosted Runtime:   no
+
+ID OSID ThreadOBJ           State GC Mode     GC Alloc Context                  Domain           Count Apt Exception
+0    1 1ec8 000000000055adf0    2a020 Preemptive  0000000002253560:0000000002253FD0 00000000004fb970 0     Ukn System.ArgumentException 0000000002253438
+5    2 1c74 00000000005851a0    2b220 Preemptive  0000000000000000:0000000000000000 00000000004fb970 0     Ukn (Finalizer)
+```
+
+In the snippet above we can see that the exception was thrown on the thread no. 0 and this is our currently selected thread (in case it's not, we would use **\~0s** command) so we may use the **!PrintException** command from SOS (alias **!pe**), for example:
+
+```
+0:000> !pe
+Exception object: 0000000002253438
+Exception type:   System.ArgumentException
+Message:          v should not be null
+InnerException:   <none>
+StackTrace (generated):
+<none>
+StackTraceString: <none>
+HResult: 80070057
+```
+
+To see the full managed call stack, use the **!CLRStack** command. By default, the debugger will stop on an unhandled exception. If you want to stop at the moment when an exception is thrown (first-chance exception), run the **sxe clr** command at the beginning of the debugging session.
+
+## Diagnosing hangs
+
+We usually start the analysis by looking at the threads running in a process. The call stacks help us identify blocked threads. We can use TTD, thread-time trace, or memory dumps to learn about what threads are doing. In the follow-up sections, I will describe how to find lock objects and relations between threads in memory dumps.
+
+### Listing threads call stacks
+
+To list native stacks for all the threads in **WinDbg**, run: `~*k` or `~*e!dumpstack`. If you are interested only in managed stacks, you may use the `~*e!clrstack` SOS command. The **dotnet-dump**'s **analyze** command provides a super useful parallel stacks command:
+
+```
+> dotnet dump analyze test.dmp
+> pstacks
+________________________________________________
+    ~~~~ 5cd8
+       1 System.Threading.Monitor.Enter(Object, Boolean ByRef)
+       1 deadlock.Program.Lock2()
+    ~~~~ 3e58
+       1 System.Threading.Monitor.Enter(Object, Boolean ByRef)
+       1 deadlock.Program.Lock1()
+  2 System.Threading.Tasks.Task.InnerInvoke()
+  ...
+  2 System.Threading.ThreadPoolWorkQueue.Dispatch()
+  2 System.Threading._ThreadPoolWaitCallback.PerformWaitCallback()
+```
+
+In **LLDB**, we may show native call stacks for all the threads with the `bt all` command. Unfortunately, if we want to use `dumpstack` or `clrstack` commands, we need to manually switch between threads with the `thread select` command.
+
+### Finding locks in memory dumps
+
+You may examine thin locks using **!DumpHeap -thinlocks**.  To find all sync blocks, use the **!SyncBlk -all** command.
+
+There are many types of objects that the thread can wait on. You usually see `WaitOnMultipleObjects` on many threads.
+
+If you see `RtlWaitForCriticalSection` it might indicate that the thread is waiting on a critical section. Its adress should be in the call stack. And we may list the critical sections using the `!cs` command. With the -s option, we may examine details of a specific critical section:
+
+    0:033> !cs -s 000000001a496f50
+    -----------------------------------------
+    Critical section   = 0x000000001a496f50 (+0x1A496F50)
+    DebugInfo          = 0x0000000013c9bee0
+    LOCKED
+    LockCount          = 0x0
+    WaiterWoken        = No
+    OwningThread       = 0x0000000000001b04
+    RecursionCount     = 0x1
+    LockSemaphore      = 0x0
+    SpinCount          = 0x00000000020007d0
+
+`LockCount` tells you how many threads are currently waiting on a given cs. The `OwningThread` is a thread that owns the cs at the time the command is run. You can easily identify the thread that is waiting on a given cs by issuing `kv` command and looking for critical section identifier in the call parameters.
+
+We can also look for synchronization object handles using the `!handle` command. For example, we may list all the Mutant objects in a process by using the `!handle 0 f Mutant` command.
+
+On .NET Framework, you may also use the **!dlk** command from the SOSEX extension. It is pretty good in detecting deadlocks, example:
+
+```
+0:007> .load sosex
+0:007> !dlk
+Examining SyncBlocks...
+Scanning for ReaderWriterLock(Slim) instances...
+Scanning for holders of ReaderWriterLock locks...
+Scanning for holders of ReaderWriterLockSlim locks...
+Examining CriticalSections...
+Scanning for threads waiting on SyncBlocks...
+Scanning for threads waiting on ReaderWriterLock locks...
+Scanning for threads waiting on ReaderWriterLocksSlim locks...
+*** WARNING: Unable to verify checksum for C:\WINDOWS\assembly\NativeImages_v4.0.30319_32\System\3a4f0a84904c4b568b6621b30306261c\System.ni.dll
+*** WARNING: Unable to verify checksum for C:\WINDOWS\assembly\NativeImages_v4.0.30319_32\System.Transactions\ebef418f08844f99287024d1790a62a4\System.Transactions.ni.dll
+Scanning for threads waiting on CriticalSections...
+*DEADLOCK DETECTED*
+CLR thread 0x1 holds the lock on SyncBlock 011e59b0 OBJ:02e93410[System.Object]
+...and is waiting on CriticalSection 01216a58
+CLR thread 0x3 holds CriticalSection 01216a58
+...and is waiting for the lock on SyncBlock 011e59b0 OBJ:02e93410[System.Object]
+CLR Thread 0x1 is waiting at clr!CrstBase::SpinEnter+0x92
+CLR Thread 0x3 is waiting at System.Threading.Monitor.Enter(System.Object, Boolean ByRef)(+0x17 Native)
+```
+
+When debugging locks in code that is using tasks it is often necessary to examine execution contexts assigned to the running threads. I prepared a simple script which lists threads with their execution contexts. You only need (as in previous script) find the MT of the `Thread` class in your appdomain, eg.
+
+```
+0:036> !Name2EE mscorlib.dll System.Threading.Thread
+Module:      72551000
+Assembly:    mscorlib.dll
+Token:       020001d1
+MethodTable: 72954960
+EEClass:     725bc0c4
+Name:        System.Threading.Thread
+```
+
+And then paste it in the scripts below:
+
+x86 version:
+
+```
+.foreach ($addr {!DumpHeap -short -mt <METHODTABLE> }) { .printf /D "Thread: %i; Execution context: <link cmd=\"!do %p\">%p</link>\n", poi(${$addr}+28), poi(${$addr}+8), poi(${$addr}+8) }
+```
+
+x64 version:
+
+```
+.foreach ($addr {!DumpHeap -short -mt <METHODTABLE> }) { .printf /D "Thread: %i; Execution context: <link cmd=\"!do %p\">%p</link>\n", poi(${$addr}+4c), poi(${$addr}+10), poi(${$addr}+10) }
+```
+
+Notice that the thread number from the output is a managed thread id and to map it to the windbg thread number you need to use the `!Threads` command.
 
 ## Diagnosing waits or high CPU usage
 

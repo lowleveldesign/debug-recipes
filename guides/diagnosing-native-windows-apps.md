@@ -14,12 +14,12 @@ WIP
 - [Diagnosing waits or high CPU usage](#diagnosing-waits-or-high-cpu-usage)
     - [Collecting ETW trace](#collecting-etw-trace)
     - [Anaysing the collected traces](#anaysing-the-collected-traces)
-- [Collecting exceptions info in production](#collecting-exceptions-info-in-production)
+- [Diagnosing abnormal termination or erroneous behavior](#diagnosing-abnormal-termination-or-erroneous-behavior)
+    - [Collecting exceptions info in production](#collecting-exceptions-info-in-production)
     - [Using procdump](#using-procdump)
     - [Automatic dumps using AeDebug registry key](#automatic-dumps-using-aedebug-registry-key)
     - [Break on a specific Windows Error in a debugger](#break-on-a-specific-windows-error-in-a-debugger)
-- [Analyzing exceptions](#analyzing-exceptions)
-    - [Read managed exception information](#read-managed-exception-information)
+    - [Analyzing exceptions](#analyzing-exceptions)
     - [Read exception context](#read-exception-context)
     - [Find the C++ exception object in the SEH exception record](#find-the-c-exception-object-in-the-seh-exception-record)
     - [Read Last Windows Error](#read-last-windows-error)
@@ -32,16 +32,10 @@ WIP
 - [WER settings](#wer-settings)
     - [Collecting full-memory dumps](#collecting-full-memory-dumps)
     - [Disabling WER](#disabling-wer)
-- [Error reporting for .NET applications](#error-reporting-for-net-applications)
-- [Links](#links_1)
 - [Diagnosing dead-locks and hangs](#diagnosing-dead-locks-and-hangs)
     - [Procdump \(Windows\)](#procdump-windows)
     - [minidumper \(Windows, .NET Framework\)](#minidumper-windows-net-framework)
-    - [dotnet-dump \(.NET Core\)](#dotnet-dump-net-core)
-    - [createdump \(.NET Core\)](#createdump-net-core)
 - [Analysis](#analysis)
-    - [Listing threads call stacks](#listing-threads-call-stacks)
-    - [Finding locks in memory dumps](#finding-locks-in-memory-dumps)
     - [Find locks in kernel mode](#find-locks-in-kernel-mode)
 
 <!-- /MarkdownTOC -->
@@ -53,9 +47,9 @@ There are two ways of tracing CPU time. We could either use CPU sampling or Thre
 
 ### Collecting ETW trace
 
-We can use PerfView to collect CPU samples and Thread Time events.
+We may use **PerfView** or **wpr.exe** to collect CPU samples and Thread Time events.
 
-When collecting CPU samples, PerfView relies on Profile events coming from the Kernel ETW provider and it has very low impact on the system performance. An example command to start the CPU sampling:
+When collecting CPU samples, PerfView relies on Profile events coming from the Kernel ETW provider which has very low impact on the system overall performance. An example command to start the CPU sampling:
 
 ```powershell
 perfview collect -NoGui -KernelEvents:Profile,ImageLoad,Process,Thread -ClrEvents:JITSymbols cpu-collect.etl
@@ -77,7 +71,11 @@ For analyzing **CPU Samples**, use the **CPU Stacks** view. Always check the num
 
 When analyzing waits in an application, we should use the **Thread Time Stacks** views. The default one, **with StartStop activities**, tries to group the tasks under activities and helps diagnose application activities, such as HTTP requests or database queries. Remember that the exclusive time in the activities view is a sum of all the child tasks. The thread under the activity is the thread on which the task started, not necessarily the one on which it continued. The **with ReadyThread** view can help when we are looking for thread interactions. For example, we want to find the thread that released a lock on which a given thread was waiting. The **Thread Time Stacks** view (with no grouping) is the best one to visualize the application's sequence of actions. Expanding thread nodes in the CallTree could take lots of time, so make sure you use other events (for example, from the Events view) to set the time ranges. As usual, check the grouping patterns.
 
-## Collecting exceptions info in production
+## Diagnosing abnormal termination or erroneous behavior
+
+FIXME
+
+### Collecting exceptions info in production
 
 ### Using procdump
 
@@ -143,39 +141,8 @@ There is a special global variable in ntdll: **g\_dwLastErrorToBreakOn** that yo
 
 You may find the list of errors in [the Windows documentation](https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes).
 
-## Analyzing exceptions
+### Analyzing exceptions
 
-### Read managed exception information
-
-First make sure with the **!Threads** command (SOS) that your current thread is the one with the exception context:
-
-    0:000> !Threads
-    ThreadCount:      2
-    UnstartedThread:  0
-    BackgroundThread: 1
-    PendingThread:    0
-    DeadThread:       0
-    Hosted Runtime:   no
-                                                                                                            Lock
-           ID OSID ThreadOBJ           State GC Mode     GC Alloc Context                  Domain           Count Apt Exception
-       0    1 1ec8 000000000055adf0    2a020 Preemptive  0000000002253560:0000000002253FD0 00000000004fb970 0     Ukn System.ArgumentException 0000000002253438
-       5    2 1c74 00000000005851a0    2b220 Preemptive  0000000000000000:0000000000000000 00000000004fb970 0     Ukn (Finalizer)
-
-In the snippet above we can see that the exception was thrown on the thread no. 0 and this is our currently selected thread (in case it's not we would use **\~0s** command) so we may use the **!PrintException** command from SOS (alias **!pe**), example:
-
-```
-    0:000> !pe
-    Exception object: 0000000002253438
-    Exception type:   System.ArgumentException
-    Message:          v should not be null
-    InnerException:   <none>
-    StackTrace (generated):
-    <none>
-    StackTraceString: <none>
-    HResult: 80070057
-```
-
-Another option is the **!wpe** command from the netext plugin. To see the full managed call stack, use the **!CLRStack** command. By default, the debugger will stop on an unhandled exception. If you want to stop at the moment when an exception is thrown (first-chance exception), run the **sxe clr** command at the beginning of the debugging session.
 
 ### Read exception context
 
@@ -492,53 +459,6 @@ There is an API available for [WER](http://msdn.microsoft.com/en-us/library/bb51
 
 Sometimes, for instance when you use the AeDebug setting, you may want to disable WER completely. To make it happen, create a DWORD Value under the `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\Windows Error Reporting` key, named `Disabled` and set its value to 1. For 32-bit apps use the `HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\Windows Error Reporting` key.
 
-## Error reporting for .NET applications
-
-Based on <http://blogs.msdn.com/b/oanapl/archive/2009/01/30/windows-error-reporting-wer-and-clr-integration.aspx>
-
-When creating reports, WER generates some parameters to bucket-ize the failures. Since the OS doesn’t know anything about managed applications, CLR integrates WER and adds these parameters to create correct buckets:
-
-- AppName - The filename of the EXE (e.g., “Explorer.exe”);
-- AppVer – Assembly version number for an managed EXE (major.minor.build.revision) or the PE header version number (e.g. “2.0.40220.13”) for unmanged
-- AppStamp - The timestamp on the executable.
-- AsmAndModName – Assembly and module name if the module is part of a multi-module assembly (e.g., “MyAssembly+MyModule.dll”)
-- AsmVer - Managed assembly version number of the faulting assembly (major.minor.build.revision)
-- ModStamp - The timestamp of the faulting module.
-- MethodDef - MethodDef token for the faulting method, after stripping off the high byte.
-- Offset - The IL offset of the faulting instruction.
-- ExceptionType -               The name of the type of the most-inner exception, with "Exception" removed from the end, if present. (E.g., "System.AccessViolation")
-
-For my simple application:
-
-    Problem signature
-    Problem Event Name: CLR20r3
-    Problem Signature 01:   testthrow.exe
-    Problem Signature 02:   0.0.0.0
-    Problem Signature 03:   513cfa24
-    Problem Signature 04:   TestThrow
-    Problem Signature 05:   0.0.0.0
-    Problem Signature 06:   513cfa24
-    Problem Signature 07:   1
-    Problem Signature 08:   b
-    Problem Signature 09:   System.Exception
-    OS Version: 6.2.9200.2.0.0.256.48
-    Locale ID:  1045
-    Additional Information 1:   29c8
-    Additional Information 2:   29c8a45a4be8e6196a8b4c51db32dc31
-    Additional Information 3:   ed0a
-    Additional Information 4:   ed0ad491a5d29e8c56367bac9db2cadd
-
-`Problem Signature 07` is a token of a method description that caused the fault and `Problem Signature 08` is the offset in method's MSIL body. We can figure out which method a given token corresponds to by using `!Token2EE TestThrow 6000001` (we need to add token number to `6000000`).
-
-## Links
-
-- [Windows Error Reporting (WER) for developers](http://blogs.msdn.com/b/oanapl/archive/2009/01/28/windows-error-reporting-wer-for-developers.aspx)
-- [Windows Error Reporting and CLR integration](http://blogs.msdn.com/b/oanapl/archive/2009/01/30/windows-error-reporting-wer-and-clr-integration.aspx)
-- [Problems with CLR Windows Error Reporting (WER) Integration](http://blogs.msdn.com/b/oanapl/archive/2009/02/01/problems-with-clr-windows-error-reporting-wer-integration.aspx)
-- [MSDN: WER Settings](http://msdn.microsoft.com/en-us/library/bb513638(VS.85).aspx)
-- [SO: Is the INT3 breakpoint the root cause? - some info about WER internals](http://stackoverflow.com/questions/38019466/how-to-know-if-a-different-exception-is-hidden-behind-a-80000003-breakpoint-wer)
-
-
 ## Diagnosing dead-locks and hangs
 
 There are many tools you may use to collect the memory dump. Below I list the ones I use most often.
@@ -561,124 +481,9 @@ To create a managed heap memory dump, run:
 
     minidumper -mh <process-name-or-id>
 
-### dotnet-dump (.NET Core)
-
-[dotnet-dump](https://docs.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-dump) is one of the .NET diagnostics CLI tools. You may download it using curl or wget, for example: `curl -JLO https://aka.ms/dotnet-dump/win-x64`.
-
-To create a full memory dump, run one of the commands:
-
-    dotnet-dump collect -p <process-id>
-    dotnet-dump collect -n <process-name>
-
-You may create a heap-only memory dump by adding a `--type=Heap` option.
-
-### createdump (.NET Core)
-
-Createdump shares the location with the coreclr library, for example, for .NET 5: `/usr/share/dotnet/shared/Microsoft.NETCore.App/5.0.3/createdump` or `c:\Program Files\dotnet\shared\Microsoft.NETCore.App\5.0.3\createdump.exe`.
-
-To create a full memory dump, run:
-
-    createdump --full <process-id>
-
-With no options provided, it creates a memory dump with heap, which equals to `createdump --withheap <pid>`
 
 ## Analysis
 
-We usually start the analysis by looking at the threads running in a process. The call stacks help us identify blocked threads. In the next step, we need to find the lock objects and relations between threads.
-
-### Listing threads call stacks
-
-To list native stacks for all the threads in **WinDbg**, run: `~*k` or `~*e!dumpstack`. If you are interested only in managed stacks, you may use the `~*e!clrstack` SOS command. There is also a great `!pstacks` command from the [gsose extension](https://github.com/chrisnas/DebuggingExtensions) that groups call stacks for managed threads.
-
-```
-0:011> .load gsose.dll
-0:011> !pstacks
-    ~~~~ 5cd8
-       1 System.Threading.Monitor.Enter(Object, Boolean ByRef)
-       1 deadlock.Program.Lock2()
-    ~~~~ 3e58
-       1 System.Threading.Monitor.Enter(Object, Boolean ByRef)
-       1 deadlock.Program.Lock1()
-  2 System.Threading.Tasks.Task.InnerInvoke()
-  ...
-  2 System.Threading.ThreadPoolWorkQueue.Dispatch()
-  2 System.Threading._ThreadPoolWaitCallback.PerformWaitCallback()
-```
-
-In **LLDB**, we may show native call stacks for all the threads with the `bt all` command. Unfortunately, if we want to use `dumpstack` or `clrstack` commands, we need to manually switch between threads with the `thread select` command.
-
-### Finding locks in memory dumps
-
-You may examine thin locks using **!DumpHeap -thinlocks**.  To find all sync blocks, use the **!SyncBlk -all** command.
-
-There are many types of objects that the thread can wait on. You usually see `WaitOnMultipleObjects` on many threads.
-
-If you see `RtlWaitForCriticalSection` it might indicate that the thread is waiting on a critical section. Its adress should be in the call stack. And we may list the critical sections using the `!cs` command. With the -s option, we may examine details of a specific critical section:
-
-    0:033> !cs -s 000000001a496f50
-    -----------------------------------------
-    Critical section   = 0x000000001a496f50 (+0x1A496F50)
-    DebugInfo          = 0x0000000013c9bee0
-    LOCKED
-    LockCount          = 0x0
-    WaiterWoken        = No
-    OwningThread       = 0x0000000000001b04
-    RecursionCount     = 0x1
-    LockSemaphore      = 0x0
-    SpinCount          = 0x00000000020007d0
-
-`LockCount` tells you how many threads are currently waiting on a given cs. The `OwningThread` is a thread that owns the cs at the time the command is run. You can easily identify the thread that is waiting on a given cs by issuing `kv` command and looking for critical section identifier in the call parameters.
-
-We can also look for synchronization object handles using the `!handle` command. For example, we may list all the Mutant objects in a process by using the `!handle 0 f Mutant` command.
-
-On .NET Framework, you may also use the **!dlk** command from the SOSEX extension. It is pretty good in detecting deadlocks, example:
-
-```
-0:007> .load sosex
-0:007> !dlk
-Examining SyncBlocks...
-Scanning for ReaderWriterLock(Slim) instances...
-Scanning for holders of ReaderWriterLock locks...
-Scanning for holders of ReaderWriterLockSlim locks...
-Examining CriticalSections...
-Scanning for threads waiting on SyncBlocks...
-Scanning for threads waiting on ReaderWriterLock locks...
-Scanning for threads waiting on ReaderWriterLocksSlim locks...
-*** WARNING: Unable to verify checksum for C:\WINDOWS\assembly\NativeImages_v4.0.30319_32\System\3a4f0a84904c4b568b6621b30306261c\System.ni.dll
-*** WARNING: Unable to verify checksum for C:\WINDOWS\assembly\NativeImages_v4.0.30319_32\System.Transactions\ebef418f08844f99287024d1790a62a4\System.Transactions.ni.dll
-Scanning for threads waiting on CriticalSections...
-*DEADLOCK DETECTED*
-CLR thread 0x1 holds the lock on SyncBlock 011e59b0 OBJ:02e93410[System.Object]
-...and is waiting on CriticalSection 01216a58
-CLR thread 0x3 holds CriticalSection 01216a58
-...and is waiting for the lock on SyncBlock 011e59b0 OBJ:02e93410[System.Object]
-CLR Thread 0x1 is waiting at clr!CrstBase::SpinEnter+0x92
-CLR Thread 0x3 is waiting at System.Threading.Monitor.Enter(System.Object, Boolean ByRef)(+0x17 Native)
-```
-
-When debugging locks in code that is using tasks it is often necessary to examine execution contexts assigned to the running threads. I prepared a simple script which lists threads with their execution contexts. You only need (as in previous script) find the MT of the `Thread` class in your appdomain, eg.
-
-```
-0:036> !Name2EE mscorlib.dll System.Threading.Thread
-Module:      72551000
-Assembly:    mscorlib.dll
-Token:       020001d1
-MethodTable: 72954960
-EEClass:     725bc0c4
-Name:        System.Threading.Thread
-```
-
-And then paste it in the scripts below:
-
-    x86:
-
-    .foreach ($addr {!DumpHeap -short -mt <METHODTABLE> }) { .printf /D "Thread: %i; Execution context: <link cmd=\"!do %p\">%p</link>\n", poi(${$addr}+28), poi(${$addr}+8), poi(${$addr}+8) }
-
-    x64:
-
-    .foreach ($addr {!DumpHeap -short -mt <METHODTABLE> }) { .printf /D "Thread: %i; Execution context: <link cmd=\"!do %p\">%p</link>\n", poi(${$addr}+4c), poi(${$addr}+10), poi(${$addr}+10) }
-
-Notice that the thread number from the output is a managed thread id and to map it to the windbg thread number you need to use the `!Threads` command.
 
 ### Find locks in kernel mode
 

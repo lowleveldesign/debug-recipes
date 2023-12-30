@@ -1,6 +1,29 @@
+---
+layout: page
+title: Using network tracing tools
+---
 
-Network tracing
-===============
+WIP
+
+FIXME: it could be better to group those commands by scenarios maybe than by tools
+
+<!-- MarkdownTOC -->
+
+- [Logging application requests in a proxy](#logging-application-requests-in-a-proxy)
+- [Troubleshooting network on Windows](#troubleshooting-network-on-windows)
+    - [Wireshark \(network tracing and more\)](#wireshark-network-tracing-and-more)
+    - [PsPing \(connectivity issues\)](#psping-connectivity-issues)
+        - [Measuring latency](#measuring-latency)
+        - [Measuring bandwidth](#measuring-bandwidth)
+    - [pktmon \(network tracing\)](#pktmon-network-tracing)
+    - [netsh/PerfView \(network tracing\)](#netshperfview-network-tracing)
+- [Troubleshooting network on Linux](#troubleshooting-network-on-linux)
+    - [tcpdump \(network tracing\)](#tcpdump-network-tracing)
+    - [nc \(connectivity issues\)](#nc-connectivity-issues)
+- [iperf \(connectivity issues\)](#iperf-connectivity-issues)
+    - [Measuring bandwidth](#measuring-bandwidth_1)
+
+<!-- /MarkdownTOC -->
 
 
 ## Logging application requests in a proxy
@@ -208,7 +231,7 @@ nc -vnz 192.168.0.20 80
 
 ## iperf (connectivity issues)
 
-#### Measuring bandwidth
+### Measuring bandwidth
 
 **iperf** tests TCP bandwidth on Linux
 
