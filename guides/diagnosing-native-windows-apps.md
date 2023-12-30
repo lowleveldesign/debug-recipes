@@ -5,10 +5,15 @@ title: Diagnosing native Windows applications
 
 WIP
 
+{% raw %}
+
 **Table of contents:**
 
 <!-- MarkdownTOC -->
 
+- [Diagnosing waits or high CPU usage](#diagnosing-waits-or-high-cpu-usage)
+    - [Collecting ETW trace](#collecting-etw-trace)
+    - [Anaysing the collected traces](#anaysing-the-collected-traces)
 - [Collecting exceptions info in production](#collecting-exceptions-info-in-production)
     - [Using procdump](#using-procdump)
     - [Automatic dumps using AeDebug registry key](#automatic-dumps-using-aedebug-registry-key)
@@ -40,6 +45,37 @@ WIP
     - [Find locks in kernel mode](#find-locks-in-kernel-mode)
 
 <!-- /MarkdownTOC -->
+
+
+## Diagnosing waits or high CPU usage
+
+There are two ways of tracing CPU time. We could either use CPU sampling or Thread Time profiling. CPU sampling is about collecting samples in intervals: each CPU sample contains an instruction pointer to the currently executing code. Thus, this technique is excellent when diagnosing high CPU usage of an application. It won't work for analyzing waits in the applications. For such scenarios, we should rely on Thread Time profiling. It uses the system scheduler/dispatcher events to get detailed information about application CPU time. When combined with CPU sampling, it is the best non-invasive profiling solution.
+
+### Collecting ETW trace
+
+We can use PerfView to collect CPU samples and Thread Time events.
+
+When collecting CPU samples, PerfView relies on Profile events coming from the Kernel ETW provider and it has very low impact on the system performance. An example command to start the CPU sampling:
+
+```powershell
+perfview collect -NoGui -KernelEvents:Profile,ImageLoad,Process,Thread -ClrEvents:JITSymbols cpu-collect.etl
+```
+
+Alternatively, you may use the **Collect** dialog. Make sure the **Cpu Samples** checkbox is selected.
+
+To collect Thread Time events, you may use the following command:
+
+```powershell
+perfview collect -NoGui -ThreadTime thread-time-collect.etl
+```
+
+The **Collect** dialog has also the **Thread Time** checkbox.
+
+### Anaysing the collected traces
+
+For analyzing **CPU Samples**, use the **CPU Stacks** view. Always check the number of samples if it corresponds to the tracing time (CPU sampling works when we have enough events). If necessary, zoom into the interesting period using a histogram (select the time and press Alt + R). Checking the **By Name** tab could be enough to find the method responsible for the high CPU Usage (look at the inclusive time and make sure you use correct grouping patterns).
+
+When analyzing waits in an application, we should use the **Thread Time Stacks** views. The default one, **with StartStop activities**, tries to group the tasks under activities and helps diagnose application activities, such as HTTP requests or database queries. Remember that the exclusive time in the activities view is a sum of all the child tasks. The thread under the activity is the thread on which the task started, not necessarily the one on which it continued. The **with ReadyThread** view can help when we are looking for thread interactions. For example, we want to find the thread that released a lock on which a given thread was waiting. The **Thread Time Stacks** view (with no grouping) is the best one to visualize the application's sequence of actions. Expanding thread nodes in the CallTree could take lots of time, so make sure you use other events (for example, from the Events view) to set the time ranges. As usual, check the grouping patterns.
 
 ## Collecting exceptions info in production
 
@@ -647,3 +683,5 @@ Notice that the thread number from the output is a managed thread id and to map 
 ### Find locks in kernel mode
 
 Another command that can be useful here is **!locks**. With **-v** parameter will display all locks accessed by threads in a process.
+
+{% endraw %}
