@@ -361,7 +361,7 @@ or
 
 ### GAC (.NET Framework)
 
-For .NET2.0/3.5 Global Assembly Cache was located in **c:\Windows\assembly** folder with a drag/drop option for installing/uninstalling assemblies. According to <http://stackoverflow.com/questions/10013047/gacutil-vs-manually-editing-c-windows-assembly>:
+For .NET2.0/3.5 Global Assembly Cache was located in **c:\Windows\assembly** folder with a drag/drop option for installing/uninstalling assemblies. Citing [a stackoverflow answer](http://stackoverflow.com/questions/10013047/gacutil-vs-manually-editing-c-windows-assembly):
 
 > This functionality is provided by a custom shell extension, shfusion.dll. It flattens the GAC and makes it look like a single folder. And takes care of automatically un/registering the assemblies for you when you manipulate the explorer window. So you’re fine doing this.
 
@@ -369,7 +369,7 @@ To **disable GAC viewer in Windows Explorer**, add a DWORD value **DisableCacheV
 
 Note that this will no longer work for .NET 4, it uses in a different folder to store GAC files (**c:\windows\microsoft.net\assembly**) and that folder does not have the same kind of shell extension. Thus, you can see the raw content of it. However, you should not directly use it.
 
-It is best to use **gacutil** to manipulate GAC content. Though it’s possible to install assembly in both GAC folders as stated here: <http://stackoverflow.com/questions/7095887/registering-the-same-version-of-an-assembly-but-with-different-target-frameworks>, but I would not consider it a good practice as framework tools can’t deal with it. .NET GAC settings are stored under the registry key: HKLM\Software\Microsoft\Fusion.
+It is best to use **gacutil** to manipulate GAC content. Though it’s possible to install assembly in both GAC folders as stated [here](http://stackoverflow.com/questions/7095887/registering-the-same-version-of-an-assembly-but-with-different-target-frameworks), but I would not consider it a good practice as framework tools can’t deal with it. .NET GAC settings are stored under the registry key: HKLM\Software\Microsoft\Fusion.
 
 #### Find assembly in cache
 
