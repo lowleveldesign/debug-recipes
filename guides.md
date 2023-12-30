@@ -5,7 +5,7 @@ title: Guides
 
 Please first check the [Windows degugging configuration guide](configuring-windows-for-effective-troubleshooting) as it presents fundamental settings and tools for effective problems troubleshooting on Windows.
 
-### --- :triangular_ruler: Troubleshooting scenarios ---
+### :triangular_ruler: Troubleshooting scenarios
 
 #### [Diagnosing .NET applications](diagnosing-dotnet-apps)
 
@@ -19,7 +19,7 @@ This guide describes ways of troubleshooting various problems in native applicat
 
 A guide presenting troubleshooting techniques and tools (including the [comon extension](https://github.com/lowleveldesign/comon)) useful for **debugging COM objects**.
 
-### --- :wrench: Tools usage ---
+### :wrench: Tools usage
 
 #### [Using WinDbg](using-windbg)
 

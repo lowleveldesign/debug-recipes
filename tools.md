@@ -3,7 +3,7 @@ layout: page
 title: Tools
 ---
 
-### --- :feet: Tracing tools ---
+### :feet: Tracing tools
 
 #### [wtrace](https://github.com/lowleveldesign/wtrace)
 
@@ -17,7 +17,7 @@ A cross-platform command-line tool for live recording **.NET trace events**. Dot
 
 A small tool which can inject DLLs into already running and newly started processes. The injected DLL may, for example, trace or patch functions in the remote process.
 
-### --- :beetle: Debugging tools ---
+### :beetle: Debugging tools
 
 #### [comon](https://github.com/lowleveldesign/comon) (a WinDbg extension)
 
