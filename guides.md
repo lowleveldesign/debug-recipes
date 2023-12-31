@@ -32,3 +32,7 @@ This guide describes how to use [withdll](https://github.com/lowleveldesign/with
 #### [Using Windows Performance Counters](using-performance-counters)
 
 The guide presents commands to list Performance Counters installed in the system and work with data collected using them.
+
+#### [Using network tracing tools](using-network-tracing-tools)
+
+This guide lists various network tools you may use to diagnose connectivity problems and collect network traces on Windows and Linux.

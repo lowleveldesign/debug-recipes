@@ -6,6 +6,8 @@ redirect_from:
     - /articles/com-troubleshooting
 ---
 
+{% raw %}
+
 **Table of contents:**
 
 <!-- MarkdownTOC -->
@@ -409,3 +411,4 @@ Finally, to find who is keeping our managed object alive, we could use the **!gc
 - [COM+ revisited](https://lowleveldesign.wordpress.com/2022/01/17/com-revisited/) by me :)
 - [Calling Local Windows RPC Servers from .NET](https://googleprojectzero.blogspot.com/2019/12/calling-local-windows-rpc-servers-from.html) by James Forshaw
 
+{% endraw %}
