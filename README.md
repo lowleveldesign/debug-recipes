@@ -2,12 +2,8 @@
 Debug Recipes
 =============
 
-https://github.com/lowleveldesign/debug-recipes/tree/archive
+The recipes are available in the guides folder and it is most comfortable to read them at <https://wtrace.net>.
 
-
-It is a repository of my field notes collected while debugging various .NET application problems on Windows (mainly) and Linux. They do not contain much theory but rather describe tools and scripts with some usage examples.
-
-**The :floppy_disk: icon before a section name means that materials in a given section are no longer updated and may be outdated.**
+Old and no longer updated recipes are in the [:floppy_disk: archived branch](https://github.com/lowleveldesign/debug-recipes/tree/archive).
 
 I hope you will find the materials helpful. Any contribution is welcome.
-
