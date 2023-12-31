@@ -12,4 +12,4 @@ The tools I like most are portable applications: easy to deploy, straightforward
 
 The [**guides**](/guides/) section contains my troubleshooting guides and field notes.
 
-I hope you will find the materials helpful. Visit the [about](/about/) page if you with to contact me.
+I hope you will find the materials helpful. Visit the [about](/about/) page if you would like to contact me.
