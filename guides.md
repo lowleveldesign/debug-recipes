@@ -17,15 +17,18 @@ This guide describes ways of troubleshooting various problems in native applicat
 
 #### [COM troubleshooting](com-troubleshooting)
 
-A guide presenting troubleshooting techniques and tools (including the [comon extension](https://github.com/lowleveldesign/comon)) useful for **debugging COM objects**.
+A guide presenting troubleshooting techniques and tools (including the [comon extension](https://github.com/lowleveldesign/comon)) useful for debugging COM objects.
 
 ### :wrench: Tools usage
 
 #### [Using WinDbg](using-windbg)
 
-My field notes describing usage of **WinDbg** and **WinDbgX** (new WinDbg).
+My field notes describing usage of WinDbg and WinDbgX (new WinDbg).
 
 #### [Using withdll and detours to trace Win API calls](using-withdll-and-detours-to-trace-winapi)
 
 This guide describes how to use [withdll](https://github.com/lowleveldesign/withdll) and [Detours](https://github.com/microsoft/Detours) samples to collect traces of Win API calls.
 
+#### [Using Windows Performance Counters](using-performance-counters)
+
+The guide presents commands to list Performance Counters installed in the system and work with data collected using them.
