@@ -18,13 +18,13 @@ title: Diagnosing .NET applications
     - [Decoding managed stacks in Sysinternals](#decoding-managed-stacks-in-sysinternals)
     - [Check runtime version](#check-runtime-version)
     - [Debugging/tracing a containerized .NET application \(Docker\)](#debuggingtracing-a-containerized-net-application-docker)
-- [Diagnosing exceptions and errors](#diagnosing-exceptions-and-errors)
-    - [Collecting a TTD trace](#collecting-a-ttd-trace)
+- [Diagnosing exceptions or erroneous behavior](#diagnosing-exceptions-or-erroneous-behavior)
+    - [Using Time Travel Debugging \(TTD\)](#using-time-travel-debugging-ttd)
     - [Collecting a memory dump](#collecting-a-memory-dump)
     - [Analysing exception information](#analysing-exception-information)
 - [Diagnosing hangs](#diagnosing-hangs)
     - [Listing threads call stacks](#listing-threads-call-stacks)
-    - [Finding locks in memory dumps](#finding-locks-in-memory-dumps)
+    - [Finding locks in managed code](#finding-locks-in-managed-code)
 - [Diagnosing waits or high CPU usage](#diagnosing-waits-or-high-cpu-usage)
 - [Diagnosing managed memory leaks](#diagnosing-managed-memory-leaks)
     - [Collecting memory snapshots](#collecting-memory-snapshots)
@@ -195,9 +195,9 @@ Press <Enter> or <Ctrl+C> to exit...11   (KB)
 Stopping the trace. This may take up to minutes depending on the application being traced.
 ```
 
-## Diagnosing exceptions and errors
+## Diagnosing exceptions or erroneous behavior
 
-### Collecting a TTD trace
+### Using Time Travel Debugging (TTD)
 
 Time Travel Debugging is an excellent way of troubleshooting errors and exceptions. We can step through the code causing the problems at our own pace. I describe TTD in [the WinDbg usage guide](using-windbg#time-travel-debugging-ttd). It is my preferred way of debugging issues in applications and I highly recommend giving it a try.
 
@@ -269,7 +269,7 @@ We usually start the analysis by looking at the threads running in a process. Th
 
 ### Listing threads call stacks
 
-To list native stacks for all the threads in **WinDbg**, run: `~*k` or `~*e!dumpstack`. If you are interested only in managed stacks, you may use the `~*e!clrstack` SOS command. The **dotnet-dump**'s **analyze** command provides a super useful parallel stacks command:
+To list native stacks for all the threads in **WinDbg**, run: **~\*k** or **~\*e!dumpstack**. If you are interested only in managed stacks, you may use the **~\*e!clrstack** SOS command. The **dotnet-dump**'s **analyze** command provides a super useful parallel stacks command:
 
 ```
 > dotnet dump analyze test.dmp
@@ -287,33 +287,13 @@ ________________________________________________
   2 System.Threading._ThreadPoolWaitCallback.PerformWaitCallback()
 ```
 
-In **LLDB**, we may show native call stacks for all the threads with the `bt all` command. Unfortunately, if we want to use `dumpstack` or `clrstack` commands, we need to manually switch between threads with the `thread select` command.
+In **LLDB**, we may show native call stacks for all the threads with the **bt all** command. Unfortunately, if we want to use !dumpstack or !clrstack commands, we need to manually switch between threads with the thread select command.
 
-### Finding locks in memory dumps
+### Finding locks in managed code
 
 You may examine thin locks using **!DumpHeap -thinlocks**.  To find all sync blocks, use the **!SyncBlk -all** command.
 
-There are many types of objects that the thread can wait on. You usually see `WaitOnMultipleObjects` on many threads.
-
-If you see `RtlWaitForCriticalSection` it might indicate that the thread is waiting on a critical section. Its adress should be in the call stack. And we may list the critical sections using the `!cs` command. With the -s option, we may examine details of a specific critical section:
-
-    0:033> !cs -s 000000001a496f50
-    -----------------------------------------
-    Critical section   = 0x000000001a496f50 (+0x1A496F50)
-    DebugInfo          = 0x0000000013c9bee0
-    LOCKED
-    LockCount          = 0x0
-    WaiterWoken        = No
-    OwningThread       = 0x0000000000001b04
-    RecursionCount     = 0x1
-    LockSemaphore      = 0x0
-    SpinCount          = 0x00000000020007d0
-
-`LockCount` tells you how many threads are currently waiting on a given cs. The `OwningThread` is a thread that owns the cs at the time the command is run. You can easily identify the thread that is waiting on a given cs by issuing `kv` command and looking for critical section identifier in the call parameters.
-
-We can also look for synchronization object handles using the `!handle` command. For example, we may list all the Mutant objects in a process by using the `!handle 0 f Mutant` command.
-
-On .NET Framework, you may also use the **!dlk** command from the SOSEX extension. It is pretty good in detecting deadlocks, example:
+On .NET Framework, you may also use the **!dlk** command from the SOSEX extension. It is pretty good in detecting deadlocks, for example:
 
 ```
 0:007> .load sosex
@@ -338,7 +318,7 @@ CLR Thread 0x1 is waiting at clr!CrstBase::SpinEnter+0x92
 CLR Thread 0x3 is waiting at System.Threading.Monitor.Enter(System.Object, Boolean ByRef)(+0x17 Native)
 ```
 
-When debugging locks in code that is using tasks it is often necessary to examine execution contexts assigned to the running threads. I prepared a simple script which lists threads with their execution contexts. You only need (as in previous script) find the MT of the `Thread` class in your appdomain, eg.
+When debugging locks in code that is using tasks it is often necessary to examine execution contexts assigned to the running threads. I prepared a simple script which lists threads with their execution contexts. You only need (as in previous script) to find the MT of the Thread class in your appdomain, e.g.
 
 ```
 0:036> !Name2EE mscorlib.dll System.Threading.Thread
@@ -364,11 +344,11 @@ x64 version:
 .foreach ($addr {!DumpHeap -short -mt <METHODTABLE> }) { .printf /D "Thread: %i; Execution context: <link cmd=\"!do %p\">%p</link>\n", poi(${$addr}+4c), poi(${$addr}+10), poi(${$addr}+10) }
 ```
 
-Notice that the thread number from the output is a managed thread id and to map it to the windbg thread number you need to use the `!Threads` command.
+Notice that the thread number from the output is a managed thread id and to map it to the windbg thread number you need to use the !Threads command.
 
 ## Diagnosing waits or high CPU usage
 
-Dotnet-trace allows us to enable the runtime CPU sampling provider (`Microsoft-DotNETCore-SampleProfiler`). However, using it might impact application performance as it internally calls `ThreadSuspend::SuspendEE` to suspend managed code execution while collecting the samples. Although it is a sampling profiler, it is a bit special. It runs on a separate thread and collects stacks of all the managed threads, even the waiting ones. This behavior resembles the thread time profiler. Probably that's the reason why PerfView shows us the **Thread Time** view when opening the .nettrace file.
+Dotnet-trace allows us to enable the runtime CPU sampling provider (**Microsoft-DotNETCore-SampleProfiler**). However, using it might impact application performance as it internally calls **ThreadSuspend::SuspendEE** to suspend managed code execution while collecting the samples. Although it is a sampling profiler, it is a bit special. It runs on a separate thread and collects stacks of all the managed threads, even the waiting ones. This behavior resembles the thread time profiler. Probably that's the reason why PerfView shows us the **Thread Time** view when opening the .nettrace file.
 
 Sample collect examples:
 
@@ -405,16 +385,18 @@ If we are interested only in GC Heaps, we may create the GC Heap snapshot using 
 
 In GUI, we may use the menu option: **Memory -&gt; Take Heap Snapshot**.
 
-For .NET Core applications, we have a CLI tool: **dotnet-gcdump**, which you may get from the `https://aka.ms/dotnet-gcdump/<TARGET PLATFORM RUNTIME IDENTIFIER>` URL, for example, https://aka.ms/dotnet-gcdump/linux-x64. And to collect the GC dump we need to run one of the commands:
+For .NET Core applications, we have a CLI tool: **dotnet-gcdump**, which you may get from the https://aka.ms/dotnet-gcdump/runtime-id URL, for example, https://aka.ms/dotnet-gcdump/linux-x64. And to collect the GC dump we need to run one of the commands:
 
-    dotnet-gcdump -p <process-id>
-    dotnet-gcdump -n <process-name>
+```
+dotnet-gcdump -p <process-id>
+dotnet-gcdump -n <process-name>
+```
 
 Sometimes managed heap is not enough to diagnose the memory leak. In such situations, we need to create a memory dump, as described in [a guide dedicated to diagnosing native applications](diagnosing-native-windows-apps). 
 
 ### Analyzing collected snapshots
 
-**PerfView** can open GC Heap snapshots and dumps. If you only have a memory dump, you may convert a memory dump file to a PerfView snapshot using `PerfView HeapSnapshotFromProcessDump ProcessDumpFile [DataFile]` or using the GUI options **Memory -&gt; Take Heap Snapshot from Dump**.
+**PerfView** can open GC Heap snapshots and dumps. If you only have a memory dump, you may convert a memory dump file to a PerfView snapshot using **PerfView HeapSnapshotFromProcessDump ProcessDumpFile {DataFile}** or using the GUI options **Memory -&gt; Take Heap Snapshot from Dump**.
 
 I would like to bring your attention to an excellent diffing option available for heap snapshots. Imagine you made two heap snapshots of the leaking process:
 
@@ -568,11 +550,11 @@ In **.NET 5**, the providers were renamed and currently we can use the following
 - `Private.InternalDiagnostics.System.Net.Sockets` - logs describing operations on sockets, connection status events, 
 - `Private.InternalDiagnostics.System.Net.NameResolution`
 - `Private.InternalDiagnostics.System.Net.Mail`
-- `Private.InternalDiagnostics.System.Net.Requests` - logs from `System.Net.Requests` classes
+- `Private.InternalDiagnostics.System.Net.Requests` - logs from System.Net.Requests classes
 - `Private.InternalDiagnostics.System.Net.HttpListener`
 - `Private.InternalDiagnostics.System.Net.WinHttpHandler`
-- `Private.InternalDiagnostics.System.Net.Http` - `HttpClient` and HTTP handler logs, authentication events
-- `Private.InternalDiagnostics.System.Net.Security` - `SecureChannel` (TLS) events, Windows SSPI logs
+- `Private.InternalDiagnostics.System.Net.Http` - HttpClient and HTTP handler logs, authentication events
+- `Private.InternalDiagnostics.System.Net.Security` - SecureChannel (TLS) events, Windows SSPI logs
 
 For previous .NET Core versions, the names were as follows:
 
