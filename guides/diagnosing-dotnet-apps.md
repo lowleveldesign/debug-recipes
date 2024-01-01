@@ -3,12 +3,9 @@ layout: page
 title: Diagnosing .NET applications
 ---
 
-WIP
-
 {% raw %}
 
 :point_right: I also authored the **[.NET Diagnostics Expert](https://diagnosticsexpert.com/?utm_source=debugrecipes&utm_medium=banner&utm_campaign=general) course**, available at  Dotnetos :hot_pepper: Academy. Apart from the theory, it contains lots of demos and troubleshooting guidelines. Check it out if you're interested in learning .NET troubleshooting. :point_left:
-
 
 **Table of contents:**
 
@@ -21,7 +18,7 @@ WIP
     - [Decoding managed stacks in Sysinternals](#decoding-managed-stacks-in-sysinternals)
     - [Check runtime version](#check-runtime-version)
     - [Debugging/tracing a containerized .NET application \(Docker\)](#debuggingtracing-a-containerized-net-application-docker)
-- [Diagnosing exceptions](#diagnosing-exceptions)
+- [Diagnosing exceptions and errors](#diagnosing-exceptions-and-errors)
     - [Collecting a TTD trace](#collecting-a-ttd-trace)
     - [Collecting a memory dump](#collecting-a-memory-dump)
     - [Analysing exception information](#analysing-exception-information)
@@ -198,34 +195,39 @@ Press <Enter> or <Ctrl+C> to exit...11   (KB)
 Stopping the trace. This may take up to minutes depending on the application being traced.
 ```
 
-## Diagnosing exceptions
+## Diagnosing exceptions and errors
 
 ### Collecting a TTD trace
 
-FIXME
+Time Travel Debugging is an excellent way of troubleshooting errors and exceptions. We can step through the code causing the problems at our own pace. I describe TTD in [the WinDbg usage guide](using-windbg#time-travel-debugging-ttd). It is my preferred way of debugging issues in applications and I highly recommend giving it a try.
 
 ### Collecting a memory dump
 
-FIXME
-
-[dotnet-dump](https://docs.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-dump) is one of the .NET diagnostics CLI tools. You may download it using curl or wget, for example: `curl -JLO https://aka.ms/dotnet-dump/win-x64`.
+**[dotnet-dump](https://docs.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-dump)** is one of the .NET diagnostics CLI tools. You may download it using curl or wget, for example: `curl -JLO https://aka.ms/dotnet-dump/win-x64`.
 
 To create a full memory dump, run one of the commands:
 
-    dotnet-dump collect -p <process-id>
-    dotnet-dump collect -n <process-name>
+```
+dotnet-dump collect -p <process-id>
+dotnet-dump collect -n <process-name>
+```
 
-You may create a heap-only memory dump by adding a `--type=Heap` option.
+You may create a heap-only memory dump by adding the **--type=Heap** option.
 
 Createdump shares the location with the coreclr library, for example, for .NET 5: `/usr/share/dotnet/shared/Microsoft.NETCore.App/5.0.3/createdump` or `c:\Program Files\dotnet\shared\Microsoft.NETCore.App\5.0.3\createdump.exe`.
 
-dumps https://learn.microsoft.com/en-us/dotnet/core/diagnostics/collect-dumps-crash, .NET Core 
+To create a full memory dump, run **createdump --full {process-id}**. With no options provided, it creates a memory dump with heap memory, which equals to **createdump --withheap {pid}**.
 
-To create a full memory dump, run:
+The .NET application may run **createdump** automatically on crash. We configure this feature through [environment variables](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/collect-dumps-crash), for example:
 
-    createdump --full <process-id>
+```shell
+# enable a memory dump creation on crash
+set DOTNET_DbgEnableMiniDump=1
+# when crashing, create a heap (2) memory dump, (4) for full memory dump
+set DOTNET_DbgMiniDumpType=2
+```
 
-With no options provided, it creates a memory dump with heap, which equals to `createdump --withheap <pid>`
+Apart from the .NET tools described above, you may create memory dumps with tools described in [the guide dedicated to diagnosing native Windows applications](diagnosing-native-windows-apps). As those tools usually do not understand .NET memory layout, I recommend creating full memory dumps to have all the necessary metadata for later analysis.
 
 ### Analysing exception information
 
