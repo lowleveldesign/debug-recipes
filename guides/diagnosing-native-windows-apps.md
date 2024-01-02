@@ -435,7 +435,7 @@ When analyzing waits in an application, we should use the **Thread Time Stacks**
 
 An invaluable source of information when dealing with DLL loading issues are Windows Loader snaps. Those are detailed logs of the steps that Windows Loader takes to resolve the application library dependencies. They are one of the available Global Flags that we can set for an executable, so we may use the **gflags.exe** tool to enable them.
 
-![gflags - loader snaps](gflags-loader-snaps.png)
+![gflags - loader snaps](/assets/img/gflags-loader-snaps.png)
 
 Once enabled, you need to start the failing application under a debugger and the Loader logs should appear in the debug output.
 
