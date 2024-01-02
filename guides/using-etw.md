@@ -1,11 +1,11 @@
 ---
 layout: page
-title: Using ETW
+title: Using Event Tracing for Windows (ETW)
 ---
 
 {% raw %}
 
-WIP
+*-- WORK IN PROGRESS --*
 
 **Table of contents:**
 

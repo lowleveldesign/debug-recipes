@@ -25,13 +25,21 @@ A guide presenting troubleshooting techniques and tools (including the [comon ex
 
 My field notes describing usage of WinDbg and WinDbgX (new WinDbg).
 
+#### [Using Time Traval Debugging (TTD)](using-ttd)
+
+In this guide, you will find information how to collect and analyze Time Travel Debugging traces.
+
+#### [Using Event Tracing for Windows (ETW)](using-etw)
+
+This guide describes how to collect and analyze ETW traces.
+
 #### [Using withdll and detours to trace Win API calls](using-withdll-and-detours-to-trace-winapi)
 
 This guide describes how to use [withdll](https://github.com/lowleveldesign/withdll) and [Detours](https://github.com/microsoft/Detours) samples to collect traces of Win API calls.
 
 #### [Using Windows Performance Counters](using-performance-counters)
 
-The guide presents commands to list Performance Counters installed in the system and work with data collected using them.
+The guide presents how to query Windows Performance Counters and analyze the collected data.
 
 #### [Using network tracing tools](using-network-tracing-tools)
 
