@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Using withdll and detours to trace Win API calls 
+date: 2023-11-25 08:00:00 +0200
 ---
 
 **Table of contents:**
