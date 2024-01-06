@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Configuring Windows for effective troubleshooting
+date: 2023-10-11 08:00:00 +0200
 ---
 
 **Table of contents:**

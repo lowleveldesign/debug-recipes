@@ -1,6 +1,7 @@
 ---
 layout: page
 title: COM troubleshooting
+date: 2023-04-07 08:00:00 +0200
 redirect_from:
     - /articles/com-troubleshooting/
     - /articles/com-troubleshooting
