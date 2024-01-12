@@ -25,7 +25,7 @@ A guide presenting troubleshooting techniques and tools (including the [comon ex
 
 My field notes describing usage of WinDbg and WinDbgX (new WinDbg).
 
-#### [Using Time Traval Debugging (TTD)](using-ttd)
+#### [Using Time Travel Debugging (TTD)](using-ttd)
 
 In this guide, you will find information how to collect and analyze Time Travel Debugging traces.
 
