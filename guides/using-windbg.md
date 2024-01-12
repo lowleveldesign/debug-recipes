@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Using WinDbg
-date: 2024-01-01 08:00:00 +0200
+date: 2024-01-11 08:00:00 +0200
 ---
 
 {% raw %}
@@ -39,16 +39,20 @@ date: 2024-01-01 08:00:00 +0200
     - [Breaking when a user-mode process is created \(kernel-mode\)](#breaking-when-a-user-mode-process-is-created-kernel-mode)
     - [Setting a user-mode breakpoint in kernel-mode](#setting-a-user-mode-breakpoint-in-kernel-mode)
 - [Scripting the debugger](#scripting-the-debugger)
-    - [The dx command](#the-dx-command)
-    - [Javascript engine](#javascript-engine)
-    - [Running a command for all the processes](#running-a-command-for-all-the-processes)
-    - [Attaching to multiple processes at once](#attaching-to-multiple-processes-at-once)
-    - [Injecting a DLL into a process being debugged](#injecting-a-dll-into-a-process-being-debugged)
+    - [Using meta-commands](#using-meta-commands)
+    - [Using the dx command](#using-the-dx-command)
+    - [Using the JavaScript engine](#using-the-javascript-engine)
+        - [Loading a script](#loading-a-script)
+        - [Running a script](#running-a-script)
+        - [Debugging a script](#debugging-a-script)
 - [Time Travel Debugging \(TTD\)](#time-travel-debugging-ttd)
 - [Misc tips](#misc-tips)
     - [Converting a memory dump from one format to another](#converting-a-memory-dump-from-one-format-to-another)
     - [Loading an arbitrary DLL into WinDbg for analysis](#loading-an-arbitrary-dll-into-windbg-for-analysis)
     - [Keyboard and mouse shortcuts](#keyboard-and-mouse-shortcuts)
+    - [Running a command for all the processes](#running-a-command-for-all-the-processes)
+    - [Attaching to multiple processes at once](#attaching-to-multiple-processes-at-once)
+    - [Injecting a DLL into a process being debugged](#injecting-a-dll-into-a-process-being-debugged)
 
 <!-- /MarkdownTOC -->
 
@@ -676,6 +680,8 @@ For both those commands you may limit their scope to a particular process using 
 
 ## Scripting the debugger
 
+### Using meta-commands
+
 WinDbg contains several meta-commands (starting with a dot) that allow you to control the debugger actions. The current evaluator plays an important role in interpreting the symbols in the provided command. The **.expr** command prints the current expression evaluator (MASM or C++). You may use the **/s** to change it. The **?** command uses the default evaluator, and **??** always uses the C++ evaluator. Also, you can mix the evaluators in one expression by using **@@c++(expression)** or **@@masm(expression)** syntax, for example: **? @@c++(@$peb->ImageSubsystemMajorVersion) + @@masm(0y1)**.
 
 When using **.if** and **.foreach**, sometimes the names are not resolved - use spaces between them. For example, the command would fail if there was no space between poi( and addr in the code below.
@@ -707,9 +713,11 @@ Get-ChildItem .\dumps | % { Start-Process -Wait -FilePath windbg-x64\windbg.exe 
 
 To make a **comment**, you can use one of the comment commands: **$$ comment**, **\* comment**. The difference between them is that **\*** comments everything till the end of the line, while **$$** comments text till the semicolon (or end of a line), e.g., `r eax; $$ some text; r ebx; * more text; r ecx` will print eax, ebx but not ecx. The **.echo** command ends if the debugger encounters a semicolon (unless the semicolon occurs within a quoted string).
 
-### The dx command
+### Using the dx command
 
-The **dx** command allows us to query the Debugger Object Model. There is a set of root objects from which we may start our query, including: **@$cursession**, **@$curprocess**, **@$curthread**, **@$curstack**, and **@$curframe**. **dx Debugger.State** shows the current state of the debugger.
+The **[dx](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/dx--display-visualizer-variables-)** command allows us to query the **Debugger Object Model**. There is a set of root objects from which we may start our query, including **@$cursession**, **@$curprocess**, **@$curthread**, **@$curstack**, or **@$curframe**.
+
+**dx Debugger.State** shows the current state of the debugger.
 
 Other example queries with explanations:
 
@@ -724,9 +732,128 @@ dx -r1 @$curprocess.Modules["kernel32"].Contents.Exports.Single(exp => exp.Name 
 dx @$curprocess.Modules["bindfltapi"].Contents.Exports.Select(m =>  Debugger.Utility.Control.ExecuteCommand($"bp {m.CodeAddress}"))
 ```
 
-### Javascript engine
+### Using the JavaScript engine
 
-The referance for the host object is [here](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/native-objects-in-javascript-extensions-debugger-objects).
+[Official Microsoft documentation](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/javascript-debugger-scripting) | [The referance for the host object](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/native-objects-in-javascript-extensions-debugger-objects)
+
+#### Loading a script
+
+The **.scriptproviders** command must include the JavaScript provider in the output.
+
+Then we may run a script with the **.scriptrun** command or load it using the **.scriptload** command. The difference is that model modifications made by the **.scriptload** will stay in place until the call to **.scriptunload**. Also, **.scriptrun** will call the **invokeScript** JS function after the usual calls to the root code and the **initializeScript** function.
+
+**.scriptlist** lists the loaded scripts.
+
+#### Running a script
+
+After loading a script file, we may find it in the **Debugger.State.Scripts** list:
+
+```
+> .scriptload c:\windbg-js\windbg-scripting.js
+JavaScript script successfully loaded from 'c:\windbg-js\windbg-scripting.js'
+> dx -r1 Debugger.State.Scripts
+Debugger.State.Scripts                
+    windbg-scripting
+```
+
+Then we are ready to call any defined public function, for example, logn:
+
+```
+0:007> dx Debugger.State.Scripts.@"windbg-scripting".Contents.logn("test")
+test
+Debugger.State.Scripts.@"windbg-scripting".Contents.logn("test")
+```
+
+The **@$scriptContents** variable is a shortcut to all the public functions from all the loaded scripts, so our call could be more compact:
+
+```
+> dx @$scriptContents.logn("test")
+test
+@$scriptContents.logn("test")
+```
+
+#### Debugging a script
+
+After we loaded the script (**.scriptload**), we may also debug its parts thanks to the **.scriptdebug** command, for example:
+
+```
+> .scriptload c:\windbg-js\strings.js
+> .scriptdebug strings.js
+
+>>> Debug [strings <No Position>] >|
+    ...
+    [11] NatVis script from 'C:\Program Files\WindowsApps\Microsoft.WinDbg_1.2308.2002.0_x64__8wekyb3d8bbwe\amd64\Visualizers\winrt.natvis'
+    [12] [*DEBUGGED*] JavaScript script from 'c:\windbg-js\strings.js'
+
+>>> Debug [strings <No Position>] >bp logn
+Breakpoint 1 set at logn (11:5)
+>>> Debug [strings <No Position>] >bl
+      Id State    Pos
+       1 enabled  11:5
+
+>>> Debug [strings <No Position>] >q
+```
+
+We are running a debugger in the debugger, so it could be a bit confusing :) After quittin the JavaScript debugger, it will keep the breakpoints information, so when we call our function from the main debugger, we will land in the JavaScript debugger again, for example:
+
+```
+> dx @$scriptContents.logn("test")
+>>> ****** SCRIPT BREAK strings [Breakpoint 1] ******
+           Location: line = 11, column = 5
+           Text: log(s + "\n")
+
+>>> Debug [strings 11:5] >dv
+                   s = test
+```
+
+The number of commands available in the inner JavaScript debugger is quite long and we may list them with the **.help** command. Especially, the evaluate expression (**?** or **??**) are very useful as they allow us to execute any JavaScript expressions and check their results:
+
+```
+>>> Debug [strings 11:5] >? host
+host             : {...}
+    __proto__        : {...}
+    ...
+    Int64            : function () { [native code] }
+    parseInt64       : function () { [native code] }
+    namespace        : {...}
+    evaluateExpression : function () { [native code] }
+    evaluateExpressionInContext : function () { [native code] }
+    getModuleSymbol  : function () { [native code] }
+    getModuleContainingSymbol : function () { [native code] }
+    getModuleContainingSymbolInformation : function () { [native code] }
+    getModuleSymbolAddress : function () { [native code] }
+    setModuleSymbol  : function () { [native code] }
+    getModuleType    : function () { [native code] }
+    ...
+```
+
+## Time Travel Debugging (TTD)
+
+I prepared [a seperate guide](/guides/using-ttd) dedicated to Time Travel Debugging.
+
+## Misc tips
+
+### Converting a memory dump from one format to another
+
+When debugging a full memory dump (**/ma**), we may convert it to a smaller memory dump using again the **.dump** command, for example:
+
+```
+.dump /mpi c:\tmp\smaller.dmp
+```
+
+### Loading an arbitrary DLL into WinDbg for analysis
+
+WinDbg allows analysis of an arbitrary PE file if we load it as a crash dump (the **Open dump file** menu option or the **-z** command-line argument), for example: `windbgx -z C:\Windows\System32\shell32.dll`. WinDbg will load a DLL/EXE as a data file.
+
+Alternatively, if we want to normally load the DLL, we may use **rundll32.exe** as our debugging target and wait until the DLL gets loaded, for example: `windbgx -c "sxe ld:jscript9.dll;g" rundll32.exe .\jscript9.dll,TestFunction`. The TestFunction in the snippet could be any string. Rundll32.exe loads the DLL before validating the exported function address.
+
+### Keyboard and mouse shortcuts
+
+The **SHIFT + \[UP ARROW\]** completes the current command from previously executed commands (much as F8 in cmd).
+
+If you double-click on a word in the command window in WinDbgX, the debugger will **highlight** all occurrences of the selected term. You may highlight other words with different colors if you press the ctrl key when double-clicking on them. To unhighlight a given word, double-click on it again, pressing the ctrl key.
+
+{% endraw %}
 
 ### Running a command for all the processes
 
@@ -779,31 +906,3 @@ start             end                 module name
 00007ff9`b3390000 00007ff9`b3be9000   SHELL32    (deferred)
 ...
 ```
-
-## Time Travel Debugging (TTD)
-
-I prepared [a seperate guide](/guides/using-ttd) dedicated to Time Travel Debugging.
-
-## Misc tips
-
-### Converting a memory dump from one format to another
-
-When debugging a full memory dump (**/ma**), we may convert it to a smaller memory dump using again the **.dump** command, for example:
-
-```
-.dump /mpi c:\tmp\smaller.dmp
-```
-
-### Loading an arbitrary DLL into WinDbg for analysis
-
-WinDbg allows analysis of an arbitrary PE file if we load it as a crash dump (the **Open dump file** menu option or the **-z** command-line argument), for example: `windbgx -z C:\Windows\System32\shell32.dll`. WinDbg will load a DLL/EXE as a data file.
-
-Alternatively, if we want to normally load the DLL, we may use **rundll32.exe** as our debugging target and wait until the DLL gets loaded, for example: `windbgx -c "sxe ld:jscript9.dll;g" rundll32.exe .\jscript9.dll,TestFunction`. The TestFunction in the snippet could be any string. Rundll32.exe loads the DLL before validating the exported function address.
-
-### Keyboard and mouse shortcuts
-
-The **SHIFT + \[UP ARROW\]** completes the current command from previously executed commands (much as F8 in cmd).
-
-If you double-click on a word in the command window in WinDbgX, the debugger will **highlight** all occurrences of the selected term. You may highlight other words with different colors if you press the ctrl key when double-clicking on them. To unhighlight a given word, double-click on it again, pressing the ctrl key.
-
-{% endraw %}
