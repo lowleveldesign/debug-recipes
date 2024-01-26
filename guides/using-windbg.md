@@ -773,7 +773,10 @@ dx @$curprocess.Modules["bindfltapi"].Contents.Exports.Select(m =>  Debugger.Uti
 
 ### Using the JavaScript engine
 
-[Official Microsoft documentation](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/javascript-debugger-scripting) | [The referance for the host object](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/native-objects-in-javascript-extensions-debugger-objects)
+Documentation:
+
+- [Official Microsoft documentation](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/javascript-debugger-scripting)
+- [The API reference for the host object](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/native-objects-in-javascript-extensions-debugger-objects)
 
 #### Loading a script
 
