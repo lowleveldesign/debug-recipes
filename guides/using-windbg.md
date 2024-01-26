@@ -859,23 +859,23 @@ dx @$scriptContents.logn("test")
 
 The number of commands available in the inner JavaScript debugger is quite long and we may list them with the **.help** command. Especially, the evaluate expression (**?** or **??**) are very useful as they allow us to execute any JavaScript expressions and check their results:
 
-```
->>> Debug [strings 11:5] >? host
-host             : {...}
-    __proto__        : {...}
-    ...
-    Int64            : function () { [native code] }
-    parseInt64       : function () { [native code] }
-    namespace        : {...}
-    evaluateExpression : function () { [native code] }
-    evaluateExpressionInContext : function () { [native code] }
-    getModuleSymbol  : function () { [native code] }
-    getModuleContainingSymbol : function () { [native code] }
-    getModuleContainingSymbolInformation : function () { [native code] }
-    getModuleSymbolAddress : function () { [native code] }
-    setModuleSymbol  : function () { [native code] }
-    getModuleType    : function () { [native code] }
-    ...
+```shell
+# >>> Debug [strings 11:5] >? host
+# host             : {...}
+#     __proto__        : {...}
+#     ...
+#     Int64            : function () { [native code] }
+#     parseInt64       : function () { [native code] }
+#     namespace        : {...}
+#     evaluateExpression : function () { [native code] }
+#     evaluateExpressionInContext : function () { [native code] }
+#     getModuleSymbol  : function () { [native code] }
+#     getModuleContainingSymbol : function () { [native code] }
+#     getModuleContainingSymbolInformation : function () { [native code] }
+#     getModuleSymbolAddress : function () { [native code] }
+#     setModuleSymbol  : function () { [native code] }
+#     getModuleType    : function () { [native code] }
+#     ...
 ```
 
 ## Time Travel Debugging (TTD)
