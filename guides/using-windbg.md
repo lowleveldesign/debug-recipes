@@ -90,7 +90,6 @@ Starting from Debugging Tools for Windows 10 we have an additional tool: **kdnet
 
 ```shell
 kdnet 172.25.121.1 60000
-
 # Enabling network debugging on Microsoft Hypervisor Virtual Machine.
 # Key=xxxx
 #
@@ -197,7 +196,6 @@ In WinDbgX, we may also list and filter modules with the **@$curprocess.Modules*
 
 ```shell
 dx @$curprocess.Modules["win32u.dll"]
-
 # @$curprocess.Modules["win32u.dll"]                 : C:\WINDOWS\System32\win32u.dll
 #     BaseAddress      : 0x7ffa0e2c0000
 #     Name             : C:\WINDOWS\System32\win32u.dll
@@ -207,7 +205,6 @@ dx @$curprocess.Modules["win32u.dll"]
 #     Symbols          : [SymbolModule]win32u
 
 dx @$curprocess.Modules["win32u.dll"].Contents.Exports
-
 #@$curprocess.Modules["win32u.dll"].Contents.Exports
 #    [0x0]            : Function export of 'NtBindCompositionSurface'
 #    [0x1]            : Function export of 'NtCloseCompositionInputSink'
@@ -222,7 +219,6 @@ The `!address` command shows information about a specific region of memory, for 
 
 ```shell
 !address 0x00fd7df8
-
 # Usage:                  Image
 # Base Address:           00fd6000
 # End Address:            00fdc000
@@ -246,7 +242,6 @@ Additionally, it can display regions of memory of specific type, for example:
 
 ```shell
 !address -f:FileMap
-
 #   BaseAddr EndAddr+1 RgnSize     Type       State                 Protect             Usage
 # -----------------------------------------------------------------------------------------------
 #   9a0000   9b0000    10000 MEM_MAPPED  MEM_COMMIT  PAGE_READWRITE                     MappedFile "PageFile"
@@ -258,7 +253,6 @@ Additionally, it can display regions of memory of specific type, for example:
 # 7fae0000 7fae1000     1000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      MappedFile "PageFile"
 
 !address -f:MEM_MAPPED
-
 #   BaseAddr EndAddr+1 RgnSize     Type       State                 Protect             Usage
 # -----------------------------------------------------------------------------------------------
 #   9a0000   9b0000    10000 MEM_MAPPED  MEM_COMMIT  PAGE_READWRITE                     MappedFile "PageFile"
@@ -296,7 +290,6 @@ In WinDbgX, we may access the call stack frames using **dx @$curstack.Frames**, 
 
 ```shell
 dx @$curstack.Frames
-
 # @$curstack.Frames
 #     [0x0]            : ntdll!LdrpDoDebuggerBreak + 0x30 [Switch To]
 #     [0x1]            : ntdll!LdrpInitializeProcess + 0x1cfa [Switch To]
@@ -305,7 +298,6 @@ dx @$curstack.Frames
 #     [0x4]            : ntdll!LdrInitializeThunk + 0xe [Switch To]
 
 dx @$curstack.Frames[0].Attributes
-
 # InstructionOffset : 0x7ffa1102b784
 # ReturnOffset     : 0x7ffa1102e9d6
 # FrameOffset      : 0xea5055f370
@@ -340,7 +332,6 @@ The **!object** command displays some basic information about a kernel object:
 
 ```shell
 !object  ffffc30162f26080
-
 # Object: ffffc30162f26080  Type: (ffffc30161891d20) Process
 #     ObjectHeader: ffffc30162f26050 (new version)
 #     HandleCount: 23  PointerCount: 582900
@@ -350,7 +341,6 @@ We may then analyze the object header to learn some more details about the objec
 
 ```shell
 dx (nt!_OBJECT_HEADER *)0xffffc30162f26050
-
 # (nt!_OBJECT_HEADER *)0xffffc30162f26050                 : 0xffffc30162f26050 [Type: _OBJECT_HEADER *]
 #     [+0x000] PointerCount     : 582900 [Type: __int64]
 #     [+0x008] HandleCount      : 23 [Type: __int64]
@@ -379,7 +369,6 @@ dx (nt!_OBJECT_HEADER *)0xffffc30162f26050
 #     UnderlyingObject [Type: _EPROCESS]
 
 dx -r1 (*((ntkrnlmp!_EPROCESS *)0xffffc30162f26080))
-
 # (*((ntkrnlmp!_EPROCESS *)0xffffc30162f26080))                 [Type: _EPROCESS]
 #     [+0x000] Pcb              [Type: _KPROCESS]
 #     [+0x438] ProcessLock      [Type: _EX_PUSH_LOCK]
@@ -411,7 +400,6 @@ To list all handles reserved by a process use -1 (in kernel mode) or 0 (in user-
 
 ```shell
 !handle 0 1 File
-
 # ...
 # Handle 1c0
 #   Type          File
@@ -439,7 +427,6 @@ For WOW64 processes, the **/w** parameter (**.thread /w**) will additionally swi
 
 ```shell
 !runaway 7
-
 # User Mode Time
 #  Thread       Time
 #   0:bfc       0 days 0:00:00.031
@@ -476,7 +463,6 @@ Display information about a particular critical section: **!critsec {address}**
 
 ```shell
 !cs -lso
-
 # -----------------------------------------
 # DebugInfo          = 0x77294380
 # Critical section   = 0x772920c0 (ntdll!LdrpLoaderLock+0x0)
@@ -503,7 +489,6 @@ Finally, we may use the raw output:
 
 ```shell
 dx -r1 ((ole32!_RTL_CRITICAL_SECTION_DEBUG *)0x581850)
-
 # ((ole32!_RTL_CRITICAL_SECTION_DEBUG *)0x581850)                 : 0x581850 [Type: _RTL_CRITICAL_SECTION_DEBUG *]
 #     [+0x000] Type             : 0x0 [Type: unsigned short]
 #     [+0x002] CreatorBackTraceIndex : 0x0 [Type: unsigned short]
@@ -530,7 +515,6 @@ Useful commands are **pc** and **tc** which step or trace to **the next call sta
 
 ```shell
 wt -l1 -oa -or
-
 # Tracing notepad!NPInit to return address 00007ff6`72c23af5
 #    11     0 [  0] notepad!NPInit
 #                       call at 00007ff6`72c27749
@@ -643,14 +627,12 @@ You may set a breakpoint in user space, but you need to be in a valid process co
 
 ```shell
 !process 0 0 notepad.exe
-
 # PROCESS ffffe0014f80d680
 #     SessionId: 2  Cid: 0e44    Peb: 7ff7360ef000  ParentCid: 0aac
 #     DirBase: 2d497000  ObjectTable: ffffc00054529240  HandleCount:
 #     Image: notepad.exe
 
 .process /i ffffe0014f80d680
-
 # You need to continue execution (press 'g' ) for the context
 # to be switched. When the debugger breaks in again, you will be in
 # the new process context.
@@ -664,14 +646,12 @@ Then when you are in a given process context, set the breakpoint:
 .reload /user
 
 !process -1 0
-
 # PROCESS ffffe0014f80d680
 #     SessionId: 2  Cid: 0e44    Peb: 7ff7360ef000  ParentCid: 0aac
 #     DirBase: 2d497000  ObjectTable: ffffc00054529240  HandleCount:
 #     Image: notepad.exe
 
 x kernel32!CreateFileW
-
 # 00007ffa`d8502508 KERNEL32!CreateFileW ()
 
 bp 00007ffa`d8502508
@@ -681,21 +661,18 @@ Alternative way (which does not require process context switching) is to use dat
 
 ```shell
 !process 0 0 notepad.exe
-
 # PROCESS ffffe0014ca22480
 #     SessionId: 2  Cid: 0614    Peb: 7ff73628f000  ParentCid: 0d88
 #     DirBase: 5607b000  ObjectTable: ffffc0005c2dfc40  HandleCount:
 #     Image: notepad.exe
 
 .process /r /p ffffe0014ca22480
-
 # Implicit process is now ffffe001`4ca22480
 # .cache forcedecodeuser done
 # Loading User Symbols
 # ..........................
 
 x KERNEL32!CreateFileW
-
 # 00007ffa`d8502508 KERNEL32!CreateFileW ()
 
 ba e1 00007ffa`d8502508
@@ -747,7 +724,6 @@ The **[dx](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercm
 
 ```shell
 dx -h Debugger.State
-
 # Debugger.State                 [State pertaining to the current execution of the debugger (e.g.: user variables)]
 #     DebuggerInformation [Debugger variables which are owned by the debugger and can be referenced by a pseudo-register prefix of @$]
 #     DebuggerVariables [Debugger variables which are owned by the debugger and can be referenced by a pseudo-register prefix of @$]
@@ -792,11 +768,9 @@ After loading a script file, we may find it in the **Debugger.State.Scripts** li
 
 ```shell
 .scriptload c:\windbg-js\windbg-scripting.js
-
 # JavaScript script successfully loaded from 'c:\windbg-js\windbg-scripting.js'
 
 dx -r1 Debugger.State.Scripts
-
 # Debugger.State.Scripts
 #     windbg-scripting
 ```
@@ -805,7 +779,6 @@ Then we are ready to call any defined public function, for example, logn:
 
 ```shell
 dx Debugger.State.Scripts.@"windbg-scripting".Contents.logn("test")
-
 # test
 
 Debugger.State.Scripts.@"windbg-scripting".Contents.logn("test")
@@ -815,7 +788,6 @@ The **@$scriptContents** variable is a shortcut to all the public functions from
 
 ```shell
 dx @$scriptContents.logn("test")
-
 # test
 
 @$scriptContents.logn("test")
@@ -829,7 +801,6 @@ After we loaded the script (**.scriptload**), we may also debug its parts thanks
 .scriptload c:\windbg-js\strings.js
 
 .scriptdebug strings.js
-
 # >>> Debug [strings <No Position>] >|
 #     ...
 #     [11] NatVis script from 'C:\Program Files\WindowsApps\Microsoft.WinDbg_1.2308.2002.0_x64__8wekyb3d8bbwe\amd64\Visualizers\winrt.natvis'
@@ -848,7 +819,6 @@ We are running a debugger in the debugger, so it could be a bit confusing :) Aft
 
 ```shell
 dx @$scriptContents.logn("test")
-
 # >>> ****** SCRIPT BREAK strings [Breakpoint 1] ******
 #            Location: line = 11, column = 5
 #            Text: log(s + "\n")
@@ -925,13 +895,11 @@ In the example below we will inject shell32.dll into a target process by using t
 
 ```shell
 .dvalloc 0x1a
-
 # Allocated 1000 bytes starting at 00000279`c1be0000
 
 ezu 00000279`c1be0000 "shell32.dll"
 
 du 00000279`c1be0000
-
 # 00000279`c1be0000  "shell32.dll"
 ```
 
@@ -939,7 +907,6 @@ The .call command requires private symbols. Microsoft does not publish public sy
 
 ```shell
 ? kernelbase!LoadLibraryW - kernelbase
-
 # Evaluate expression: 533568 = 00000000`00082440
 
 .load c:\dbg64ex\SymbolBuilderComposition.dll
@@ -957,7 +924,6 @@ dx @$param.LiveRanges.Add(0, 8, "@rcx")
 ~.g
 
 lm
-
 # start             end                 module name
 # ...
 # 00007ff9`b3390000 00007ff9`b3be9000   SHELL32    (deferred)
