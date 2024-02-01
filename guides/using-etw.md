@@ -12,6 +12,7 @@ date: 2024-01-01 08:00:00 +0200
 
 <!-- MarkdownTOC -->
 
+- [Tools installation and configuration](#tools-installation-and-configuration)
 - [Description](#description)
 - [Getting information on sessions and providers](#getting-information-on-sessions-and-providers)
     - [Query providers installed in the system](#query-providers-installed-in-the-system)
@@ -29,6 +30,19 @@ date: 2024-01-01 08:00:00 +0200
     - [\(0x800700B7\): Cannot create a file when that file already exists](#0x800700b7-cannot-create-a-file-when-that-file-already-exists)
 
 <!-- /MarkdownTOC -->
+
+## Tools installation and configuration
+
+The collector, **wpr.exe**, is installed with the modern Windows versions. The reader, **Windows Performance Analyzer (wpa.exe)**, may be installed from Microsoft Store at <https://apps.microsoft.com/store/detail/windows-performance-analyzer-preview/9N58QRW40DFW?hl=en-sh&gl=sh>.
+
+*Note: If you run into the 0x80010106 error when stopping the session, use wpr.exe from Windows SDK, build 1950 or later.*
+
+When loading symbols, the WPT analysis tools use the **\_NT\_SYMBOLS\_PATH** variable to download (and cache) the PDB files and **\_NT\_SYMCACHE\_PATH** to store their preprocessed (cached) versions. An example machine configuration might look as follows:
+
+```shell
+setx /M _NT_SYMBOL_PATH "SRV*C:\symbols\dbg*https://msdl.microsoft.com/download/symbols"
+setx /M _NT_SYMCACHE_PATH "C:\symcache"
+```
 
 ## Description
 
