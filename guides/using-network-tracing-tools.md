@@ -78,7 +78,7 @@ pktmon etl2pcap C:\network-trace.etl --out C:\network-trace.pcap`
 
 ### netsh (Windows)
 
-Netsh is another tool we could use for this purpose on Windows (even on **older Windows versions**). The **netsh trace {start|stop}** command will create an ETW-based network trace, allowing us to choose from a variety of diagnostics scenarios:
+Netsh is another tool we could use for this purpose on Windows (even on **older Windows versions**). The **netsh trace {start\|stop}** command will create an ETW-based network trace, allowing us to choose from a variety of diagnostics scenarios:
 
 ```
 > netsh trace show scenarios
