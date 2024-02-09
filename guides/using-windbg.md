@@ -734,6 +734,21 @@ dx -h Debugger.State
 #     ExtensionGallery [Extension Gallery]
 ```
 
+If we add the **-v** parameter, dx will print not only the values of the properties and fields but also the methods we may call on an object:
+
+```shell
+dx -v -r1 Debugger.Sessions[0].Processes[15416].Threads[12796]
+# Debugger.Sessions[0].Processes[15416].Threads[12796]                 [Switch To]
+#     Id               : 0x31fc
+#     Index            : 0x0
+#     Stack           
+#     Registers       
+#     SwitchTo         [SwitchTo() - Switch to this thread as the default context]
+#     Environment     
+#     TTD             
+#     ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+```
+
 Other example queries with explanations:
 
 ```shell

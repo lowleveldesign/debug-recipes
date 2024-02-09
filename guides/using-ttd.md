@@ -54,17 +54,20 @@ ttd.exe -accepteula -monitor app1.exe -monitor app2.exe -timestampFilename -out 
 
 TTD is one of the session object properties which we can query. Axel Souchet in [this post](https://blahcat.github.io/posts/2018/11/02/some-time-travel-musings.html) presents some interesting TTD queries. I list some of them below, but I recommend checking the article to learn more.
 
-```
-0:000> dx @$cursession.TTD
+```shell
+dx @$cursession.TTD
 
-0:000> dx @$cursession.TTD.Calls("user32!GetMessage*")
-@$cursession.TTD.Calls("user32!GetMessage*").Count() : 0x1e8
+dx @$cursession.TTD.Calls("user32!GetMessage*")
+# @$cursession.TTD.Calls("user32!GetMessage*").Count() : 0x1e8
 
-// Isolate the address(es) newly allocated as RWX
-0:000> dx @$cursession.TTD.Calls("Kernel*!VirtualAlloc*").Where( f => f.Parameters[3] == 0x40 ).Select( f => new {Address : f.ReturnValue } )
+# Isolate the address(es) newly allocated as RWX
+dx @$cursession.TTD.Calls("Kernel*!VirtualAlloc*").Where( f => f.Parameters[3] == 0x40 ).Select( f => new {Address : f.ReturnValue } )
 
-// Time-Travel to when the 1st byte is executed
-0:000> dx @$cursession.TTD.Memory(0xAddressFromAbove, 0xAddressFromAbove+1, "e")[0].TimeStart.SeekTo()
+# Time-Travel to when the 1st byte is executed
+dx @$cursession.TTD.Memory(0xAddressFromAbove, 0xAddressFromAbove+1, "e")[0].TimeStart.SeekTo()
+
+# SetLastError calls with the passed error code
+dx @$cursession.TTD.Calls("kernelbase!SetLastError").Select(c => c.Parameters[0])
 ```
 
 {% endraw %}
