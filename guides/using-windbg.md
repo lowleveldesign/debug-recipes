@@ -41,6 +41,9 @@ date: 2024-01-11 08:00:00 +0200
 - [Scripting the debugger](#scripting-the-debugger)
     - [Using meta-commands \(legacy way\)](#using-meta-commands-legacy-way)
     - [Using the dx command](#using-the-dx-command)
+        - [Using variables and creating new objects in the dx query](#using-variables-and-creating-new-objects-in-the-dx-query)
+        - [Example queries with explanations](#example-queries-with-explanations)
+        - [Managed application support in the dx queries](#managed-application-support-in-the-dx-queries)
     - [Using the JavaScript engine](#using-the-javascript-engine)
         - [Loading a script](#loading-a-script)
         - [Running a script](#running-a-script)
@@ -680,7 +683,6 @@ ba e1 00007ffa`d8502508
 
 For both those commands you may limit their scope to a particular process using /p switch.
 
-
 ## Scripting the debugger
 
 ### Using meta-commands (legacy way)
@@ -718,7 +720,7 @@ To make a **comment**, you can use one of the comment commands: **$$ comment**, 
 
 ### Using the dx command
 
-The **[dx](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/dx--display-visualizer-variables-)** command allows us to query the **Debugger Object Model**. There is a set of root objects from which we may start our query, including **@$cursession**, **@$curprocess**, **@$curthread**, **@$curstack**, or **@$curframe**.
+The **[dx command](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/dx--display-visualizer-variables-)** allows us to query the **Debugger Object Model**. There is a set of root objects from which we may start our query, including **@$cursession**, **@$curprocess**, **@$curthread**, **@$curstack**, or **@$curframe**.
 
 **dx Debugger.State** shows the current state of the debugger. The **-h** parameter additionally displays help for the debugger objects, for example:
 
@@ -749,7 +751,53 @@ dx -v -r1 Debugger.Sessions[0].Processes[15416].Threads[12796]
 #     ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
 ```
 
-Other example queries with explanations:
+#### Using variables and creating new objects in the dx query
+
+In our queries we may create **anonymous objets**, **lambdas**, **arrays** and **objects of the Debugger Object Model types**, for example:
+
+```shell
+# Create an anonymous object for each call to RtlSetLastWin32Error that contains TTD time of the call and the error code value
+dx -g @$cursession.TTD.Calls("ntdll!RtlSetLastWin32Error").Select(c => new { TimeStart = c.TimeStart, Error = c.Parameters[0] })
+# =========================================
+# =           = (+) TimeStart = Error     =
+# =========================================
+# = [0x0]     - 725:3B        - 0xbb      =
+# = [0x1]     - 725:3D6       - 0x57      =
+# = [0x2]     - 725:4AA       - 0x57      =
+# = [0x3]     - 725:EF0       - 0xbb      =
+# ....
+
+# Create a simple array containing four numbers
+dx Debugger.Utility.Collections.CreateArray(1, 2, 3, 4)
+# Debugger.Utility.Collections.CreateArray(1, 2, 3, 4)                
+#     [0x0]            : 1
+#     [0x1]            : 2
+#     [0x2]            : 3
+#     [0x3]            : 4
+
+# Create a TTD position object and use it to set the current trace position
+dx -s @$create("Debugger.Models.TTD.Position", 4173, 75).SeekTo()
+
+# Create a lambda function to sum two numbers
+dx ((x, y) => x + y)(1, 2)
+# ((x, y) => x + y)(1, 2) : 3
+```
+
+Additionally, we may assign the created object or the result of a dx query to a variable, for example:
+
+```shell
+# Assign a lambda function to a $sum variable and use it
+dx @$sum = (x, y) => x + y
+dx @$sum(1, 2)
+# @$sum(1, 2)      : 3
+
+# Save all calls to the CreateFileW function to the @$calls variable
+dx @$calls = @$cursession.TTD.Calls("kernelbase!CreateFileW")
+```
+
+We may also use variables and pseudo-registers available in the debugger context. You may list them by examining the **Debugger.State.DebuggerVariables**, **Debugger.State.PseudoRegisters**, and **Debugger.State.UserVariables** objects.
+
+#### Example queries with explanations
 
 ```shell
 # Find kernel32 exports that contain the 'RegGetVal' string (by Tim Misiak)
@@ -760,6 +808,66 @@ dx -r1 @$curprocess.Modules["kernel32"].Contents.Exports.Single(exp => exp.Name 
 
 # Set a breakpoint on every exported function of the bindfltapi module
 dx @$curprocess.Modules["bindfltapi"].Contents.Exports.Select(m =>  Debugger.Utility.Control.ExecuteCommand($"bp {m.CodeAddress}"))
+
+# Show the number of calls made to functions with names starting from NdrClient in the rpcrt4 module
+dx -g @$cursession.TTD.Calls("rpcrt4!NdrClient*").GroupBy(c => c.Function).Select(g => new { Function = g.First().Function, Count = g.Count() })
+```
+
+More examples of the dx queries for analysing the TTD traces can be found in the [TTD guide](/guides/using-ttd).
+
+#### Managed application support in the dx queries
+
+The SOS extension does not currently support the Debugger Object Models, but we can see that some of the debugger objects understand the managed context. For example, when we list **stack frames** of a managed process, the method names should be properly decoded:
+
+```shell
+dx -r1 @$curprocess.Threads[13236].Stack.Frames
+# @$curprocess.Threads[13236].Stack.Frames                
+#     [0x0]            : ntdll!NtReadFile + 0x14 [Switch To]
+#     [0x1]            : KERNELBASE!ReadFile + 0x7b [Switch To]
+#     [0x2]            : System_Console!Interop.Kernel32.ReadFile + 0x84 [Switch To]
+#     [0x3]            : System_Console!System.ConsolePal.WindowsConsoleStream.ReadFileNative + 0x60 [Switch To]
+#     [0x4]            : System_Console!System.ConsolePal.WindowsConsoleStream.Read + 0x2b [Switch To]
+#     [0x5]            : System_Console!System.IO.ConsoleStream.Read + 0x74 [Switch To]
+#     [0x6]            : System_Private_CoreLib!System.IO.StreamReader.ReadBuffer + 0x268 [Switch To]
+#     [0x7]            : System_Private_CoreLib!System.IO.StreamReader.ReadLine + 0xd3 [Switch To]
+#     [0x8]            : System_Console!System.IO.SyncTextReader.ReadLine + 0x3d [Switch To]
+#     [0x9]            : System_Console!System.Console.ReadLine + 0x19 [Switch To]
+#     [0xa]            : testcs!Program.Main + 0xc6 [Switch To]
+#     ...
+
+dx -r1 @$curprocess.Threads[13236].Stack.Frames[10]
+# @$curprocess.Threads[13236].Stack.Frames[10]                 : testcs!Program.Main + 0xc6 [Switch To]
+#     LocalVariables  
+#     Parameters       : ()
+#     Attributes      
+
+dx -r1 @$curprocess.Threads[13236].Stack.Frames[10].LocalVariables
+# @$curprocess.Threads[13236].Stack.Frames[10].LocalVariables                
+#     ex               : 0x0 [Type: System.Exception]
+#     slot0            [Type: System.Runtime.CompilerServices.DefaultInterpolatedStringHandler]
+#     ...
+```
+
+Additionally, we may query **the managed heap** (**ManagedHeap** property is a nice replacement for the !DumpHeap command):
+
+```shell
+dx -r1 @$curprocess.Memory.ManagedHeap
+# @$curprocess.Memory.ManagedHeap                
+#     GCHandles       
+#     Objects         
+#     ObjectsByType
+
+dx -r1 @$curprocess.Memory.ManagedHeap.Objects
+# @$curprocess.Memory.ManagedHeap.Objects                
+#     [0x0]            : 0x1ab6fc00020   size = 60   type = int[]
+#     [0x1]            : 0x1ab6fc00080   size = 80   type = System.OutOfMemoryException
+#     [0x2]            : 0x1ab6fc00100   size = 80   type = System.StackOverflowException
+#     [0x3]            : 0x1ab6fc00180   size = 80   type = System.ExecutionEngineException
+#     [0x4]            : 0x1ab6fc00200   size = 18   type = System.Object
+#     [0x5]            : 0x1ab6fc00218   size = 18   type = System.String
+#     [0x6]            : 0x1ab6fc00230   size = 50   type = System.Collections.Generic.Dictionary<string,object>
+#     [0x7]            : 0x1ab6fc00280   size = 48   type = System.String
+#     [...]           
 ```
 
 ### Using the JavaScript engine
