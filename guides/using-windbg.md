@@ -1015,7 +1015,9 @@ windbgx.exe -c "`$`$<C:\tmp\attach_all.txt" -pn winver.exe
 
 ### Injecting a DLL into a process being debugged
 
-In the example below we will inject shell32.dll into a target process by using the **.call** command. We start by allocating some space for the DLL name and filling it up:
+You may use the **!injectdll** command from my [lldext](https://github.com/lowleveldesign/lldext) extension.
+
+Or use the **.call** method, as shown in the shell32.dll example below. We start by allocating some space for the DLL name and filling it up:
 
 ```shell
 .dvalloc 0x1a
