@@ -39,17 +39,17 @@ An alternative to WinDbgX is running the command-line TTD collector. Some usage 
 
 ```shell
 # launch a new winver.exe process and record the trace in C:\logs
-ttd.exe -accepteula winver.exe -out c:\logs
+ttd.exe -accepteula -out c:\logs winver.exe
 
 # attach and trace the process with ID 1234 and all its newly started children
-ttd.exe -accepteula -attach 1234 -children -out c:\logs
+ttd.exe -accepteula -children -out c:\logs -attach 1234 
 
 # attach and trace the process with ID 1234 to a ring buffer, backed by a trace file of maximum size 1024 MB
-ttd.exe -accepteula -attach 1234 -ring -maxFile 1024 -out c:\logs
+ttd.exe -accepteula -ring -maxFile 1024 -out c:\logs -attach 1234
 
 # record a trace of the running and newly started processes, add a timestamp to the trace file names
-ttd.exe -accepteula -monitor winver.exe -timestampFilename -out c:\logs
-ttd.exe -accepteula -monitor app1.exe -monitor app2.exe -timestampFilename -out c:\logs
+ttd.exe -accepteula -timestampFilename -out c:\logs -monitor winver.exe
+ttd.exe -accepteula -timestampFilename -out c:\logs -monitor app1.exe -monitor app2.exe
 ```
 
 Analysis
