@@ -323,7 +323,7 @@ The **dx** command allows you to dump local variables or read them from any plac
 
 ### Working with strings
 
-The **!du** command from the PDE extension shows strings up to 4GB (the default du command stops when it hits the range limit).
+The **!du** command from the [PDE extension](https://onedrive.live.com/redir?resid=DAE128BD454CF957!7152&authkey=!AJeSzeiu8SQ7T4w&ithint=folder%2czip) shows strings up to 4GB (the default du command stops when it hits the range limit).
 
 The PDE extension also contains the **!ssz** command to look for zero-terminated (either unicode or ascii) strings. To change a text in memory use **!ezu**, for example: `ezu  "test string"`. The extension works on committed memory.
 
