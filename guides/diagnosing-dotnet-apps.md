@@ -39,7 +39,7 @@ date: 2024-01-01 08:00:00 +0200
         - [Uninstall assembly from cache](#uninstall-assembly-from-cache)
 - [Diagnosing network connectivity issues](#diagnosing-network-connectivity-issues)
     - [.NET Core](#net-core)
-    - [Full .NET Framework](#full-net-framework)
+    - [.NET Framework](#net-framework)
 - [ASP.NET Core](#aspnet-core)
     - [Collecting ASP.NET Core logs](#collecting-aspnet-core-logs)
         - [ILogger logs](#ilogger-logs)
@@ -590,7 +590,7 @@ Private.InternalDiagnostics.System.Net.Primitives,Private.InternalDiagnostics.Sy
 
 I also developed [**dotnet-wtrace**](https://github.com/lowleveldesign/dotnet-wtrace), a lightweight traces that makes it straightfoward to live collect .NET events, including network traces.
 
-### Full .NET Framework
+### .NET Framework
 
 All classes from `System.Net`, if configured properly, may provide a lot of interesting logs through the default System.Diagnostics mechanisms. The list of the available trace sources is available in [Microsoft docs](https://docs.microsoft.com/en-us/dotnet/framework/network-programming/how-to-configure-network-tracing).
 
@@ -603,17 +603,17 @@ This is a configuration sample which writes network traces to a file:
       <add name="file" initializeData="C:\logs\network.log" type="System.Diagnostics.TextWriterTraceListener" />
     </sharedListeners>
     <sources>
+      <source name="System.Net" switchValue="Verbose" tracemode="includehex" maxdatasize="512">
+        <listeners>
+          <add name="file" />
+        </listeners>
+      </source>
       <source name="System.Net.Http" switchValue="Verbose">
         <listeners>
           <add name="file" />
         </listeners>
       </source>
       <source name="System.Net.HttpListener" switchValue="Verbose">
-        <listeners>
-          <add name="file" />
-        </listeners>
-      </source>
-      <source name="System.Net" switchValue="Verbose">
         <listeners>
           <add name="file" />
         </listeners>
@@ -625,6 +625,40 @@ This is a configuration sample which writes network traces to a file:
       </source>
     </sources>
 </system.diagnostics>
+```
+
+These logs may be verbose and numerous, therefore, I suggest starting with Information level and smaller number of sources. You may also consider using **EventProviderTraceListener** to make the trace writes faster and less impactful. An example configuration file with those changes:
+
+```xml
+<system.diagnostics>
+    <trace autoflush="true" />
+    <sharedListeners>
+      <add name="etw" initializeData="{0f09a664-1713-4665-91e8-8d6b8baee030}" type="System.Diagnostics.Eventing.EventProviderTraceListener, System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+    </sharedListeners>
+    <sources>
+      <source name="System.Net" switchValue="Information">
+        <listeners>
+          <add name="etw" />
+        </listeners>
+      </source>
+      <source name="System.Net.Http" switchValue="Information">
+        <listeners>
+          <add name="etw"/>
+        </listeners>
+      </source>
+      <source name="System.Net.HttpListener" switchValue="Information">
+        <listeners>
+          <add name="etw"/>
+        </listeners>
+      </source>
+    </sources>
+</system.diagnostics>
+```
+
+And to collect such a trace:
+
+```shell
+logman start "net-trace-session" -p "{0f09a664-1713-4665-91e8-8d6b8baee030}" -bs 512 -nb 8 64 -o "c:\temp\net-trace.etl" -ets & pause & logman stop net-trace-session -ets
 ```
 
 ## ASP.NET Core
