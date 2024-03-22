@@ -13,12 +13,14 @@ date: 2024-01-11 08:00:00 +0200
 - [Installing WinDbg](#installing-windbg)
     - [WinDbgX \(WinDbgNext, formely WinDbg Preview\)](#windbgx-windbgnext-formely-windbg-preview)
     - [Classic WinDbg](#classic-windbg)
-- [Configuring a debugging session](#configuring-a-debugging-session)
+- [Configuring WinDbg](#configuring-windbg)
+    - [Referencing extensions and scripts for easy access](#referencing-extensions-and-scripts-for-easy-access)
+    - [Installing WinDbg as the Windows AE debugger](#installing-windbg-as-the-windows-ae-debugger)
+- [Controlling the debugging session](#controlling-the-debugging-session)
     - [Setup Windows Kernel Debugging over network](#setup-windows-kernel-debugging-over-network)
     - [Setup Kernel debugging in QEMU/KVM](#setup-kernel-debugging-in-qemukvm)
     - [Remote debugging](#remote-debugging)
-    - [Installing WinDbg as the Windows AE debugger](#installing-windbg-as-the-windows-ae-debugger)
-- [Getting information about the debugging session](#getting-information-about-the-debugging-session)
+    - [Getting information about the debugging session](#getting-information-about-the-debugging-session)
 - [Symbols and modules](#symbols-and-modules)
 - [Working with memory](#working-with-memory)
     - [General memory commands](#general-memory-commands)
@@ -59,7 +61,8 @@ date: 2024-01-11 08:00:00 +0200
 
 <!-- /MarkdownTOC -->
 
-## Installing WinDbg
+Installing WinDbg
+-----------------
 
 ### WinDbgX (WinDbgNext, formely WinDbg Preview)
 
@@ -69,7 +72,47 @@ On modern systems download the [appinstaller](https://learn.microsoft.com/en-us/
 
 If you need to debug on an old system with no support for WinDbgX, you need to **download Windows SDK and install the Debugging Tools for Windows** feature. Executables will be in the Debuggers folder, for example, `c:\Program Files (x86)\Windows Kits\10\Debuggers`.
 
-## Configuring a debugging session
+Configuring WinDbg
+------------------
+
+### Referencing extensions and scripts for easy access
+
+When we use the **.load** or **.scriptload** commands, WinDbg will search for extensions in the following folders:
+
+- `{install_folder}\{target_arch}\winxp`
+- `{install_folder}\{target_arch}\winext`
+- `{install_folder}\{target_arch}\winext\arcade`
+- `{install_folder}\{target_arch}\pri`
+- `{install_folder}\{target_arch}`
+- `%LOCALAPPDATA%\DBG\EngineExtensions32` or `%LOCALAPPDATA%\DBG\EngineExtensions` (only WinDbgX)
+- `%PATH%`,
+
+where target_arch is either x86 or amd64.
+
+I usually include the directories containing the JavaScript scripts in the PATH since they are architecture-agnostic. As for the 32- and 64-bit DLLs, I store them in separate folders named EngineExtensions32 and EngineExtensions, respectively.
+
+It is also possible to configure [extensions galleries](https://github.com/microsoft/WinDbg-Samples/tree/master/Manifest). Unfortunately, I didn't manage to make it work with my own extensions.
+
+### Installing WinDbg as the Windows AE debugger
+
+The **windbx -I** (**windbg -iae**) command registers WinDbg as the automatic system debugger - it will launch anytime an application crashes. The modified AeDebug registry keys:
+
+```
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug
+HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows NT\CurrentVersion\AeDebug
+```
+
+However, we may also use configure those keys manually and use WinDbg to, for example, create a memory dump when the application crashes:
+
+```
+REG_SZ Debugger = "C:\Users\me\AppData\Local\Microsoft\WindowsApps\WinDbgX.exe" -c ".dump /ma /u C:\dumps\crash.dmp; qd" -p %ld -e %ld -g
+REG_SZ Auto = 1
+```
+
+If you miss the **-g** option, WinDbg will inject a remote thread with a breakpoint instruction, which will hide our original exception. In such case, you might need to scan the stack to find the original exception record.
+
+Controlling the debugging session
+---------------------------------
 
 ### Setup Windows Kernel Debugging over network
 
@@ -151,31 +194,14 @@ You may attach to the currently running session by using **-remote** switch, e.g
 
 To terminate the entire session and exit the debugging server, use the **q (Quit)** command. To exit from one debugging client without terminating the server, you must issue a command from that specific client. If this client is KD or CDB, use the **CTRL+B** key to exit. If you are using a script to run KD or CDB, use **.remote_exit (Exit Debugging Client)**.
 
-### Installing WinDbg as the Windows AE debugger
-
-The **windbx -I** (**windbg -iae**) command registers WinDbg as the automatic system debugger - it will launch anytime an application crashes. The modified AeDebug registry keys:
-
-```
-HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug
-HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows NT\CurrentVersion\AeDebug
-```
-
-However, we may also use configure those keys manually and use WinDbg to, for example, create a memory dump when the application crashes:
-
-```
-REG_SZ Debugger = "C:\Users\me\AppData\Local\Microsoft\WindowsApps\WinDbgX.exe" -c ".dump /ma /u C:\dumps\crash.dmp; qd" -p %ld -e %ld -g
-REG_SZ Auto = 1
-```
-
-If you miss the **-g** option, WinDbg will inject a remote thread with a breakpoint instruction, which will hide our original exception. In such case, you might need to scan the stack to find the original exception record.
-
-## Getting information about the debugging session
+### Getting information about the debugging session
 
 The **\|** command displays a path to the process image. You may run **vercommand** to check how the debugger was launched. The **vertarget** command shows the OS version, the process lifetime, and more, for example, the dump time when debugging a memory dump. The **.time** command displays information about the system time variable (session time).
 
 **.lastevent** shows the last reason why the debugger stopped and **.eventlog** displays the recent events.
 
-## Symbols and modules
+Symbols and modules
+-------------------
 
 The **lm** command lists all modules with symbol load info. To examine a specific module, use **lmvm {module-name}**. To find out if a given address belongs to any of the loaded dlls you may use the **!dlls -c {addr}** command. Another way would be to use the **lma {addr}** command.
 
@@ -214,7 +240,8 @@ dx @$curprocess.Modules["win32u.dll"].Contents.Exports
 #    ...
 ```
 
-## Working with memory
+Working with memory
+-------------------
 
 ### General memory commands
 
@@ -329,7 +356,8 @@ The PDE extension also contains the **!ssz** command to look for zero-terminated
 
 Another interesting command is **!grep**, which allows you to filter the output of other commands: `!grep _NT !peb`.
 
-## System objects in the debugger
+System objects in the debugger
+------------------------------
 
 The **!object** command displays some basic information about a kernel object:
 
@@ -504,7 +532,8 @@ dx -r1 ((ole32!_RTL_CRITICAL_SECTION_DEBUG *)0x581850)
 #     [+0x01e] SpareUSHORT      : 0x0 [Type: unsigned short]
 ```
 
-## Controlling process execution
+Controlling process execution
+-----------------------------
 
 ### Controlling the target (g, t, p)
 
@@ -683,7 +712,8 @@ ba e1 00007ffa`d8502508
 
 For both those commands you may limit their scope to a particular process using /p switch.
 
-## Scripting the debugger
+Scripting the debugger
+----------------------
 
 ### Using meta-commands (legacy way)
 
@@ -972,11 +1002,13 @@ The number of commands available in the inner JavaScript debugger is quite long 
 #     ...
 ```
 
-## Time Travel Debugging (TTD)
+Time Travel Debugging (TTD)
+---------------------------
 
 I prepared [a seperate guide](/guides/using-ttd) dedicated to Time Travel Debugging.
 
-## Misc tips
+Misc tips
+---------
 
 ### Converting a memory dump from one format to another
 
