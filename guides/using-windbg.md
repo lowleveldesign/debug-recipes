@@ -85,11 +85,11 @@ When we use the **.load** or **.scriptload** commands, WinDbg will search for ex
 - `{install_folder}\{target_arch}\pri`
 - `{install_folder}\{target_arch}`
 - `%LOCALAPPDATA%\DBG\EngineExtensions32` or `%LOCALAPPDATA%\DBG\EngineExtensions` (only WinDbgX)
-- `%PATH%`,
+- `%PATH%`
 
 where target_arch is either x86 or amd64.
 
-I usually include the directories containing the JavaScript scripts in the PATH since they are architecture-agnostic. As for the 32- and 64-bit DLLs, I store them in separate folders named EngineExtensions32 and EngineExtensions, respectively.
+I usually include the directories containing the JavaScript scripts in the PATH since they are architecture-agnostic. As for the 32- and 64-bit DLLs, I store them in EngineExtensions32 and EngineExtensions folders, respectively.
 
 It is also possible to configure [extensions galleries](https://github.com/microsoft/WinDbg-Samples/tree/master/Manifest). Unfortunately, I didn't manage to make it work with my own extensions.
 
