@@ -19,6 +19,10 @@ A small tool which can inject DLLs into already running and newly started proces
 
 ### :beetle: Debugging tools
 
+#### [lldext](https://github.com/lowleveldesign/lldext) (a WinDbg extension)
+
+The repository contains the source code of a native lldext extension and my various scripts enhancing debugging with WinDbg.
+
 #### [comon](https://github.com/lowleveldesign/comon) (a WinDbg extension)
 
 A WinDbg extension showing traces of COM class creations and interface querying. You may use it to investigate various COM issues and better understand application logic.
