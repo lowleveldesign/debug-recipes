@@ -221,7 +221,7 @@ Then copy it to the machine with the symbol server access, and download the requ
 symchk /im test.dmp.sym /s SRV*C:\symbols*https://msdl.microsoft.com/download/symbols
 ```
 
-In WinDbgX, we may also list and filter modules with the **@$curprocess.Modules** property, for example:
+In WinDbgX, we may also list and filter modules with the **@$curprocess.Modules** property. Some usage examples:
 
 ```shell
 dx @$curprocess.Modules["win32u.dll"]
@@ -238,6 +238,9 @@ dx @$curprocess.Modules["win32u.dll"].Contents.Exports
 #    [0x0]            : Function export of 'NtBindCompositionSurface'
 #    [0x1]            : Function export of 'NtCloseCompositionInputSink'
 #    ...
+
+# List modules with information if they have combase.dll as a direct import
+dx -g @$curprocess.Modules.Select(m => new { Name = m.Name, HasCombase = m.Contents.Imports.Any(i => i.ModuleName == "combase.dll") })
 ```
 
 Working with memory
