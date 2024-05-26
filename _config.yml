@@ -4,7 +4,7 @@ email: contact@wtrace.net
 description: >- # this means to ignore newlines until "baseurl:"
   Tools and materials for software and system troubleshooting 
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://wtrace.net" # the base hostname & protocol for your site, e.g. http://example.com
 
 youtube_username: "@lowleveldesign"
 github_username:  lowleveldesign
