@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Using WinDbg
-date: 2024-01-11 08:00:00 +0200
+date: 2024-06-04 08:00:00 +0200
 ---
 
 {% raw %}
@@ -18,7 +18,6 @@ date: 2024-01-11 08:00:00 +0200
     - [Installing WinDbg as the Windows AE debugger](#installing-windbg-as-the-windows-ae-debugger)
 - [Controlling the debugging session](#controlling-the-debugging-session)
     - [Setup Windows Kernel Debugging over network](#setup-windows-kernel-debugging-over-network)
-    - [Setup Kernel debugging in QEMU/KVM](#setup-kernel-debugging-in-qemukvm)
     - [Remote debugging](#remote-debugging)
     - [Getting information about the debugging session](#getting-information-about-the-debugging-session)
 - [Symbols and modules](#symbols-and-modules)
@@ -151,40 +150,28 @@ kdnet 172.25.121.1 60000
 # take effect.  Run shutdown -s -t 0 from this command prompt.
 ```
 
-### Setup Kernel debugging in QEMU/KVM
-
-The tutorial at <https://resources.infosecinstitute.com/topic/kernel-debugging-qemu-windbg/> helped me a lot to achieve this.
-
-The main idea is to use the Unix pipe. One side (debugger host) must have the serial port in the bind mode and the other side (client) in a connect mode. Example configuration in QEMU:
+If you are hosting your guest **on QEMU KVM** and want to use network debugging, you need to either create your VM as a Generic one (not Windows) or update the VM configuration XML, changing the vendor_id under the hyperv node, for example:
 
 ```xml
-<serial type="unix">
-  <source mode="bind" path="/tmp/dbgpipe"/>
-  <target type="isa-serial" port="1">
-    <model name="isa-serial"/>
-  </target>
-  <alias name="serial1"/>
-</serial>
+<domain type="kvm">
+  <name>win2k19</name>
+  <!-- ... -->
+  <features>
+    <acpi/>
+    <apic/>
+    <hyperv mode="custom">
+      <relaxed state="on"/>
+      <vapic state="on"/>
+      <spinlocks state="on" retries="8191"/>
+      <vendor_id state="on" value="KVMKVMKVM"/>
+    </hyperv>
+    <!-- ... -->
+  </features>
+  <!-- ... -->
+</domain> 
 ```
 
-```xml
-<serial type="unix">
-  <source mode="connect" path="/tmp/dbgpipe"/>
-  <target type="isa-serial" port="1">
-    <model name="isa-serial"/>
-  </target>
-  <alias name="serial1"/>
-</serial>
-```
-
-*NOTE: by default the mode is set to bind, otherwise, the VM  won't start without something listening on this pipe. Therefore, when you're done with debugging, set the mode back to bind or remove the serial port.*
-
-The serial1 on virtualized Windows appears as the COM2 port.
-
-```shell
-bcdedit /debug {current} on
-bcdedit /dbgsettings SERIAL DEBUGPORT:2 BAUDRATE:115200
-```
+I highly recommend checking [this post by the OSR team](https://www.osr.com/blog/2021/10/05/using-windbg-over-kdnet-on-qemu-kvm/) describing why those changes are required and revealing some details about the kdnet inner working. 
 
 ### Remote debugging
 
