@@ -49,7 +49,7 @@ wtrace.exe --symbols="SRV*C:\symbols\*https://msdl.microsoft.com/download/symbol
 
 The procedure resolution works only for local RPC servers. Apart from RPC parsing improvements, wtrace 3.3 includes minor fixes and optimizations, so give it a try the next time you need to trace something in the system.
 
-If you're willing to learn a bit more about how RPC name resolution works, the next section is for you :) Otherwise, thank you for using wtrace and if you'd like to keep in touch, please [subscribe to the wtrace newsletter](/subscribe)
+If you're willing to learn a bit more about how RPC name resolution works, the next section is for you :)
 
 ### How procedure name resolution works?
 
