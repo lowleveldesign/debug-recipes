@@ -945,36 +945,39 @@ After we loaded the script (**.scriptload**), we may also debug its parts thanks
 .scriptload c:\windbg-js\strings.js
 
 .scriptdebug strings.js
-# >>> Debug [strings <No Position>] >|
+
+# *** Inside JS debugger context ***
+|
 #     ...
 #     [11] NatVis script from 'C:\Program Files\WindowsApps\Microsoft.WinDbg_1.2308.2002.0_x64__8wekyb3d8bbwe\amd64\Visualizers\winrt.natvis'
 #     [12] [*DEBUGGED*] JavaScript script from 'c:\windbg-js\strings.js'
 # 
-# >>> Debug [strings <No Position>] >bp logn
+bp logn
 # Breakpoint 1 set at logn (11:5)
-# >>> Debug [strings <No Position>] >bl
+bl
 #       Id State    Pos
 #        1 enabled  11:5
 # 
-# >>> Debug [strings <No Position>] >q
+q
 ```
 
-We are running a debugger in the debugger, so it could be a bit confusing :) After quittin the JavaScript debugger, it will keep the breakpoints information, so when we call our function from the main debugger, we will land in the JavaScript debugger again, for example:
+We are running a debugger in the debugger, so it could be a bit confusing :) After quitting the JavaScript debugger, it will keep the breakpoints information, so when we call our function from the main debugger, we will land in the JavaScript debugger again, for example:
 
 ```shell
 dx @$scriptContents.logn("test")
 # >>> ****** SCRIPT BREAK strings [Breakpoint 1] ******
 #            Location: line = 11, column = 5
 #            Text: log(s + "\n")
-# 
-# >>> Debug [strings 11:5] >dv
+#
+# *** Inside JS debugger context ***
+dv
 #                    s = test
 ```
 
 The number of commands available in the inner JavaScript debugger is quite long and we may list them with the **.help** command. Especially, the evaluate expression (**?** or **??**) are very useful as they allow us to execute any JavaScript expressions and check their results:
 
 ```shell
-# >>> Debug [strings 11:5] >? host
+? host
 # host             : {...}
 #     __proto__        : {...}
 #     ...
