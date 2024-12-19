@@ -49,6 +49,7 @@ date: 2024-12-04 08:00:00 +0200
         - [Loading a script](#loading-a-script)
         - [Running a script](#running-a-script)
         - [Debugging a script](#debugging-a-script)
+    - [Launching commands from a script file](#launching-commands-from-a-script-file)
 - [Time Travel Debugging \(TTD\)](#time-travel-debugging-ttd)
 - [Misc tips](#misc-tips)
     - [Converting a memory dump from one format to another](#converting-a-memory-dump-from-one-format-to-another)
@@ -764,29 +765,6 @@ When using **.if** and **.foreach**, sometimes the names are not resolved - use 
 .foreach (addr {!DumpHeap -mt 71d75b24 -short}) { .if (dwo(poi( addr + 5c ) + c)) { !do addr } }
 ```
 
-We can also execute commands from a script file. We use the **$$** command family for that purpose. The **-c** option allows us to run a command on a debugger launch. So if we pass the **$$\<** command with a file path, windbg will read the file and execute the commands from it as if they were entered manually, for example:
-
-```shell
-windbgx -c "$$<test.txt" notepad
-```
-
-And the test.txt content:
-
-```shell
-sxe -c ".echo advapi32; g" ld:advapi32
-g
-```
-
-We may use the **$$\>args\<** command variant to pass arguments to our script.
-
-When analyzing multiple files, I often use PowerShell to call WinDbg with the commands I want to run. In each WinDbg session, I pass the output of the commands to the windbg.log file, for example:
-
-```shell
-Get-ChildItem .\dumps | % { Start-Process -Wait -FilePath windbg-x64\windbg.exe -ArgumentList @("-loga", "windbg.log", "-y", "`"SRV*C:\dbg\symbols*https://msdl.microsoft.com/download/symbols`"", "-c", "`".exr -1; .ecxr; k; q`"", "-z", $_.FullName) }
-```
-
-To make a **comment**, you can use one of the comment commands: **$$ comment**, **\* comment**. The difference between them is that **\*** comments everything till the end of the line, while **$$** comments text till the semicolon (or end of a line), e.g., `r eax; $$ some text; r ebx; * more text; r ecx` will print eax, ebx but not ecx. The **.echo** command ends if the debugger encounters a semicolon (unless the semicolon occurs within a quoted string).
-
 ### Using the dx command
 
 The **[dx command](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/dx--display-visualizer-variables-)** allows us to query the **Debugger Object Model**. There is a set of root objects from which we may start our query, including **@$cursession**, **@$curprocess**, **@$curthread**, **@$curstack**, or **@$curframe**.
@@ -1043,6 +1021,31 @@ The number of commands available in the inner JavaScript debugger is quite long 
 #     getModuleType    : function () { [native code] }
 #     ...
 ```
+
+### Launching commands from a script file
+
+We can also execute commands from a script file. We use the **\$\$** command family for that purpose. The **-c** option allows us to run a command on a debugger launch. So if we pass the **\$\$\<** command with a file path, windbg will read the file and execute the commands from it as if they were entered manually, for example:
+
+```shell
+windbgx -c "$$<test.txt" notepad
+```
+
+And the test.txt content:
+
+```shell
+sxe -c ".echo advapi32; g" ld:advapi32
+g
+```
+
+We may use the **$$\>args\<** command variant to pass arguments to our script.
+
+When analyzing multiple files, I often use PowerShell to call WinDbg with the commands I want to run. In each WinDbg session, I pass the output of the commands to the windbg.log file, for example:
+
+```shell
+Get-ChildItem .\dumps | % { Start-Process -Wait -FilePath windbg-x64\windbg.exe -ArgumentList @("-loga", "windbg.log", "-y", "`"SRV*C:\dbg\symbols*https://msdl.microsoft.com/download/symbols`"", "-c", "`".exr -1; .ecxr; k; q`"", "-z", $_.FullName) }
+```
+
+To make a **comment**, you can use one of the comment commands: `$$ my comment` or `* my comment`. The difference between them is that **\*** comments everything till the end of the line, while **\$\$** comments text till the semicolon (or end of a line), e.g., `r eax; $$ some text; r ebx; * more text; r ecx` will print eax, ebx but not ecx. The **.echo** command ends if the debugger encounters a semicolon (unless the semicolon occurs within a quoted string).
 
 Time Travel Debugging (TTD)
 ---------------------------
