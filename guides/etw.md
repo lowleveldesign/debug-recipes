@@ -1,7 +1,9 @@
 ---
 layout: page
-title: Using Event Tracing for Windows (ETW)
+title: Event Tracing for Windows (ETW)
 date: 2024-01-01 08:00:00 +0200
+redirect_from:
+    - /guides/using-etw/
 ---
 
 {% raw %}

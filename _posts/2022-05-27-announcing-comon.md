@@ -57,4 +57,4 @@ ntdll!NtMapViewOfSection+0xc:
 00 0095f540 004e482a protoss!ILT+1280(?get_NameNexusUAGJPAPA_WZ)
 ```
 
-If you're working with COM (or debugging Windows applications), I believe that comon will benefit your work. So comon, give it a try 😊 The latest binaries are on the [release page](https://github.com/lowleveldesign/comon/releases) and the documentation is [here](https://wtrace.net/documentation/comon/).
+If you're working with COM (or debugging Windows applications), I believe that comon will benefit your work. So comon, give it a try 😊 The latest binaries are on the [release page](https://github.com/lowleveldesign/comon/releases).

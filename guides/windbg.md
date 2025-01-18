@@ -1,10 +1,10 @@
 ---
 layout: page
-title: WinDbg Usage Guide
+title: WinDbg usage guide
 date: 2024-12-04 08:00:00 +0200
 redirect_from:
     - /guides/using-ttd/
-    - /guides/using-ttd
+    - /guides/using-windbg/
 ---
 
 {% raw %}
@@ -76,58 +76,7 @@ Installing WinDbg
 
 ### WinDbgX (WinDbgNext, formely WinDbg Preview)
 
-On modern systems download the [appinstaller](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/) file and choose Install in the context menu. If you are on Windows Server 2019 and you don't see the Install option in the context menu, there is a big chance you're missing the App Installer package on your system. In that case, you may use the following PowerShell script ([created by @Izybkr](https://github.com/microsoftfeedback/WinDbg-Feedback/issues/19#issuecomment-1513926394) with my minor updates to make it work with latest WinDbg releases):
-
-```shell
-param(
-    $OutDir = ".",
-    [ValidateSet("x64", "x86", "arm64")]
-    $Arch = "x64"
-)
-
-if (!(Test-Path $OutDir)) {
-    $null = mkdir $OutDir
-}
-
-$ErrorActionPreference = "Stop"
-
-if ($PSVersionTable.PSVersion.Major -le 5) {
-    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-
-    # This is a workaround to get better performance on older versions of PowerShell
-    $ProgressPreference = 'SilentlyContinue'
-}
-
-# Download the appinstaller to find the current uri for the msixbundle
-Invoke-WebRequest https://aka.ms/windbg/download -OutFile $OutDir\windbg.appinstaller
-
-# Download the msixbundle
-$msixBundleUri = ([xml](Get-Content $OutDir\windbg.appinstaller)).AppInstaller.MainBundle.Uri
-
-# Download the msixbundle (but name as zip for older versions of Expand-Archive
-Invoke-WebRequest $msixBundleUri -OutFile $OutDir\windbg.zip
-
-# Extract the 3 msix files (plus other files)
-Expand-Archive -DestinationPath $OutDir\UnzippedBundle $OutDir\windbg.zip
-
-# Expand the build you want - also renaming the msix to zip for Windows PowerShell
-$fileName = switch ($Arch) {
-    "x64" { "windbg_win-x64" }
-    "x86" { "windbg_win-x86" }
-    "arm64" { "windbg_win-arm64" }
-}
-
-# Rename msix (for older versions of Expand-Archive) and extract the debugger
-Rename-Item "$OutDir\UnzippedBundle\$fileName.msix" "$fileName.zip"
-Expand-Archive -DestinationPath "$OutDir\windbg" "$OutDir\UnzippedBundle\$fileName.zip"
-
-Remove-Item -Recurse -Force "$OutDir\UnzippedBundle"
-Remove-Item -Force "$OutDir\windbg.appinstaller"
-Remove-Item -Force "$OutDir\windbg.zip"
-
-# Now you can run:
-& $OutDir\windbg\DbgX.Shell.exe
-```
+On modern systems download the [appinstaller](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/) file and choose Install in the context menu. If you are on Windows Server 2019 and you don't see the Install option in the context menu, there is a big chance you're missing the App Installer package on your system. In that case, you may use **[this PowerShell script](/assets/windbg-install.ps1.txt)** ([created by @Izybkr](https://github.com/microsoftfeedback/WinDbg-Feedback/issues/19#issuecomment-1513926394) with my minor updates to make it work with latest WinDbg releases).
 
 ### Classic WinDbg
 

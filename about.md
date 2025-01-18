@@ -3,7 +3,9 @@ layout: page
 title: About
 ---
 
-I am **Sebastian Solnica**, a software engineer with over 15 years of experience. Debugging, profiling, and application security have always been my primary interests. I've created this website to share tools and resources that I hope will help you in your diagnostic adventures. If you need assistance with any software acquired here or have any questions, don't hesitate to contact me at **contact@wtrace.net**.
+I am **Sebastian Solnica**, a software engineer with more than 15 years of experience. My primary interests are debugging, profiling, and application security. I created this website to share tools and resources that can help you in your diagnostic endeavors. 
+
+I also provide consulting services for troubleshooting .NET applications. If you would like to discuss consulting or contact me for any other reason, please use [the contact form on my blog](https://lowleveldesign.org/about/) or email me at contact@wtrace.net.
 
 <p class="credits">
 <em><strong>Credits:</strong> this site uses modified icons from the <a href="https://github.com/feathericons/feather">feather set</a>.</em>

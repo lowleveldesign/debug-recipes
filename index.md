@@ -4,8 +4,13 @@ description: Tools and materials for software and system troubleshooting
 feature_image: /assets/img/background.jpg
 ---
 
-## Hello fellow diagnosers!
+## Hello fellow troubleshooters!
 
-I created this site to share with you notes (guides) and tools that I have created during my career as a software developer and troubleshooter. [**Guides**](/guides/) do not contain much theory but rather describe techniques, tools, and scripts with their usage examples. I try to keep them updated with new things I learn and discover.
+I created this site to share guides and tools that I developed during my career as a software developer and troubleshooter. The [**guides**](/guides/) focus on practical techniques, tools, and scripts with usage examples rather than theoretical concepts. I regularly update them with new discoveries and insights.
 
-I hope you will find the materials helpful. Please visit the [about](/about/) page if you wish to contact me.
+### Quick Links
+
+- [Diagnosing native Windows applications](diagnosing-native-windows-apps)
+- [Diagnosing .NET applications](diagnosing-dotnet-apps)
+- [WinDbg usage guide](/guides/windbg)
+- [Event Tracing for Windows](/guides/etw)

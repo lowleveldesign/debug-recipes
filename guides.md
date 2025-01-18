@@ -21,11 +21,11 @@ A guide presenting troubleshooting techniques and tools (including the [comon ex
 
 ### :wrench: Tools usage
 
-#### [WinDbg Usage Guide](using-windbg)
+#### [WinDbg usage guide](windbg)
 
 My field notes describing usage of WinDbg and WinDbgX (new WinDbg).
 
-#### [Using Event Tracing for Windows (ETW)](using-etw)
+#### [Event Tracing for Windows (ETW)](etw)
 
 This guide describes how to collect and analyze ETW traces.
 
@@ -33,10 +33,10 @@ This guide describes how to collect and analyze ETW traces.
 
 This guide describes how to use [withdll](https://github.com/lowleveldesign/withdll) and [Detours](https://github.com/microsoft/Detours) samples to collect traces of Win API calls.
 
-#### [Using Windows Performance Counters](using-performance-counters)
+#### [Windows Performance Counters](windows-performance-counters)
 
 The guide presents how to query Windows Performance Counters and analyze the collected data.
 
-#### [Using network tracing tools](using-network-tracing-tools)
+#### [Network tracing tools](network-tracing-tools)
 
 This guide lists various network tools you may use to diagnose connectivity problems and collect network traces on Windows and Linux.

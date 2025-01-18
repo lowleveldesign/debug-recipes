@@ -7,9 +7,9 @@ permalink: /2021/01/29/announcing-wtrace-3-0/
 
 After weeks of work, I am happy to announce the new release of wtrace. The **3.0 version** is a complete rewrite, with many fixes and new features.
 
-One of the most significant changes is the possibility to **collect traces system-wide**. If you don’t provide a file path or PID, wtrace will trace all the processes. To keep the number of trace events acceptable, consider using one of the [extensive filtering options](/documentation/wtrace/#filtering-events) (a new feature, too!).
+One of the most significant changes is the possibility to **collect traces system-wide**. If you don’t provide a file path or PID, wtrace will trace all the processes. To keep the number of trace events acceptable, consider using one of the extensive filtering options (a new feature, too!).
 
-You may also choose the [event handlers](/documentation/wtrace/#event-handlers) for each session. The sensible default set includes process, file, RPC, and TCP handlers. The 3.0 version introduces a **Registry** event handler, so if you enable it, you may trace Registry operations with wtrace! I plan to add handlers for less common event types in future releases, too.
+You may also choose the event handlers for each session. The sensible default set includes process, file, RPC, and TCP handlers. The 3.0 version introduces a **Registry** event handler, so if you enable it, you may trace Registry operations with wtrace! I plan to add handlers for less common event types in future releases, too.
 
 The **summary** section got a new view that displays a process tree. When tracing system-wide or system-only, the tree includes all the running processes. In other modes, you will see the parent process and all its descendants.
 

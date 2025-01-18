@@ -11,7 +11,7 @@ The reasoning for creating dotnet-wtrace was that I could not find any tool that
 
 ![](/assets/img/dotnet-wtrace-example-output.png)
 
-As in wtrace, you may choose the handlers and specify event filters through the command-line options. Please have a look at the [documentation](/documentation/dotnet-wtrace) to learn more.
+As in wtrace, you may choose the handlers and specify event filters through the command-line options. Please have a look at the [documentation](https://github.com/lowleveldesign/dotnet-wtrace#readme) to learn more.
 
 I hope I convinced you to give dotnet-wtrace a try. You may install it as one of the dotnet tools:
 

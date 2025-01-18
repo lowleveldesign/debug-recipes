@@ -1,7 +1,9 @@
 ---
 layout: page
-title: Using network tracing tools
+title: Network tracing tools
 date: 2024-01-01 08:00:00 +0200
+redirect_from:
+  - /guides/using-network-tracing-tools/
 ---
 
 <!-- MarkdownTOC -->
