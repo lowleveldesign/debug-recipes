@@ -20,12 +20,16 @@ redirect_from:
     - [Tracing COM methods](#tracing-com-methods)
     - [Stopping the COM monitor](#stopping-the-com-monitor)
 - [Observing COM interactions outside WinDbg](#observing-com-interactions-outside-windbg)
+    - [Windows Performance Recorder \(wpr.exe\)](#windows-performance-recorder-wprexe)
+    - [Process Monitor](#process-monitor)
+    - [wtrace](#wtrace)
 - [Troubleshooting .NET COM interop](#troubleshooting-net-com-interop)
 - [Links](#links)
 
 <!-- /MarkdownTOC -->
 
-## Quick introduction to COM
+Quick introduction to COM
+-------------------------
 
 In COM, everything is about interfaces. In old times, when various compiler vendors were fighting over whose "standard" was better, the only reliable way to call C++ class methods contained in third-party libraries was to use virtual tables. As its name suggests virtual table is a table, to be precise, a table of addresses (pointers). The "virtual" adjective relates to the fact that our table's addresses point to virtual methods. If you're familiar with object programming (you plan to debug COM, so you should!), you probably thought of inheritance and abstract classes. And that's correct! The abstract class is how we implement interfaces in C++ (to be more precise [an abstract class with pure virtual methods](https://en.cppreference.com/w/cpp/language/abstract_class)). Now, COM is all about passing pointers to those various virtual tables which happen to have GUID identifiers. The most important interface (parent of all interfaces) is `IUnkown`. Every COM interface must inherit from this interface. Why? For two reasons: to manage the object lifetime and to access all the other interfaces that our object may implement (or, in other words, to find all virtual tables our object is aware of). As this interface is so important, let's have a quick look at its definition:
 
@@ -122,7 +126,8 @@ Registered VTables for IID:
 - Module: protoss, CLSID: {F5353C58-CFD9-4204-8D92-D274C7578B53} (Nexus), VTable offset: 0x37710
 ```
 
-## Troubleshooting COM in WinDbg
+Troubleshooting COM in WinDbg
+-----------------------------
 
 ### Monitoring COM objects in a process
 
@@ -253,25 +258,51 @@ If comon can't decode a given parameter, you may use the **dx** command with com
 
 Run the **!comon detach** command to stop the COM monitor. This command will remove all the comon breakpoints and debugging session data, but you can still examine COM metadata with the cometa command.
 
-## Observing COM interactions outside WinDbg
+Observing COM interactions outside WinDbg
+-----------------------------------------
 
-Sometimes we require only basic information about COM interactions, for example, which objects are used and how they are launched. Using WinDbg for such scenarios could be too much burden. Fortunately, it is pretty straightforward to extract this information by looking at registry and process system events. And tools that may help here are [Process Monitor](https://learn.microsoft.com/en-us/sysinternals/downloads/procmon) or [wtrace](https://github.com/lowleveldesign/wtrace).
+Sometimes we only need basic information about COM interactions, such as which objects are used and how they are launched. While WinDbg can be overkill for such scenarios, there are several simpler tools we can use to collect this additional information.
 
-In **Process Monitor**, we can include Registry and Process events and events where Path contains `\CLSID\` or `\AppID` strings or ends with `.dll`, as in the image below:
+### Windows Performance Recorder (wpr.exe)
+
+Let's begin with wpr.exe, a powerful tool that's likely already installed on your system. WPR requires profile files to configure tracing sessions. For basic COM event collection, you can use [the ComTrace.wprp profile](https://raw.githubusercontent.com/microsoft/winget-cli/refs/heads/master/tools/COMTrace/ComTrace.wprp) from [the winget-cli repository](https://github.com/microsoft/winget-cli). I've also created an enhanced profile, adding providers found in the [TSS scripts](https://learn.microsoft.com/en-us/troubleshoot/windows-client/windows-tss/introduction-to-troubleshootingscript-toolset-tss), which you can download **[here](/assets/other/WTComTrace.wprp)**. You can use those profiles either solely or in combination with other profiles, as shown in the examples below.
+
+```shell
+# Collect only COM events
+wpr.exe -start .\WTComTrace.wprp -filemode
+# Run COM apps ...
+# Stop the trace when done
+wpr -stop C:\temp\comtrace.etl
+
+# Collect COM events with CPU sampling
+wpr.exe -start CPU -start .\WTComTrace.wprp -filemode
+# Run COM apps ...
+# Stop the trace when done
+wpr -stop C:\temp\comtrace.etl
+```
+
+Some providers are the [legacy WPP providers](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/wpp-software-tracing), which require TMF files to read the collected events. Fortunately, the PDB file for compbase.dll contains the required TMF data and we can decode those events. To view the collected data, open the ETL file in **[Windows Performance Analyzer (WPA)](https://learn.microsoft.com/en-us/windows-hardware/test/wpt/windows-performance-analyzer)**. Remember to load symbols first (check [the Windows configuration guide](guides/configuring-windows-for-effective-troubleshooting/#configuring-debug-symbols) how to configure symbols globally in the system), then navigate to the **Generic Events** category and open the **WPP Trace** view.
+
+### Process Monitor
+
+In **[Process Monitor](https://learn.microsoft.com/en-us/sysinternals/downloads/procmon)**, we can include Registry and Process events and events where Path contains `\CLSID\` or `\AppID` strings or ends with `.dll`, as in the image below:
 
 ![](/assets/img/procmon-filters.png)
 
 The collected events should tell us which COM objects the application initiated and in which way. For example, if procmon shows a DLL path read from the `InprocServer32` and then we see this dll loaded, we may assume that the application created a given COM object (the event call stack may be an additional proof). If the COM server runs in a standalone process or a remote machine, other keys will be queried. We may then check the Process Tree or Network events for more details. [COM registry keys official documentation](https://learn.microsoft.com/en-us/windows/win32/com/com-registry-keys) is thorough, so please consult it to learn more.
 
-In **wtrace**, we need to pick the proper handlers and define filters. An example command line might look as follows:
+### wtrace
 
-```
+In **[wtrace](https://github.com/lowleveldesign/wtrace)**, we need to pick the proper handlers and define filters. An example command line might look as follows:
+
+```shell
 wtrace --handlers registry,process,rpc -f 'path ~ \CLSID\' -f 'path ~ \AppID\' -f 'path ~ rpc' -f 'pname = ProtossComClient'
 ```
 
 As you can see, wtrace may additionally show information about RPC (Remote Procedure Call) events.
 
-## Troubleshooting .NET COM interop
+Troubleshooting .NET COM interop
+--------------------------------
 
 A native COM object must be wrapped into a Runtime Callable Wrapper (RCW) to be accessible to managed code. RCW binds a managed object (for example, `System.__Com`) and a native COM class instance. COM Callable Wrappers (CCW) work in the opposite direction - thanks to them, we may expose .NET objects to the COM world. Interestingly, the object interop usage is saved in the object's SyncBlock. Therefore, it should not come as a surprise that the **!syncblk** command from [the SOS extension](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/sos-debugging-extension) presents information about RCWs and CCWs:
 
@@ -402,7 +433,8 @@ Finally, to find who is keeping our managed object alive, we could use the **!gc
 .foreach (addr { !DumpHeap -short -type System.__ComObject }) { !gcroot addr }
 ```
 
-## Links
+Links
+-----
 
 - ["Essential COM"](https://archive.org/details/essentialcom00boxd) by Don Box
 - ["Inside OLE"](https://github.com/kraigb/InsideOLE) by Kraig Brockschmidt (Kraig published the whole book with source code on GitHub!)

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WindowsPerformanceRecorder Version="1.0" Author="Sebastian Solnica (https://wtrace.net)" Comments="Profile based on TSS scripts by Microsoft">
+  <Profiles>
+    <SystemCollector Id="SystemCollector" Name="NT Kernel Logger">
+      <BufferSize Value="1024"/>
+      <Buffers Value="32"/>
+    </SystemCollector>
+    
+    <EventCollector Id="EventCollector_MicrosoftWindowsCOMTrace" Name="MicrosoftWindowsCOMTraceCollector">
+      <BufferSize Value="1024" />
+      <Buffers Value="32" />
+    </EventCollector>
+    
+    <SystemProvider Id="SystemProviderBasic">
+      <Keywords>
+        <Keyword Value="ProcessThread" />
+        <Keyword Value="Loader" />
+        <Keyword Value="Registry" />
+      </Keywords>
+    </SystemProvider>
+    
+    <EventProvider Id="EventProvider_CombaseTraceLoggingProvider" Name="1AFF6089-E863-4D36-BDFD-3581F07440BE" NonPagedMemory="true"></EventProvider>
+    <EventProvider Id="EventProvider_COMSVCS-COMPlus" Name="B46FA1AD-B22D-4362-B072-9F5BA07B046D" NonPagedMemory="true"></EventProvider>
+    <EventProvider Id="EventProvider_COMADMIN-COMPlus" Name="A0C4702B-51F7-4ea9-9C74-E39952C694B8" NonPagedMemory="true"></EventProvider>
+    <EventProvider Id="EventProvider_COMPlus-Services" Name="53201895-60E8-4fb0-9643-3F80762D658F" NonPagedMemory="true"></EventProvider>
+    <EventProvider Id="EventProvider_MicrosoftWindowsComBaseWpp" Name="bda92ae8-9f11-4d49-ba1d-a4c2abca692e" NonPagedMemory="true"></EventProvider>
+    <EventProvider Id="EventProvider_MicrosoftWindowsDcomScmWpp" Name="9474a749-a98d-4f52-9f45-5b20247e4f01" NonPagedMemory="true"></EventProvider>
+    <EventProvider Id="EventProvider_Microsoft-Windows-COM" Name="d4263c98-310c-4d97-ba39-b55354f08584" NonPagedMemory="true"></EventProvider>
+    <EventProvider Id="EventProvider_Microsoft-Windows-Complus" Name="0f177893-4a9c-4709-b921-f432d67f43d5" NonPagedMemory="true"></EventProvider>
+    <EventProvider Id="EventProvider_Microsoft-Windows-DistributedCOM" Name="1B562E86-B7AA-4131-BADC-B6F3A001407E" NonPagedMemory="true"></EventProvider>
+    <EventProvider Id="EventProvider_CLBCATQ" Name="097d1686-4038-46be-b551-10fda0387165" NonPagedMemory="true"></EventProvider>
+    <EventProvider Id="EventProvider_Microsoft-Windows-COMRuntime" Name="bf406804-6afa-46e7-8a48-6c357e1d6d61" NonPagedMemory="true"></EventProvider>
+    <EventProvider Id="EventProvider_Microsoft-Windows-WinRT-Error" Name="A86F8471-C31D-4FBC-A035-665D06047B03" NonPagedMemory="true"></EventProvider>
+    <EventProvider Id="EventProvider_Microsoft-Windows-WinTypes-Perf" Name="7913ac64-a5cd-40cd-b096-4e8c4028eaab" NonPagedMemory="true"></EventProvider>
+    <EventProvider Id="EventProvider_Microsoft-Windows-WinRtClassActivation" Name="f0558438-f56a-5987-47da-040ca757ef05" NonPagedMemory="true"></EventProvider>
+    <EventProvider Id="EventProvider_Microsoft-Windows-RPC" Name="6AD52B32-D609-4BE9-AE07-CE8DAE937E39" NonPagedMemory="true"></EventProvider>
+    <EventProvider Id="EventProvider_Microsoft-Windows-RPCSS" Name="d8975f88-7ddb-4ed0-91bf-3adf48c48e0c" NonPagedMemory="true"></EventProvider>
+    <EventProvider Id="EventProvider_Microsoft-Windows-RPC-Events" Name="F4AED7C7-A898-4627-B053-44A7CAA12FCD" NonPagedMemory="true"></EventProvider>
+    <EventProvider Id="EventProvider_Microsoft-Windows-RPC-Proxy-LBS" Name="272A979B-34B5-48EC-94F5-7225A59C85A0" NonPagedMemory="true"></EventProvider>
+    <EventProvider Id="EventProvider_Microsoft-Windows-RPC-Proxy" Name="879b2576-39d1-4c0f-80a4-cc086e02548c" NonPagedMemory="true"></EventProvider>
+    <EventProvider Id="EventProvider_Microsoft-Windows-RPC-LBS" Name="536caa1f-798d-4cdb-a987-05f79a9f457e" NonPagedMemory="true"></EventProvider>
+    
+    <Profile Id="COMTrace.Verbose.File" Name="COMTrace" Description="COM events trace" LoggingMode="File" DetailLevel="Verbose">
+      <Collectors>
+        <SystemCollectorId Value="SystemCollector">
+          <SystemProviderId Value="SystemProviderBasic"/>
+        </SystemCollectorId>
+        <EventCollectorId Value="EventCollector_MicrosoftWindowsCOMTrace">
+          <EventProviders>
+            <EventProviderId Value="EventProvider_CombaseTraceLoggingProvider" />
+            <EventProviderId Value="EventProvider_COMSVCS-COMPlus" />
+            <EventProviderId Value="EventProvider_COMADMIN-COMPlus" />
+            <EventProviderId Value="EventProvider_COMPlus-Services" />
+            <EventProviderId Value="EventProvider_MicrosoftWindowsComBaseWpp" />
+            <EventProviderId Value="EventProvider_MicrosoftWindowsDcomScmWpp" />
+            <EventProviderId Value="EventProvider_Microsoft-Windows-COM" />
+            <EventProviderId Value="EventProvider_Microsoft-Windows-Complus" />
+            <EventProviderId Value="EventProvider_Microsoft-Windows-DistributedCOM" />
+            <EventProviderId Value="EventProvider_CLBCATQ" />
+            <EventProviderId Value="EventProvider_Microsoft-Windows-COMRuntime" />
+            <EventProviderId Value="EventProvider_Microsoft-Windows-WinRT-Error" />
+            <EventProviderId Value="EventProvider_Microsoft-Windows-WinTypes-Perf" />
+            <EventProviderId Value="EventProvider_Microsoft-Windows-WinRtClassActivation" />
+            <EventProviderId Value="EventProvider_Microsoft-Windows-RPC" />
+            <EventProviderId Value="EventProvider_Microsoft-Windows-RPCSS" />
+            <EventProviderId Value="EventProvider_Microsoft-Windows-RPC-Events" />
+            <EventProviderId Value="EventProvider_Microsoft-Windows-RPC-Proxy-LBS" />
+            <EventProviderId Value="EventProvider_Microsoft-Windows-RPC-Proxy" />
+            <EventProviderId Value="EventProvider_Microsoft-Windows-RPC-LBS" />
+          </EventProviders>
+        </EventCollectorId>
+      </Collectors>
+
+      <TraceMergeProperties>
+        <TraceMergeProperty Id="BaseVerboseTraceMergeProperties" Name="BaseTraceMergeProperties">
+          <DeletePreMergedTraceFiles Value="true" />
+          <FileCompression Value="false" />
+          <InjectOnly Value="false" />
+          <SkipMerge Value="false" />
+          <CustomEvents>
+            <CustomEvent Value="ImageId" />
+            <CustomEvent Value="BuildInfo" />
+            <CustomEvent Value="VolumeMapping" />
+            <CustomEvent Value="EventMetadata" />
+            <CustomEvent Value="PerfTrackMetadata" />
+            <CustomEvent Value="WinSAT" />
+            <CustomEvent Value="NetworkInterface" />
+          </CustomEvents>
+        </TraceMergeProperty>
+      </TraceMergeProperties>
+    </Profile>
+    
+  </Profiles>
+</WindowsPerformanceRecorder>
