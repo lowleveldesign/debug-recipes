@@ -16,10 +16,12 @@ redirect_from:
 - [Installing WinDbg](#installing-windbg)
     - [WinDbgX \(WinDbgNext, formely WinDbg Preview\)](#windbgx-windbgnext-formely-windbg-preview)
     - [Classic WinDbg](#classic-windbg)
+    - [Extensions](#extensions)
 - [Configuring WinDbg](#configuring-windbg)
     - [Referencing extensions and scripts for easy access](#referencing-extensions-and-scripts-for-easy-access)
     - [Installing WinDbg as the Windows AE debugger](#installing-windbg-as-the-windows-ae-debugger)
 - [Controlling the debugging session](#controlling-the-debugging-session)
+    - [Enable local kernel-mode debugging](#enable-local-kernel-mode-debugging)
     - [Setup Windows Kernel Debugging over network](#setup-windows-kernel-debugging-over-network)
     - [Remote debugging](#remote-debugging)
     - [Getting information about the debugging session](#getting-information-about-the-debugging-session)
@@ -74,6 +76,8 @@ redirect_from:
 Installing WinDbg
 -----------------
 
+There are two versions of WinDbg available nowadays. The modern one, called WinDbgX or WinDbg Preview, and the old one. The modern WinDbg has many interesting features (support for Time-Travel debugging is one of them), so that's the version you probably want to use if you're on a supported system.
+
 ### WinDbgX (WinDbgNext, formely WinDbg Preview)
 
 On modern systems download the [appinstaller](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/) file and choose Install in the context menu. If you are on Windows Server 2019 and you don't see the Install option in the context menu, there is a big chance you're missing the App Installer package on your system. In that case, you may download and run **[this PowerShell script](/assets/other/windbg-install.ps1.txt)** ([created by @Izybkr](https://github.com/microsoftfeedback/WinDbg-Feedback/issues/19#issuecomment-1513926394) with my minor updates to make it work with latest WinDbg releases).
@@ -81,6 +85,23 @@ On modern systems download the [appinstaller](https://learn.microsoft.com/en-us/
 ### Classic WinDbg
 
 If you need to debug on an old system with no support for WinDbgX, you need to **download Windows SDK and install the Debugging Tools for Windows** feature. Executables will be in the Debuggers folder, for example, `c:\Program Files (x86)\Windows Kits\10\Debuggers`.
+
+### Extensions
+
+Some problems may require actions that are challenging to achieve using the default WinDbg commands. One solution is to create a debugger script using the [legacy scripting language](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/command-tokens), the [dx command](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/dx--display-visualizer-variables-), or the [JavaScript Debugger](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/javascript-debugger-scripting). Another option is to search for an extension that may already have the desired feature implemented. Here's a list of extensions I use daily when troubleshooting user-mode issues:
+
+- [PDE](https://onedrive.live.com/?authkey=%21AJeSzeiu8SQ7T4w&id=DAE128BD454CF957%217152&cid=DAE128BD454CF957) by Andrew Richards - contains lots of useful commands (run **!pde.help** to learn more)
+- [lldext](https://github.com/lowleveldesign/lldext) - contains my utility commands and scripts
+- [comon](https://github.com/lowleveldesign/comon) - contains commands to help debug COM services
+- [MEX](https://www.microsoft.com/en-us/download/details.aspx?id=53304) - another extension with many helper commands (run **!mex.help** to list them)
+- [dotnet-sos](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-sos) - to debug .NET applications
+
+Additionally, you may also check the following repositories containing WinDbg scripts for various problems:
+
+- [TimMisiak/WinDbgCookbook](https://github.com/TimMisiak/WinDbgCookbook)
+- [hugsy/windbg_js_scripts](https://github.com/hugsy/windbg_js_scripts)
+- [0vercl0k/windbg-scripts](https://github.com/0vercl0k/windbg-scripts)
+- [yardenshafir/WinDbg_Scripts](https://github.com/yardenshafir/WinDbg_Scripts)
 
 Configuring WinDbg
 ------------------
@@ -123,6 +144,26 @@ If you miss the **-g** option, WinDbg will inject a remote thread with a breakpo
 
 Controlling the debugging session
 ---------------------------------
+
+### Enable local kernel-mode debugging
+
+If you are a software developer, you may not have much experience with kernel debugging. But it can be very useful to know how to inspect kernel objects in some cases. For instance, you can troubleshoot thread waits in kernel-mode more effectively and find out the causes of dead-locks or hangs faster.
+
+To do full kernel debugging (so to control the kernel code execution) you need another Windows machine. But if you just want to analyse the kernel internal memory, you can enable local kernel debugging on your own machine. This is how you do it:
+
+```shell
+bcdedit /debug on
+```
+
+After a restart, you should be able to attach to your local kernel from WinDbg.
+
+Another option is to use [LiveKd](https://learn.microsoft.com/en-us/sysinternals/downloads/livekd) which creates a snaphost of the kernel memory and attaches a debugger to it. It is also capable of creating a kernel memory dump for later analysis. An example command to create such a dump looks as follows:
+
+```shell
+livekd -accepteula -b -vsym -k "c:\Program Files (x86)\Windows Kits\10\Debuggers\x64\kd.exe" -o c:\tmp\kernel.dmp
+```
+
+**You don't need to boot the system in debugging mode to use livekd.** So it is safe to use even in production environments.
 
 ### Setup Windows Kernel Debugging over network
 

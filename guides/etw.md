@@ -35,7 +35,7 @@ redirect_from:
 
 ## Tools installation and configuration
 
-The collector, **wpr.exe**, is installed with the modern Windows versions. The reader, **Windows Performance Analyzer (wpa.exe)**, may be installed from Microsoft Store at <https://apps.microsoft.com/store/detail/windows-performance-analyzer-preview/9N58QRW40DFW?hl=en-sh&gl=sh>.
+The collector, **wpr.exe**, is installed with the modern Windows versions. The reader, **Windows Performance Analyzer (wpa.exe)**, may be installed from [Microsoft Store](https://apps.microsoft.com/store/detail/windows-performance-analyzer-preview/9N58QRW40DFW?hl=en-sh&gl=sh) or as part of the  **Windows Performance Toolkit**, included in the [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/).
 
 *Note: If you run into the 0x80010106 error when stopping the session, use wpr.exe from Windows SDK, build 1950 or later.*
 

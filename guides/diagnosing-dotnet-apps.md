@@ -200,7 +200,7 @@ Stopping the trace. This may take up to minutes depending on the application bei
 
 ### Using Time Travel Debugging (TTD)
 
-Time Travel Debugging is an excellent way of troubleshooting errors and exceptions. We can step through the code causing the problems at our own pace. I describe TTD in [a separate guide](/guides/using-ttd). It is my preferred way of debugging issues in applications and I highly recommend giving it a try.
+Time Travel Debugging is an excellent way of troubleshooting errors and exceptions. We can step through the code causing the problems at our own pace. I describe TTD in [a WinDbg guide](/guides/windbg). It is my preferred way of debugging issues in applications and I highly recommend giving it a try.
 
 ### Collecting a memory dump
 

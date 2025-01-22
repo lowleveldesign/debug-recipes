@@ -10,7 +10,7 @@ I created this site to share guides and tools that I developed during my career 
 
 ### Quick Links
 
-- [Diagnosing native Windows applications](diagnosing-native-windows-apps)
-- [Diagnosing .NET applications](diagnosing-dotnet-apps)
+- [Diagnosing native Windows applications](/guides/diagnosing-native-windows-apps)
+- [Diagnosing .NET applications](/guides/diagnosing-dotnet-apps)
 - [WinDbg usage guide](/guides/windbg)
 - [Event Tracing for Windows](/guides/etw)
