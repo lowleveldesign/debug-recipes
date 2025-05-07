@@ -7,6 +7,18 @@ $credits-color: #707070;
 
 @import "minima";
 
+body {
+  background-color: #f6f6ef;
+}
+
+pre, code {
+  background: transparent;
+}
+
+.highlighter-rouge .highlight {
+  background: #f9f9f9;
+}
+
 .post-title {
   @include relative-font-size(2.2);
   letter-spacing: -1px;
