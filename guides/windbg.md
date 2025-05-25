@@ -1,7 +1,7 @@
 ---
 layout: page
 title: WinDbg usage guide
-date: 2024-12-04 08:00:00 +0200
+date: 2025-05-25 08:00:00 +0200
 redirect_from:
     - /guides/using-ttd/
     - /guides/using-windbg/
@@ -23,7 +23,7 @@ redirect_from:
 - [Controlling the debugging session](#controlling-the-debugging-session)
     - [Enable local kernel-mode debugging](#enable-local-kernel-mode-debugging)
     - [Setup Windows Kernel Debugging over network](#setup-windows-kernel-debugging-over-network)
-    - [Remote debugging](#remote-debugging)
+    - [Debugging system services \(local remote debugging\)](#debugging-system-services-local-remote-debugging)
     - [Getting information about the debugging session](#getting-information-about-the-debugging-session)
 - [Symbols and modules](#symbols-and-modules)
 - [Working with memory](#working-with-memory)
@@ -31,6 +31,19 @@ redirect_from:
     - [Stack](#stack)
     - [Variables](#variables)
     - [Working with strings](#working-with-strings)
+- [Analyzing exceptions and errors](#analyzing-exceptions-and-errors)
+    - [Reading the exception record](#reading-the-exception-record)
+    - [Find Windows Runtime Error message](#find-windows-runtime-error-message)
+    - [Find the C++ exception object in the SEH exception record](#find-the-c-exception-object-in-the-seh-exception-record)
+    - [Read the Last Windows Error value](#read-the-last-windows-error-value)
+    - [Scanning the stack for native exception records](#scanning-the-stack-for-native-exception-records)
+    - [Finding exception handlers](#finding-exception-handlers)
+    - [Breaking on a specific exception event](#breaking-on-a-specific-exception-event)
+    - [Breaking on a specific Windows Error](#breaking-on-a-specific-windows-error)
+    - [Decoding error numbers](#decoding-error-numbers)
+- [Diagnosing dead-locks and hangs](#diagnosing-dead-locks-and-hangs)
+    - [Listing threads call stacks](#listing-threads-call-stacks)
+    - [Finding locks in memory dumps](#finding-locks-in-memory-dumps)
 - [System objects in the debugger](#system-objects-in-the-debugger)
     - [Processes \(kernel-mode\)](#processes-kernel-mode)
     - [Handles](#handles)
@@ -80,20 +93,20 @@ There are two versions of WinDbg available nowadays. The modern one, called WinD
 
 ### WinDbgX (WinDbgNext, formely WinDbg Preview)
 
-On modern systems download the [appinstaller](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/) file and choose Install in the context menu. If you are on Windows Server 2019 and you don't see the Install option in the context menu, there is a big chance you're missing the App Installer package on your system. In that case, you may download and run **[this PowerShell script](/assets/other/windbg-install.ps1.txt)** ([created by @Izybkr](https://github.com/microsoftfeedback/WinDbg-Feedback/issues/19#issuecomment-1513926394) with my minor updates to make it work with latest WinDbg releases).
+On modern systems download the [appinstaller](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/) file and choose Install in the context menu. If you are on Windows Server 2019 and you don't see the Install option in the context menu, there is a big chance you're missing the App Installer package on your system. In that case, you may download and run [this PowerShell script](/assets/other/windbg-install.ps1.txt) ([created by @Izybkr](https://github.com/microsoftfeedback/WinDbg-Feedback/issues/19#issuecomment-1513926394) with my minor updates to make it work with latest WinDbg releases).
 
 ### Classic WinDbg
 
-If you need to debug on an old system with no support for WinDbgX, you need to **download Windows SDK and install the Debugging Tools for Windows** feature. Executables will be in the Debuggers folder, for example, `c:\Program Files (x86)\Windows Kits\10\Debuggers`.
+If you need to debug on an old system with no support for WinDbgX, you need to download Windows SDK and install the Debugging Tools for Windows feature. Executables will be in the Debuggers folder, for example, `c:\Program Files (x86)\Windows Kits\10\Debuggers`.
 
 ### Extensions
 
 Some problems may require actions that are challenging to achieve using the default WinDbg commands. One solution is to create a debugger script using the [legacy scripting language](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/command-tokens), the [dx command](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/dx--display-visualizer-variables-), or the [JavaScript Debugger](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/javascript-debugger-scripting). Another option is to search for an extension that may already have the desired feature implemented. Here's a list of extensions I use daily when troubleshooting user-mode issues:
 
-- [PDE](https://onedrive.live.com/?authkey=%21AJeSzeiu8SQ7T4w&id=DAE128BD454CF957%217152&cid=DAE128BD454CF957) by Andrew Richards - contains lots of useful commands (run **!pde.help** to learn more)
+- [PDE](https://onedrive.live.com/?authkey=%21AJeSzeiu8SQ7T4w&id=DAE128BD454CF957%217152&cid=DAE128BD454CF957) by Andrew Richards - contains lots of useful commands (run `!pde.help` to learn more)
 - [lldext](https://github.com/lowleveldesign/lldext) - contains my utility commands and scripts
 - [comon](https://github.com/lowleveldesign/comon) - contains commands to help debug COM services
-- [MEX](https://www.microsoft.com/en-us/download/details.aspx?id=53304) - another extension with many helper commands (run **!mex.help** to list them)
+- [MEX](https://www.microsoft.com/en-us/download/details.aspx?id=53304) - another extension with many helper commands (run `!mex.help` to list them)
 - [dotnet-sos](https://learn.microsoft.com/en-us/dotnet/core/diagnostics/dotnet-sos) - to debug .NET applications
 
 Additionally, you may also check the following repositories containing WinDbg scripts for various problems:
@@ -108,7 +121,7 @@ Configuring WinDbg
 
 ### Referencing extensions and scripts for easy access
 
-When we use the **.load** or **.scriptload** commands, WinDbg will search for extensions in the following folders:
+When we use the `.load` or `.scriptload` commands, WinDbg will search for extensions in the following folders:
 
 - `{install_folder}\{target_arch}\winxp`
 - `{install_folder}\{target_arch}\winext`
@@ -126,7 +139,7 @@ It is also possible to configure [extensions galleries](https://github.com/micro
 
 ### Installing WinDbg as the Windows AE debugger
 
-The **windbx -I** (**windbg -iae**) command registers WinDbg as the automatic system debugger - it will launch anytime an application crashes. The modified AeDebug registry keys:
+The `windbgx -I` command registers WinDbg as the automatic system debugger - it will launch anytime an application crashes. The modified AeDebug registry keys:
 
 ```
 HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug
@@ -140,7 +153,7 @@ REG_SZ Debugger = "C:\Users\me\AppData\Local\Microsoft\WindowsApps\WinDbgX.exe" 
 REG_SZ Auto = 1
 ```
 
-If you miss the **-g** option, WinDbg will inject a remote thread with a breakpoint instruction, which will hide our original exception. In such case, you might need to scan the stack to find the original exception record.
+If you miss the -g option, WinDbg will inject a remote thread with a breakpoint instruction, which will hide our original exception. In such case, you might need to scan the stack to find the original exception record.
 
 Controlling the debugging session
 ---------------------------------
@@ -167,11 +180,9 @@ livekd -accepteula -b -vsym -k "c:\Program Files (x86)\Windows Kits\10\Debuggers
 
 ### Setup Windows Kernel Debugging over network
 
-*HYPER-V note*: When debugging a Gen 2 VM remember to turn off the secure booting: `Set-VMFirmware -VMName "Windows 2012 R2" -EnableSecureBoot Off -Confirm`
-
 Turn on network debugging (HOSTIP is the address of the machine on which we will run the debugger):
 
-```shell
+```sh
 bcdedit /dbgsettings NET HOSTIP:192.168.0.2 PORT:60000
 # Key=3ma3qyz02ptls.23uxbvnd0e2zh.1gnwiqb6v3mpb.mjltos9cf63x
 
@@ -181,28 +192,13 @@ bcdedit /debug {current} on
 
 Then on the host machine, run windbg, select **Attach to kernel** and fill the port and key textboxes.
 
-**Network card compatibility check**
+When debugging a **Hyper-V Gen 2 VM** remember to turn off the secure booting:
 
-Starting from Debugging Tools for Windows 10 we have an additional tool: **kdnet.exe**. By running it on the guest you may see if your network card supports kernel debugging and get the instructions for the host machine:
-
-```shell
-kdnet 172.25.121.1 60000
-# Enabling network debugging on Microsoft Hypervisor Virtual Machine.
-# Key=xxxx
-#
-# To finish setting up KDNET for this VM, run the following command from an
-# elevated command prompt running on the Windows hyper-v host.  (NOT this VM!)
-# powershell -ExecutionPolicy Bypass kdnetdebugvm.ps1 -vmguid DD4F4AFE-9B5F-49AD-8
-# 775-20863740C942 -port 60000
-#
-# To debug this vm, run the following command on your debugger host machine.
-# windbg -k net:port=60000,key=xxxx,target=DELAPTOP
-#
-# Then make sure to SHUTDOWN (not restart) the VM so that the new settings will
-# take effect.  Run shutdown -s -t 0 from this command prompt.
+```sh
+Set-VMFirmware -VMName "Windows 2012 R2" -EnableSecureBoot Off -Confirm
 ```
 
-If you are hosting your guest **on QEMU KVM** and want to use network debugging, you need to either create your VM as a Generic one (not Windows) or update the VM configuration XML, changing the vendor_id under the hyperv node, for example:
+If you are hosting your guest on **QEMU KVM** and want to use network debugging, you need to either create your VM as a Generic one (not Windows) or update the VM configuration XML, changing the vendor_id under the hyperv node, for example:
 
 ```xml
 <domain type="kvm">
@@ -225,30 +221,65 @@ If you are hosting your guest **on QEMU KVM** and want to use network debugging,
 
 I highly recommend checking [this post by the OSR team](https://www.osr.com/blog/2021/10/05/using-windbg-over-kdnet-on-qemu-kvm/) describing why those changes are required and revealing some details about the kdnet inner working. 
 
-### Remote debugging
+### Debugging system services (local remote debugging)
 
-To start a remote session of WinDbg, you may use the **-server** switch, e.g.: `windbg(x) -server "npipe:pipe=svcpipe" notepad`.
+Attaching a debugger to a Windows service running in session 0 should not be a problem, assuming you have the SeDebugPrivilege and can access the service. However, debugging the service startup process can be challenging.
 
-You may attach to the currently running session by using **-remote** switch, e.g.: `windbg(x) -remote "npipe:pipe=svcpipe,server=localhost"`
+I typically use a WinDbg remote session over named pipes along with the Image File Execution Options registry key. The approach involves starting the service under a debugger (using the -server option), both running in session 0, and then connecting to the debugger server from a local debugger instance. Here is  an example registry configuration for a testservice.exe:
 
-To terminate the entire session and exit the debugging server, use the **q (Quit)** command. To exit from one debugging client without terminating the server, you must issue a command from that specific client. If this client is KD or CDB, use the **CTRL+B** key to exit. If you are using a script to run KD or CDB, use **.remote_exit (Exit Debugging Client)**.
+```
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\myapp.exe]
+"Debugger"="windbgx.exe -Q -server npipe:pipe=svcpipe"
+```
+
+When the testservice starts, the debugger server will wait for the client to connect. You may start the client with the following command:
+
+```sh
+windbgx -remote "npipe:pipe=svcpipe,server=localhost"
+```
+
+If the Windows Service Manager stops the service before you manage to connect to it, you may need to adjust the service start timeout. For example, to set it to 3 minutes (180000 ms), use the following registry configuration:
+
+```
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control]
+"ServicesPipeTimeout"=dword:0002bf20
+```
+
+To terminate the entire session and exit the debugging server, use the `q` command. To exit from one debugging client without terminating the server, you must issue a command from that specific client. If this client is KD or CDB, use the CTRL+B key to exit. If you are using a script to run KD or CDB, use `.remote_exit`.
 
 ### Getting information about the debugging session
 
-The **\|** command displays a path to the process image. You may run **vercommand** to check how the debugger was launched. The **vertarget** command shows the OS version, the process lifetime, and more, for example, the dump time when debugging a memory dump. The **.time** command displays information about the system time variable (session time).
+The `|` command displays a path to the process image. You may run `vercommand` to check how the debugger was launched. The `vertarget` command shows the OS version, the process lifetime, and more, for example, the dump time when debugging a memory dump. The `.time` command displays information about the system time variable (session time).
 
-**.lastevent** shows the last reason why the debugger stopped and **.eventlog** displays the recent events.
+`.lastevent` shows the last reason why the debugger stopped and `.eventlog` displays the recent events.
 
 Symbols and modules
 -------------------
 
-The **lm** command lists all modules with symbol load info. To examine a specific module, use **lmvm {module-name}**. To find out if a given address belongs to any of the loaded dlls you may use the **!dlls -c {addr}** command. Another way would be to use the **lma {addr}** command.
+The `lm` command lists all modules with symbol load info. To examine a specific module, use `lmvm {module-name}`. To find out if a given address belongs to any of the loaded dlls you may use the `!dlls -c {addr}` command. Another way would be to use the `lma {addr}` command.
 
-The **.sympath** command shows the symbol search path and allows its modification. Use **.reload /f {module-name}** to reload symbols for a given module.
+The `.sympath` command shows the symbol search path and allows its modification. Use `.reload /f {module-name}` to reload symbols for a given module.
 
-The **x {module-name}!{function}** command resolves a function address, and **ln {address}** finds the nearest symbol.
+The `x {module-name}!{function}` command resolves a function address, and `ln {address}` finds the nearest symbol.
 
-When we don't have access to the symbol server, we may create a list of required symbols with **symchk.exe** (part of the Debugging Tools for Windows installation) and download them later on a different host. First, we need to prepare the manifest, for example:
+In WinDbgX, we may also list and filter modules with the `@$curprocess.Modules` property. Some usage examples:
+
+```shell
+# Display information about the win32u module
+dx @$curprocess.Modules["win32u.dll"]
+
+# Show public exports of the win32u module
+dx @$curprocess.Modules["win32u.dll"].Contents.Exports
+
+# List modules with information if they have combase.dll as a direct import
+dx -g @$curprocess.Modules.Select(m => new { Name = m.Name, HasCombase = m.Contents.Imports.Any(i => i.ModuleName == "combase.dll") })
+```
+
+**When we don't have access to the symbol server**, we may create a list of required symbols with `symchk.exe` (part of the Debugging Tools for Windows installation) and download them later on a different host. First, we need to prepare the manifest, for example:
 
 ```shell
 symchk /id test.dmp /om test.dmp.sym /s C:\non-existing
@@ -258,28 +289,6 @@ Then copy it to the machine with the symbol server access, and download the requ
 
 ```shell
 symchk /im test.dmp.sym /s SRV*C:\symbols*https://msdl.microsoft.com/download/symbols
-```
-
-In WinDbgX, we may also list and filter modules with the **@$curprocess.Modules** property. Some usage examples:
-
-```shell
-dx @$curprocess.Modules["win32u.dll"]
-# @$curprocess.Modules["win32u.dll"]                 : C:\WINDOWS\System32\win32u.dll
-#     BaseAddress      : 0x7ffa0e2c0000
-#     Name             : C:\WINDOWS\System32\win32u.dll
-#     Size             : 0x26000
-#     Attributes
-#     Contents
-#     Symbols          : [SymbolModule]win32u
-
-dx @$curprocess.Modules["win32u.dll"].Contents.Exports
-#@$curprocess.Modules["win32u.dll"].Contents.Exports
-#    [0x0]            : Function export of 'NtBindCompositionSurface'
-#    [0x1]            : Function export of 'NtCloseCompositionInputSink'
-#    ...
-
-# List modules with information if they have combase.dll as a direct import
-dx -g @$curprocess.Modules.Select(m => new { Name = m.Name, HasCombase = m.Contents.Imports.Any(i => i.ModuleName == "combase.dll") })
 ```
 
 Working with memory
@@ -300,14 +309,7 @@ The `!address` command shows information about a specific region of memory, for 
 # Type:                   01000000          MEM_IMAGE
 # Allocation Base:        00fb0000
 # Allocation Protect:     00000080          PAGE_EXECUTE_WRITECOPY
-# Image Path:             prog.exe
-# Module Name:            prog
-# Loaded Image Name:      c:\test\prog.exe
-# Mapped Image Name:
-# More info:              lmv m prog
-# More info:              !lmi prog
-# More info:              ln 0xfd7df8
-# More info:              !dh 0xfb0000
+# ...
 ```
 
 Additionally, it can display regions of memory of specific type, for example:
@@ -318,37 +320,23 @@ Additionally, it can display regions of memory of specific type, for example:
 # -----------------------------------------------------------------------------------------------
 #   9a0000   9b0000    10000 MEM_MAPPED  MEM_COMMIT  PAGE_READWRITE                     MappedFile "PageFile"
 #   9b0000   9b1000     1000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      MappedFile "PageFile"
-#   9c0000   9c1000     1000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      MappedFile "PageFile"
-#   d50000   e19000    c9000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      MappedFile "\Device\HarddiskVolume3\Windows\System32\locale.nls"
-#   ff0000   ff1000     1000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      MappedFile "PageFile"
-# 7f995000 7fa90000    fb000 MEM_MAPPED  MEM_RESERVE                                    MappedFile "PageFile"
-# 7fae0000 7fae1000     1000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      MappedFile "PageFile"
 
 !address -f:MEM_MAPPED
 #   BaseAddr EndAddr+1 RgnSize     Type       State                 Protect             Usage
 # -----------------------------------------------------------------------------------------------
 #   9a0000   9b0000    10000 MEM_MAPPED  MEM_COMMIT  PAGE_READWRITE                     MappedFile "PageFile"
 #   9b0000   9b1000     1000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      MappedFile "PageFile"
-#   9c0000   9c1000     1000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      MappedFile "PageFile"
-#   9d0000   9ed000    1d000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      Other      [API Set Map]
-#   9f0000   9f4000     4000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      Other      [System Default Activation Context Data]
-#   d50000   e19000    c9000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      MappedFile "\Device\HarddiskVolume3\Windows\System32\locale.nls"
-#   ff0000   ff1000     1000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      MappedFile "PageFile"
-# 7f990000 7f995000     5000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      Other      [Read Only Shared Memory]
-# 7f995000 7fa90000    fb000 MEM_MAPPED  MEM_RESERVE                                    MappedFile "PageFile"
-# 7fae0000 7fae1000     1000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      MappedFile "PageFile"
-# 7faf0000 7fb13000    23000 MEM_MAPPED  MEM_COMMIT  PAGE_READONLY                      Other      [NLS Tables]
 ```
 
 ### Stack
 
-Stack grows from high addresses to lower. Thus, when you see addresses bigger than the frame base (such as ebp+C) they usually refer to the function arguments. Smaller addresses (such as ebp-20) usually refer to local function variables.
+Stack grows from high to low addresses. Thus, when you see addresses bigger than the frame base (such as ebp+C) they usually refer to the function arguments. Smaller addresses (such as ebp-20) usually refer to local function variables.
 
-To display stack frames use the **k** command. The **kP** command will additionally print function arguments if private symbols are available. The **kbM** command outputs stack frames with first three parameters passed on the stack (those will be first three parameters of the function in x86).
+To display stack frames use the `k` command. The `kP` command will additionally print function arguments if private symbols are available. The `kbM` command outputs stack frames with first three parameters passed on the stack (those will be first three parameters of the function in x86).
 
-When there are many threads running in a process it's common that some of them have the same call stacks. To better organize call stacks we can use the **!uniqstack** command. Adding **-b** parameter adds first three parameters to the output, **-v** displays all parameters (but requires private symbols).
+When there are many threads running in a process it's common that some of them have the same call stacks. To better organize call stacks we can use the `!uniqstack` command. Adding -b parameter adds first three parameters to the output, -v displays all parameters (but requires private symbols).
 
-To switch a local context to a different stack frame we can use the **.frame** command:
+To switch a local context to a different stack frame we can use the `.frame` command:
 
 ```shell
 .frame [/c] [/r] [FrameNumber]
@@ -356,18 +344,15 @@ To switch a local context to a different stack frame we can use the **.frame** c
 .frame [/c] [/r] = BasePtr StackPtr InstructionPtr
 ```
 
-The **!for_each_frame** extension command enables you to execute a single command repeatedly, once for each frame in the stack.
+The `!for_each_frame` extension command enables you to execute a single command repeatedly, once for each frame in the stack.
 
-In WinDbgX, we may access the call stack frames using **dx @$curstack.Frames**, for example:
+In WinDbgX, we may access the call stack frames using `@$curstack.Frames`, for example:
 
 ```shell
 dx @$curstack.Frames
 # @$curstack.Frames
 #     [0x0]            : ntdll!LdrpDoDebuggerBreak + 0x30 [Switch To]
 #     [0x1]            : ntdll!LdrpInitializeProcess + 0x1cfa [Switch To]
-#     [0x2]            : ntdll!_LdrpInitialize + 0x56298 [Switch To]
-#     [0x3]            : ntdll!LdrpInitializeInternal + 0x6b [Switch To]
-#     [0x4]            : ntdll!LdrInitializeThunk + 0xe [Switch To]
 
 dx @$curstack.Frames[0].Attributes
 # InstructionOffset : 0x7ffa1102b784
@@ -382,28 +367,313 @@ dx @$curstack.Frames[0].Attributes
 
 ### Variables
 
-When you have private symbols you may list local variables with the **dv** command.
+When you have private symbols you may list local variables with the `dv` command.
 
-Additionally the **dt** command allows you to work with type symbols. You may either list them, eg.: `dt notepad!g_*` or dump a data address using a given type format, eg.: `dt nt!_PEB 0x13123`.
+Additionally the `dt` command allows you to work with type symbols. You may either list them, eg.: `dt notepad!g_*` or dump a data address using a given type format, eg.: `dt nt!_PEB 0x13123`.
 
-The **dx** command allows you to dump local variables or read them from any place in the memory. It uses a navigation expressions just like Visual Studio (you may define your own file .natvis files). You load the interesting .natvis file with the **.nvload** command.
+The `dx` command allows you to dump local variables or read them from any place in the memory. It uses a navigation expressions just like Visual Studio (you may define your own file .natvis files). You load the interesting .natvis file with the `.nvload` command.
 
-**#FIELD_OFFSET(Type, Field)** is an interesting operator which returns the offset of the field in the type, eg. **? \#FIELD_OFFSET(\_PEB, ImageSubsystemMajorVersion)**.
+`#FIELD_OFFSET(Type, Field)` is an interesting operator which returns the offset of the field in the type, eg. `? #FIELD_OFFSET(_PEB, ImageSubsystemMajorVersion)`.
 
 ### Working with strings
 
-The **!du** command from the [PDE extension](https://onedrive.live.com/redir?resid=DAE128BD454CF957!7152&authkey=!AJeSzeiu8SQ7T4w&ithint=folder%2czip) shows strings up to 4GB (the default du command stops when it hits the range limit).
+The `!du` command from the [PDE extension](https://onedrive.live.com/redir?resid=DAE128BD454CF957!7152&authkey=!AJeSzeiu8SQ7T4w&ithint=folder%2czip) shows strings up to 4GB (the default du command stops when it hits the range limit).
 
-The PDE extension also contains the **!ssz** command to look for zero-terminated (either unicode or ascii) strings. To change a text in memory use **!ezu**, for example: `ezu  "test string"`. The extension works on committed memory.
+The PDE extension also contains the `!ssz` command to look for zero-terminated (either unicode or ascii) strings. To change a text in memory use `!ezu`, for example: `ezu  "test string"`. The extension works on committed memory.
 
-Another interesting command is **!grep**, which allows you to filter the output of other commands: `!grep _NT !peb`.
+Another interesting command is `!grep`, which allows you to filter the output of other commands: `!grep _NT !peb`.
+
+Analyzing exceptions and errors
+-------------------------------
+
+### Reading the exception record
+
+The  `.ecxr` debugger command instructs the debugger to restore the thread context to its state when the initial fault happened. When dispatching a SEH exception, the OS builds an internal structure called an `exception record`. It also conveniently saves the thread context at the time of the initial fault in a context record structure.
+
+```cpp
+typedef struct _EXCEPTION_RECORD {
+  DWORD                    ExceptionCode;
+  DWORD                    ExceptionFlags;
+  struct _EXCEPTION_RECORD *ExceptionRecord;
+  PVOID                    ExceptionAddress;
+  DWORD                    NumberParameters;
+  ULONG_PTR                ExceptionInformation[EXCEPTION_MAXIMUM_PARAMETERS];
+} EXCEPTION_RECORD;
+```
+
+`.lastevent` will also show you information about the last error that occured (if the debugger stopped because of an error). You may then examine the exception record using the `.exr` command, for example:
+
+```sh
+.lastevent
+# Last event: 15ae8.133b4: CLR exception - code e0434f4d (first/second chance not available)
+#   debugger time: Thu Jul 30 19:23:53.169 2015 (UTC + 2:00)
+
+.exr -1
+# ExceptionAddress: 000007fe9b17f963
+#    ExceptionCode: e0434f4d (CLR exception)
+#   ExceptionFlags: 00000000
+# NumberParameters: 0
+```
+
+If we look at the raw memory, we will find that .exr changes the order of the EXCEPTION_RECORD fields, for example:
+
+```sh
+.exr 0430af24
+# ExceptionAddress: abe8f04d
+#    ExceptionCode: c0000005 (Access violation)
+#   ExceptionFlags: 00000000
+# NumberParameters: 2
+#    Parameter[0]: 00000000
+#    Parameter[1]: abe8f04d
+```
+
+```
+0430af24  c0000005 <- exception code
+0430af28  00000000
+0430af2c  00000000
+0430af30  abe8f04d <- exception address (code address)
+0430af34  00000002 <- parameters number
+0430af38  00000000
+0430af3c  abe8f04d
+```
+
+### Find Windows Runtime Error message
+
+If you need to diagnose Windows Runtime Error for example: `(2f88.3358): Windows Runtime Originate Error - code 40080201 (first chance)`, you may enable first chance notification for this error: `sxe 40080201`. When stopped, retrieve the exception context, and the third parameter should contain an error message:
+
+```sh
+.exr -1
+# ExceptionAddress: 77942822 (KERNELBASE!RaiseException+0x00000062)
+#    ExceptionCode: 40080201 (Windows Runtime Originate Error)
+#   ExceptionFlags: 00000000
+# NumberParameters: 3
+#    Parameter[0]: 80040155
+#    Parameter[1]: 00000052
+#    Parameter[2]: 0dddf680
+
+du 0dddf680
+# 0dddf680  "Failed to find proxy registratio"
+# 0dddf6c0  "n for IID: {xxxxxxxx-xxxx-xxxx-x"
+# 0dddf700  "xxx-xxxxxxxxxxxx}."
+```
+
+We may automate this step by using the `$exr_param2` pseudo-register: `sxe -c "du @$exr_param1 L40; g" eh"`
+
+### Find the C++ exception object in the SEH exception record
+
+*(Tested on MSVC140)*
+
+If it's the first chance exception, we can find the exception record at the top of the stack:
+
+```sh
+dps @esp
+# 00f3fb28  7657ec52 KERNELBASE!RaiseException+0x62
+# 00f3fb2c  00f3fb30
+# 00f3fb30  e06d7363
+# 00f3fb34  00000001
+# 00f3fb38  00000000
+# 00f3fb3c  7657ebf0 KERNELBASE!RaiseException
+# 00f3fb40  00000003
+# 00f3fb44  19930520
+# 00f3fb48  00f3fbd8
+# 00f3fb4c  009ab96c exceptions!_TI3?AVinvalid_argumentstd
+```
+
+With dx and the `MSVCP140D!EHExceptionRecord` symbol (without this symbol, we need to get the value from `.exr -1`), we may decode the exception record parameters:
+
+```sh
+dx -r2 (MSVCP140D!EHExceptionRecord*)0x00f3fb30
+# (MSVCP140D!EHExceptionRecord*)0x00f3fb30                 : 0xf3fb30 [Type: EHExceptionRecord *]
+#     [+0x000] ExceptionCode    : 0xe06d7363 [Type: unsigned long]
+#     [+0x004] ExceptionFlags   : 0x1 [Type: unsigned long]
+#     [+0x008] ExceptionRecord  : 0x0 [Type: _EXCEPTION_RECORD *]
+#     [+0x00c] ExceptionAddress : 0x7657ebf0 [Type: void *]
+#     [+0x010] NumberParameters : 0x3 [Type: unsigned long]
+#     [+0x014] params           [Type: EHExceptionRecord::EHParameters]
+#         [+0x000] magicNumber      : 0x19930520 [Type: unsigned long]
+#         [+0x004] pExceptionObject : 0xf3fbd8 [Type: void *]
+#         [+0x008] pThrowInfo       : 0x9ab96c [Type: _s_ThrowInfo *]
+```
+
+As you can see, the second parameter points to the C++ exception object. If we know its type, we may dump its properties, for example:
+
+```sh
+dx (exceptions!std::invalid_argument*)0x00f3fbd8 
+#   [+0x004] _Data            : __std_exception_data
+
+dx -r1 (*((exceptions!__std_exception_data *)0xf3fbdc))
+# (*((exceptions!__std_exception_data *)0xf3fbdc))                 [Type: __std_exception_data]
+#     [+0x000] _What            : 0x1449748 : "arg1" [Type: char *]
+#     [+0x004] _DoFree          : true [Type: bool]
+```
+
+### Read the Last Windows Error value
+
+To get the last error value for the current thread we may use the `!gle` or `!teb` command. `!gle` has an additional -all parameter which shows the last errors for all the threads:
+
+```sh
+!gle -all
+# Last error for thread 0:
+# LastErrorValue: (Win32) 0 (0) - The operation completed successfully.
+# LastStatusValue: (NTSTATUS) 0xc0000034 - Object Name not found.
+# 
+# Last error for thread 1:
+# LastErrorValue: (Win32) 0 (0) - The operation completed successfully.
+# LastStatusValue: (NTSTATUS) 0 - STATUS_SUCCESS
+```
+
+### Scanning the stack for native exception records
+
+Sometimes, when the memory dump was incorrectly collected, we may not see the exception information and the `.exr -1` does not work. When this happens, there is still a chance that the original exception is somewhere in the stack. Using the `.foreach` command, we may scan the stack and try all the addresses to see if any of them is a valid exception record. For example:
+
+```sh
+.foreach /ps1 ($addr { dp /c1 @$csp L100 }) { .echo $addr; .exr $addr }
+# 0430af24
+# ExceptionAddress: abe8f04d
+#    ExceptionCode: c0000005 (Access violation)
+#   ExceptionFlags: 00000000
+# NumberParameters: 2
+#    Parameter[0]: 00000000
+#    Parameter[1]: abe8f04d
+```
+
+### Finding exception handlers
+
+To list exception handlers for the currently running method use `!exchain` command.
+
+Managed exception handlers can be listed using the `!EHInfo` command from the SOS extenaion. I present how to use this command to list ASP.NET MVC exception handlers [on my blog](https://lowleveldesign.wordpress.com/2013/04/26/life-of-exception-in-asp-net/).
+
+In 32-bit application, pointer to the exception handler is kept in `fs:[0]`. The prolog for a method with exception handling has the following structure:
+
+```
+mov     eax,fs:[00000000]
+push    eax
+mov     fs:[00000000],esp
+```
+
+An Example session of retrieving the exception handler:
+
+```sh
+dd /c1 fs:[0]-8 L10
+# 0053:fffffff8  00000000
+# 0053:fffffffc  00000000
+# 0053:00000000  0072ef74 <-- this is our first exception pointer to a handler
+# 0053:00000004  00730000
+# 0053:00000008  0072c000
+
+dd /c1 0072ef74-8 L10
+# 0072ef6c  0072eefc
+# 0072ef70  74275582
+# 0072ef74  0072f04c <-- previous handler
+# 0072ef78  744048b9 <-- handler address
+# 0072ef7c  2778008f
+# 0072ef80  00000000
+# 0072ef84  0072f058
+# 0072ef88  744064f9
+```
+
+In 64-bit applications, information about exception handlers is stored in the PE file. We can list them using, for example, the `dumpbin /unwindinfo` command.
+
+### Breaking on a specific exception event
+
+The `sx-` commands define how WinDbg handles exception events that happen in the process lifetime. For example, to stop the debugger when a C++ exception is thrown (1st change exception) we would use the `sxe eh` command. If we only need information that an exception occurred, we could use the `sxn eh` command. Additionally, the -c parameter gives us a possibility to run our custom command on error:
+
+```sh
+sxe -c ".lastevent;!pe;!clrstack;g" clr
+```
+
+### Breaking on a specific Windows Error
+
+There is a special global variable in ntdll, `g_dwLastErrorToBreakOn`, that you may set to cause a break whenever a given last error code is set by the application. For example, to break the application execution whenever it reports the `0x4cf` (ERROR_NETWORK_UNREACHABLE) error, run:
+
+```sh
+ed ntdll!g_dwLastErrorToBreakOn 0x4cf
+```
+
+You may find the list of errors in [the Windows documentation](https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes).
+
+### Decoding error numbers
+
+If you receive an error message with a cryptic error number like this, for example: *Compiler Error Message: The compiler failed with error code -1073741502*, you may use the `!error` command:
+
+```sh
+!error c0000142
+# Error code: (NTSTATUS) 0xc0000142 (3221225794) - {DLL Initialization Failed} Initialization of the dynamic link library %hs failed. The process is terminating abnormally.
+```
+
+Even more error codes and error messages are contained in the `!pde.err` command from the PDE extension.
+
+If you need to convert HRESULT to Windows Error, the following pseudo-code might help:
+
+```cpp
+a = hresult & 0x1FF0000
+if (a == 0x70000) {
+    winerror = hresult & 0xFFFF
+} else {
+    winerror = hresult
+}
+```
+
+Converting Windows Error to HRESULT is straightforward: `hresult = 0x80070000 | winerror`.
+
+A great **command line tool** for decoding error number is [err.exe or Error Code Look-up](https://www.microsoft.com/en-us/download/details.aspx?id=985). It looks for the specific value in Windows headers, additionally performing the convertion to hex, for example:
+
+```sh
+err -1073741502
+# for decimal -1073741502 / hex 0xc0000142 :
+#  STATUS_DLL_INIT_FAILED                                        ntstatus.h
+# {DLL Initialization Failed}
+# Initialization of the dynamic link library %hs failed. The
+# process is terminating abnormally.
+# ...
+```
+
+There is also a subcommand in the Windows built-in `net` command to decode Windows error numbers (and only error numbers), for example:
+
+```sh
+net helpmsg 2
+# The system cannot find the file specified.
+```
+
+Diagnosing dead-locks and hangs
+-------------------------------
+
+We usually start the analysis by looking at the threads running in a process. The call stacks help us identify blocked threads. We can use TTD, thread-time trace, or memory dumps to learn about what threads are doing. In the follow-up sections, I will describe how to find lock objects and relations between threads in memory dumps.
+
+### Listing threads call stacks
+
+To list native stacks for all the threads run: `~*k` or `!uniqstacks`.
+
+### Finding locks in memory dumps
+
+There are many types of objects that the thread can wait on. You usually see WaitOnMultipleObjects on many threads.
+
+If you see `RtlWaitForCriticalSection` it might indicate that the thread is waiting on a critical section`. Its adress should be in the call stack. And we may list the critical sections using the `!cs` command. With the -s option, we may examine details of a specific critical section:
+
+```sh
+!cs -s 000000001a496f50
+# -----------------------------------------
+# Critical section   = 0x000000001a496f50 (+0x1A496F50)
+# DebugInfo          = 0x0000000013c9bee0
+# LOCKED
+# LockCount          = 0x0
+# WaiterWoken        = No
+# OwningThread       = 0x0000000000001b04
+# RecursionCount     = 0x1
+# LockSemaphore      = 0x0
+# SpinCount          = 0x00000000020007d0
+```
+
+LockCount tells you how many threads are currently waiting on a given cs. The OwningThread is a thread that owns the cs at the time the command is run. You can easily identify the thread that is waiting on a given cs by issuing kv command and looking for critical section identifier in the call parameters.
+
+We can also look for **synchronization object handles** using the `!handle` command. For example, we may list all the Mutant objects in a process by using the `!handle 0 f Mutant` command.
 
 System objects in the debugger
 ------------------------------
 
-The **!object** command displays some basic information about a kernel object:
+The `!object` command displays some basic information about a kernel object:
 
-```shell
+```sh
 !object  ffffc30162f26080
 # Object: ffffc30162f26080  Type: (ffffc30161891d20) Process
 #     ObjectHeader: ffffc30162f26050 (new version)
@@ -412,7 +682,7 @@ The **!object** command displays some basic information about a kernel object:
 
 We may then analyze the object header to learn some more details about the object, for example:
 
-```shell
+```sh
 dx (nt!_OBJECT_HEADER *)0xffffc30162f26050
 # (nt!_OBJECT_HEADER *)0xffffc30162f26050                 : 0xffffc30162f26050 [Type: _OBJECT_HEADER *]
 #     [+0x000] PointerCount     : 582900 [Type: __int64]
@@ -457,19 +727,19 @@ dx -r1 (*((ntkrnlmp!_EPROCESS *)0xffffc30162f26080))
 
 ### Processes (kernel-mode)
 
-Each time you break into the kernel-mode debugger, one of the processes will be active. You may learn which one by running the **!process -1 0** command. If you are going to work with user-mode memory space you need to reload the process modules symbols (otherwise you will see symbols from the last reload). You may do so while switching process context with **.process /i** or **.process /r /p**, or ,manually, with the command: **.reload /user**. **/i** means invasive debugging and allows you to control the process from the kernel debugger. **/r** reloads user-mode symbols after the process context has been set (the behavior is the same as **.reload /user**). **/p** translates all transition page table entries (PTEs) for this process to physical addresses before access.
+Each time you break into the kernel-mode debugger, one of the processes will be active. You may learn which one by running the `!process -1 0` command. If you are going to work with user-mode memory space you need to reload the process modules symbols (otherwise you will see symbols from the last reload). You may do so while switching process context with `.process /i` (/i means invasive debugging and allows you to control the process from the kernel debugger) or `.process /r /p` (/r reloads user-mode symbols after the process context has been set (the behavior is the same as `.reload /user`), /p translates all transition page table entries (PTEs) for this process to physical addresses before access).
 
-**!peb** shows loaded modules, environment variables, command line arg, and more.
+`!peb` shows loaded modules, environment variables, command line arg, and more.
 
-The **!process 0 0 {image}** command finds a proces using its image name, e.g.: `!process 0 0 LINQPad.UserQuery.exe`.
+The `!process 0 0 {image}` command finds a proces using its image name, e.g.: `!process 0 0 LINQPad.UserQuery.exe`.
 
-When we know the process ID, we may use **!process {PID \| address} 0x7** (the 0x7 flag will list all the threads with their stacks)
+When we know the process ID, we may use `!process {PID | address} 0x7` (the 0x7 flag will list all the threads with their stacks).
 
 ### Handles
 
-There is a special debugger extension command **!handle** that allows you to find system handles reserved by a process: **!handle [Handle [UMFlags [TypeName]]]**
+There is a special debugger extension command `!handle` that allows you to find system handles reserved by a process.
 
-To list all handles reserved by a process use -1 (in kernel mode) or 0 (in user-mode) - you filter further by seeting a type of a handle: Event, Section, File, Port, Directory, SymbolicLink, Mutant, WindowStation, Semaphore, Key, Token, Process, Thread, Desktop, IoCompletion, Timer, Job, and WaitablePort, ex.:
+To list all handles reserved by a process use -1 (in kernel mode) or 0 (in user-mode). You may filter the list by setting a type of a handle:
 
 ```shell
 !handle 0 1 File
@@ -481,22 +751,24 @@ To list all handles reserved by a process use -1 (in kernel mode) or 0 (in user-
 
 ### Threads
 
-The **!thread {addr}** command shows details about a specific thread.
+The `!thread {addr}` command shows details about a specific thread. Each thread has its own register values. These values are stored in the CPU registers when the thread is executing and are stored in memory when another thread is executing. You can set the register context using .thread command:
 
-Each thread has its own register values. These values are stored in the CPU registers when the thread is executing and are stored in memory when another thread is executing. You can set the register context using .thread command:
-
-**.thread [/p [/r] ] [/P] [/w] [Thread]**
+```
+.thread [/p [/r] ] [/P] [/w] [Thread]
+```
 
 or
 
-**.trap [Address]**
-**.cxr [Options] [Address]**
+```
+.trap [Address]
+.cxr [Options] [Address]
+```
 
-For WOW64 processes, the **/w** parameter (**.thread /w**) will additionally switch to the x86 context. After loading the thread context, the commands opearating on stack should start working (remember to be in the right process context).
+For **WOW64 processes**, the /w parameter (`.thread /w`) will additionally switch to the x86 context. After loading the thread context, the commands opearating on stack should start working (remember to be in the right process context).
 
-**To list all threads** in a current process use **~** command (user-mode). Dot (.) in the first column signals a currently selected thread and hash (#) points to a thread on which an exception occurred.
+**To list all threads** in a current process use the `~*`command (user-mode). Dot (.) in the first column signals a currently selected thread and hash (#) points to a thread on which an exception occurred.
 
-**!runaway** shows the time consumed by each thread:
+`!runaway` shows the time consumed by each thread:
 
 ```shell
 !runaway 7
@@ -520,21 +792,21 @@ For WOW64 processes, the **/w** parameter (**.thread /w**) will additionally swi
 #   3:10c       0 days 0:27:19.809
 ```
 
-**\~\~\[thread-id\]** - in case you would like to use the system thread id you may with this syntax.
+`~~[thread-id]` - in case you would like to use the system thread id you may with this syntax.
 
-**!tls Slot** extension displays a thread local storage slot (or -1 for all slots)
+`!tls Slot` extension displays a thread local storage slot (or -1 for all slots)
 
 ### Critical sections
 
-Display information about a particular critical section: **!critsec {address}**
+Display information about a particular critical section: `!critsec {address}`.
 
-**!locks** extension in Ntsdexts.dll displays a list of critical sections associated with the current process.
+`!locks` extension in Ntsdexts.dll displays a list of critical sections associated with the current process.
 
-**!cs -lso [Address]**  - display information about critical sections (-l - only locked critical sections, -o - owner's stack, -s  - initialization stack, if available)
+`!cs -lso [Address]`  - display information about critical sections (-l - only locked critical sections, -o - owner's stack, -s  - initialization stack, if available)
 
-**!critsec Address** - information about a specific critical section
+`!critsec Address` - information about a specific critical section
 
-```shell
+```sh
 !cs -lso
 # -----------------------------------------
 # DebugInfo          = 0x77294380
@@ -579,13 +851,13 @@ Controlling process execution
 
 ### Controlling the target (g, t, p)
 
-To go up the funtion use **gu** command. We can go to a specified address using **ga [address]**. We can also step or trace to a specified address using accordingly **pa** and **ta** commands.
+To go up the funtion use `gu` command. We can go to a specified address using `ga [address]`. We can also step or trace to a specified address using accordingly `pa` and `ta` commands.
 
-Useful commands are **pc** and **tc** which step or trace to **the next call statement**. **pt** and **tt** step or trace to **the next return statement**.
+Useful commands are `pc` and `tc` which step or trace to the next call statement. `pt` and `tt` step or trace to the next return statement.
 
 ### Watch trace
 
-**wt** is a very powerful command and might be excellent at revealing what the function under the cursor is doing, eg. (-oa displays the actual address of the call sites, -or displays the return register values):
+`wt` is a very powerful command and might be excellent at revealing what the function under the cursor is doing, eg. (-oa displays the actual address of the call sites, -or displays the return register values):
 
 ```shell
 wt -l1 -oa -or
@@ -642,13 +914,13 @@ wt -l1 -oa -or
 
 The first number in the trace output specifies the number of instructions that were executed from the beginning of the trace in a given function (it is always incrementing), the second number specifies the number of instructions executed in the child functions (it is also always incrementing), and the third represents the depth of the function in the stack (parameter -l).
 
-If the **wt** command does not work, you may achieve similar results manually with the help of the target controlling commands:
+If the `wt` command does not work, you may achieve similar results manually with the help of the target controlling commands:
 
-- stepping until a specified address: **ta**, **pa**
-- stepping until the next branching instruction: **th**, **ph**
-- stepping until the next call instruction: **tc**, **pc**
-- stepping until the next return: **tt**, **pt**
-- stepping until the next return or call instruction: **tct**, **pct**
+- stepping until a specified address: `ta`, `pa`
+- stepping until the next branching instruction: `th`, `ph`
+- stepping until the next call instruction: `tc`, `pc`
+- stepping until the next return: `tt`, `pt`
+- stepping until the next return or call instruction: `tct`, `pct`
 
 
 ### Breaking when a specific function is in the call stack
@@ -659,7 +931,7 @@ bp Module!MyFunctionWithConditionalBreakpoint "r $t0 = 0;.foreach (v { k }) { .i
 
 ### Breaking on a specific function enter and leave
 
-The trick is to set a one-time breakpoint on the return address (**bp /1 @$ra**) when the main breakpoint is hit, for example:
+The trick is to set a one-time breakpoint on the return address (`bp /1 @$ra`) when the main breakpoint is hit, for example:
 
 ```shell
 bp 031a6160 "dt ntdll!_GUID poi(@esp + 8); .printf /D \"==> obj addr: %p\", poi(@esp + C);.echo; bp /1 @$ra; g"
@@ -684,7 +956,7 @@ This could be useful when debugging COM interfaces, as in the example below. Whe
 
 ### Breaking when a user-mode process is created (kernel-mode)
 
-**bp nt!PspInsertProcess**
+`bp nt!PspInsertProcess`
 
 The breakpoint is hit whenever a new user-mode process is created. To know what process is it we may access the \_EPROCESS structure ImageFileName field.
 
@@ -759,9 +1031,9 @@ Scripting the debugger
 
 ### Using meta-commands (legacy way)
 
-WinDbg contains several meta-commands (starting with a dot) that allow you to control the debugger actions. The **.expr** command prints the expression evaluator (MASM or C++) that will be used when interpreting the symbols in the executed commands. You may use the **/s** to change it. The **?** command uses the default evaluator, and **??** always uses the C++ evaluator. Also, you can mix the evaluators in one expression by using **@@c++(expression)** or **@@masm(expression)** syntax, for example: **? @@c++(@$peb->ImageSubsystemMajorVersion) + @@masm(0y1)**.
+WinDbg contains several meta-commands (starting with a dot) that allow you to control the debugger actions. The `.expr` command prints the expression evaluator (MASM or C++) that will be used when interpreting the symbols in the executed commands. You may use the /s to change it. The `?` command uses the default evaluator, and `??` always uses the C++ evaluator. Also, you can mix the evaluators in one expression by using `@@c++(expression)` or `@@masm(expression)` syntax, for example: `? @@c++(@$peb->ImageSubsystemMajorVersion) + @@masm(0y1)`.
 
-When using **.if** and **.foreach**, sometimes the names are not resolved - use spaces between them. For example, the command would fail if there was no space between poi( and addr in the code below.
+When using `.if` and `.foreach`, sometimes the names are not resolved - use spaces between them. For example, the command would fail if there was no space between poi( and addr in the code below.
 
 ```shell
 .foreach (addr {!DumpHeap -mt 71d75b24 -short}) { .if (dwo(poi( addr + 5c ) + c)) { !do addr } }
@@ -769,9 +1041,9 @@ When using **.if** and **.foreach**, sometimes the names are not resolved - use 
 
 ### Using the dx command
 
-The **[dx command](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/dx--display-visualizer-variables-)** allows us to query the **Debugger Object Model**. There is a set of root objects from which we may start our query, including **@$cursession**, **@$curprocess**, **@$curthread**, **@$curstack**, or **@$curframe**.
+The [dx command](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/dx--display-visualizer-variables-) allows us to query the Debugger Object Model. There is a set of root objects from which we may start our query, including `@$cursession`, `@$curprocess`, `@$curthread`, `@$curstack`, or `@$curframe`.
 
-**dx Debugger.State** shows the current state of the debugger. The **-h** parameter additionally displays help for the debugger objects, for example:
+`dx Debugger.State` shows the current state of the debugger. The -h parameter additionally displays help for the debugger objects, for example:
 
 ```shell
 dx -h Debugger.State
@@ -785,7 +1057,7 @@ dx -h Debugger.State
 #     ExtensionGallery [Extension Gallery]
 ```
 
-If we add the **-v** parameter, dx will print not only the values of the properties and fields but also the methods we may call on an object:
+If we add the -v parameter, dx will print not only the values of the properties and fields but also the methods we may call on an object:
 
 ```shell
 dx -v -r1 Debugger.Sessions[0].Processes[15416].Threads[12796]
@@ -802,9 +1074,9 @@ dx -v -r1 Debugger.Sessions[0].Processes[15416].Threads[12796]
 
 #### Using variables and creating new objects in the dx query
 
-In our queries we may create **anonymous objets**, **lambdas**, **arrays** and **objects of the Debugger Object Model types**, for example:
+In our queries we may create anonymous objets, lambdas, arrays and objects of the Debugger Object Model types, for example:
 
-```shell
+```sh
 # Create an anonymous object for each call to RtlSetLastWin32Error that contains TTD time of the call and the error code value
 dx -g @$cursession.TTD.Calls("ntdll!RtlSetLastWin32Error").Select(c => new { TimeStart = c.TimeStart, Error = c.Parameters[0] })
 # =========================================
@@ -844,7 +1116,7 @@ dx @$sum(1, 2)
 dx @$calls = @$cursession.TTD.Calls("kernelbase!CreateFileW")
 ```
 
-We may also use variables and pseudo-registers available in the debugger context. You may list them by examining the **Debugger.State.DebuggerVariables**, **Debugger.State.PseudoRegisters**, and **Debugger.State.UserVariables** objects.
+We may also use variables and pseudo-registers available in the debugger context. You may list them by examining the `Debugger.State.DebuggerVariables`, `Debugger.State.PseudoRegisters`, and `Debugger.State.UserVariables` objects.
 
 #### Example queries with explanations
 
@@ -897,7 +1169,7 @@ dx -r1 @$curprocess.Threads[13236].Stack.Frames[10].LocalVariables
 #     ...
 ```
 
-Additionally, we may query **the managed heap** (**ManagedHeap** property is a nice replacement for the !DumpHeap command):
+Additionally, we may query **the managed heap** (the `ManagedHeap` property is a nice replacement for the `!DumpHeap` command):
 
 ```shell
 dx -r1 @$curprocess.Memory.ManagedHeap
@@ -929,15 +1201,15 @@ Links:
 
 #### Loading a script
 
-The **.scriptproviders** command must include the JavaScript provider in the output.
+The `.scriptproviders` command must include the JavaScript provider in the output.
 
-Then we may run a script with the **.scriptrun** command or load it using the **.scriptload** command. The difference is that model modifications made by the **.scriptload** will stay in place until the call to **.scriptunload**. Also, **.scriptrun** will call the **invokeScript** JS function after the usual calls to the root code and the **initializeScript** function.
+Then we may run a script with the `.scriptrun` command or load it using the `.scriptload` command. The difference is that model modifications made by the `.scriptload` will stay in place until the call to `.scriptunload`. Also, `.scriptrun` will call the `invokeScript` JS function after the usual calls to the root code and the `initializeScript` function.
 
-**.scriptlist** lists the loaded scripts.
+`.scriptlist` lists the loaded scripts.
 
 #### Running a script
 
-After loading a script file, we may find it in the **Debugger.State.Scripts** list (**.scriptlist** will show it, too):
+After loading a script file, we may find it in the `Debugger.State.Scripts` list (`.scriptlist` will show it, too):
 
 ```shell
 .scriptload c:\windbg-js\windbg-scripting.js
@@ -957,7 +1229,7 @@ dx Debugger.State.Scripts.@"windbg-scripting".Contents.logn("test")
 Debugger.State.Scripts.@"windbg-scripting".Contents.logn("test")
 ```
 
-The **@$scriptContents** variable is a shortcut to all the public functions from all the loaded scripts, so our call could be more compact:
+The `@$scriptContents` variable is a shortcut to all the public functions from all the loaded scripts, so our call could be more compact:
 
 ```shell
 dx @$scriptContents.logn("test")
@@ -968,7 +1240,7 @@ dx @$scriptContents.logn("test")
 
 #### Debugging a script
 
-After we loaded the script (**.scriptload**), we may also debug its parts thanks to the **.scriptdebug** command, for example:
+After we loaded the script (`.scriptload`), we may also debug its parts thanks to the `.scriptdebug` command, for example:
 
 ```shell
 .scriptload c:\windbg-js\strings.js
@@ -1003,7 +1275,7 @@ dv
 #                    s = test
 ```
 
-The number of commands available in the inner JavaScript debugger is quite long and we may list them with the **.help** command. Especially, the evaluate expression (**?** or **??**) are very useful as they allow us to execute any JavaScript expressions and check their results:
+The number of commands available in the inner JavaScript debugger is quite long and we may list them with the `.help` command. Especially, the evaluate expression (`?` or `??`) are very useful as they allow us to execute any JavaScript expressions and check their results:
 
 ```shell
 ? host
@@ -1026,7 +1298,7 @@ The number of commands available in the inner JavaScript debugger is quite long 
 
 ### Launching commands from a script file
 
-We can also execute commands from a script file. We use the **\$\$** command family for that purpose. The **-c** option allows us to run a command on a debugger launch. So if we pass the **\$\$\<** command with a file path, windbg will read the file and execute the commands from it as if they were entered manually, for example:
+We can also execute commands from a script file. We use the `$$` command family for that purpose. The -c option allows us to run a command on a debugger launch. So if we pass the `$$<` command with a file path, windbg will read the file and execute the commands from it as if they were entered manually, for example:
 
 ```shell
 windbgx -c "$$<test.txt" notepad
@@ -1039,7 +1311,7 @@ sxe -c ".echo advapi32; g" ld:advapi32
 g
 ```
 
-We may use the **$$\>args\<** command variant to pass arguments to our script.
+We may use the `$$>args<` command variant to pass arguments to our script.
 
 When analyzing multiple files, I often use PowerShell to call WinDbg with the commands I want to run. In each WinDbg session, I pass the output of the commands to the windbg.log file, for example:
 
@@ -1047,7 +1319,7 @@ When analyzing multiple files, I often use PowerShell to call WinDbg with the co
 Get-ChildItem .\dumps | % { Start-Process -Wait -FilePath windbg-x64\windbg.exe -ArgumentList @("-loga", "windbg.log", "-y", "`"SRV*C:\dbg\symbols*https://msdl.microsoft.com/download/symbols`"", "-c", "`".exr -1; .ecxr; k; q`"", "-z", $_.FullName) }
 ```
 
-To make a **comment**, you can use one of the comment commands: `$$ my comment` or `* my comment`. The difference between them is that **\*** comments everything till the end of the line, while **\$\$** comments text till the semicolon (or end of a line), e.g., `r eax; $$ some text; r ebx; * more text; r ecx` will print eax, ebx but not ecx. The **.echo** command ends if the debugger encounters a semicolon (unless the semicolon occurs within a quoted string).
+To make a **comment**, you can use one of the comment commands: `$$ my comment` or `* my comment`. The difference between them is that `*` comments everything till the end of the line, while `$$` comments text till the semicolon (or end of a line), e.g., `r eax; $$ some text; r ebx; * more text; r ecx` will print eax, ebx but not ecx. The `.echo` command ends if the debugger encounters a semicolon (unless the semicolon occurs within a quoted string).
 
 Time Travel Debugging (TTD)
 ---------------------------
@@ -1058,7 +1330,7 @@ Time Travel Debugging (TTD)
 
 The collector is installed with WinDbgX and we may enable it when starting a WinDbgX debugging session.
 
-Alternatively, we could [install the command-line TTD collector](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/time-travel-debugging-ttd-exe-command-line-util#how-to-download-and-install-the-ttdexe-command-line-utility-preferred-method). The PowerShell script published on the linked site is capable of installing TTD even on systems not supporting the MSIX installations. The command-line tool is probably the best option when collecting TTD traces on server systems. When done, you may uninstall the driver by using the **-cleanup** option.
+Alternatively, we could [install the command-line TTD collector](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/time-travel-debugging-ttd-exe-command-line-util#how-to-download-and-install-the-ttdexe-command-line-utility-preferred-method). The PowerShell script published on the linked site is capable of installing TTD even on systems not supporting the MSIX installations. The command-line tool is probably the best option when collecting TTD traces on server systems. When done, you may uninstall the driver by using the -cleanup option.
 
 ### Collection
 
@@ -1066,7 +1338,7 @@ If you have WinDbgX, you may use TTD by checking the "Record with Time Travel De
 
 An alternative to WinDbgX is running the command-line TTD collector. Some usage examples:
 
-```shell
+```sh
 # launch a new winver.exe process and record the trace in C:\logs
 ttd.exe -accepteula -out c:\logs winver.exe
 
@@ -1085,7 +1357,7 @@ ttd.exe -accepteula -timestampFilename -out c:\logs -monitor app1.exe -monitor a
 
 We can acess TTD objects by querying the TTD property of the session or process objects:
 
-```shell
+```sh
 dx -v @$cursession.TTD
 # @$cursession.TTD                
 #     HeapLookup       [Returns a vector of heap blocks that contain the provided address: TTD.Utility.HeapLookup(address)]
@@ -1113,9 +1385,9 @@ dx -v @$curprocess.TTD
 
 ### Querying debugging events
 
-The **@$curprocess.Events** collection contains [TTD Event objects](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/time-travel-debugging-event-objects). We can use the group query to learn what type of events we have in our trace:
+The `@$curprocess.Events` collection contains [TTD Event objects](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/time-travel-debugging-event-objects). We can use the group query to learn what type of events we have in our trace:
 
-```shell
+```sh
 dx -g @$curprocess.TTD.Events.GroupBy(ev => ev.Type).Select(g => new { Type = g.First().Type, Count = g.Count() })
 # ===========================================================
 # =                         = (+) Type            = Count   =
@@ -1130,7 +1402,7 @@ dx -g @$curprocess.TTD.Events.GroupBy(ev => ev.Type).Select(g => new { Type = g.
 
 Next, we may filter the list for events that interest us, for example, to extract the first [TTD Exception object](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/time-travel-debugging-exception-objects), we may run the following query:
 
-```shell
+```sh
 dx @$curprocess.TTD.Events.Where(ev => ev.Type == "Exception").Select(ev => ev.Exception).First()
 # @$curprocess.TTD.Events.Where(ev => ev.Type == "Exception").Select(ev => ev.Exception).First()                 : Exception 0xE0434352 of type Software at PC: 0X7FF91E0842D0
 #     Position         : 7E7C:0 [Time Travel]
@@ -1144,7 +1416,7 @@ dx @$curprocess.TTD.Events.Where(ev => ev.Type == "Exception").Select(ev => ev.E
 
 ### Examining function calls
 
-The **Calls** method of the **TTD** objects allows us to query [function calls](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/time-travel-debugging-calls-objects) made in the trace. We may use either an address or a symbol name (even with wildcards) as a parameter to the Calls method:
+The `Calls` method of the `TTD` objects allows us to query [function calls](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/time-travel-debugging-calls-objects) made in the trace. We may use either an address or a symbol name (even with wildcards) as a parameter to the Calls method:
 
 ```shell
 x OLEAUT32!IDispatch_Invoke_Proxy
@@ -1174,7 +1446,7 @@ dx -g @$cursession.TTD.Calls("rpcrt4!NdrClient*").GroupBy(c => c.Function).Selec
 # ==============================================================================
 ```
 
-**TimeStart** shows the position of a call in a trace and we may use it to jump between different places in the trace. **SystemTimeStart** shows the clock time of a given call:
+TimeStart shows the position of a call in a trace and we may use it to jump between different places in the trace. SystemTimeStart shows the clock time of a given call:
 
 ```shell
 dx -g @$cursession.TTD.Calls("user32!DialogBox*").Select(c => new { Function = c.Function, TimeStart = c.TimeStart, SystemTimeStart = c.SystemTimeStart })
@@ -1186,7 +1458,7 @@ dx -g @$cursession.TTD.Calls("user32!DialogBox*").Select(c => new { Function = c
 # = [0x2]    - USER32!DialogBox2                    - 631C23:102    - Friday, February 2, 2024 16:03:39.791    =
 ```
 
-Each function call has a **Parameters** property that gives us access to the function parameters (without private symbols, we can access the first four parameters) of a call:
+Each function call has a Parameters property that gives us access to the function parameters (without private symbols, we can access the first four parameters) of a call:
 
 ```shell
 # Check which LastErrors were set during the call
@@ -1212,7 +1484,7 @@ dx -g @$cursession.TTD.Calls("ntdll!RtlSetLastWin32Error").Where(c => c.Paramete
 
 ### Position in TTD trace
 
-The **[TTD Position object](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/time-travel-debugging-position-objects)** describes a moment in time in the trace. Its **SeekTo** method allows us to jump to this moment and analyze the process state:
+The [TTD Position object](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/time-travel-debugging-position-objects) describes a moment in time in the trace. Its `SeekTo` method allows us to jump to this moment and analyze the process state:
 
 ```shell
 dx -r1 @$create("Debugger.Models.TTD.Position", 34395, 1278)
@@ -1227,11 +1499,13 @@ dx -s @$create("Debugger.Models.TTD.Position", 34395, 1278).SeekTo()
 # Time Travel Position: 865B:4FE
 ```
 
+Alternatively, we could use `!tt 865B:4FE` to jump to a specific time position.
+
 If we are troubleshooting an issue spanning multiple processes, we may simultaneously record TTD traces for all of them, and later, use the TTD Position objects to set the same moment in time in all the traces. It is a very effective technique when debugging locking issues.
 
 ### Examining memory access
 
-The **Memory** and **MemoryForPositionRange** methods of the TTD Session object return [TTD Memory objects](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/time-travel-debugging-memory-objects) describing various operations on the memory. For example, the command below shows all the changes to the global GcInProgress variable in a .NET application:
+The `Memory` and `MemoryForPositionRange` methods of the TTD Session object return [TTD Memory objects](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/time-travel-debugging-memory-objects) describing various operations on the memory. For example, the command below shows all the changes to the global GcInProgress variable in a .NET application:
 
 ```shell
 dx -g @$cursession.TTD.Memory(&coreclr!g_pGCHeap->GcInProgress, &coreclr!g_pGCHeap->GcInProgress+4, "w")
@@ -1247,7 +1521,7 @@ dx -g @$cursession.TTD.Memory(&coreclr!g_pGCHeap->GcInProgress, &coreclr!g_pGCHe
 # ==============================================================================================================================================================================================================================================================================================================
 ```
 
-The **MemoryForPositionRange** method allows us to additionally limit memory access queries to a specific time-range. It makes sense to use this method for scope-based addresses, such as function parameters or local variables. Below, you may see an example of a query when we list all the places in the CreateFileW function that read the file name (the first argument to the function):
+The `MemoryForPositionRange` method allows us to additionally limit memory access queries to a specific time-range. It makes sense to use this method for scope-based addresses, such as function parameters or local variables. Below, you may see an example of a query when we list all the places in the CreateFileW function that read the file name (the first argument to the function):
 
 ```shell
 dx -s @$call = @$cursession.TTD.Calls("kernelbase!CreateFileW").First()
@@ -1274,7 +1548,7 @@ Misc tips
 
 ### Converting a memory dump from one format to another
 
-When debugging a full memory dump (**/ma**), we may convert it to a smaller memory dump using again the **.dump** command, for example:
+When debugging a full memory dump (**/ma**), we may convert it to a smaller memory dump using again the `.dump` command, for example:
 
 ```shell
 .dump /mpi c:\tmp\smaller.dmp
@@ -1282,7 +1556,7 @@ When debugging a full memory dump (**/ma**), we may convert it to a smaller memo
 
 ### Loading an arbitrary DLL into WinDbg for analysis
 
-WinDbg allows analysis of an arbitrary PE file if we load it as a crash dump (the **Open dump file** menu option or the **-z** command-line argument), for example: `windbgx -z C:\Windows\System32\shell32.dll`. WinDbg will load a DLL/EXE as a data file.
+WinDbg allows analysis of an arbitrary PE file if we load it as a crash dump (the **Open dump file** menu option or the -z command-line argument), for example: `windbgx -z C:\Windows\System32\shell32.dll`. WinDbg will load a DLL/EXE as a data file.
 
 Alternatively, if we want to normally load the DLL, we may use **rundll32.exe** as our debugging target and wait until the DLL gets loaded, for example: `windbgx -c "sxe ld:jscript9.dll;g" rundll32.exe .\jscript9.dll,TestFunction`. The TestFunction in the snippet could be any string. Rundll32.exe loads the DLL before validating the exported function address.
 
@@ -1309,9 +1583,9 @@ windbgx.exe -c "`$`$<C:\tmp\attach_all.txt" -pn winver.exe
 
 ### Injecting a DLL into a process being debugged
 
-You may use the **!injectdll** command from my [lldext](https://github.com/lowleveldesign/lldext) extension.
+You may use the `!injectdll` command from my [lldext](https://github.com/lowleveldesign/lldext) extension.
 
-Or use the **.call** method, as shown in the shell32.dll example below. We start by allocating some space for the DLL name and filling it up:
+Or use the `.call` method, as shown in the shell32.dll example below. We start by allocating some space for the DLL name and filling it up:
 
 ```shell
 .dvalloc 0x1a
