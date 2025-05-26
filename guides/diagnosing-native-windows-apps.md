@@ -127,6 +127,15 @@ An invaluable source of information when dealing with DLL loading issues are Win
 
 ![gflags - loader snaps](/assets/img/gflags-loader-snaps.png)
 
+Alternatively, you may modify the process IFEO registry key, for example:
+
+```
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\winver.exe]
+"GlobalFlag"=dword:000000002
+```
+
 Once enabled, you need to start the failing application under a debugger and the Loader logs should appear in the debug output.
 
 Alternatively, you may collect a procmon or ETW trace and search for any failure in the file events.
