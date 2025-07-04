@@ -29,7 +29,20 @@ On **Linux**, to check if there is anything listening on a TCP port 80 on a remo
 nc -vnz 192.168.0.20 80
 ```
 
-On **Windows**, PsPing (a part of the [Sysinternals toolkit](https://technet.microsoft.com/en-us/sysinternals)) has few interesting options when it comes to diagnosing network connectivity issues. The simplest usage is just a replacement for a ping.exe tool (performs ICMP ping):
+On **Windows**, we may use the `Test-NetConnection` (`tnc`) cmdlet, for example:
+
+```sh
+tnc example.com -Port 443
+
+# ComputerName     : example.com
+# RemoteAddress    : 23.215.0.138
+# RemotePort       : 443
+# InterfaceAlias   : Ethernet
+# SourceAddress    : 192.168.88.164
+# TcpTestSucceeded : True
+```
+
+PsPing (a part of the [Sysinternals toolkit](https://technet.microsoft.com/en-us/sysinternals)) also has few interesting options when it comes to diagnosing network connectivity issues. The simplest usage is just a replacement for a ping.exe tool (performs ICMP ping):
 
 ```shell
 psping www.google.com
@@ -75,8 +88,16 @@ pktmon start -c --comp nics --pkt-size 0 -m circular -s 512 -f c:\network-trace.
 We may later convert the etl file to open it in Wireshark: 
 
 ```shell
-pktmon etl2pcap C:\network-trace.etl --out C:\network-trace.pcap`
+pktmon etl2pcap C:\network-trace.etl --out C:\network-trace.pcap
 ```
+
+If the pcap file contains duplicate network packets, it is probably because same packets were logged by different network components. We can use the `--comp` parameter also in the `etl2pcap` subcommand to filter the packets, for example:
+
+```shell
+pktmon etl2pcap C:\network-trace.etl --out C:\network-trace.pcap --comp 12
+```
+
+If you don't know the component number, you may use the `etl2txt` subcommand to list events in text format with their component IDs, and then pick the right component.
 
 ### netsh (Windows)
 
