@@ -40,6 +40,7 @@ redirect_from:
     - [Finding exception handlers](#finding-exception-handlers)
     - [Breaking on a specific exception event](#breaking-on-a-specific-exception-event)
     - [Breaking on a specific Windows Error](#breaking-on-a-specific-windows-error)
+    - [Breaking on a function return](#breaking-on-a-function-return)
     - [Decoding error numbers](#decoding-error-numbers)
 - [Diagnosing dead-locks and hangs](#diagnosing-dead-locks-and-hangs)
     - [Listing threads call stacks](#listing-threads-call-stacks)
@@ -289,6 +290,14 @@ Then copy it to the machine with the symbol server access, and download the requ
 
 ```shell
 symchk /im test.dmp.sym /s SRV*C:\symbols*https://msdl.microsoft.com/download/symbols
+```
+
+If **you want to add a PDB file (or files) to an existing symbol store**, you may use the `symstore add` command, for example:
+
+```sh
+# /r – recursive, /o – verbose output, /f – a path to files to index (@ symbol before the name denotes a file which contains the list of files)
+# /s – root directory of the store, /t – product name, /v – version, /c – comment
+symstore add /r /o /f C:\src\myapp\bin /s \\symsrv\symbols\ /t myapp /v '1.0.1' /c 'rel 1.0.1'
 ```
 
 Working with memory
@@ -591,6 +600,14 @@ ed ntdll!g_dwLastErrorToBreakOn 0x4cf
 ```
 
 You may find the list of errors in [the Windows documentation](https://docs.microsoft.com/en-us/windows/win32/debug/system-error-codes).
+
+### Breaking on a function return
+
+If we want to break when a function finishes, for example, to analyze its result, we may use a nested one-time breakpoint on the function return address, for example:
+
+```sh
+bp kernelbase!CreateFileW "bp /1 $ra \"r @rax\"; g"
+```
 
 ### Decoding error numbers
 
