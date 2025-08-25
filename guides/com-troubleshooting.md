@@ -221,7 +221,7 @@ We can see that its ordinal number is four, and two virtual tables are registere
 bp poi(protoss + 0x3775c + 4 * $ptrsize)
 ```
 
-Similarly, if we would like to set breakpoins on all the `IGameObject` methods, we might use a loop:
+Similarly, if we would like to set breakpoints on all the `IGameObject` methods, we might use a loop:
 
 ```
 .for (r $t0 = 0; @$t0 < 6; r $t0 = @$t0 + 1) { bp poi(protoss + 0x3775c + @$t0 * @$ptrsize) }
@@ -427,7 +427,7 @@ Total 19 objects
 
 Of course, in those lists we will find the objects we already saw in the **!syncblk** output, so it's just another way to find them. It may be useful when tracking, for example, GC leaks.
 
-Finally, to find who is keeping our managed object alive, we could use the **!gcroot** command. And it's quite easy to find the GC roots for a particual type with the following script:
+Finally, to find who is keeping our managed object alive, we could use the **!gcroot** command. And it's quite easy to find the GC roots for a particular type with the following script:
 
 ```
 .foreach (addr { !DumpHeap -short -type System.__ComObject }) { !gcroot addr }
