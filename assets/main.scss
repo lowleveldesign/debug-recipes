@@ -19,6 +19,10 @@ pre, code {
   background: #f9f9f9;
 }
 
+.highlight .c {
+  color: #6c6c62;
+}
+
 .post-title {
   @include relative-font-size(2.2);
   letter-spacing: -1px;
