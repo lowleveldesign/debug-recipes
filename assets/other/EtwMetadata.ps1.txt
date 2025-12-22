@@ -1,0 +1,134 @@
+
+$ErrorActionPreference = "Stop"
+
+$MetadataFolder = "$env:LOCALAPPDATA\MyEtwMetadata\ById"
+$MetadataSearchByNameFolder = "$env:LOCALAPPDATA\MyEtwMetadata\ByName"
+
+
+if (-not (Test-Path $MetadataFolder)) {
+    New-Item -ItemType Directory -Path $MetadataFolder | Out-Null
+}
+
+if (-not (Test-Path $MetadataSearchByNameFolder)) {
+    New-Item -ItemType Directory -Path $MetadataSearchByNameFolder | Out-Null
+}
+
+function _SanitizeFileName {
+    param ([Parameter(Mandatory = $true)]$FileName)
+
+    [System.IO.Path]::GetInvalidFileNameChars() | ForEach-Object -Process {
+        $FileName = $FileName.Replace($_, [char]'_')
+    }
+    $FileName
+}
+
+Write-Output "Initializing ETW providers metadata... "
+wevtutil.exe ep | ForEach-Object -Process {
+    $ProviderName = $_
+    Write-Debug $ProviderName
+    $xml = $(wevtutil.exe gp /f:xml "$_" 2>$null)
+    if ($LASTEXITCODE -eq 0 -and $xml) {
+        $metadata = [xml]$xml
+        $metadata.Save($(Join-Path -Path $MetadataFolder -ChildPath "$($metadata.provider.guid).xml"));
+        $metadata.provider.guid | Out-File $(
+            Join-Path -Path $MetadataSearchByNameFolder -ChildPath "$(_SanitizeFileName $ProviderName).txt")
+    }
+    else {
+        Write-Warning "Invalid metadata for '$ProviderName'"
+    }
+}
+
+function _ResolveKeywords {
+    param (
+        [Parameter(Mandatory = $true)]$Metadata,
+        [Parameter(Mandatory = $true)][ulong]$Keywords
+    )
+
+    if ($Metadata.provider.keywords) {
+        $Metadata.provider.keywords.keyword | ForEach-Object -Process {
+            $MaskValue = [ulong]::Parse($_.mask.TrimStart(@('0', 'x', 'X')), [System.Globalization.NumberStyles]::HexNumber)
+            if ($Keywords -band $MaskValue) {
+                [PSCustomObject]@{
+                    Name  = $_.name
+                    Value = $MaskValue
+                }
+            }
+        }
+    }
+}
+
+# ** EXPORTS **
+
+function Get-EtwProvidersFromWprProfile {
+    param (
+        [Parameter(Mandatory = $true)][string]$WprProfilePath
+    )
+
+    if (-not (Test-Path $MetadataFolder)) {
+        Write-Error "No metadata found - please run Initialize-EtwProvidersMetadata first."
+    }
+
+    function ParseProvider([Parameter(ValueFromPipeline = $true, Mandatory = $true)]$ProviderData) {
+        begin {}
+        process {
+            $MetadataPath = (Join-Path -Path $MetadataFolder -ChildPath "$($ProviderData.Name).xml")
+            if (-not (Test-Path $MetadataPath)) {
+                Write-Warning "No metadata found for provider '$($ProviderData.Name)'"
+                return
+            }
+
+            Write-Debug "Parsing provider '$($ProviderData.Name))'"
+            $Metadata = [xml](Get-Content $MetadataPath)
+
+            [ulong]$Keywords = 0
+            if ($ProviderData.Keywords) {
+                $ProviderData.Keywords.Keyword.Value | ForEach-Object -Process {
+                    $Keywords = $Keywords -bor ([ulong]::Parse($_.TrimStart(@('0', 'x', 'X')), [System.Globalization.NumberStyles]::HexNumber)) }
+            }
+            else {
+                $Keywords = [ulong]::MaxValue
+            }
+
+            [ulong]$CaptureOnSaveKeywords = 0
+            if ($ProviderData.CaptureOnSaveKeywords) {
+                $ProviderData.CaptureStateOnSave.Keyword.Value | ForEach-Object -Process {
+                    $CaptureOnSaveKeywords = $CaptureOnSaveKeywords -bor ([ulong]::Parse($_.TrimStart(@('0', 'x', 'X')), [System.Globalization.NumberStyles]::HexNumber)) }
+            }
+
+            [PSCustomObject]@{
+                Id                    = $ProviderData.Name
+                Name                  = $Metadata.provider.name
+                Keywords              = _ResolveKeywords $Metadata $Keywords
+                CaptureOnSaveKeywords = _ResolveKeywords $Metadata $CaptureOnSaveKeywords
+            }
+        }
+        end {}
+    }
+    
+    $xml = [xml](Get-Content $WprProfilePath)
+
+    $xml.WindowsPerformanceRecorder.Profiles.EventProvider | ParseProvider
+}
+
+function Get-EtwProviderMetadata {
+    param([Parameter(ValueFromPipeline = $true, Mandatory = $true)]$ProviderName)
+
+    $ProviderId = $ProviderName
+    $Path = $(Join-Path -Path $MetadataSearchByNameFolder -ChildPath "$(_SanitizeFileName $ProviderName).txt")
+    if (Test-Path $Path) {
+        $ProviderId = Get-Content $Path
+    }
+
+    $MetadataPath = (Join-Path -Path $MetadataFolder -ChildPath "$ProviderId.xml")
+    if (-not (Test-Path $MetadataPath)) {
+        Write-Error "No metadata found for provider '$($ProviderId)'"
+    }
+
+    $Metadata = [xml](Get-Content $MetadataPath)
+
+    [PSCustomObject]@{
+        Id       = $ProviderId
+        Name     = $Metadata.provider.name
+        Keywords = _ResolveKeywords $Metadata $([ulong]::MaxValue)
+    }
+}

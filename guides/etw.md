@@ -204,6 +204,31 @@ Working with WPR profiles is described in details in a great series of posts on 
 - [Authoring Custom Profiles – Part 2](https://devblogs.microsoft.com/performance-diagnostics/authoring-custom-profiles-part-2/)
 - [Authoring Custom Profiles – Part 3](https://devblogs.microsoft.com/performance-diagnostics/authoring-custom-profile-part3/)
 
+I also created **an [EtwMetadata.ps1](/assets/other/EtwMetadata.ps1.txt) script that you may use to decode the wprp files**. For example:
+
+```sh
+wpr.exe -exportprofile CPU.Light C:\temp\CPU.light.wprp
+
+curl.exe -o EtwMetadata.ps1 https://wtrace.net/assets/other/EtwMetadata.ps1.txt
+
+. C:\temp\EtwMetadata.ps1
+# Initializing ETW providers metadata...
+
+Get-EtwProvidersFromWprProfile C:\temp\CPU.light.wprp
+
+# WARNING: No metadata found for provider 'b7a19fcd-15ba-41ba-a3d7-dc352d5f79ba'
+# WARNING: No metadata found for provider 'e7ef96be-969f-414f-97d7-3ddb7b558ccc'
+# Id                                   Name                                           Keywords
+# --                                   ----                                           --------
+# 36b6f488-aad7-48c2-afe3-d4ec2c8b46fa Microsoft-Windows-Performance-Recorder-Control @{Name=PerfStatus; Value=65536}
+# b675ec37-bdb6-4648-bc92-f3fdc74d3ca2 Microsoft-Windows-Kernel-EventTracing          @{Name=ETW_KEYWORD_LOST_EVENT; Val…
+# 83ed54f0-4d48-4e45-b16e-726ffd1fa4af Microsoft-Windows-Networking-Correlation       {@{Name=ActivityTransfer; Value=1}…
+# d8975f88-7ddb-4ed0-91bf-3adf48c48e0c Microsoft-Windows-RPCSS                        {@{Name=EpmapDebug; Value=256}, @{…
+# 6ad52b32-d609-4be9-ae07-ce8dae937e39 Microsoft-Windows-RPC
+# d49918cf-9489-4bf1-9d7b-014d864cf71f Microsoft-Windows-ProcessStateManager          {@{Name=StateChange; Value=1}, @{N…
+# e6835967-e0d2-41fb-bcec-58387404e25a Microsoft-Windows-BrokerInfrastructure         @{Name=BackgroundTask; Value=1}
+```
+
 #### Starting and stopping the trace
 
 After picking a profile or profiles that we want to use, we can **start a tracing session** with the `-start` command. Some examples:

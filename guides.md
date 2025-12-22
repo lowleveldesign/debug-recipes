@@ -29,14 +29,22 @@ My field notes describing usage of WinDbg and WinDbgX (new WinDbg).
 
 This guide describes how to collect and analyze ETW traces.
 
-#### [Using withdll and detours to trace Win API calls](using-withdll-and-detours-to-trace-winapi)
+#### [Linux Kernel Tracing](linux-tracing)
 
-This guide describes how to use [withdll](https://github.com/lowleveldesign/withdll) and [Detours](https://github.com/microsoft/Detours) samples to collect traces of Win API calls.
+The guide presents tracing frameworks available through `/sys/kernel/tracing` mount point.
+
+#### [eBPF](ebpf)
+
+The guide describes how to use eBPF to trace system and application events.
+
+#### [Network tracing tools](network-tracing-tools)
+
+This guide lists various network tools you may use to diagnose connectivity problems and collect network traces on Windows and Linux.
 
 #### [Windows Performance Counters](windows-performance-counters)
 
 The guide presents how to query Windows Performance Counters and analyze the collected data.
 
-#### [Network tracing tools](network-tracing-tools)
+#### [Using withdll and detours to trace Win API calls](using-withdll-and-detours-to-trace-winapi)
 
-This guide lists various network tools you may use to diagnose connectivity problems and collect network traces on Windows and Linux.
+This guide describes how to use [withdll](https://github.com/lowleveldesign/withdll) and [Detours](https://github.com/microsoft/Detours) samples to collect traces of Win API calls.

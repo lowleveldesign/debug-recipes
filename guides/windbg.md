@@ -30,7 +30,8 @@ redirect_from:
     - [General memory commands](#general-memory-commands)
     - [Stack](#stack)
     - [Variables](#variables)
-    - [Working with strings](#working-with-strings)
+    - [Strings](#strings)
+    - [Fixed size arrays](#fixed-size-arrays)
 - [Analyzing exceptions and errors](#analyzing-exceptions-and-errors)
     - [Reading the exception record](#reading-the-exception-record)
     - [Find Windows Runtime Error message](#find-windows-runtime-error-message)
@@ -62,11 +63,15 @@ redirect_from:
     - [Using meta-commands \(legacy way\)](#using-meta-commands-legacy-way)
     - [Using the dx command](#using-the-dx-command)
         - [Using variables and creating new objects in the dx query](#using-variables-and-creating-new-objects-in-the-dx-query)
+        - [Using text files](#using-text-files)
         - [Example queries with explanations](#example-queries-with-explanations)
         - [Managed application support in the dx queries](#managed-application-support-in-the-dx-queries)
     - [Using the JavaScript engine](#using-the-javascript-engine)
         - [Loading a script](#loading-a-script)
         - [Running a script](#running-a-script)
+        - [Working with types](#working-with-types)
+        - [Accessing the debugger engine objects](#accessing-the-debugger-engine-objects)
+        - [Evaluating expressions in a debugger context](#evaluating-expressions-in-a-debugger-context)
         - [Debugging a script](#debugging-a-script)
     - [Launching commands from a script file](#launching-commands-from-a-script-file)
 - [Time Travel Debugging \(TTD\)](#time-travel-debugging-ttd)
@@ -384,13 +389,33 @@ The `dx` command allows you to dump local variables or read them from any place 
 
 `#FIELD_OFFSET(Type, Field)` is an interesting operator which returns the offset of the field in the type, eg. `? #FIELD_OFFSET(_PEB, ImageSubsystemMajorVersion)`.
 
-### Working with strings
+### Strings
 
 The `!du` command from the [PDE extension](https://onedrive.live.com/redir?resid=DAE128BD454CF957!7152&authkey=!AJeSzeiu8SQ7T4w&ithint=folder%2czip) shows strings up to 4GB (the default du command stops when it hits the range limit).
 
 The PDE extension also contains the `!ssz` command to look for zero-terminated (either unicode or ascii) strings. To change a text in memory use `!ezu`, for example: `ezu  "test string"`. The extension works on committed memory.
 
 Another interesting command is `!grep`, which allows you to filter the output of other commands: `!grep _NT !peb`.
+
+### Fixed size arrays
+
+Printing an array of a specific size with dx might be tricky. The code below shows two ways of printing a fixed-size char array:
+
+```sh
+dx (*((char (*)[16])0x31aa5526)),c
+# (*((jvm!char (*)[16])0x31aa5526)),c                 [Type: char [16]]
+#     [0]              : 106 'j' [Type: char]
+#     ...
+#     [15]             : 116 't' [Type: char]
+
+dx ((char*)0x31aa5526),16c
+# ((char*)0x31aa5526),16c                 : 0x31aa5526 [Type: char *]
+#     [0]              : 106 'j' [Type: char]
+#     ...
+#     [15]             : 116 't' [Type: char]
+```
+
+Altenatively, we could use `db 0x31aa5526 L10`.
 
 Analyzing exceptions and errors
 -------------------------------
@@ -1135,9 +1160,19 @@ dx @$calls = @$cursession.TTD.Calls("kernelbase!CreateFileW")
 
 We may also use variables and pseudo-registers available in the debugger context. You may list them by examining the `Debugger.State.DebuggerVariables`, `Debugger.State.PseudoRegisters`, and `Debugger.State.UserVariables` objects.
 
+#### Using text files
+
+The `FileSystem` API allows us to access the host file system. To have the full control over the lifetime of the opened file handle, I recommend using the file object explicitly. The following code is an example when we read all lines from a file to an array:
+
+```cpp
+dx @$file = Debugger.Utility.FileSystem.OpenFile("c:\\temp\\test.txt")
+dx @$lines = Debugger.Utility.FileSystem.CreateTextReader(@$file).ReadLineContents().ToArray()
+dx @$file.Close()
+```
+
 #### Example queries with explanations
 
-```shell
+```sh
 # Find kernel32 exports that contain the 'RegGetVal' string (by Tim Misiak)
 dx @$curprocess.Modules["kernel32"].Contents.Exports.Where(exp => exp.Name.Contains("RegGetVal"))
 
@@ -1254,6 +1289,90 @@ dx @$scriptContents.logn("test")
 
 @$scriptContents.logn("test")
 ```
+
+#### Working with types
+
+The `Number` type in JavaScript has a 53-bit limitation, which prevents us from working with 64-bit types. Fortunately, WinDbg provides us with the `Int64` type with methods for operations on 64-bit numbers such as `getLowPart`, `getHighPart`, `bitwiseAnd`, or `bitwiseShiftLeft` (others in [the documentation](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/javascript-debugger-scripting#work-with-64-bit-values-in-javascript-extensions)). It also has a properly implemented `toString` and can be safely used for hexadecimal conversion of data from the debugger, for example:
+
+```js
+function initializeScript()
+{
+    return [new host.apiVersionSupport(1, 7), new host.functionAlias(runTest, "runTest")]
+}
+
+function __hexString2(n) {
+    return n.toString(16);
+}
+
+function runTest(n) {
+    return __hexString2(n);
+}
+```
+
+```shell
+dx @$n = 0xffffffffffffffff
+# @$n = 0xffffffffffffffff : -1
+
+!runTest(@$n)
+# @$runTest(@$n)   : ffffffffffffffff
+#     Length           : 0x10
+```
+
+Additiona, the JS provider tracks created `Int64` objects and, if an object for a given value already exists, it will be returned, for example:
+
+```js
+const call = host.currentSession.TTD.Calls("combase!CoCreateInstance").First();
+
+const ppv = call.Parameters.ppv.address;
+
+call.TimeEnd.SeekTo();
+
+const cobj = host.evaluateExpression(`*(void **)${ppv}`).address;
+const i2 = new host.Int64(cobj);
+
+const m = new Map();
+m.set(i2, clsid);
+m.set(cobj, clsid);
+// the m size is 1
+__logn(`m size : ${m.size}`);
+```
+
+#### Accessing the debugger engine objects
+
+The `host.namespace` gives us access to the `debuggerRootNamespace` which we normally use with the `dx` command:
+
+```shell
+dx @$debuggerRootNamespace
+# @$debuggerRootNamespace                
+#     Debugger
+```
+
+```js
+var ctl = host.namespace.Debugger.Utility.Control;   
+ctl.ExecuteCommand(".process /p /r " + procId);
+```
+
+DML might pollute the command output. If that's the case, you may disable it with the `.prefer_dml 0` command.
+
+#### Evaluating expressions in a debugger context
+
+The `host.evaluateExpression` allows to evaluate expressions, for eaxmple:
+
+```js
+function exc(addr) {
+    let exceptionRecord = host.evaluateExpression(`(_EXCEPTION_RECORD*)${addr}`);
+    let exceptionCode = host.evaluateExpression(`(DWORD)${exceptionRecord.ExceptionCode}`)
+
+    if (exceptionCode === 0xe06d7363) {
+        println("== EH exception ==");
+        exceptionRecord.
+    } else {
+        logn(`Other exception: ${exceptionCode}`)
+    }
+}
+```
+
+It is quite slow, so using it in frequently executed functions is not practical.
 
 #### Debugging a script
 
