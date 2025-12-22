@@ -67,7 +67,7 @@ On Windows 7 64-bit, to improve stack walking, disable paging of the drivers and
 ```sh
 reg add "HKLM\System\CurrentControlSet\Control\Session Manager\Memory Management" -v DisablePagingExecutive -d 0x1 -t REG\_DWORD -f
 # or
-wpr -disablepagingexecutive`
+wpr.exe -disablepagingexecutive`
 ```
 
 For **manifest-based providers** set `MatchAnyKeywords` to `0x00` to receive all events. Otherwise you need to create a bitmask which will be or-ed with event keywords. Additionally when `MatchAllKeywords` is set, its value is used for events that passed the `MatchAnyKeywords` test and providers additional and filtering.
@@ -89,7 +89,7 @@ As its name suggests, WPR is a tool that records ETW traces and is available on 
 
 ```shell
 # list available profiles with their short description
-wpr -profiles
+wpr.exe -profiles
 
 # ...
 # GeneralProfile              First level triage
@@ -99,7 +99,7 @@ wpr -profiles
 #         ...
 
 # show profile details
-wpr -profiledetails CPU
+wpr.exe -profiledetails CPU
 
 # ...
 # Profile                 : CPU.Verbose.Memory
@@ -135,16 +135,16 @@ wpr -profiledetails CPU
 Profiles often come in two versions: verbose and light, and we decide which one to use by appending "Verbose" or "Light" to the main profile name (if we do not specify the version, WPR defaults to "Verbose"), for example:
 
 ```sh
-wpr -profiledetails CPU.Light
+wpr.exe -profiledetails CPU.Light
 ```
 
 The trace could be memory- or file- based, with memory-based being the default. We can switch to the file-based profile by using the `-filemode` option. If we can find a profile for our tracing scenario, we may build a custom one (WPR profile schema is documented [here](https://learn.microsoft.com/en-us/windows-hardware/test/wpt/recording-profile-xml-reference)). It is often easier to base it one of the existing profiles, which we may extract with the `-exportprofile` command, for example:
 
 ```sh
 # export the memory-based CPU.Light profilek
-wpr -exportprofile CPU.Light C:\temp\CPU.light.wprp
+wpr.exe -exportprofile CPU.Light C:\temp\CPU.light.wprp
 # export the file-based CPU.Light profilek
-wpr -exportprofile CPU.Light C:\temp\CPU.light.wprp -filemode
+wpr.exe -exportprofile CPU.Light C:\temp\CPU.light.wprp -filemode
 ```
 
 Interestingly, in the XML file, profile names include also the tracing mode, so the memory-based profile will have name `CPU.Light.Memory`, as you can see in the example below:
@@ -209,7 +209,7 @@ I also created **an [EtwMetadata.ps1](/assets/other/EtwMetadata.ps1.txt) script 
 ```sh
 wpr.exe -exportprofile CPU.Light C:\temp\CPU.light.wprp
 
-curl.exe -o EtwMetadata.ps1 https://wtrace.net/assets/other/EtwMetadata.ps1.txt
+curl.exe -o C:\temp\EtwMetadata.ps1 https://wtrace.net/assets/other/EtwMetadata.ps1.txt
 
 . C:\temp\EtwMetadata.ps1
 # Initializing ETW providers metadata...
@@ -235,20 +235,20 @@ After picking a profile or profiles that we want to use, we can **start a tracin
 
 ```sh
 # starts verbose CPU profile
-wpr -start CPU.verbose
+wpr.exe -start CPU.verbose
 # same as above
-wpr -start CPU
+wpr.exe -start CPU
 
 # starts light CPU profile
-wpr -start CPU.light
+wpr.exe -start CPU.light
 
 # multiple profiles start
-wpr -start CPU -start VirtualAllocation -start Network
+wpr.exe -start CPU -start VirtualAllocation -start Network
 
 # starts a custom WPRTest.Verbose profile defined in the C:\temp\CustomProfile.wprp file
-wpr -start "C:\temp\CustomProfile.wprp!WPRTest" -filemode
+wpr.exe -start "C:\temp\CustomProfile.wprp!WPRTest" -filemode
 # starts a custom WPRTest.Light profile defined in the C:\temp\CustomProfile.wprp file
-wpr -start "C:\temp\CustomProfile.wprp!WPRTest.Light"
+wpr.exe -start "C:\temp\CustomProfile.wprp!WPRTest.Light"
 ```
 
 There could be only one WPR trace running in the system and we can check its status using the `-status` command:
@@ -270,9 +270,9 @@ To **terminate the trace** we may use either the `-stop` or the `-cancel` comman
 
 ```shell
 # stopping the trace and saving it to a file with an optional description
-wpr -stop "C:\temp\testapp-fail.etl" "Abnormal termination of testapp.exe"
+wpr.exe -stop "C:\temp\testapp-fail.etl" "Abnormal termination of testapp.exe"
 # cancelling the trace (no trace files will be created)
-wpr -cancel
+wpr.exe -cancel
 ```
 
 #### Issues
@@ -670,7 +670,7 @@ Event types
 Autologger ETW session collects events appearing after the system start. It can be enabled with wpr:
 
 ```sh
-wpr -boottrace -addboot FileIO
+wpr.exe -boottrace -addboot FileIO
 ```
 
 Additional information:
@@ -683,7 +683,7 @@ Additional information:
 To collect general profile traces use: 
 
 ```sh
-wpr -start generalprofile -onoffscenario boot -numiterations 1
+wpr.exe -start generalprofile -onoffscenario boot -numiterations 1
 ```
 
 ### File events
