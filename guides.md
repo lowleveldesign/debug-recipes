@@ -3,7 +3,7 @@ layout: page
 title: Guides
 ---
 
-Please first check the [Windows degugging configuration guide](configuring-windows-for-effective-troubleshooting) as it presents fundamental settings and tools for effective problems troubleshooting on Windows.
+Please first check the [Windows degugging configuration guide](configuring-windows-for-effective-troubleshooting) as it presents fundamental settings and tools for effective problems troubleshooting on Windows. Similarly, I published the [Linux debugging configuration guide](configuring-linux-for-effective-troubleshooting) (work in progress).
 
 ### :triangular_ruler: Troubleshooting scenarios
 
@@ -24,6 +24,10 @@ A guide presenting troubleshooting techniques and tools (including the [comon ex
 #### [WinDbg usage guide](windbg)
 
 My field notes describing usage of WinDbg and WinDbgX (new WinDbg).
+
+#### [GDB usage guide](gdb)
+
+My field notes describing usage of GDB.
 
 #### [Event Tracing for Windows (ETW)](etw)
 
