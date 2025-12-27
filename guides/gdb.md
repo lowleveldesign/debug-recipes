@@ -2,8 +2,6 @@
 layout: page
 title: GDB usage guide
 date: 2025-05-27 08:00:00 +0200
-redirect_from:
-    - /guides/gdb/
 ---
 
 {% raw %}
