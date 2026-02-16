@@ -491,7 +491,11 @@ du 0dddf680
 # 0dddf700  "xxx-xxxxxxxxxxxx}."
 ```
 
-We may automate this step by using the `$exr_param2` pseudo-register: `sxe -c "du @$exr_param1 L40; g" eh"`
+We may automate this step by using the `$exr_param2` pseudo-register:
+
+```sh
+sxe -c "du @$exr_param2 L40; g" 40080201
+```
 
 ### Find the C++ exception object in the SEH exception record
 
