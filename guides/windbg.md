@@ -1,7 +1,7 @@
 ---
 layout: page
 title: WinDbg usage guide
-date: 2025-05-25 08:00:00 +0200
+date: 2026-02-20 08:00:00 +0200
 redirect_from:
     - /guides/using-ttd/
     - /guides/using-windbg/
@@ -89,6 +89,7 @@ redirect_from:
     - [Running a command for all the processes](#running-a-command-for-all-the-processes)
     - [Attaching to multiple processes at once](#attaching-to-multiple-processes-at-once)
     - [Injecting a DLL into a process being debugged](#injecting-a-dll-into-a-process-being-debugged)
+    - [Save and reopen formatted WinDbg output](#save-and-reopen-formatted-windbg-output)
 
 <!-- /MarkdownTOC -->
 
@@ -1762,6 +1763,16 @@ lm
 # ...
 # 00007ff9`b3390000 00007ff9`b3be9000   SHELL32    (deferred)
 # ...
+```
+
+### Save and reopen formatted WinDbg output
+
+Sometimes you may want to persist debugger output while preserving DML tags. This is achieved using the **Save Window to File** button in the **Command** ribbon tab. The resulting file uses a .dml extension; opening it in a text editor confirms that the markup remains intact.
+
+To reload this output into a new WinDbg command window, use the `.dml_start` command:
+
+```shell
+.dml_start C:\temp\test.dml
 ```
 
 {% endraw %}
