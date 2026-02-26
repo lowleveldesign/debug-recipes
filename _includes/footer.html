@@ -5,11 +5,7 @@
     <div class="footer-col-wrapper">
       <div class="footer-col footer-col-1">
         <p>
-          {%- if site.author -%}
-          {{ site.author | escape }}
-          {%- else -%}
-          {{ site.title | escape }}
-          {%- endif -%}
+          &copy; {{ site.title | escape }} {{ site.time | date: "%Y" }}
         </p>
         <p>{{- site.description | escape -}}</p>
       </div>
