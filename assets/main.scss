@@ -1,26 +1,22 @@
 ---
 # Only the main Sass file needs front matter (the dashes are enough)
 ---
-
 $brand-color: #CA4E07;
 $credits-color: #707070;
 
 @import "minima";
 
 body {
-  background-color: #f6f6ef;
+  background-color: #fffff8;
+}
+
+.highlighter-rouge .highlight {
+  background: #e6e6e6;
 }
 
 pre, code {
   background: transparent;
-}
-
-.highlighter-rouge .highlight {
-  background: #f9f9f9;
-}
-
-.highlight .c {
-  color: #6c6c62;
+  border: none
 }
 
 .post-title {
@@ -33,69 +29,3 @@ pre, code {
   }
 }
 
-.post-content {
-  table {
-    table-layout: fixed;
-  }
-
-  table th {
-    text-align: center;
-  }
-
-  table td {
-    vertical-align: top;
-  }
-
-  h2, h3 {
-    margin: 15px 0 15px 0;
-  }
-}
-
-.site-title {
-  @include relative-font-size(1.4);
-  font-weight: 700;
-  line-height: $base-line-height * $base-font-size * 2.25;
-  letter-spacing: -1px;
-  margin-bottom: 0;
-  float: left;
-  text-transform: uppercase;
-
-  &, &:visited {
-    color: $brand-color;
-  }
-}
-
-.site-nav {
-  .page-link {
-    text-transform: uppercase;
-    font-weight: 600;
-  }
-}
-
-.feature-image {
-  background-color: black;
-  background-repeat: no-repeat;
-  margin-bottom: 10px;
-  padding-top: 50px;
-  height: 300px;
-
-  .wrapper {
-    color: #ffffff;
-
-    h1 {
-      font-size: 4rem;
-      font-weight: 900;
-      margin-bottom: 0px
-    }
-
-    p {
-      font-size: 1.2rem;
-    }
-  }
-}
-
-p.credits {
-  color: $credits-color;
-  padding-top: 10px;
-  margin-top: 10px;
-}
