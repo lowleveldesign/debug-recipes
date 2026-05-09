@@ -1,7 +1,7 @@
 ---
 title: wtrace.net
 description: Tools and materials for software and system troubleshooting 
-feature_image: /assets/img/background.jpg
+feature_image: /assets/img/background.png
 ---
 
 ## Hello fellow troubleshooters!
