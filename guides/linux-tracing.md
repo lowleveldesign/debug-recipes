@@ -10,14 +10,14 @@ date: 2025-12-22 08:00:00 +0200
 
 <!-- MarkdownTOC -->
 
-- [General information](#general-information)
+- [Enable tracing](#enable-tracing)
 - [Collecting events](#collecting-events)
 - [Function tracing](#function-tracing)
 
 <!-- /MarkdownTOC -->
 
-General information
--------------------
+Enable tracing
+--------------
 
 If `/sys/kernel/tracing` is not available we may **mount it** with the following command:
 
@@ -25,7 +25,7 @@ If `/sys/kernel/tracing` is not available we may **mount it** with the following
 mount -t tracefs nodev /sys/kernel/tracing
 ```
 
-Writing to the buffer (trace / trace_pipe) is enabled globally by writing `1` to the file `/sys/kernel/tracing/tracing_on` (default value). If we write `0`, traces are still set up, but the kernel stops writing to the buffer. This is like a pause.
+Writing to the buffer (`trace` or `trace_pipe`) is enabled globally by writing `1` to the file `/sys/kernel/tracing/tracing_on` (default value). If we write `0`, traces are still set up, but the kernel stops writing to the buffer. This is like a pause.
 
 Collecting events
 -----------------

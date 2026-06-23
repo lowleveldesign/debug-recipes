@@ -3,7 +3,7 @@ layout: page
 title: Guides
 ---
 
-Please first check the [Windows degugging configuration guide](configuring-windows-for-effective-troubleshooting) as it presents fundamental settings and tools for effective problems troubleshooting on Windows. Similarly, I published the [Linux debugging configuration guide](configuring-linux-for-effective-troubleshooting) (work in progress).
+Please first check the [Windows degugging configuration guide](configuring-windows-for-effective-troubleshooting) as it presents fundamental settings and tools for effective problems troubleshooting on Windows. Similarly, I published the [Linux debugging configuration guide](configuring-linux-for-effective-troubleshooting).
 
 ### :triangular_ruler: Troubleshooting scenarios
 
@@ -18,6 +18,10 @@ This guide describes ways of troubleshooting various problems in native applicat
 #### [COM troubleshooting](com-troubleshooting)
 
 A guide presenting troubleshooting techniques and tools (including the [comon extension](https://github.com/lowleveldesign/comon)) useful for debugging COM objects.
+
+#### [Diagnosing applications on Linux](diagnosing-applications-on-linux)
+
+This guide presents some fundamental settings and commands to check the system status and troubleshoot errors in Linux applications.
 
 ### :wrench: Tools usage
 
