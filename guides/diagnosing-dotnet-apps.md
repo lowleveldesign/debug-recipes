@@ -18,9 +18,9 @@ date: 2024-01-01 08:00:00 +0200
     - [Disabling JIT optimization](#disabling-jit-optimization)
     - [Decoding managed stacks in Sysinternals](#decoding-managed-stacks-in-sysinternals)
     - [Check runtime version](#check-runtime-version)
-    - [Debugging/tracing a containerized .NET application \(Docker\)](#debuggingtracing-a-containerized-net-application-docker)
+    - [Debugging/tracing a containerized .NET application (Docker)](#debuggingtracing-a-containerized-net-application-docker)
 - [Diagnosing exceptions or erroneous behavior](#diagnosing-exceptions-or-erroneous-behavior)
-    - [Using Time Travel Debugging \(TTD\)](#using-time-travel-debugging-ttd)
+    - [Using Time Travel Debugging (TTD)](#using-time-travel-debugging-ttd)
     - [Collecting a memory dump](#collecting-a-memory-dump)
     - [Analysing exception information](#analysing-exception-information)
 - [Diagnosing hangs](#diagnosing-hangs)
@@ -31,10 +31,10 @@ date: 2024-01-01 08:00:00 +0200
     - [Collecting memory snapshots](#collecting-memory-snapshots)
     - [Analyzing collected snapshots](#analyzing-collected-snapshots)
 - [Diagnosing issues with assembly loading](#diagnosing-issues-with-assembly-loading)
-    - [Troubleshooting loading with EventPipes/ETW \(.NET\)](#troubleshooting-loading-with-eventpipesetw-net)
-    - [Troubleshooting loading using ETW \(.NET Framework\)](#troubleshooting-loading-using-etw-net-framework)
-    - [Troubleshooting loading using Fusion log \(.NET Framework\)](#troubleshooting-loading-using-fusion-log-net-framework)
-    - [GAC \(.NET Framework\)](#gac-net-framework)
+    - [Troubleshooting loading with EventPipes/ETW (.NET)](#troubleshooting-loading-with-eventpipesetw-net)
+    - [Troubleshooting loading using ETW (.NET Framework)](#troubleshooting-loading-using-etw-net-framework)
+    - [Troubleshooting loading using Fusion log (.NET Framework)](#troubleshooting-loading-using-fusion-log-net-framework)
+    - [GAC (.NET Framework)](#gac-net-framework)
         - [Find assembly in cache](#find-assembly-in-cache)
         - [Uninstall assembly from cache](#uninstall-assembly-from-cache)
 - [Diagnosing network connectivity issues](#diagnosing-network-connectivity-issues)
@@ -45,17 +45,19 @@ date: 2024-01-01 08:00:00 +0200
         - [ILogger logs](#ilogger-logs)
         - [DiagnosticSource logs](#diagnosticsource-logs)
     - [Collecting ASP.NET Core performance counters](#collecting-aspnet-core-performance-counters)
-- [ASP.NET \(.NET Framework\)](#aspnet-net-framework)
-    - [Examining ASP.NET process memory \(and dumps\)](#examining-aspnet-process-memory-and-dumps)
+- [ASP.NET (.NET Framework)](#aspnet-net-framework)
+    - [Examining ASP.NET process memory (and dumps)](#examining-aspnet-process-memory-and-dumps)
     - [Profiling ASP.NET](#profiling-aspnet)
     - [Application instrumentation](#application-instrumentation)
     - [ASP.NET ETW providers](#aspnet-etw-providers)
     - [Collect events using the Perfecto tool](#collect-events-using-the-perfecto-tool)
     - [Collect events using FREB](#collect-events-using-freb)
+- [Interesting OSS tools and libraries](#interesting-oss-tools-and-libraries)
 
 <!-- /MarkdownTOC -->
 
-## General .NET debugging tips
+General .NET debugging tips
+---------------------------
 
 ### Loading the SOS extension into WinDbg
 
@@ -196,7 +198,8 @@ Press <Enter> or <Ctrl+C> to exit...11   (KB)
 Stopping the trace. This may take up to minutes depending on the application being traced.
 ```
 
-## Diagnosing exceptions or erroneous behavior
+Diagnosing exceptions or erroneous behavior
+-------------------------------------------
 
 ### Using Time Travel Debugging (TTD)
 
@@ -264,7 +267,8 @@ HResult: 80070057
 
 To see the full managed call stack, use the **!CLRStack** command. By default, the debugger will stop on an unhandled exception. If you want to stop at the moment when an exception is thrown (first-chance exception), run the **sxe clr** command at the beginning of the debugging session.
 
-## Diagnosing hangs
+Diagnosing hangs
+----------------
 
 We usually start the analysis by looking at the threads running in a process. The call stacks help us identify blocked threads. We can use TTD, thread-time trace, or memory dumps to learn about what threads are doing. In the follow-up sections, I will describe how to find lock objects and relations between threads in memory dumps.
 
@@ -347,7 +351,8 @@ x64 version:
 
 Notice that the thread number from the output is a managed thread id and to map it to the windbg thread number you need to use the !Threads command.
 
-## Diagnosing waits or high CPU usage
+Diagnosing waits or high CPU usage
+----------------------------------
 
 Dotnet-trace allows us to enable the runtime CPU sampling provider (**Microsoft-DotNETCore-SampleProfiler**). However, using it might impact application performance as it internally calls **ThreadSuspend::SuspendEE** to suspend managed code execution while collecting the samples. Although it is a sampling profiler, it is a bit special. It runs on a separate thread and collects stacks of all the managed threads, even the waiting ones. This behavior resembles the thread time profiler. Probably that's the reason why PerfView shows us the **Thread Time** view when opening the .nettrace file.
 
@@ -376,7 +381,8 @@ perfcollect view sqrt.trace.zip -graphtype caller
 
 Using the **-graphtype** option, we may switch from the top-down view (`caller`) to the bottom-up view (`callee`).
 
-## Diagnosing managed memory leaks
+Diagnosing managed memory leaks
+-------------------------------
 
 ### Collecting memory snapshots
 
@@ -438,7 +444,8 @@ Other SOS commands for analyzing the managed heap include:
 
 **dotnet-gcdump** has a **report** command that lists the objects recorded in the GC heaps. The output resembles output from the SOS `!dumpheap` command.
 
-## Diagnosing issues with assembly loading
+Diagnosing issues with assembly loading
+---------------------------------------
 
 ### Troubleshooting loading with EventPipes/ETW (.NET)
 
@@ -539,7 +546,8 @@ We can use the **gacutil /l** to find an assembly in GAC. If no name is provided
 
     gacutil /u MyTest.exe
 
-## Diagnosing network connectivity issues
+Diagnosing network connectivity issues
+--------------------------------------
 
 ### .NET Core
 
@@ -661,7 +669,8 @@ And to collect such a trace:
 logman start "net-trace-session" -p "{0f09a664-1713-4665-91e8-8d6b8baee030}" -bs 512 -nb 8 64 -o "c:\temp\net-trace.etl" -ets & pause & logman stop net-trace-session -ets
 ```
 
-## ASP.NET Core
+ASP.NET Core
+------------
 
 ### Collecting ASP.NET Core logs
 
@@ -734,7 +743,8 @@ Press p to pause, r to resume, q to quit.
     Total TLS Handshakes                                           7
 ```
 
-## ASP.NET (.NET Framework)
+ASP.NET (.NET Framework)
+------------------------
 
 ### Examining ASP.NET process memory (and dumps)
 
@@ -899,5 +909,15 @@ Requirements:
 ### Collect events using FREB
 
 New IIS servers (7.0 up) contain a nice diagnostics functionality called Failed Request Tracing (or **FREB**). You may find a lot of information how to enable it on the [IIS official site](https://www.iis.net/learn/troubleshoot/using-failed-request-tracing/troubleshooting-failed-requests-using-tracing-in-iis) and in my [iis debugging recipe](asp.net/troubleshooting-iis.md).
+
+Interesting OSS tools and libraries
+-----------------------------------
+
+Some interesting libraries to use when implementing your own troubleshooting tools:
+
+- [dotnet-diagnostics](https://github.com/dotnet/diagnostics)
+- [clrmd](https://github.com/microsoft/clrmd) - a library to analyze live .NET processes and memory dumps
+- [sharpdbg](https://github.com/MattParkerDev/sharpdbg) - a managed code debugger implemented in C#
+- [ClrDebug](https://github.com/lordmilko/ClrDebug) - managed wrappers for .NET unmamanged APIs (debugging, profiling)
 
 {% endraw %}
