@@ -46,6 +46,13 @@ w
 
 The first line shows the current time, the system uptime time, the number of logged users, and the system load averages for the past 1, 5, and 15 minutes (same as the output of the `uptime` command). `JCPU` shows the CPU time of all processes attached to tty (including background processes). `PCPU` is the CPU time of the current process (the one in the `WHAT` column).
 
+Another useful tool to report the total **CPU usage** is `mpstat` (`sysstat` package), for example:
+
+```sh
+# display CPU usage every second for 4 seconds
+mpstat 1 4
+```
+
 To check basic **memory usage**, we may use `free` and `vmstat` (`procps-ng` package), for example:
 
 ```sh
