@@ -14,7 +14,7 @@ redirect_from:
 <!-- MarkdownTOC -->
 
 - [Installing WinDbg](#installing-windbg)
-    - [WinDbgX \(WinDbgNext, formely WinDbg Preview\)](#windbgx-windbgnext-formely-windbg-preview)
+    - [WinDbgX (WinDbgNext, formely WinDbg Preview)](#windbgx-windbgnext-formely-windbg-preview)
     - [Classic WinDbg](#classic-windbg)
     - [Extensions](#extensions)
 - [Configuring WinDbg](#configuring-windbg)
@@ -23,7 +23,7 @@ redirect_from:
 - [Controlling the debugging session](#controlling-the-debugging-session)
     - [Enable local kernel-mode debugging](#enable-local-kernel-mode-debugging)
     - [Setup Windows Kernel Debugging over network](#setup-windows-kernel-debugging-over-network)
-    - [Debugging system services \(local remote debugging\)](#debugging-system-services-local-remote-debugging)
+    - [Debugging system services (local remote debugging)](#debugging-system-services-local-remote-debugging)
     - [Getting information about the debugging session](#getting-information-about-the-debugging-session)
 - [Symbols and modules](#symbols-and-modules)
 - [Working with memory](#working-with-memory)
@@ -47,20 +47,20 @@ redirect_from:
     - [Listing threads call stacks](#listing-threads-call-stacks)
     - [Finding locks in memory dumps](#finding-locks-in-memory-dumps)
 - [System objects in the debugger](#system-objects-in-the-debugger)
-    - [Processes \(kernel-mode\)](#processes-kernel-mode)
+    - [Processes (kernel-mode)](#processes-kernel-mode)
     - [Handles](#handles)
     - [Threads](#threads)
     - [Critical sections](#critical-sections)
 - [Controlling process execution](#controlling-process-execution)
-    - [Controlling the target \(g, t, p\)](#controlling-the-target-g-t-p)
+    - [Controlling the target (g, t, p)](#controlling-the-target-g-t-p)
     - [Watch trace](#watch-trace)
     - [Breaking when a specific function is in the call stack](#breaking-when-a-specific-function-is-in-the-call-stack)
     - [Breaking on a specific function enter and leave](#breaking-on-a-specific-function-enter-and-leave)
     - [Breaking for all methods in the C++ object virtual table](#breaking-for-all-methods-in-the-c-object-virtual-table)
-    - [Breaking when a user-mode process is created \(kernel-mode\)](#breaking-when-a-user-mode-process-is-created-kernel-mode)
+    - [Breaking when a user-mode process is created (kernel-mode)](#breaking-when-a-user-mode-process-is-created-kernel-mode)
     - [Setting a user-mode breakpoint in kernel-mode](#setting-a-user-mode-breakpoint-in-kernel-mode)
 - [Scripting the debugger](#scripting-the-debugger)
-    - [Using meta-commands \(legacy way\)](#using-meta-commands-legacy-way)
+    - [Using meta-commands (legacy way)](#using-meta-commands-legacy-way)
     - [Using the dx command](#using-the-dx-command)
         - [Using variables and creating new objects in the dx query](#using-variables-and-creating-new-objects-in-the-dx-query)
         - [Using text files](#using-text-files)
@@ -74,7 +74,7 @@ redirect_from:
         - [Evaluating expressions in a debugger context](#evaluating-expressions-in-a-debugger-context)
         - [Debugging a script](#debugging-a-script)
     - [Launching commands from a script file](#launching-commands-from-a-script-file)
-- [Time Travel Debugging \(TTD\)](#time-travel-debugging-ttd)
+- [Time Travel Debugging (TTD)](#time-travel-debugging-ttd)
     - [Installation](#installation)
     - [Collection](#collection)
     - [Accessing TTD data](#accessing-ttd-data)
@@ -192,6 +192,9 @@ Turn on network debugging (HOSTIP is the address of the machine on which we will
 ```sh
 bcdedit /dbgsettings NET HOSTIP:192.168.0.2 PORT:60000
 # Key=3ma3qyz02ptls.23uxbvnd0e2zh.1gnwiqb6v3mpb.mjltos9cf63x
+
+# add nodhcp flag if you use static IP addresses (that will make the boot significanly faster)
+bcdedit /dbgsettings NET HOSTIP:192.168.0.2 PORT:60000 nodhcp
 
 bcdedit /debug {current} on
 # The operation completed successfully.
