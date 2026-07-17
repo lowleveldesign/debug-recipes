@@ -20,7 +20,7 @@ redirect_from:
     - [Tracing COM methods](#tracing-com-methods)
     - [Stopping the COM monitor](#stopping-the-com-monitor)
 - [Observing COM interactions outside WinDbg](#observing-com-interactions-outside-windbg)
-    - [Windows Performance Recorder \(wpr.exe\)](#windows-performance-recorder-wprexe)
+    - [Windows Performance Recorder (wpr.exe)](#windows-performance-recorder-wprexe)
     - [Process Monitor](#process-monitor)
     - [wtrace](#wtrace)
 - [Troubleshooting .NET COM interop](#troubleshooting-net-com-interop)
@@ -281,7 +281,32 @@ wpr.exe -start CPU -start .\WTComTrace.wprp -filemode
 wpr -stop C:\temp\comtrace.etl
 ```
 
-Some providers are the [legacy WPP providers](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/wpp-software-tracing), which require TMF files to read the collected events. Fortunately, the PDB file for compbase.dll contains the required TMF data and we can decode those events. To view the collected data, open the ETL file in **[Windows Performance Analyzer (WPA)](https://learn.microsoft.com/en-us/windows-hardware/test/wpt/windows-performance-analyzer)**. Remember to load symbols first (check [the Windows configuration guide](guides/configuring-windows-for-effective-troubleshooting/#configuring-debug-symbols) how to configure symbols globally in the system), then navigate to the **Generic Events** category and open the **WPP Trace** view.
+Some providers are the [legacy WPP providers](https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/wpp-software-tracing), which require TMF files to decode the event payloads. TMF may be available as standalone files or they might be embedded into PDB files. For the latter case, we may extract them using **tracepdb.exe**, for example:
+
+```sh
+tracepdb.exe -f .\combase.pdb -p .\tmfs
+```
+
+TMF data is stored as a binary block in the PDB file:
+
+```
+0D9:46A0  BA 00 19 10 20 52 0A 00 01 00 06 00 54 4D 46 3A  º... R......TMF:
+0D9:46B0  00 64 61 66 38 39 65 63 31 2D 64 66 66 32 2D 33  .daf89ec1-dff2-3 
+0D9:46C0  30 35 35 2D 36 30 61 62 2D 36 33 64 34 63 31 31  055-60ab-63d4c11 
+0D9:46D0  62 33 64 39 63 20 4F 4C 45 43 4F 4D 20 2F 2F 20  b3d9c OLECOM //  
+0D9:46E0  53 52 43 3D 63 6F 6D 74 72 61 63 65 77 6F 72 6B  SRC=comtracework 
+0D9:46F0  65 72 2E 63 78 78 20 4D 4A 3D 20 4D 4E 3D 00 23  er.cxx MJ= MN=.# 
+0D9:4700  74 79 70 65 76 20 63 6F 6D 74 72 61 63 65 77 6F  typev comtracewo 
+0D9:4710  72 6B 65 72 5F 63 78 78 31 38 36 20 31 31 20 22  rker_cxx186 11 " 
+0D9:4720  25 30 25 31 30 21 73 21 22 20 2F 2F 20 20 20 4C  %0%10!s!" //   L 
+0D9:4730  45 56 45 4C 3D 57 41 52 4E 49 4E 47 00 7B 00 6D  EVEL=WARNING.{.m 
+0D9:4740  65 73 73 61 67 65 2C 20 49 74 65 6D 57 53 74 72  essage, ItemWStr 
+0D9:4750  69 6E 67 20 2D 2D 20 31 30 00 7D 00 BA 00 19 10  ing -- 10.}.º... 
+```
+
+The GUID at the beginning of the block defines the provider ID and may appear multiple times in the PDB file. Tracepdb uses this ID as the name of the generated TMF file. When decoding WPP events, if we do not configure the `TDH_CONTEXT_WPP_TMFSEARCHPATH`, Tdh functions will look for TMF files in the path specified in the [TRACE_FORMAT_SEARCH_PATH environment variable](https://learn.microsoft.com/en-us/windows/win32/api/tdh/ne-tdh-tdh_context_type).
+
+**[Windows Performance Analyzer (WPA)](https://learn.microsoft.com/en-us/windows-hardware/test/wpt/windows-performance-analyzer)** has a special view for WPP events and can load the TMF manifests from symbol files, so **remember to first load the symbols**. Then navigate to the **Generic Events** category and open the **WPP Trace** view.
 
 ### Process Monitor
 

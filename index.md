@@ -10,8 +10,6 @@ I created this site to share guides and tools that I developed during my career 
 
 ### Quick Links
 
-- [WinDbg usage guide](/guides/windbg)
-- [Diagnosing native Windows applications](/guides/diagnosing-native-windows-apps)
-- [Diagnosing .NET applications](/guides/diagnosing-dotnet-apps)
-- [Network tracing tools](/guides/network-tracing-tools/)
-- [Event Tracing for Windows](/guides/etw)
+- [Troubleshooting on Windows](/guides/troubleshooting-on-windows)
+- [Troubelshooting on Linux](/guides/troubleshooting-on-linux)
+
