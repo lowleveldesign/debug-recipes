@@ -1,0 +1,1159 @@
+0:000> dx -v -r4 @Debugger
+@Debugger                
+    Sessions        
+        Aggregate        [Aggregate(AggregateMethod) | Aggregate(InitialSeed, AggregateMethod) | Aggregate(InitialSeed, AggregateMethod, ResultSelectorMethod) - LINQ equivalent method which iterates through the items in the given collection, running the aggregate method on each one and storing the returned result as the current aggregate value. Once the collection has been exhausted, the final accumulated value is returned. An optional result selector method can be specified which transforms the final accumulator value before returning it.]
+        All              [All(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate]
+        AllNonError      [AllNonError(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate. Errors are ignored if all non-error results match the predicate.]
+        Any              [Any(PredicateMethod) - LINQ equivalent method which returns whether any element in the collection matches a given predicate]
+        Average          [Average([ProjectionMethod]) - LINQ equivalent method which finds the average of all values in the enumeration. An optional projection method can be specified that transforms each value before the average is computed.]
+        Concat           [Concat(InnerCollection) - LINQ equivalent method which returns all elements from both collections, including duplicates.]
+        Contains         [Contains(Object, [ComparatorMethod]) - LINQ equivalent method which searches for the given element in the sequence using default comparator rules. An optional comparator method can be provided that will be called each time the element is compared against an entry in the sequence.]
+        Count            [Count() - LINQ equivalent method which returns the number of objects in the collection]
+        Distinct         [Distinct([ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given collection, using default comparison rules. An optional comparator method can be provided to be called each time objects in the collection must be compared.]
+        Except           [Except(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are NOT found in the inner collection. An optional comparator method can also be specified.]
+        First            [First([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate]
+        FirstNonError    [FirstNonError([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate. Any errors encountered are ignored if a valid element is found.]
+        Flatten          [Flatten([KeyProjectorMethod]) - Method which flattens a tree of collections (or a tree of keys that project to collections via an optional projector method) into a single collection]
+        GroupBy          [GroupBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which groups the collection by unique keys defined via a key projector and optional key comparator]
+        Intersect        [Intersect(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are also found in the inner collection. An optional comparator method can also be specified.]
+        Join             [Join(InnerCollection, Outer key selector method, Inner key selector method, Result selector method, [ComparatorMethod]) - LINQ equivalent method which projects a key for each element of the outer collection and each element of the inner collection using the methods provided. If the projected keys from both these elements match, then the result selector method is called with both those values and its output is returned to the user. An optional comparator method can also be specified.]
+        Last             [Last([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate]
+        LastNonError     [LastNonError([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate. Any errors are ignored.]
+        Max              [Max([ProjectionMethod]) - LINQ equivalent method which returns the maximum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+        Min              [Min([ProjectionMethod]) - LINQ equivalent method which returns the minimum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+        OrderBy          [OrderBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in ascending order]
+        OrderByDescending [OrderByDescending(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in descending order]
+        Reverse          [Reverse() - LINQ equivalent method which returns the reverse of the supplied enumeration.]
+        Select           [Select(ProjectionMethod) - LINQ equivalent method which projects the collection to a new collection via calling a projection method on every element]
+        SelectMany       [SelectMany(ProjectionMethod) - LINQ equivalent method which projects each element in the collection to a new collection via calling a projection method on every element.  The newly projected set of collections is then flattened (a single level) into a new collection containing all of the elements.]
+        SequenceEqual    [SequenceEqual(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which goes through the outer and inner collections and makes sure that they are equal (incl. sequence length). An optional comparator can be specified.]
+        Single           [Single([PredicateMethod]) - LINQ equivalent method which returns the only element in a list, or, if a predicate was specified, the only element that satisfies the predicate. If there are multiple elements that match the criteria, an error is returned.]
+        Skip             [Skip(Count) - LINQ equivalent method which skips the specified number of elements in the collection and returns all the rest.]
+        SkipLast         [SkipLast(Count) - LINQ equivalent method which skips the specified number of elements from the end of the collection and returns all the rest.]
+        SkipWhile        [SkipWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and skips it as long as it keeps returning true. Once the predicate fails, the rest of the collection is returned.]
+        Sum              [Sum([ProjectionMethod]) - LINQ equivalent method which sums all the elements in the collection. Can optionally specify a projector method to transform the elements before summation occurs.]
+        Take             [Take(Count) - LINQ equivalent method which takes the specified number of elements from the collection.]
+        TakeLast         [TakeLast(Count) - LINQ equivalent methods which takes the specified number of elements from the end of the collection.]
+        TakeWhile        [TakeWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and returns it only if the result is successful. Once the predicate fails, no more elements will be taken.]
+        ToArray          [ToArray() - LINQ equivalent method which produces an [0..N) indexed array of each element in the collection.  This also has the effect of immediately realizing any deferred operations which may have resulted from LINQ queries prior to the ToArray.]
+        Union            [Union(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given and inner collection. An optional comparator method can also be specified.]
+        Where            [Where(FilterMethod) - LINQ equivalent method which filters elements in the collection according to when a filter method returns true for a given element]
+        ToArray          [ToArray() - converts the collection to a one dimensional array]
+        ToArrayContents  [ToArrayContents() - converts items in each nested collection contained within the object to a one dimensional array]
+        [0x0]            : Live user mode: <Local>
+            Processes       
+                Aggregate        [Aggregate(AggregateMethod) | Aggregate(InitialSeed, AggregateMethod) | Aggregate(InitialSeed, AggregateMethod, ResultSelectorMethod) - LINQ equivalent method which iterates through the items in the given collection, running the aggregate method on each one and storing the returned result as the current aggregate value. Once the collection has been exhausted, the final accumulated value is returned. An optional result selector method can be specified which transforms the final accumulator value before returning it.]
+                All              [All(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate]
+                AllNonError      [AllNonError(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate. Errors are ignored if all non-error results match the predicate.]
+                Any              [Any(PredicateMethod) - LINQ equivalent method which returns whether any element in the collection matches a given predicate]
+                Average          [Average([ProjectionMethod]) - LINQ equivalent method which finds the average of all values in the enumeration. An optional projection method can be specified that transforms each value before the average is computed.]
+                Concat           [Concat(InnerCollection) - LINQ equivalent method which returns all elements from both collections, including duplicates.]
+                Contains         [Contains(Object, [ComparatorMethod]) - LINQ equivalent method which searches for the given element in the sequence using default comparator rules. An optional comparator method can be provided that will be called each time the element is compared against an entry in the sequence.]
+                Count            [Count() - LINQ equivalent method which returns the number of objects in the collection]
+                Distinct         [Distinct([ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given collection, using default comparison rules. An optional comparator method can be provided to be called each time objects in the collection must be compared.]
+                Except           [Except(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are NOT found in the inner collection. An optional comparator method can also be specified.]
+                First            [First([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate]
+                FirstNonError    [FirstNonError([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate. Any errors encountered are ignored if a valid element is found.]
+                Flatten          [Flatten([KeyProjectorMethod]) - Method which flattens a tree of collections (or a tree of keys that project to collections via an optional projector method) into a single collection]
+                GroupBy          [GroupBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which groups the collection by unique keys defined via a key projector and optional key comparator]
+                Intersect        [Intersect(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are also found in the inner collection. An optional comparator method can also be specified.]
+                Join             [Join(InnerCollection, Outer key selector method, Inner key selector method, Result selector method, [ComparatorMethod]) - LINQ equivalent method which projects a key for each element of the outer collection and each element of the inner collection using the methods provided. If the projected keys from both these elements match, then the result selector method is called with both those values and its output is returned to the user. An optional comparator method can also be specified.]
+                Last             [Last([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate]
+                LastNonError     [LastNonError([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate. Any errors are ignored.]
+                Max              [Max([ProjectionMethod]) - LINQ equivalent method which returns the maximum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+                Min              [Min([ProjectionMethod]) - LINQ equivalent method which returns the minimum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+                OrderBy          [OrderBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in ascending order]
+                OrderByDescending [OrderByDescending(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in descending order]
+                Reverse          [Reverse() - LINQ equivalent method which returns the reverse of the supplied enumeration.]
+                Select           [Select(ProjectionMethod) - LINQ equivalent method which projects the collection to a new collection via calling a projection method on every element]
+                SelectMany       [SelectMany(ProjectionMethod) - LINQ equivalent method which projects each element in the collection to a new collection via calling a projection method on every element.  The newly projected set of collections is then flattened (a single level) into a new collection containing all of the elements.]
+                SequenceEqual    [SequenceEqual(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which goes through the outer and inner collections and makes sure that they are equal (incl. sequence length). An optional comparator can be specified.]
+                Single           [Single([PredicateMethod]) - LINQ equivalent method which returns the only element in a list, or, if a predicate was specified, the only element that satisfies the predicate. If there are multiple elements that match the criteria, an error is returned.]
+                Skip             [Skip(Count) - LINQ equivalent method which skips the specified number of elements in the collection and returns all the rest.]
+                SkipLast         [SkipLast(Count) - LINQ equivalent method which skips the specified number of elements from the end of the collection and returns all the rest.]
+                SkipWhile        [SkipWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and skips it as long as it keeps returning true. Once the predicate fails, the rest of the collection is returned.]
+                Sum              [Sum([ProjectionMethod]) - LINQ equivalent method which sums all the elements in the collection. Can optionally specify a projector method to transform the elements before summation occurs.]
+                Take             [Take(Count) - LINQ equivalent method which takes the specified number of elements from the collection.]
+                TakeLast         [TakeLast(Count) - LINQ equivalent methods which takes the specified number of elements from the end of the collection.]
+                TakeWhile        [TakeWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and returns it only if the result is successful. Once the predicate fails, no more elements will be taken.]
+                ToArray          [ToArray() - LINQ equivalent method which produces an [0..N) indexed array of each element in the collection.  This also has the effect of immediately realizing any deferred operations which may have resulted from LINQ queries prior to the ToArray.]
+                Union            [Union(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given and inner collection. An optional comparator method can also be specified.]
+                Where            [Where(FilterMethod) - LINQ equivalent method which filters elements in the collection according to when a filter method returns true for a given element]
+                ToArray          [ToArray() - converts the collection to a one dimensional array]
+                ToArrayContents  [ToArrayContents() - converts items in each nested collection contained within the object to a one dimensional array]
+                [0x410]          : winver.exe [Switch To]
+            Id               : 0
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            OS              
+                BuildString      : 26100.1.amd64fre.ge_release.240331-1435
+                Version         
+            Devices         
+            Attributes      
+                Machine         
+                Target          
+            ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+    Settings        
+        Debug           
+            Advanced        
+                AutoDetectGuestMachine : true
+                AllowHardwareBreakpoints : true
+                BreakOnTargetRequestedCommand : false
+                MapImageMemoryForKernelDumps : false
+                MaxClrModules    : 0x3e8
+                PackLinuxSignalToExceptionCode : true
+                PerThreadKernelBreakpointTracking : true
+                PerformSymbolSearchSubstitution : true
+                SupportRecursiveStepOver : true
+                VadBasedModuleEnumeration : true
+                RestartKdNetUsbDebugDevice : false
+                DisableKdNetRebootPoke : false
+        Display         
+            Disassembly     
+                IgnoreOutputWidth : false
+                DisplayRawBytes  : true
+                DisplaySourceLines : false
+            PreferDMLOutput  : true
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            StackTraceDepth  : 0x100
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            UnicodeStrings   : false
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            DefaultRecursionDepth : 0x1
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            DefaultDisplayRadix : 0x10
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            PrintIntegersInDefaultRadix : false
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            PrintLongIntegersInDefaultRadix : false
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            UseDataModelForLocalsAndWatch : false
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            MaxSymbolDisplayLength : 0x0
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            MaxStringConversionDisplayLength : 0x200
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            DisplayShadowedVariablesWithSuffixes : false
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+        EngineInitialization
+            AllowNetworkPaths : true
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            AllowShellCommands : true
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            SendTelemetry    : true
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            VerifyFunctionTableCallbacks : true
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            UseReptTargetSupport : true
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            AllowSignExtensionMasmEvalExpression : false
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            PreferOpenTraceFilesFromDumps : false
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            UseRangeDumpFormatForKernelMemDump : true
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            SecureLoadDotNetExtensions : false
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            UseRangeDumpFormatForFullMemDump : true
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            ResolveAmbiguousBreakpoints : false
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+        Extensions      
+            ExtensionRepository : Implicit
+                Contains         [Contains(OtherString) - Method which returns whether the string contains a given sub string]
+                EndsWith         [EndsWith(OtherString) - Method which returns whether the string ends with a given string]
+                IndexOf          [IndexOf(OtherString) - Method which returns the index of the first occurrence of a substring in the given string.  If no such occurrence exists, -1 is returned]
+                LastIndexOf      [LastIndexOf(OtherString) - Method which returns the index of the last occurrence of a substring in the given string.  If no such occurrence exists, -1 is returned]
+                Length           : 0x8
+                PadLeft          [PadLeft(TotalWidth) - Method which right aligns the string to the specified width by inserting spaces at the left of the string]
+                PadRight         [PadRight(TotalWidth) - Method which left aligns the string to the specified width by inserting spaces at the right of the string]
+                Remove           [Remove(StartPos, [Length]) - Method which removes all characters beginning at the specified position from the string.  If an optional length is supplied, only that many characters after the starting position are removed]
+                Replace          [Replace(SearchString, ReplaceString) - Method which replaces every occurrence of a specified search string with a replacement string]
+                StartsWith       [StartsWith(OtherString) - Method which returns whether the string starts with a given string]
+                Substring        [Substring(StartPos, [Length]) - Method which retrieves a substring from the given string.  The substring starts at a specified character position and continues to the end of the string or for the optionally specified length]
+                ToLower          [ToLower() - Returns a copy of this string converted to lowercase.]
+                ToUpper          [ToUpper() - Returns a copy of this string converted to uppercase.]
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            UseExperimentalFeatureForNugetShare : true
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            AllowNugetExeUpdate : true
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            NonInteractiveNuget : true
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            AllowNugetMSCredentialProviderInstall : true
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            AllowParallelInitializationOfLocalRepositories : true
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            ConsiderLoadTriggersWhenSearchingForBangCommands : true
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            EnableRedirectToChakraJsProvider : false
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            DisabledExtensions
+            TimeConstraints 
+                LockRetryCount   : 0x1770
+                LockRetryDelay   : 0xa
+                RepositoryInitializeTime : 0x1d4c0
+            ExtensionRepositories
+                LocalInstalled  
+                UserExtensions  
+            Address         
+        Input           
+            UseExtensionEvaluatorForCpp : false
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+        MCP             
+            EnableMcpServerFeature : true
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+        Plugins         
+            DefaultDiagnosticLogLevel : 0x1
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            EchoDiagnosticLogs : false
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+        Sources         
+            DisplaySourceLines : true
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            SourceSearchPath
+                Contains         [Contains(OtherString) - Method which returns whether the string contains a given sub string]
+                EndsWith         [EndsWith(OtherString) - Method which returns whether the string ends with a given string]
+                IndexOf          [IndexOf(OtherString) - Method which returns the index of the first occurrence of a substring in the given string.  If no such occurrence exists, -1 is returned]
+                LastIndexOf      [LastIndexOf(OtherString) - Method which returns the index of the last occurrence of a substring in the given string.  If no such occurrence exists, -1 is returned]
+                Length           : 0x0
+                PadLeft          [PadLeft(TotalWidth) - Method which right aligns the string to the specified width by inserting spaces at the left of the string]
+                PadRight         [PadRight(TotalWidth) - Method which left aligns the string to the specified width by inserting spaces at the right of the string]
+                Remove           [Remove(StartPos, [Length]) - Method which removes all characters beginning at the specified position from the string.  If an optional length is supplied, only that many characters after the starting position are removed]
+                Replace          [Replace(SearchString, ReplaceString) - Method which replaces every occurrence of a specified search string with a replacement string]
+                StartsWith       [StartsWith(OtherString) - Method which returns whether the string starts with a given string]
+                Substring        [Substring(StartPos, [Length]) - Method which retrieves a substring from the given string.  The substring starts at a specified character position and continues to the end of the string or for the optionally specified length]
+                ToLower          [ToLower() - Returns a copy of this string converted to lowercase.]
+                ToUpper          [ToUpper() - Returns a copy of this string converted to uppercase.]
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            SkipCompilerIndicatedGlue : true
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            SkipCrtCode      : false
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            SkipSCPCode      : true
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            EnableExperimentalRemappings : 0
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            DisabledRemappingTools
+                Contains         [Contains(OtherString) - Method which returns whether the string contains a given sub string]
+                EndsWith         [EndsWith(OtherString) - Method which returns whether the string ends with a given string]
+                IndexOf          [IndexOf(OtherString) - Method which returns the index of the first occurrence of a substring in the given string.  If no such occurrence exists, -1 is returned]
+                LastIndexOf      [LastIndexOf(OtherString) - Method which returns the index of the last occurrence of a substring in the given string.  If no such occurrence exists, -1 is returned]
+                Length           : 0x0
+                PadLeft          [PadLeft(TotalWidth) - Method which right aligns the string to the specified width by inserting spaces at the left of the string]
+                PadRight         [PadRight(TotalWidth) - Method which left aligns the string to the specified width by inserting spaces at the right of the string]
+                Remove           [Remove(StartPos, [Length]) - Method which removes all characters beginning at the specified position from the string.  If an optional length is supplied, only that many characters after the starting position are removed]
+                Replace          [Replace(SearchString, ReplaceString) - Method which replaces every occurrence of a specified search string with a replacement string]
+                StartsWith       [StartsWith(OtherString) - Method which returns whether the string starts with a given string]
+                Substring        [Substring(StartPos, [Length]) - Method which retrieves a substring from the given string.  The substring starts at a specified character position and continues to the end of the string or for the optionally specified length]
+                ToLower          [ToLower() - Returns a copy of this string converted to lowercase.]
+                ToUpper          [ToUpper() - Returns a copy of this string converted to uppercase.]
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            SourceCodeDebugging : true
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+        Symbols         
+            SymbolOptions   
+                AllowAbsoluteSymbols : false
+                AutoPublics      : true
+                CaseInsensitive  : true
+                FindNearest      : true
+                IgnoreCVRecord   : false
+                IgnoreDecoration : true
+                Include32BitModules : false
+                LoadAnything     : false
+                LoadAsNeeded     : true
+                NoisySymbolLoading : false
+                NoUnqualifiedLoads : true
+                OnlyUsePublics   : false
+                SecureMode       : false
+                StrictEvaluation : false
+                SuppressErrors   : true
+                AllowPublics     : true
+                AuthenticationPrompts : true
+                CppTranslation   : true
+                SearchDisk       : false
+                UseEnvironmentSympath : true
+            Sympath          : srv*
+                Contains         [Contains(OtherString) - Method which returns whether the string contains a given sub string]
+                EndsWith         [EndsWith(OtherString) - Method which returns whether the string ends with a given string]
+                IndexOf          [IndexOf(OtherString) - Method which returns the index of the first occurrence of a substring in the given string.  If no such occurrence exists, -1 is returned]
+                LastIndexOf      [LastIndexOf(OtherString) - Method which returns the index of the last occurrence of a substring in the given string.  If no such occurrence exists, -1 is returned]
+                Length           : 0x4
+                PadLeft          [PadLeft(TotalWidth) - Method which right aligns the string to the specified width by inserting spaces at the left of the string]
+                PadRight         [PadRight(TotalWidth) - Method which left aligns the string to the specified width by inserting spaces at the right of the string]
+                Remove           [Remove(StartPos, [Length]) - Method which removes all characters beginning at the specified position from the string.  If an optional length is supplied, only that many characters after the starting position are removed]
+                Replace          [Replace(SearchString, ReplaceString) - Method which replaces every occurrence of a specified search string with a replacement string]
+                StartsWith       [StartsWith(OtherString) - Method which returns whether the string starts with a given string]
+                Substring        [Substring(StartPos, [Length]) - Method which retrieves a substring from the given string.  The substring starts at a specified character position and continues to the end of the string or for the optionally specified length]
+                ToLower          [ToLower() - Returns a copy of this string converted to lowercase.]
+                ToUpper          [ToUpper() - Returns a copy of this string converted to uppercase.]
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            Advanced        
+                MultithreadedSymbolLoading : true
+                PreferLastValidDebugDirectory : false
+                Arm64XSymbolFiltering : Automatic
+            DisabledSymbolsDownload
+            NegativeAuthenticationCache
+                Enabled          : false
+        AutoSaveSettings : false
+            ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+    State           
+        DebuggerInformation
+            ProcessorTarget  : X64
+                Contains         [Contains(OtherString) - Method which returns whether the string contains a given sub string]
+                EndsWith         [EndsWith(OtherString) - Method which returns whether the string ends with a given string]
+                IndexOf          [IndexOf(OtherString) - Method which returns the index of the first occurrence of a substring in the given string.  If no such occurrence exists, -1 is returned]
+                LastIndexOf      [LastIndexOf(OtherString) - Method which returns the index of the last occurrence of a substring in the given string.  If no such occurrence exists, -1 is returned]
+                Length           : 0x3
+                PadLeft          [PadLeft(TotalWidth) - Method which right aligns the string to the specified width by inserting spaces at the left of the string]
+                PadRight         [PadRight(TotalWidth) - Method which left aligns the string to the specified width by inserting spaces at the right of the string]
+                Remove           [Remove(StartPos, [Length]) - Method which removes all characters beginning at the specified position from the string.  If an optional length is supplied, only that many characters after the starting position are removed]
+                Replace          [Replace(SearchString, ReplaceString) - Method which replaces every occurrence of a specified search string with a replacement string]
+                StartsWith       [StartsWith(OtherString) - Method which returns whether the string starts with a given string]
+                Substring        [Substring(StartPos, [Length]) - Method which retrieves a substring from the given string.  The substring starts at a specified character position and continues to the end of the string or for the optionally specified length]
+                ToLower          [ToLower() - Returns a copy of this string converted to lowercase.]
+                ToUpper          [ToUpper() - Returns a copy of this string converted to uppercase.]
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            Bitness          : 64
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            EngineFilePath   : C:\Program Files\WindowsApps\Microsoft.WinDbg_1.2603.20001.0_x64__8wekyb3d8bbwe\amd64\dbgeng.dll
+                Contains         [Contains(OtherString) - Method which returns whether the string contains a given sub string]
+                EndsWith         [EndsWith(OtherString) - Method which returns whether the string ends with a given string]
+                IndexOf          [IndexOf(OtherString) - Method which returns the index of the first occurrence of a substring in the given string.  If no such occurrence exists, -1 is returned]
+                LastIndexOf      [LastIndexOf(OtherString) - Method which returns the index of the last occurrence of a substring in the given string.  If no such occurrence exists, -1 is returned]
+                Length           : 0x60
+                PadLeft          [PadLeft(TotalWidth) - Method which right aligns the string to the specified width by inserting spaces at the left of the string]
+                PadRight         [PadRight(TotalWidth) - Method which left aligns the string to the specified width by inserting spaces at the right of the string]
+                Remove           [Remove(StartPos, [Length]) - Method which removes all characters beginning at the specified position from the string.  If an optional length is supplied, only that many characters after the starting position are removed]
+                Replace          [Replace(SearchString, ReplaceString) - Method which replaces every occurrence of a specified search string with a replacement string]
+                StartsWith       [StartsWith(OtherString) - Method which returns whether the string starts with a given string]
+                Substring        [Substring(StartPos, [Length]) - Method which retrieves a substring from the given string.  The substring starts at a specified character position and continues to the end of the string or for the optionally specified length]
+                ToLower          [ToLower() - Returns a copy of this string converted to lowercase.]
+                ToUpper          [ToUpper() - Returns a copy of this string converted to uppercase.]
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            EngineVersion    : 10.0.29547.1002
+                Contains         [Contains(OtherString) - Method which returns whether the string contains a given sub string]
+                EndsWith         [EndsWith(OtherString) - Method which returns whether the string ends with a given string]
+                IndexOf          [IndexOf(OtherString) - Method which returns the index of the first occurrence of a substring in the given string.  If no such occurrence exists, -1 is returned]
+                LastIndexOf      [LastIndexOf(OtherString) - Method which returns the index of the last occurrence of a substring in the given string.  If no such occurrence exists, -1 is returned]
+                Length           : 0xf
+                PadLeft          [PadLeft(TotalWidth) - Method which right aligns the string to the specified width by inserting spaces at the left of the string]
+                PadRight         [PadRight(TotalWidth) - Method which left aligns the string to the specified width by inserting spaces at the right of the string]
+                Remove           [Remove(StartPos, [Length]) - Method which removes all characters beginning at the specified position from the string.  If an optional length is supplied, only that many characters after the starting position are removed]
+                Replace          [Replace(SearchString, ReplaceString) - Method which replaces every occurrence of a specified search string with a replacement string]
+                StartsWith       [StartsWith(OtherString) - Method which returns whether the string starts with a given string]
+                Substring        [Substring(StartPos, [Length]) - Method which retrieves a substring from the given string.  The substring starts at a specified character position and continues to the end of the string or for the optionally specified length]
+                ToLower          [ToLower() - Returns a copy of this string converted to lowercase.]
+                ToUpper          [ToUpper() - Returns a copy of this string converted to uppercase.]
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+        DebuggerVariables
+            create           [Quick alias of Debugger.Utility.Objects.CreateInstance]
+            cursession       : Live user mode: <Local>
+                Processes       
+                Id               : 0
+                OS              
+                Devices         
+                Attributes      
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            curprocess       : winver.exe [Switch To]
+                Name             : winver.exe
+                Id               : 0x410
+                Index            : 0x0
+                Handle           : 0x33c
+                Threads         
+                Modules         
+                Debug           
+                SwitchTo         [SwitchTo() - Switch to this process as the default context]
+                Environment     
+                Attributes      
+                Devices         
+                Io              
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+                GroupedStacks   
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+                Snapshots       
+            curthread        : winver!wWinMainCRTStartup (00007ff6`185f13c0)  [Switch To]
+                Id               : 0x2384
+                Index            : 0x0
+                Name            
+                Stack           
+                Registers       
+                SwitchTo         [SwitchTo() - Switch to this thread as the default context]
+                Environment     
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            scripts         
+                GroupedStacks   
+                ImageInfo       
+                CodeFlow        
+                SynTypes        
+            scriptContents  
+                host            
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+                host            
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+                host             : [object Object]
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+                host            
+                uniqueId         : 0x0
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            vars            
+                Add              [Add(Name, Value) - Method which adds a variable of the specified name to the list of user variables]
+                Clear            [Clear() - Method which removes all user variables]
+                Remove           [Remove(Name) - Method which removes a variable from the list of user variables]
+            curstack        
+                Frames          
+                Attributes      
+            curframe         : ntdll!LdrpDoDebuggerBreak + 0x35 [Switch To]
+                LocalVariables  
+                Parameters      
+                SwitchTo         [SwitchTo() - Switch to this frame as the default context]
+                Attributes      
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            curregisters    
+                User            
+                SIMD            
+                FloatingPoint   
+                CET             
+            debuggerRootNamespace
+                Debugger        
+        FunctionAliases 
+            dflow            [!dflow [<address>]
+Shows the instructions of the function containing [<address>] which influence the source operands of that instruction.]
+            dis              [!dis [<address>]
+Disassembles instructions starting at [<address>] using the data model disassembler.]
+        PseudoRegisters 
+            Errors          
+                clrex            : Unable to access pseudo-register
+                lastclrex        : Unable to access pseudo-register
+                exr_chance       : 0x1 [Type: unsigned int]
+                exr_code         : 0x80000003 [Type: unsigned int]
+                exr_numparams    : 0x1 [Type: unsigned int]
+                exr_param0       : 0x0 [Type: unsigned __int64]
+                exr_param1       : Unable to access pseudo-register
+                exr_param2       : Unable to access pseudo-register
+                exr_param3       : Unable to access pseudo-register
+                exr_param4       : Unable to access pseudo-register
+                exr_param5       : Unable to access pseudo-register
+                exr_param6       : Unable to access pseudo-register
+                exr_param7       : Unable to access pseudo-register
+                exr_param8       : Unable to access pseudo-register
+                exr_param9       : Unable to access pseudo-register
+                exr_param10      : Unable to access pseudo-register
+                exr_param11      : Unable to access pseudo-register
+                exr_param12      : Unable to access pseudo-register
+                exr_param13      : Unable to access pseudo-register
+                exr_param14      : Unable to access pseudo-register
+                bug_code         : Unable to access pseudo-register
+                bug_param1       : Unable to access pseudo-register
+                bug_param2       : Unable to access pseudo-register
+                bug_param3       : Unable to access pseudo-register
+                bug_param4       : Unable to access pseudo-register
+            General         
+                exp              : Unable to access pseudo-register
+                ea               : Unable to access pseudo-register
+                ea2              : Unable to access pseudo-register
+                p                : Unable to access pseudo-register
+                ra               : 0x7ff9bea4d83a : 0xe8 [Type: unsigned char *]
+                thread           : 0x3ee2d89000 [Type: _TEB *]
+                proc             : 0x3ee2d88000 [Type: _PEB *]
+                teb              : 0x3ee2d89000 [Type: _TEB *]
+                peb              : 0x3ee2d88000 [Type: _PEB *]
+                tid              : 0x2384 [Type: unsigned int]
+                tpid             : 0x410 [Type: unsigned int]
+                exentry          : 0x7ff6185f13c0 : 0x48 [Type: unsigned char *]
+                dtid             : 0x0 [Type: unsigned int]
+                dpid             : 0x0 [Type: unsigned int]
+                dsid             : 0x0 [Type: unsigned int]
+                frame            : 0x0 [Type: unsigned __int64]
+                bphit            : Unable to access pseudo-register
+                dbgtime          : 0x1dd1f60cd9f4d3b [Type: unsigned __int64]
+                csp              : 0x3ee2e7ed90 : 0x90 [Type: unsigned char *]
+                callret          : Unable to access pseudo-register
+                ptrsize          : 0x8 [Type: unsigned int]
+                pagesize         : 0x1000 [Type: unsigned int]
+                fp               : Unable to access pseudo-register
+            Kernel          
+                pcr              : Unable to access pseudo-register
+                prcb             : Unable to access pseudo-register
+            RegisterAliases 
+                retreg           : 0x0 [Type: unsigned char *]
+                retreg64         : 0x0 [Type: unsigned char *]
+                ip               : 0x7ff9beadd78d : 0xcc [Type: unsigned char *]
+                eventip          : 0x7ff9beadd78d : 0xcc [Type: unsigned char *]
+                previp           : 0x7ff9beb20574 : 0xc3 [Type: unsigned char *]
+                relip            : Unable to access pseudo-register
+                scopeip          : 0x7ff9beadd78d : 0xcc [Type: unsigned char *]
+                argreg           : 0x7ff9beb20514 : 0xc3 [Type: unsigned char *]
+            Temporaries     
+                t0               : Unable to access pseudo-register
+                t1               : Unable to access pseudo-register
+                t2               : Unable to access pseudo-register
+                t3               : Unable to access pseudo-register
+                t4               : Unable to access pseudo-register
+                t5               : Unable to access pseudo-register
+                t6               : Unable to access pseudo-register
+                t7               : Unable to access pseudo-register
+                t8               : Unable to access pseudo-register
+                t9               : Unable to access pseudo-register
+                t10              : Unable to access pseudo-register
+                t11              : Unable to access pseudo-register
+                t12              : Unable to access pseudo-register
+                t13              : Unable to access pseudo-register
+                t14              : Unable to access pseudo-register
+                t15              : Unable to access pseudo-register
+                t16              : Unable to access pseudo-register
+                t17              : Unable to access pseudo-register
+                t18              : Unable to access pseudo-register
+                t19              : Unable to access pseudo-register
+        Scripts         
+            GroupedStacks   
+                Contents        
+            ImageInfo       
+                Contents        
+            CodeFlow        
+                Contents         : [object Object]
+            SynTypes        
+                Contents        
+        StepFilters     
+            Aggregate        [Aggregate(AggregateMethod) | Aggregate(InitialSeed, AggregateMethod) | Aggregate(InitialSeed, AggregateMethod, ResultSelectorMethod) - LINQ equivalent method which iterates through the items in the given collection, running the aggregate method on each one and storing the returned result as the current aggregate value. Once the collection has been exhausted, the final accumulated value is returned. An optional result selector method can be specified which transforms the final accumulator value before returning it.]
+            All              [All(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate]
+            AllNonError      [AllNonError(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate. Errors are ignored if all non-error results match the predicate.]
+            Any              [Any(PredicateMethod) - LINQ equivalent method which returns whether any element in the collection matches a given predicate]
+            Average          [Average([ProjectionMethod]) - LINQ equivalent method which finds the average of all values in the enumeration. An optional projection method can be specified that transforms each value before the average is computed.]
+            Concat           [Concat(InnerCollection) - LINQ equivalent method which returns all elements from both collections, including duplicates.]
+            Contains         [Contains(Object, [ComparatorMethod]) - LINQ equivalent method which searches for the given element in the sequence using default comparator rules. An optional comparator method can be provided that will be called each time the element is compared against an entry in the sequence.]
+            Count            [Count() - LINQ equivalent method which returns the number of objects in the collection]
+            Distinct         [Distinct([ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given collection, using default comparison rules. An optional comparator method can be provided to be called each time objects in the collection must be compared.]
+            Except           [Except(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are NOT found in the inner collection. An optional comparator method can also be specified.]
+            First            [First([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate]
+            FirstNonError    [FirstNonError([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate. Any errors encountered are ignored if a valid element is found.]
+            Flatten          [Flatten([KeyProjectorMethod]) - Method which flattens a tree of collections (or a tree of keys that project to collections via an optional projector method) into a single collection]
+            GroupBy          [GroupBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which groups the collection by unique keys defined via a key projector and optional key comparator]
+            Intersect        [Intersect(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are also found in the inner collection. An optional comparator method can also be specified.]
+            Join             [Join(InnerCollection, Outer key selector method, Inner key selector method, Result selector method, [ComparatorMethod]) - LINQ equivalent method which projects a key for each element of the outer collection and each element of the inner collection using the methods provided. If the projected keys from both these elements match, then the result selector method is called with both those values and its output is returned to the user. An optional comparator method can also be specified.]
+            Last             [Last([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate]
+            LastNonError     [LastNonError([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate. Any errors are ignored.]
+            Max              [Max([ProjectionMethod]) - LINQ equivalent method which returns the maximum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+            Min              [Min([ProjectionMethod]) - LINQ equivalent method which returns the minimum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+            OrderBy          [OrderBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in ascending order]
+            OrderByDescending [OrderByDescending(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in descending order]
+            Reverse          [Reverse() - LINQ equivalent method which returns the reverse of the supplied enumeration.]
+            Select           [Select(ProjectionMethod) - LINQ equivalent method which projects the collection to a new collection via calling a projection method on every element]
+            SelectMany       [SelectMany(ProjectionMethod) - LINQ equivalent method which projects each element in the collection to a new collection via calling a projection method on every element.  The newly projected set of collections is then flattened (a single level) into a new collection containing all of the elements.]
+            SequenceEqual    [SequenceEqual(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which goes through the outer and inner collections and makes sure that they are equal (incl. sequence length). An optional comparator can be specified.]
+            Single           [Single([PredicateMethod]) - LINQ equivalent method which returns the only element in a list, or, if a predicate was specified, the only element that satisfies the predicate. If there are multiple elements that match the criteria, an error is returned.]
+            Skip             [Skip(Count) - LINQ equivalent method which skips the specified number of elements in the collection and returns all the rest.]
+            SkipLast         [SkipLast(Count) - LINQ equivalent method which skips the specified number of elements from the end of the collection and returns all the rest.]
+            SkipWhile        [SkipWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and skips it as long as it keeps returning true. Once the predicate fails, the rest of the collection is returned.]
+            Sum              [Sum([ProjectionMethod]) - LINQ equivalent method which sums all the elements in the collection. Can optionally specify a projector method to transform the elements before summation occurs.]
+            Take             [Take(Count) - LINQ equivalent method which takes the specified number of elements from the collection.]
+            TakeLast         [TakeLast(Count) - LINQ equivalent methods which takes the specified number of elements from the end of the collection.]
+            TakeWhile        [TakeWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and returns it only if the result is successful. Once the predicate fails, no more elements will be taken.]
+            ToArray          [ToArray() - LINQ equivalent method which produces an [0..N) indexed array of each element in the collection.  This also has the effect of immediately realizing any deferred operations which may have resulted from LINQ queries prior to the ToArray.]
+            Union            [Union(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given and inner collection. An optional comparator method can also be specified.]
+            Where            [Where(FilterMethod) - LINQ equivalent method which filters elements in the collection according to when a filter method returns true for a given element]
+            ToArray          [ToArray() - converts the collection to a one dimensional array]
+            ToArrayContents  [ToArrayContents() - converts items in each nested collection contained within the object to a one dimensional array]
+            [0x1]           
+                Id               : 0x1
+                IsEnabled        : false
+                Type             : BuiltIn
+                Description      : C++ standard library and CRT
+                Remove           [Remove() - method which removes a step filter]
+            [0x2]           
+                Id               : 0x2
+                IsEnabled        : true
+                Type             : BuiltIn
+                Description      : Control-flow guard
+                Remove           [Remove() - method which removes a step filter]
+        UserVariables   
+            Add              [Add(Name, Value) - Method which adds a variable of the specified name to the list of user variables]
+            Clear            [Clear() - Method which removes all user variables]
+            Remove           [Remove(Name) - Method which removes a variable from the list of user variables]
+        Views           
+            Aggregate        [Aggregate(AggregateMethod) | Aggregate(InitialSeed, AggregateMethod) | Aggregate(InitialSeed, AggregateMethod, ResultSelectorMethod) - LINQ equivalent method which iterates through the items in the given collection, running the aggregate method on each one and storing the returned result as the current aggregate value. Once the collection has been exhausted, the final accumulated value is returned. An optional result selector method can be specified which transforms the final accumulator value before returning it.]
+            All              [All(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate]
+            AllNonError      [AllNonError(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate. Errors are ignored if all non-error results match the predicate.]
+            Any              [Any(PredicateMethod) - LINQ equivalent method which returns whether any element in the collection matches a given predicate]
+            Average          [Average([ProjectionMethod]) - LINQ equivalent method which finds the average of all values in the enumeration. An optional projection method can be specified that transforms each value before the average is computed.]
+            Concat           [Concat(InnerCollection) - LINQ equivalent method which returns all elements from both collections, including duplicates.]
+            Contains         [Contains(Object, [ComparatorMethod]) - LINQ equivalent method which searches for the given element in the sequence using default comparator rules. An optional comparator method can be provided that will be called each time the element is compared against an entry in the sequence.]
+            Count            [Count() - LINQ equivalent method which returns the number of objects in the collection]
+            Distinct         [Distinct([ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given collection, using default comparison rules. An optional comparator method can be provided to be called each time objects in the collection must be compared.]
+            Except           [Except(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are NOT found in the inner collection. An optional comparator method can also be specified.]
+            First            [First([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate]
+            FirstNonError    [FirstNonError([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate. Any errors encountered are ignored if a valid element is found.]
+            Flatten          [Flatten([KeyProjectorMethod]) - Method which flattens a tree of collections (or a tree of keys that project to collections via an optional projector method) into a single collection]
+            GroupBy          [GroupBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which groups the collection by unique keys defined via a key projector and optional key comparator]
+            Intersect        [Intersect(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are also found in the inner collection. An optional comparator method can also be specified.]
+            Join             [Join(InnerCollection, Outer key selector method, Inner key selector method, Result selector method, [ComparatorMethod]) - LINQ equivalent method which projects a key for each element of the outer collection and each element of the inner collection using the methods provided. If the projected keys from both these elements match, then the result selector method is called with both those values and its output is returned to the user. An optional comparator method can also be specified.]
+            Last             [Last([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate]
+            LastNonError     [LastNonError([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate. Any errors are ignored.]
+            Max              [Max([ProjectionMethod]) - LINQ equivalent method which returns the maximum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+            Min              [Min([ProjectionMethod]) - LINQ equivalent method which returns the minimum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+            OrderBy          [OrderBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in ascending order]
+            OrderByDescending [OrderByDescending(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in descending order]
+            Reverse          [Reverse() - LINQ equivalent method which returns the reverse of the supplied enumeration.]
+            Select           [Select(ProjectionMethod) - LINQ equivalent method which projects the collection to a new collection via calling a projection method on every element]
+            SelectMany       [SelectMany(ProjectionMethod) - LINQ equivalent method which projects each element in the collection to a new collection via calling a projection method on every element.  The newly projected set of collections is then flattened (a single level) into a new collection containing all of the elements.]
+            SequenceEqual    [SequenceEqual(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which goes through the outer and inner collections and makes sure that they are equal (incl. sequence length). An optional comparator can be specified.]
+            Single           [Single([PredicateMethod]) - LINQ equivalent method which returns the only element in a list, or, if a predicate was specified, the only element that satisfies the predicate. If there are multiple elements that match the criteria, an error is returned.]
+            Skip             [Skip(Count) - LINQ equivalent method which skips the specified number of elements in the collection and returns all the rest.]
+            SkipLast         [SkipLast(Count) - LINQ equivalent method which skips the specified number of elements from the end of the collection and returns all the rest.]
+            SkipWhile        [SkipWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and skips it as long as it keeps returning true. Once the predicate fails, the rest of the collection is returned.]
+            Sum              [Sum([ProjectionMethod]) - LINQ equivalent method which sums all the elements in the collection. Can optionally specify a projector method to transform the elements before summation occurs.]
+            Take             [Take(Count) - LINQ equivalent method which takes the specified number of elements from the collection.]
+            TakeLast         [TakeLast(Count) - LINQ equivalent methods which takes the specified number of elements from the end of the collection.]
+            TakeWhile        [TakeWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and returns it only if the result is successful. Once the predicate fails, no more elements will be taken.]
+            ToArray          [ToArray() - LINQ equivalent method which produces an [0..N) indexed array of each element in the collection.  This also has the effect of immediately realizing any deferred operations which may have resulted from LINQ queries prior to the ToArray.]
+            Union            [Union(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given and inner collection. An optional comparator method can also be specified.]
+            Where            [Where(FilterMethod) - LINQ equivalent method which filters elements in the collection according to when a filter method returns true for a given element]
+            ToArray          [ToArray() - converts the collection to a one dimensional array]
+            ToArrayContents  [ToArrayContents() - converts items in each nested collection contained within the object to a one dimensional array]
+            [0x0]           
+                Name             : Take Snapshot
+                Query            : @$curprocess.Snapshots.Take()
+                ViewKind         : None
+                LargeIconData   
+                SmallIconData   
+            [0x1]           
+                Name             : Snapshots
+                Query            : @$curprocess.Snapshots
+                ViewKind         : Grid
+                LargeIconData   
+                SmallIconData   
+        ExtensionGallery
+            ExtensionRepositories
+                Aggregate        [Aggregate(AggregateMethod) | Aggregate(InitialSeed, AggregateMethod) | Aggregate(InitialSeed, AggregateMethod, ResultSelectorMethod) - LINQ equivalent method which iterates through the items in the given collection, running the aggregate method on each one and storing the returned result as the current aggregate value. Once the collection has been exhausted, the final accumulated value is returned. An optional result selector method can be specified which transforms the final accumulator value before returning it.]
+                All              [All(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate]
+                AllNonError      [AllNonError(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate. Errors are ignored if all non-error results match the predicate.]
+                Any              [Any(PredicateMethod) - LINQ equivalent method which returns whether any element in the collection matches a given predicate]
+                Average          [Average([ProjectionMethod]) - LINQ equivalent method which finds the average of all values in the enumeration. An optional projection method can be specified that transforms each value before the average is computed.]
+                Concat           [Concat(InnerCollection) - LINQ equivalent method which returns all elements from both collections, including duplicates.]
+                Contains         [Contains(Object, [ComparatorMethod]) - LINQ equivalent method which searches for the given element in the sequence using default comparator rules. An optional comparator method can be provided that will be called each time the element is compared against an entry in the sequence.]
+                Count            [Count() - LINQ equivalent method which returns the number of objects in the collection]
+                Distinct         [Distinct([ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given collection, using default comparison rules. An optional comparator method can be provided to be called each time objects in the collection must be compared.]
+                Except           [Except(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are NOT found in the inner collection. An optional comparator method can also be specified.]
+                First            [First([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate]
+                FirstNonError    [FirstNonError([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate. Any errors encountered are ignored if a valid element is found.]
+                Flatten          [Flatten([KeyProjectorMethod]) - Method which flattens a tree of collections (or a tree of keys that project to collections via an optional projector method) into a single collection]
+                GroupBy          [GroupBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which groups the collection by unique keys defined via a key projector and optional key comparator]
+                Intersect        [Intersect(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are also found in the inner collection. An optional comparator method can also be specified.]
+                Join             [Join(InnerCollection, Outer key selector method, Inner key selector method, Result selector method, [ComparatorMethod]) - LINQ equivalent method which projects a key for each element of the outer collection and each element of the inner collection using the methods provided. If the projected keys from both these elements match, then the result selector method is called with both those values and its output is returned to the user. An optional comparator method can also be specified.]
+                Last             [Last([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate]
+                LastNonError     [LastNonError([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate. Any errors are ignored.]
+                Max              [Max([ProjectionMethod]) - LINQ equivalent method which returns the maximum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+                Min              [Min([ProjectionMethod]) - LINQ equivalent method which returns the minimum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+                OrderBy          [OrderBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in ascending order]
+                OrderByDescending [OrderByDescending(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in descending order]
+                Reverse          [Reverse() - LINQ equivalent method which returns the reverse of the supplied enumeration.]
+                Select           [Select(ProjectionMethod) - LINQ equivalent method which projects the collection to a new collection via calling a projection method on every element]
+                SelectMany       [SelectMany(ProjectionMethod) - LINQ equivalent method which projects each element in the collection to a new collection via calling a projection method on every element.  The newly projected set of collections is then flattened (a single level) into a new collection containing all of the elements.]
+                SequenceEqual    [SequenceEqual(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which goes through the outer and inner collections and makes sure that they are equal (incl. sequence length). An optional comparator can be specified.]
+                Single           [Single([PredicateMethod]) - LINQ equivalent method which returns the only element in a list, or, if a predicate was specified, the only element that satisfies the predicate. If there are multiple elements that match the criteria, an error is returned.]
+                Skip             [Skip(Count) - LINQ equivalent method which skips the specified number of elements in the collection and returns all the rest.]
+                SkipLast         [SkipLast(Count) - LINQ equivalent method which skips the specified number of elements from the end of the collection and returns all the rest.]
+                SkipWhile        [SkipWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and skips it as long as it keeps returning true. Once the predicate fails, the rest of the collection is returned.]
+                Sum              [Sum([ProjectionMethod]) - LINQ equivalent method which sums all the elements in the collection. Can optionally specify a projector method to transform the elements before summation occurs.]
+                Take             [Take(Count) - LINQ equivalent method which takes the specified number of elements from the collection.]
+                TakeLast         [TakeLast(Count) - LINQ equivalent methods which takes the specified number of elements from the end of the collection.]
+                TakeWhile        [TakeWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and returns it only if the result is successful. Once the predicate fails, no more elements will be taken.]
+                ToArray          [ToArray() - LINQ equivalent method which produces an [0..N) indexed array of each element in the collection.  This also has the effect of immediately realizing any deferred operations which may have resulted from LINQ queries prior to the ToArray.]
+                Union            [Union(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given and inner collection. An optional comparator method can also be specified.]
+                Where            [Where(FilterMethod) - LINQ equivalent method which filters elements in the collection according to when a filter method returns true for a given element]
+                ToArray          [ToArray() - converts the collection to a one dimensional array]
+                ToArrayContents  [ToArrayContents() - converts items in each nested collection contained within the object to a one dimensional array]
+                [0x0]            : UserExtensions
+                [0x1]            : LocalInstalled
+        MCP             
+            IsServerRunning  : 0
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            IsServerEnabled  : 0
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            IsClientConnected : 0
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            IsServerBridgeAttached : 0
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            Tools           
+                Aggregate        [Aggregate(AggregateMethod) | Aggregate(InitialSeed, AggregateMethod) | Aggregate(InitialSeed, AggregateMethod, ResultSelectorMethod) - LINQ equivalent method which iterates through the items in the given collection, running the aggregate method on each one and storing the returned result as the current aggregate value. Once the collection has been exhausted, the final accumulated value is returned. An optional result selector method can be specified which transforms the final accumulator value before returning it.]
+                All              [All(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate]
+                AllNonError      [AllNonError(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate. Errors are ignored if all non-error results match the predicate.]
+                Any              [Any(PredicateMethod) - LINQ equivalent method which returns whether any element in the collection matches a given predicate]
+                Average          [Average([ProjectionMethod]) - LINQ equivalent method which finds the average of all values in the enumeration. An optional projection method can be specified that transforms each value before the average is computed.]
+                Concat           [Concat(InnerCollection) - LINQ equivalent method which returns all elements from both collections, including duplicates.]
+                Contains         [Contains(Object, [ComparatorMethod]) - LINQ equivalent method which searches for the given element in the sequence using default comparator rules. An optional comparator method can be provided that will be called each time the element is compared against an entry in the sequence.]
+                Count            [Count() - LINQ equivalent method which returns the number of objects in the collection]
+                Distinct         [Distinct([ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given collection, using default comparison rules. An optional comparator method can be provided to be called each time objects in the collection must be compared.]
+                Except           [Except(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are NOT found in the inner collection. An optional comparator method can also be specified.]
+                First            [First([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate]
+                FirstNonError    [FirstNonError([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate. Any errors encountered are ignored if a valid element is found.]
+                Flatten          [Flatten([KeyProjectorMethod]) - Method which flattens a tree of collections (or a tree of keys that project to collections via an optional projector method) into a single collection]
+                GroupBy          [GroupBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which groups the collection by unique keys defined via a key projector and optional key comparator]
+                Intersect        [Intersect(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are also found in the inner collection. An optional comparator method can also be specified.]
+                Join             [Join(InnerCollection, Outer key selector method, Inner key selector method, Result selector method, [ComparatorMethod]) - LINQ equivalent method which projects a key for each element of the outer collection and each element of the inner collection using the methods provided. If the projected keys from both these elements match, then the result selector method is called with both those values and its output is returned to the user. An optional comparator method can also be specified.]
+                Last             [Last([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate]
+                LastNonError     [LastNonError([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate. Any errors are ignored.]
+                Max              [Max([ProjectionMethod]) - LINQ equivalent method which returns the maximum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+                Min              [Min([ProjectionMethod]) - LINQ equivalent method which returns the minimum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+                OrderBy          [OrderBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in ascending order]
+                OrderByDescending [OrderByDescending(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in descending order]
+                Reverse          [Reverse() - LINQ equivalent method which returns the reverse of the supplied enumeration.]
+                Select           [Select(ProjectionMethod) - LINQ equivalent method which projects the collection to a new collection via calling a projection method on every element]
+                SelectMany       [SelectMany(ProjectionMethod) - LINQ equivalent method which projects each element in the collection to a new collection via calling a projection method on every element.  The newly projected set of collections is then flattened (a single level) into a new collection containing all of the elements.]
+                SequenceEqual    [SequenceEqual(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which goes through the outer and inner collections and makes sure that they are equal (incl. sequence length). An optional comparator can be specified.]
+                Single           [Single([PredicateMethod]) - LINQ equivalent method which returns the only element in a list, or, if a predicate was specified, the only element that satisfies the predicate. If there are multiple elements that match the criteria, an error is returned.]
+                Skip             [Skip(Count) - LINQ equivalent method which skips the specified number of elements in the collection and returns all the rest.]
+                SkipLast         [SkipLast(Count) - LINQ equivalent method which skips the specified number of elements from the end of the collection and returns all the rest.]
+                SkipWhile        [SkipWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and skips it as long as it keeps returning true. Once the predicate fails, the rest of the collection is returned.]
+                Sum              [Sum([ProjectionMethod]) - LINQ equivalent method which sums all the elements in the collection. Can optionally specify a projector method to transform the elements before summation occurs.]
+                Take             [Take(Count) - LINQ equivalent method which takes the specified number of elements from the collection.]
+                TakeLast         [TakeLast(Count) - LINQ equivalent methods which takes the specified number of elements from the end of the collection.]
+                TakeWhile        [TakeWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and returns it only if the result is successful. Once the predicate fails, no more elements will be taken.]
+                ToArray          [ToArray() - LINQ equivalent method which produces an [0..N) indexed array of each element in the collection.  This also has the effect of immediately realizing any deferred operations which may have resulted from LINQ queries prior to the ToArray.]
+                Union            [Union(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given and inner collection. An optional comparator method can also be specified.]
+                Where            [Where(FilterMethod) - LINQ equivalent method which filters elements in the collection according to when a filter method returns true for a given element]
+                ToArray          [ToArray() - converts the collection to a one dimensional array]
+                ToArrayContents  [ToArrayContents() - converts items in each nested collection contained within the object to a one dimensional array]
+            Prompts         
+                Aggregate        [Aggregate(AggregateMethod) | Aggregate(InitialSeed, AggregateMethod) | Aggregate(InitialSeed, AggregateMethod, ResultSelectorMethod) - LINQ equivalent method which iterates through the items in the given collection, running the aggregate method on each one and storing the returned result as the current aggregate value. Once the collection has been exhausted, the final accumulated value is returned. An optional result selector method can be specified which transforms the final accumulator value before returning it.]
+                All              [All(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate]
+                AllNonError      [AllNonError(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate. Errors are ignored if all non-error results match the predicate.]
+                Any              [Any(PredicateMethod) - LINQ equivalent method which returns whether any element in the collection matches a given predicate]
+                Average          [Average([ProjectionMethod]) - LINQ equivalent method which finds the average of all values in the enumeration. An optional projection method can be specified that transforms each value before the average is computed.]
+                Concat           [Concat(InnerCollection) - LINQ equivalent method which returns all elements from both collections, including duplicates.]
+                Contains         [Contains(Object, [ComparatorMethod]) - LINQ equivalent method which searches for the given element in the sequence using default comparator rules. An optional comparator method can be provided that will be called each time the element is compared against an entry in the sequence.]
+                Count            [Count() - LINQ equivalent method which returns the number of objects in the collection]
+                Distinct         [Distinct([ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given collection, using default comparison rules. An optional comparator method can be provided to be called each time objects in the collection must be compared.]
+                Except           [Except(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are NOT found in the inner collection. An optional comparator method can also be specified.]
+                First            [First([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate]
+                FirstNonError    [FirstNonError([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate. Any errors encountered are ignored if a valid element is found.]
+                Flatten          [Flatten([KeyProjectorMethod]) - Method which flattens a tree of collections (or a tree of keys that project to collections via an optional projector method) into a single collection]
+                GroupBy          [GroupBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which groups the collection by unique keys defined via a key projector and optional key comparator]
+                Intersect        [Intersect(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are also found in the inner collection. An optional comparator method can also be specified.]
+                Join             [Join(InnerCollection, Outer key selector method, Inner key selector method, Result selector method, [ComparatorMethod]) - LINQ equivalent method which projects a key for each element of the outer collection and each element of the inner collection using the methods provided. If the projected keys from both these elements match, then the result selector method is called with both those values and its output is returned to the user. An optional comparator method can also be specified.]
+                Last             [Last([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate]
+                LastNonError     [LastNonError([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate. Any errors are ignored.]
+                Max              [Max([ProjectionMethod]) - LINQ equivalent method which returns the maximum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+                Min              [Min([ProjectionMethod]) - LINQ equivalent method which returns the minimum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+                OrderBy          [OrderBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in ascending order]
+                OrderByDescending [OrderByDescending(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in descending order]
+                Reverse          [Reverse() - LINQ equivalent method which returns the reverse of the supplied enumeration.]
+                Select           [Select(ProjectionMethod) - LINQ equivalent method which projects the collection to a new collection via calling a projection method on every element]
+                SelectMany       [SelectMany(ProjectionMethod) - LINQ equivalent method which projects each element in the collection to a new collection via calling a projection method on every element.  The newly projected set of collections is then flattened (a single level) into a new collection containing all of the elements.]
+                SequenceEqual    [SequenceEqual(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which goes through the outer and inner collections and makes sure that they are equal (incl. sequence length). An optional comparator can be specified.]
+                Single           [Single([PredicateMethod]) - LINQ equivalent method which returns the only element in a list, or, if a predicate was specified, the only element that satisfies the predicate. If there are multiple elements that match the criteria, an error is returned.]
+                Skip             [Skip(Count) - LINQ equivalent method which skips the specified number of elements in the collection and returns all the rest.]
+                SkipLast         [SkipLast(Count) - LINQ equivalent method which skips the specified number of elements from the end of the collection and returns all the rest.]
+                SkipWhile        [SkipWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and skips it as long as it keeps returning true. Once the predicate fails, the rest of the collection is returned.]
+                Sum              [Sum([ProjectionMethod]) - LINQ equivalent method which sums all the elements in the collection. Can optionally specify a projector method to transform the elements before summation occurs.]
+                Take             [Take(Count) - LINQ equivalent method which takes the specified number of elements from the collection.]
+                TakeLast         [TakeLast(Count) - LINQ equivalent methods which takes the specified number of elements from the end of the collection.]
+                TakeWhile        [TakeWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and returns it only if the result is successful. Once the predicate fails, no more elements will be taken.]
+                ToArray          [ToArray() - LINQ equivalent method which produces an [0..N) indexed array of each element in the collection.  This also has the effect of immediately realizing any deferred operations which may have resulted from LINQ queries prior to the ToArray.]
+                Union            [Union(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given and inner collection. An optional comparator method can also be specified.]
+                Where            [Where(FilterMethod) - LINQ equivalent method which filters elements in the collection according to when a filter method returns true for a given element]
+                ToArray          [ToArray() - converts the collection to a one dimensional array]
+                ToArrayContents  [ToArrayContents() - converts items in each nested collection contained within the object to a one dimensional array]
+    Utility         
+        Collections     
+            FromListEntry    [FromListEntry(ListEntry, [<ModuleName | ModuleObject>], TypeName, FieldExpression) - Method which converts a LIST_ENTRY specified by the 'ListEntry' parameter of types whose name is specified by the string 'TypeName' and whose embedded links within that type are accessed via an expression specified by the string 'FieldExpression' into a collection object.  If an optional module name or object is specified, the type name is looked up in the context of such module]
+            CreateArray      [CreateArray([value]...) - Creates an array with the specified contents]
+        Control         
+            ExecuteCommand   [ExecuteCommand(command) - Method which executes a debugger command and returns a collection of strings representing the lines of output of the command execution]
+            SetBreakpointAtSourceLocation [SetBreakpointAtSourceLocation(source_file, source_line, (opt) module_name) - Method which sets a breakpoint at a source line location and returns it as an object in order to be able to control its options]
+            SetBreakpointAtOffset [SetBreakpointAtOffset(function_name, function_offset, (opt) module_name) - Method which sets a breakpoint at an offset and returns it as an object in order to be able to control its options]
+            SetBreakpointForReadWrite [SetBreakpointForReadWrite(address, (opt) type, (opt) size) - Method which sets a breakpoint on read/write (default) at a certain address and returns it as an object in order to be able to control its options]
+            ChangeRegisterContext [ChangeRegisterContext(inheritUnspecifiedValues, pc, sp, [fp], [regCtx]) | ChangeRegisterContext(inheritUnspecifiedValues, regCtx) - Changes the active register context with a given abstract pc, sp, and optional fp or an optional object which contains named registers and values.  This is largely equivalent to having done .cxr in the debugger.  It does *NOT* change the register values of the thread/processor, only the debugger's current view of them]
+            CreateStepFilter [CreateStepFilter(type, pattern, [description]) - Creates a new step filter.  Type may be one of 'Function' or 'SourceFile'.  The pattern is a regular expression describing the filter.  A string description is optional]
+            WalkStackForRegisterContext [WalkStackForRegisterContext(inheritUnspecifiedValues, pc, sp, [fp], [regCtx]) | WalkStackForRegisterContext(inheritUnspecifiedValues, regCtx) - Performs a stack walk given the incoming abstract pc, sp, and optional fp or an optional object which contains named registers and values.  The returned stack walk is of the same form as <ThreadObject>.Stack]
+        Objects         
+            Aggregate        [Aggregate(obj1, obj2, [..., objN]) - Method which aggregates a series of passed objects into a single object for display purposes]
+            CreateInstance   [CreateInstance(<modelName | model>, [args...]) - Method which creates an instance of a constructable model]
+            GenerateGraphDescription [GenerateGraphDescription(<graphable object>) - Generates a graph description (node and edge lists) of a graphable object]
+        DbgDocumentation
+            BuildDocMetadataDictionaryFromResource [BuildDocMetadataDictionaryFromResource(moduleHandle, id) - Method which creates a debugger model documentation metadata dictionary]
+            BuildDocMetadataDictionaryFromString [BuildDocMetadataDictionaryFromString(stringData) - Method which creates a debugger model documentation metadata dictionary]
+            BuildDocMetadataDictionaryFromFile [BuildDocMetadataDictionaryFromFile(fileFullPathName) - Method which creates a debugger model documentation metadata dictionary]
+            InitializeMetadataFromDocDictionary [BuildDocMetadataDictionaryFromFile(fileFullPathName) - Method which creates a debugger model documentation metadata dictionary]
+        Events          
+            SendEvent        [SendEvent(eventName, modelObject, [recursionDepth]) - sends a named event via the XML notification stream]
+        Extensions      
+            DisableExtension [DisableExtension(extensionName) - Disables extension by extension name]
+            EnableExtension  [EnableExtension(extensionName) - Enables extension by extension name]
+            EnableAllExtensions [EnableAllExtensions() - Enables all disabled extensions]
+            IsExtensionDisabled [IsExtensionDisabled(extensionName) - Checks if an extension is disabled]
+        Target          
+            GetPrivateData   [GetPrivateData([<guid>, <string>, <id>], [options]) - Gets a private data blob associated with the target.  Such data blob is identified by one or more of <guid> (as a string), <string>, and <id> (an ordinal).  Options is an object containing options.  Properties of options may be one of 'Format': string = binary | string | strings; 'Encoding': string = ansi | utf-8 | utf-16; 'SkipBytes': int; 'ByteCount': int | 0.  Default format if not specified is binary]
+        Symbols         
+            DisableSymbolDownload [DisableSymbolDownload(binaryName) - Disables symbol download for a binary (<Name>.<ext> as listed in 'lm' command)]
+            EnableSymbolDownload [EnableSymbolDownload(binaryName) - Enables symbol download for a binary (<Name>.<ext>  as listed in 'lm' command)]
+            EnableAllSymbolsDownload [EnableAllSymbolsDownload() - Enables all symbols download]
+            IsSymbolDownloadDisabled [IsSymbolDownloadDisabled(binaryName) - Checks if symbol download for a binary is disabled (<Name>.<ext>  as listed in 'lm' command)]
+            LoadSymbolsNegativeAuthCache [LoadSymbolsNegativeAuthCache - Loads from the cache file the negative symbols authentication cache]
+            StoreSymbolsNegativeAuthCache [StoreSymbolsNegativeAuthCache - Stores to the cache file the negative symbols authentication cache]
+            EnableSymbolsNegativeAuthCacheFeature [EnableSymbolsNegativeAuthCache - Enables the negative symbols authentication cache]
+            DisableSymbolsNegativeAuthCacheFeature [DisableSymbolsNegativeAuthCache - Disables the negative symbols authentication cache]
+            GetAddressesForSourceLine [GetAddressesForSourceLine(<module>, <source file path>, <line>) - Returns information about the given source line]
+            GetTypeInformation
+            GetSymbolForAddress
+        MCP             
+            SendElicitationRequest [Sends an MCP elicitation request to prompt the user for structured input]
+            SendSamplingRequest [Sends an MCP sampling request to generate a response from an AI model]
+        FileSystem      
+            CreateFile       [CreateFile(path, [disposition]) - Creates a file at the specified path and returns a file object.  'disposition' can be one of 'CreateAlways' or 'CreateNew']
+            CreateTempFile   [CreateTempFile() - Creates a temporary file in the %TEMP% folder and returns a file object]
+            CreateTextReader [CreateTextReader(file | path, [encoding]) - Creates a text reader over the specified file.  If a path is passed instead of a file, a file is opened at the specified path.  'encoding' can be 'Utf16', 'Utf8', or 'Ascii'.  'Ascii' is the default]
+            CreateTextWriter [CreateTextWriter(file | path, [encoding]) - Creates a text writer over the specified file.  If a path is passed instead of a file, a file is created at the specified path.  'encoding' can be 'Utf16', 'Utf8', or 'Ascii'.  'Ascii' is the default]
+            CurrentDirectory : C:\WINDOWS\system32
+                CreateFile       [CreateFile(relativePath, [disposition]) - Creates a file at the specified path relative to the directory.  'disposition' can be one of 'CreateAlways' or 'CreateNew']
+                CreateSubDirectory [CreateSubDirectory(name) - Creates a subdirectory of the given name within the directory]
+                Delete           [Delete() - Deletes the directory if it is empty]
+                Files           
+                OpenFile         [OpenFile(relativePath) - Opens a file read/write at the specified path relative to the directory]
+                SubDirectories  
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            DeleteFile       [DeleteFile(path) - Deletes a file at the specified path]
+            FileExists       [FileExists(path) - Checks for the existance of a file at the specified path]
+            OpenFile         [OpenFile(path) - Opens a file read/write at the specified path]
+            OpenTargetFile   [OpenTargetFile() - Opens a file on top of the current target of the debugger host process.  The current target must be a file backed target (e.g.: dump file)]
+            TempDirectory    : C:\Users\Quickemu\AppData\Local\Temp
+                CreateFile       [CreateFile(relativePath, [disposition]) - Creates a file at the specified path relative to the directory.  'disposition' can be one of 'CreateAlways' or 'CreateNew']
+                CreateSubDirectory [CreateSubDirectory(name) - Creates a subdirectory of the given name within the directory]
+                Delete           [Delete() - Deletes the directory if it is empty]
+                Files           
+                OpenFile         [OpenFile(relativePath) - Opens a file read/write at the specified path relative to the directory]
+                SubDirectories  
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+        Code            
+            CreateDisassembler [CreateDisassembler([arch|disOptions]) - Creates a disassembler of the optionally given architecture or with the given options.  Options objects can contain 'Kind' identifying the architecture and 'AllowInvalidInstructions' which indicates whether to allow invalid instructions as ??? in the instruction stream]
+            TraceDataFlow   
+            ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+        Analysis        
+            SyntheticTypes  
+                ReadHeader       [ReadHeader(headerPath, module, [attributes])- Reads a header at the file and defines synthetic constructors for all structs and unions in the header referencing existing types in the given module.  Attributes is a set of key value pairs.  Presently, it may contain Macros (another set of key/value pairs), an optional ReturnEnumsAsObjects value (defaulting to false), and an optional RegisterSyntheticTypeModels value (defaulting to false).  If synthetic type models are registered, they are named DataModel.SyntheticTypes.<HeaderName>.<TypeName> and can be extended similarly.]
+                CreateInstance   [CreateInstance(typeName, addrObj) - Creates an instance of a synthetic type and returns it.  The type must have been read from a header or defined through other APIs here]
+                TypeTables      
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+        Memory          
+            GetInformationForAddress
+    LastEvent       
+        DebugEventType   : 0x2
+            ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+        DebugEventTypeDescription : Break instruction exception - code 80000003 (first chance)
+            Contains         [Contains(OtherString) - Method which returns whether the string contains a given sub string]
+            EndsWith         [EndsWith(OtherString) - Method which returns whether the string ends with a given string]
+            IndexOf          [IndexOf(OtherString) - Method which returns the index of the first occurrence of a substring in the given string.  If no such occurrence exists, -1 is returned]
+            LastIndexOf      [LastIndexOf(OtherString) - Method which returns the index of the last occurrence of a substring in the given string.  If no such occurrence exists, -1 is returned]
+            Length           : 0x3a
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            PadLeft          [PadLeft(TotalWidth) - Method which right aligns the string to the specified width by inserting spaces at the left of the string]
+            PadRight         [PadRight(TotalWidth) - Method which left aligns the string to the specified width by inserting spaces at the right of the string]
+            Remove           [Remove(StartPos, [Length]) - Method which removes all characters beginning at the specified position from the string.  If an optional length is supplied, only that many characters after the starting position are removed]
+            Replace          [Replace(SearchString, ReplaceString) - Method which replaces every occurrence of a specified search string with a replacement string]
+            StartsWith       [StartsWith(OtherString) - Method which returns whether the string starts with a given string]
+            Substring        [Substring(StartPos, [Length]) - Method which retrieves a substring from the given string.  The substring starts at a specified character position and continues to the end of the string or for the optionally specified length]
+            ToLower          [ToLower() - Returns a copy of this string converted to lowercase.]
+            ToUpper          [ToUpper() - Returns a copy of this string converted to uppercase.]
+            ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+        Session          : Live user mode: <Local>
+            Processes       
+                Aggregate        [Aggregate(AggregateMethod) | Aggregate(InitialSeed, AggregateMethod) | Aggregate(InitialSeed, AggregateMethod, ResultSelectorMethod) - LINQ equivalent method which iterates through the items in the given collection, running the aggregate method on each one and storing the returned result as the current aggregate value. Once the collection has been exhausted, the final accumulated value is returned. An optional result selector method can be specified which transforms the final accumulator value before returning it.]
+                All              [All(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate]
+                AllNonError      [AllNonError(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate. Errors are ignored if all non-error results match the predicate.]
+                Any              [Any(PredicateMethod) - LINQ equivalent method which returns whether any element in the collection matches a given predicate]
+                Average          [Average([ProjectionMethod]) - LINQ equivalent method which finds the average of all values in the enumeration. An optional projection method can be specified that transforms each value before the average is computed.]
+                Concat           [Concat(InnerCollection) - LINQ equivalent method which returns all elements from both collections, including duplicates.]
+                Contains         [Contains(Object, [ComparatorMethod]) - LINQ equivalent method which searches for the given element in the sequence using default comparator rules. An optional comparator method can be provided that will be called each time the element is compared against an entry in the sequence.]
+                Count            [Count() - LINQ equivalent method which returns the number of objects in the collection]
+                Distinct         [Distinct([ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given collection, using default comparison rules. An optional comparator method can be provided to be called each time objects in the collection must be compared.]
+                Except           [Except(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are NOT found in the inner collection. An optional comparator method can also be specified.]
+                First            [First([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate]
+                FirstNonError    [FirstNonError([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate. Any errors encountered are ignored if a valid element is found.]
+                Flatten          [Flatten([KeyProjectorMethod]) - Method which flattens a tree of collections (or a tree of keys that project to collections via an optional projector method) into a single collection]
+                GroupBy          [GroupBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which groups the collection by unique keys defined via a key projector and optional key comparator]
+                Intersect        [Intersect(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are also found in the inner collection. An optional comparator method can also be specified.]
+                Join             [Join(InnerCollection, Outer key selector method, Inner key selector method, Result selector method, [ComparatorMethod]) - LINQ equivalent method which projects a key for each element of the outer collection and each element of the inner collection using the methods provided. If the projected keys from both these elements match, then the result selector method is called with both those values and its output is returned to the user. An optional comparator method can also be specified.]
+                Last             [Last([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate]
+                LastNonError     [LastNonError([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate. Any errors are ignored.]
+                Max              [Max([ProjectionMethod]) - LINQ equivalent method which returns the maximum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+                Min              [Min([ProjectionMethod]) - LINQ equivalent method which returns the minimum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+                OrderBy          [OrderBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in ascending order]
+                OrderByDescending [OrderByDescending(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in descending order]
+                Reverse          [Reverse() - LINQ equivalent method which returns the reverse of the supplied enumeration.]
+                Select           [Select(ProjectionMethod) - LINQ equivalent method which projects the collection to a new collection via calling a projection method on every element]
+                SelectMany       [SelectMany(ProjectionMethod) - LINQ equivalent method which projects each element in the collection to a new collection via calling a projection method on every element.  The newly projected set of collections is then flattened (a single level) into a new collection containing all of the elements.]
+                SequenceEqual    [SequenceEqual(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which goes through the outer and inner collections and makes sure that they are equal (incl. sequence length). An optional comparator can be specified.]
+                Single           [Single([PredicateMethod]) - LINQ equivalent method which returns the only element in a list, or, if a predicate was specified, the only element that satisfies the predicate. If there are multiple elements that match the criteria, an error is returned.]
+                Skip             [Skip(Count) - LINQ equivalent method which skips the specified number of elements in the collection and returns all the rest.]
+                SkipLast         [SkipLast(Count) - LINQ equivalent method which skips the specified number of elements from the end of the collection and returns all the rest.]
+                SkipWhile        [SkipWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and skips it as long as it keeps returning true. Once the predicate fails, the rest of the collection is returned.]
+                Sum              [Sum([ProjectionMethod]) - LINQ equivalent method which sums all the elements in the collection. Can optionally specify a projector method to transform the elements before summation occurs.]
+                Take             [Take(Count) - LINQ equivalent method which takes the specified number of elements from the collection.]
+                TakeLast         [TakeLast(Count) - LINQ equivalent methods which takes the specified number of elements from the end of the collection.]
+                TakeWhile        [TakeWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and returns it only if the result is successful. Once the predicate fails, no more elements will be taken.]
+                ToArray          [ToArray() - LINQ equivalent method which produces an [0..N) indexed array of each element in the collection.  This also has the effect of immediately realizing any deferred operations which may have resulted from LINQ queries prior to the ToArray.]
+                Union            [Union(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given and inner collection. An optional comparator method can also be specified.]
+                Where            [Where(FilterMethod) - LINQ equivalent method which filters elements in the collection according to when a filter method returns true for a given element]
+                ToArray          [ToArray() - converts the collection to a one dimensional array]
+                ToArrayContents  [ToArrayContents() - converts items in each nested collection contained within the object to a one dimensional array]
+                [0x410]          : winver.exe [Switch To]
+            Id               : 0
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            OS              
+                BuildString      : 26100.1.amd64fre.ge_release.240331-1435
+                Version         
+            Devices         
+            Attributes      
+                Machine         
+                Target          
+            ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+        Process          : winver.exe [Switch To]
+            Name             : winver.exe
+                Contains         [Contains(OtherString) - Method which returns whether the string contains a given sub string]
+                EndsWith         [EndsWith(OtherString) - Method which returns whether the string ends with a given string]
+                IndexOf          [IndexOf(OtherString) - Method which returns the index of the first occurrence of a substring in the given string.  If no such occurrence exists, -1 is returned]
+                LastIndexOf      [LastIndexOf(OtherString) - Method which returns the index of the last occurrence of a substring in the given string.  If no such occurrence exists, -1 is returned]
+                Length           : 0xa
+                PadLeft          [PadLeft(TotalWidth) - Method which right aligns the string to the specified width by inserting spaces at the left of the string]
+                PadRight         [PadRight(TotalWidth) - Method which left aligns the string to the specified width by inserting spaces at the right of the string]
+                Remove           [Remove(StartPos, [Length]) - Method which removes all characters beginning at the specified position from the string.  If an optional length is supplied, only that many characters after the starting position are removed]
+                Replace          [Replace(SearchString, ReplaceString) - Method which replaces every occurrence of a specified search string with a replacement string]
+                StartsWith       [StartsWith(OtherString) - Method which returns whether the string starts with a given string]
+                Substring        [Substring(StartPos, [Length]) - Method which retrieves a substring from the given string.  The substring starts at a specified character position and continues to the end of the string or for the optionally specified length]
+                ToLower          [ToLower() - Returns a copy of this string converted to lowercase.]
+                ToUpper          [ToUpper() - Returns a copy of this string converted to uppercase.]
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            Id               : 0x410
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            Index            : 0x0
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            Handle           : 0x33c
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            Threads         
+                Aggregate        [Aggregate(AggregateMethod) | Aggregate(InitialSeed, AggregateMethod) | Aggregate(InitialSeed, AggregateMethod, ResultSelectorMethod) - LINQ equivalent method which iterates through the items in the given collection, running the aggregate method on each one and storing the returned result as the current aggregate value. Once the collection has been exhausted, the final accumulated value is returned. An optional result selector method can be specified which transforms the final accumulator value before returning it.]
+                All              [All(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate]
+                AllNonError      [AllNonError(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate. Errors are ignored if all non-error results match the predicate.]
+                Any              [Any(PredicateMethod) - LINQ equivalent method which returns whether any element in the collection matches a given predicate]
+                Average          [Average([ProjectionMethod]) - LINQ equivalent method which finds the average of all values in the enumeration. An optional projection method can be specified that transforms each value before the average is computed.]
+                Concat           [Concat(InnerCollection) - LINQ equivalent method which returns all elements from both collections, including duplicates.]
+                Contains         [Contains(Object, [ComparatorMethod]) - LINQ equivalent method which searches for the given element in the sequence using default comparator rules. An optional comparator method can be provided that will be called each time the element is compared against an entry in the sequence.]
+                Count            [Count() - LINQ equivalent method which returns the number of objects in the collection]
+                Distinct         [Distinct([ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given collection, using default comparison rules. An optional comparator method can be provided to be called each time objects in the collection must be compared.]
+                Except           [Except(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are NOT found in the inner collection. An optional comparator method can also be specified.]
+                First            [First([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate]
+                FirstNonError    [FirstNonError([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate. Any errors encountered are ignored if a valid element is found.]
+                Flatten          [Flatten([KeyProjectorMethod]) - Method which flattens a tree of collections (or a tree of keys that project to collections via an optional projector method) into a single collection]
+                GroupBy          [GroupBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which groups the collection by unique keys defined via a key projector and optional key comparator]
+                Intersect        [Intersect(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are also found in the inner collection. An optional comparator method can also be specified.]
+                Join             [Join(InnerCollection, Outer key selector method, Inner key selector method, Result selector method, [ComparatorMethod]) - LINQ equivalent method which projects a key for each element of the outer collection and each element of the inner collection using the methods provided. If the projected keys from both these elements match, then the result selector method is called with both those values and its output is returned to the user. An optional comparator method can also be specified.]
+                Last             [Last([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate]
+                LastNonError     [LastNonError([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate. Any errors are ignored.]
+                Max              [Max([ProjectionMethod]) - LINQ equivalent method which returns the maximum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+                Min              [Min([ProjectionMethod]) - LINQ equivalent method which returns the minimum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+                OrderBy          [OrderBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in ascending order]
+                OrderByDescending [OrderByDescending(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in descending order]
+                Reverse          [Reverse() - LINQ equivalent method which returns the reverse of the supplied enumeration.]
+                Select           [Select(ProjectionMethod) - LINQ equivalent method which projects the collection to a new collection via calling a projection method on every element]
+                SelectMany       [SelectMany(ProjectionMethod) - LINQ equivalent method which projects each element in the collection to a new collection via calling a projection method on every element.  The newly projected set of collections is then flattened (a single level) into a new collection containing all of the elements.]
+                SequenceEqual    [SequenceEqual(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which goes through the outer and inner collections and makes sure that they are equal (incl. sequence length). An optional comparator can be specified.]
+                Single           [Single([PredicateMethod]) - LINQ equivalent method which returns the only element in a list, or, if a predicate was specified, the only element that satisfies the predicate. If there are multiple elements that match the criteria, an error is returned.]
+                Skip             [Skip(Count) - LINQ equivalent method which skips the specified number of elements in the collection and returns all the rest.]
+                SkipLast         [SkipLast(Count) - LINQ equivalent method which skips the specified number of elements from the end of the collection and returns all the rest.]
+                SkipWhile        [SkipWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and skips it as long as it keeps returning true. Once the predicate fails, the rest of the collection is returned.]
+                Sum              [Sum([ProjectionMethod]) - LINQ equivalent method which sums all the elements in the collection. Can optionally specify a projector method to transform the elements before summation occurs.]
+                Take             [Take(Count) - LINQ equivalent method which takes the specified number of elements from the collection.]
+                TakeLast         [TakeLast(Count) - LINQ equivalent methods which takes the specified number of elements from the end of the collection.]
+                TakeWhile        [TakeWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and returns it only if the result is successful. Once the predicate fails, no more elements will be taken.]
+                ToArray          [ToArray() - LINQ equivalent method which produces an [0..N) indexed array of each element in the collection.  This also has the effect of immediately realizing any deferred operations which may have resulted from LINQ queries prior to the ToArray.]
+                Union            [Union(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given and inner collection. An optional comparator method can also be specified.]
+                Where            [Where(FilterMethod) - LINQ equivalent method which filters elements in the collection according to when a filter method returns true for a given element]
+                ToArray          [ToArray() - converts the collection to a one dimensional array]
+                ToArrayContents  [ToArrayContents() - converts items in each nested collection contained within the object to a one dimensional array]
+                [0x2384]         : winver!wWinMainCRTStartup (00007ff6`185f13c0)  [Switch To]
+                [0x16d0]         : ntdll!TppWorkerThread (00007ff9`be9ec600)  [Switch To]
+                [0x3090]         : ntdll!TppWorkerThread (00007ff9`be9ec600)  [Switch To]
+                [0x1e50]         : ntdll!TppWorkerThread (00007ff9`be9ec600)  [Switch To]
+            Modules         
+                Aggregate        [Aggregate(AggregateMethod) | Aggregate(InitialSeed, AggregateMethod) | Aggregate(InitialSeed, AggregateMethod, ResultSelectorMethod) - LINQ equivalent method which iterates through the items in the given collection, running the aggregate method on each one and storing the returned result as the current aggregate value. Once the collection has been exhausted, the final accumulated value is returned. An optional result selector method can be specified which transforms the final accumulator value before returning it.]
+                All              [All(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate]
+                AllNonError      [AllNonError(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate. Errors are ignored if all non-error results match the predicate.]
+                Any              [Any(PredicateMethod) - LINQ equivalent method which returns whether any element in the collection matches a given predicate]
+                Average          [Average([ProjectionMethod]) - LINQ equivalent method which finds the average of all values in the enumeration. An optional projection method can be specified that transforms each value before the average is computed.]
+                Concat           [Concat(InnerCollection) - LINQ equivalent method which returns all elements from both collections, including duplicates.]
+                Contains         [Contains(Object, [ComparatorMethod]) - LINQ equivalent method which searches for the given element in the sequence using default comparator rules. An optional comparator method can be provided that will be called each time the element is compared against an entry in the sequence.]
+                Count            [Count() - LINQ equivalent method which returns the number of objects in the collection]
+                Distinct         [Distinct([ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given collection, using default comparison rules. An optional comparator method can be provided to be called each time objects in the collection must be compared.]
+                Except           [Except(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are NOT found in the inner collection. An optional comparator method can also be specified.]
+                First            [First([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate]
+                FirstNonError    [FirstNonError([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate. Any errors encountered are ignored if a valid element is found.]
+                Flatten          [Flatten([KeyProjectorMethod]) - Method which flattens a tree of collections (or a tree of keys that project to collections via an optional projector method) into a single collection]
+                GroupBy          [GroupBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which groups the collection by unique keys defined via a key projector and optional key comparator]
+                Intersect        [Intersect(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are also found in the inner collection. An optional comparator method can also be specified.]
+                Join             [Join(InnerCollection, Outer key selector method, Inner key selector method, Result selector method, [ComparatorMethod]) - LINQ equivalent method which projects a key for each element of the outer collection and each element of the inner collection using the methods provided. If the projected keys from both these elements match, then the result selector method is called with both those values and its output is returned to the user. An optional comparator method can also be specified.]
+                Last             [Last([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate]
+                LastNonError     [LastNonError([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate. Any errors are ignored.]
+                Max              [Max([ProjectionMethod]) - LINQ equivalent method which returns the maximum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+                Min              [Min([ProjectionMethod]) - LINQ equivalent method which returns the minimum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+                OrderBy          [OrderBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in ascending order]
+                OrderByDescending [OrderByDescending(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in descending order]
+                Reverse          [Reverse() - LINQ equivalent method which returns the reverse of the supplied enumeration.]
+                Select           [Select(ProjectionMethod) - LINQ equivalent method which projects the collection to a new collection via calling a projection method on every element]
+                SelectMany       [SelectMany(ProjectionMethod) - LINQ equivalent method which projects each element in the collection to a new collection via calling a projection method on every element.  The newly projected set of collections is then flattened (a single level) into a new collection containing all of the elements.]
+                SequenceEqual    [SequenceEqual(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which goes through the outer and inner collections and makes sure that they are equal (incl. sequence length). An optional comparator can be specified.]
+                Single           [Single([PredicateMethod]) - LINQ equivalent method which returns the only element in a list, or, if a predicate was specified, the only element that satisfies the predicate. If there are multiple elements that match the criteria, an error is returned.]
+                Skip             [Skip(Count) - LINQ equivalent method which skips the specified number of elements in the collection and returns all the rest.]
+                SkipLast         [SkipLast(Count) - LINQ equivalent method which skips the specified number of elements from the end of the collection and returns all the rest.]
+                SkipWhile        [SkipWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and skips it as long as it keeps returning true. Once the predicate fails, the rest of the collection is returned.]
+                Sum              [Sum([ProjectionMethod]) - LINQ equivalent method which sums all the elements in the collection. Can optionally specify a projector method to transform the elements before summation occurs.]
+                Take             [Take(Count) - LINQ equivalent method which takes the specified number of elements from the collection.]
+                TakeLast         [TakeLast(Count) - LINQ equivalent methods which takes the specified number of elements from the end of the collection.]
+                TakeWhile        [TakeWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and returns it only if the result is successful. Once the predicate fails, no more elements will be taken.]
+                ToArray          [ToArray() - LINQ equivalent method which produces an [0..N) indexed array of each element in the collection.  This also has the effect of immediately realizing any deferred operations which may have resulted from LINQ queries prior to the ToArray.]
+                Union            [Union(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given and inner collection. An optional comparator method can also be specified.]
+                Where            [Where(FilterMethod) - LINQ equivalent method which filters elements in the collection according to when a filter method returns true for a given element]
+                ToArray          [ToArray() - converts the collection to a one dimensional array]
+                ToArrayContents  [ToArrayContents() - converts items in each nested collection contained within the object to a one dimensional array]
+                [0x0]            : winver.exe [Force Symbol Reload]
+                [0x1]            : C:\WINDOWS\System32\ucrtbase.dll [Force Symbol Reload]
+                [0x2]            : C:\WINDOWS\System32\KERNELBASE.dll [Force Symbol Reload]
+                [0x3]            : C:\WINDOWS\System32\gdi32full.dll [Force Symbol Reload]
+                [0x4]            : C:\WINDOWS\System32\win32u.dll [Force Symbol Reload]
+                [0x5]            : C:\WINDOWS\System32\msvcp_win.dll [Force Symbol Reload]
+                [0x6]            : C:\WINDOWS\System32\GDI32.dll [Force Symbol Reload]
+                [0x7]            : C:\WINDOWS\System32\KERNEL32.DLL [Force Symbol Reload]
+                [0x8]            : C:\WINDOWS\System32\USER32.dll [Force Symbol Reload]
+                [0x9]            : C:\WINDOWS\System32\msvcrt.dll [Force Symbol Reload]
+                [0xa]            : C:\WINDOWS\System32\SHELL32.dll [Force Symbol Reload]
+                [0xb]            : ntdll.dll [Force Symbol Reload]
+            Debug           
+                Breakpoints     
+            SwitchTo         [SwitchTo() - Switch to this process as the default context]
+            Environment     
+                EnvironmentBlock [Type: _PEB]
+            Attributes      
+                CommandLine      : winver
+                CurrentDirectory : C:\WINDOWS\system32\
+                DllPath         
+                Environment     
+            Devices         
+            Io              
+            ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            GroupedStacks   
+                Aggregate        [Aggregate(AggregateMethod) | Aggregate(InitialSeed, AggregateMethod) | Aggregate(InitialSeed, AggregateMethod, ResultSelectorMethod) - LINQ equivalent method which iterates through the items in the given collection, running the aggregate method on each one and storing the returned result as the current aggregate value. Once the collection has been exhausted, the final accumulated value is returned. An optional result selector method can be specified which transforms the final accumulator value before returning it.]
+                All              [All(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate]
+                AllNonError      [AllNonError(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate. Errors are ignored if all non-error results match the predicate.]
+                Any              [Any(PredicateMethod) - LINQ equivalent method which returns whether any element in the collection matches a given predicate]
+                Average          [Average([ProjectionMethod]) - LINQ equivalent method which finds the average of all values in the enumeration. An optional projection method can be specified that transforms each value before the average is computed.]
+                Concat           [Concat(InnerCollection) - LINQ equivalent method which returns all elements from both collections, including duplicates.]
+                Contains         [Contains(Object, [ComparatorMethod]) - LINQ equivalent method which searches for the given element in the sequence using default comparator rules. An optional comparator method can be provided that will be called each time the element is compared against an entry in the sequence.]
+                Count            [Count() - LINQ equivalent method which returns the number of objects in the collection]
+                Distinct         [Distinct([ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given collection, using default comparison rules. An optional comparator method can be provided to be called each time objects in the collection must be compared.]
+                Except           [Except(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are NOT found in the inner collection. An optional comparator method can also be specified.]
+                First            [First([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate]
+                FirstNonError    [FirstNonError([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate. Any errors encountered are ignored if a valid element is found.]
+                Flatten          [Flatten([KeyProjectorMethod]) - Method which flattens a tree of collections (or a tree of keys that project to collections via an optional projector method) into a single collection]
+                GroupBy          [GroupBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which groups the collection by unique keys defined via a key projector and optional key comparator]
+                Intersect        [Intersect(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are also found in the inner collection. An optional comparator method can also be specified.]
+                Join             [Join(InnerCollection, Outer key selector method, Inner key selector method, Result selector method, [ComparatorMethod]) - LINQ equivalent method which projects a key for each element of the outer collection and each element of the inner collection using the methods provided. If the projected keys from both these elements match, then the result selector method is called with both those values and its output is returned to the user. An optional comparator method can also be specified.]
+                Last             [Last([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate]
+                LastNonError     [LastNonError([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate. Any errors are ignored.]
+                Max              [Max([ProjectionMethod]) - LINQ equivalent method which returns the maximum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+                Min              [Min([ProjectionMethod]) - LINQ equivalent method which returns the minimum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+                OrderBy          [OrderBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in ascending order]
+                OrderByDescending [OrderByDescending(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in descending order]
+                Reverse          [Reverse() - LINQ equivalent method which returns the reverse of the supplied enumeration.]
+                Select           [Select(ProjectionMethod) - LINQ equivalent method which projects the collection to a new collection via calling a projection method on every element]
+                SelectMany       [SelectMany(ProjectionMethod) - LINQ equivalent method which projects each element in the collection to a new collection via calling a projection method on every element.  The newly projected set of collections is then flattened (a single level) into a new collection containing all of the elements.]
+                SequenceEqual    [SequenceEqual(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which goes through the outer and inner collections and makes sure that they are equal (incl. sequence length). An optional comparator can be specified.]
+                Single           [Single([PredicateMethod]) - LINQ equivalent method which returns the only element in a list, or, if a predicate was specified, the only element that satisfies the predicate. If there are multiple elements that match the criteria, an error is returned.]
+                Skip             [Skip(Count) - LINQ equivalent method which skips the specified number of elements in the collection and returns all the rest.]
+                SkipLast         [SkipLast(Count) - LINQ equivalent method which skips the specified number of elements from the end of the collection and returns all the rest.]
+                SkipWhile        [SkipWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and skips it as long as it keeps returning true. Once the predicate fails, the rest of the collection is returned.]
+                Sum              [Sum([ProjectionMethod]) - LINQ equivalent method which sums all the elements in the collection. Can optionally specify a projector method to transform the elements before summation occurs.]
+                Take             [Take(Count) - LINQ equivalent method which takes the specified number of elements from the collection.]
+                TakeLast         [TakeLast(Count) - LINQ equivalent methods which takes the specified number of elements from the end of the collection.]
+                TakeWhile        [TakeWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and returns it only if the result is successful. Once the predicate fails, no more elements will be taken.]
+                ToArray          [ToArray() - LINQ equivalent method which produces an [0..N) indexed array of each element in the collection.  This also has the effect of immediately realizing any deferred operations which may have resulted from LINQ queries prior to the ToArray.]
+                Union            [Union(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given and inner collection. An optional comparator method can also be specified.]
+                Where            [Where(FilterMethod) - LINQ equivalent method which filters elements in the collection according to when a filter method returns true for a given element]
+                ToArray          [ToArray() - converts the collection to a one dimensional array]
+                ToArrayContents  [ToArrayContents() - converts items in each nested collection contained within the object to a one dimensional array]
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+                [0x0]            : 1 thread: 2384
+                [0x1]            : 3 threads: 16d0, 3090, 1e50
+            ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            Snapshots       
+                Take            
+                UpdateCurrent   
+                Aggregate        [Aggregate(AggregateMethod) | Aggregate(InitialSeed, AggregateMethod) | Aggregate(InitialSeed, AggregateMethod, ResultSelectorMethod) - LINQ equivalent method which iterates through the items in the given collection, running the aggregate method on each one and storing the returned result as the current aggregate value. Once the collection has been exhausted, the final accumulated value is returned. An optional result selector method can be specified which transforms the final accumulator value before returning it.]
+                All              [All(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate]
+                AllNonError      [AllNonError(PredicateMethod) - LINQ equivalent method which returns whether all elements in the collection match a given predicate. Errors are ignored if all non-error results match the predicate.]
+                Any              [Any(PredicateMethod) - LINQ equivalent method which returns whether any element in the collection matches a given predicate]
+                Average          [Average([ProjectionMethod]) - LINQ equivalent method which finds the average of all values in the enumeration. An optional projection method can be specified that transforms each value before the average is computed.]
+                Concat           [Concat(InnerCollection) - LINQ equivalent method which returns all elements from both collections, including duplicates.]
+                Contains         [Contains(Object, [ComparatorMethod]) - LINQ equivalent method which searches for the given element in the sequence using default comparator rules. An optional comparator method can be provided that will be called each time the element is compared against an entry in the sequence.]
+                Count            [Count() - LINQ equivalent method which returns the number of objects in the collection]
+                Distinct         [Distinct([ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given collection, using default comparison rules. An optional comparator method can be provided to be called each time objects in the collection must be compared.]
+                Except           [Except(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are NOT found in the inner collection. An optional comparator method can also be specified.]
+                First            [First([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate]
+                FirstNonError    [FirstNonError([PredicateMethod]) - LINQ equivalent method which returns the first element in the collection or the first which matches an optional predicate. Any errors encountered are ignored if a valid element is found.]
+                Flatten          [Flatten([KeyProjectorMethod]) - Method which flattens a tree of collections (or a tree of keys that project to collections via an optional projector method) into a single collection]
+                GroupBy          [GroupBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which groups the collection by unique keys defined via a key projector and optional key comparator]
+                Intersect        [Intersect(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects in the given collection that are also found in the inner collection. An optional comparator method can also be specified.]
+                Join             [Join(InnerCollection, Outer key selector method, Inner key selector method, Result selector method, [ComparatorMethod]) - LINQ equivalent method which projects a key for each element of the outer collection and each element of the inner collection using the methods provided. If the projected keys from both these elements match, then the result selector method is called with both those values and its output is returned to the user. An optional comparator method can also be specified.]
+                Last             [Last([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate]
+                LastNonError     [LastNonError([PredicateMethod]) - LINQ equivalent method which returns the last element in the collection or the last which matches an optional predicate. Any errors are ignored.]
+                Max              [Max([ProjectionMethod]) - LINQ equivalent method which returns the maximum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+                Min              [Min([ProjectionMethod]) - LINQ equivalent method which returns the minimum element using standard comparison rules. An optional projection method can be specified to project the elements of a sequence before comparing them with each other.]
+                OrderBy          [OrderBy(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in ascending order]
+                OrderByDescending [OrderByDescending(KeyProjectorMethod, [KeyComparatorMethod]) - LINQ equivalent method which orders the collection via a key projector and optional key comparator in descending order]
+                Reverse          [Reverse() - LINQ equivalent method which returns the reverse of the supplied enumeration.]
+                Select           [Select(ProjectionMethod) - LINQ equivalent method which projects the collection to a new collection via calling a projection method on every element]
+                SelectMany       [SelectMany(ProjectionMethod) - LINQ equivalent method which projects each element in the collection to a new collection via calling a projection method on every element.  The newly projected set of collections is then flattened (a single level) into a new collection containing all of the elements.]
+                SequenceEqual    [SequenceEqual(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which goes through the outer and inner collections and makes sure that they are equal (incl. sequence length). An optional comparator can be specified.]
+                Single           [Single([PredicateMethod]) - LINQ equivalent method which returns the only element in a list, or, if a predicate was specified, the only element that satisfies the predicate. If there are multiple elements that match the criteria, an error is returned.]
+                Skip             [Skip(Count) - LINQ equivalent method which skips the specified number of elements in the collection and returns all the rest.]
+                SkipLast         [SkipLast(Count) - LINQ equivalent method which skips the specified number of elements from the end of the collection and returns all the rest.]
+                SkipWhile        [SkipWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and skips it as long as it keeps returning true. Once the predicate fails, the rest of the collection is returned.]
+                Sum              [Sum([ProjectionMethod]) - LINQ equivalent method which sums all the elements in the collection. Can optionally specify a projector method to transform the elements before summation occurs.]
+                Take             [Take(Count) - LINQ equivalent method which takes the specified number of elements from the collection.]
+                TakeLast         [TakeLast(Count) - LINQ equivalent methods which takes the specified number of elements from the end of the collection.]
+                TakeWhile        [TakeWhile(PredicateMethod) - LINQ equivalent method which runs the predicate for each element and returns it only if the result is successful. Once the predicate fails, no more elements will be taken.]
+                ToArray          [ToArray() - LINQ equivalent method which produces an [0..N) indexed array of each element in the collection.  This also has the effect of immediately realizing any deferred operations which may have resulted from LINQ queries prior to the ToArray.]
+                Union            [Union(InnerCollection, [ComparatorMethod]) - LINQ equivalent method which returns all distinct objects from the given and inner collection. An optional comparator method can also be specified.]
+                Where            [Where(FilterMethod) - LINQ equivalent method which filters elements in the collection according to when a filter method returns true for a given element]
+                ToArray          [ToArray() - converts the collection to a one dimensional array]
+                ToArrayContents  [ToArrayContents() - converts items in each nested collection contained within the object to a one dimensional array]
+        Thread           : winver!wWinMainCRTStartup (00007ff6`185f13c0)  [Switch To]
+            Id               : 0x2384
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            Index            : 0x0
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            Name            
+                Contains         [Contains(OtherString) - Method which returns whether the string contains a given sub string]
+                EndsWith         [EndsWith(OtherString) - Method which returns whether the string ends with a given string]
+                IndexOf          [IndexOf(OtherString) - Method which returns the index of the first occurrence of a substring in the given string.  If no such occurrence exists, -1 is returned]
+                LastIndexOf      [LastIndexOf(OtherString) - Method which returns the index of the last occurrence of a substring in the given string.  If no such occurrence exists, -1 is returned]
+                Length           : 0x0
+                PadLeft          [PadLeft(TotalWidth) - Method which right aligns the string to the specified width by inserting spaces at the left of the string]
+                PadRight         [PadRight(TotalWidth) - Method which left aligns the string to the specified width by inserting spaces at the right of the string]
+                Remove           [Remove(StartPos, [Length]) - Method which removes all characters beginning at the specified position from the string.  If an optional length is supplied, only that many characters after the starting position are removed]
+                Replace          [Replace(SearchString, ReplaceString) - Method which replaces every occurrence of a specified search string with a replacement string]
+                StartsWith       [StartsWith(OtherString) - Method which returns whether the string starts with a given string]
+                Substring        [Substring(StartPos, [Length]) - Method which retrieves a substring from the given string.  The substring starts at a specified character position and continues to the end of the string or for the optionally specified length]
+                ToLower          [ToLower() - Returns a copy of this string converted to lowercase.]
+                ToUpper          [ToUpper() - Returns a copy of this string converted to uppercase.]
+                ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+            Stack           
+                Frames          
+                Attributes      
+            Registers       
+                User            
+                SIMD            
+                FloatingPoint   
+                CET             
+            SwitchTo         [SwitchTo() - Switch to this thread as the default context]
+            Environment     
+                EnvironmentBlock [Type: _TEB]
+            ToDisplayString  [ToDisplayString([FormatSpecifier]) - Method which converts the object to its display string representation according to an optional format specifier]
+

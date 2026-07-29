@@ -1742,7 +1742,9 @@ When using `.if` and `.foreach`, sometimes the names are not resolved - use spac
 
 ##### Using the dx command
 
-The [dx command](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/dx--display-visualizer-variables-) allows us to query the Debugger Object Model. There is a set of root objects from which we may start our query, including `@$cursession`, `@$curprocess`, `@$curthread`, `@$curstack`, or `@$curframe`.
+The [dx command](https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/dx--display-visualizer-variables-) allows us to query the Debugger Object Model. [Here](/assets/other/windbg-debugger-object.txt) you may find the list of its properties collected on the version 1.2603.20001.0 of WinDbg.
+
+There is a set of root objects from which we may start our query, including `@$cursession`, `@$curprocess`, `@$curthread`, `@$curstack`, or `@$curframe`.
 
 `dx Debugger.State` shows the current state of the debugger. The -h parameter additionally displays help for the debugger objects, for example:
 
