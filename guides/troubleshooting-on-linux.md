@@ -217,6 +217,9 @@ ps -eLf
 
 # filter by pid
 ps -F -p $fish_pid
+# filter by pid and do not limit the width of the output
+ps -F -p (pidof podman) -ww
+
 # filter by command line
 ps -F -C fish
 
