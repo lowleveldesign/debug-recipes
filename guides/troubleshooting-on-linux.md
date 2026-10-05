@@ -59,6 +59,7 @@ redirect_from:
         - [Enable tracing](#enable-tracing)
         - [Collecting events](#collecting-events)
         - [Function tracing](#function-tracing)
+    - [perf](#perf)
     - [eBPF](#ebpf)
         - [General information](#general-information)
         - [bpftrace](#bpftrace)
@@ -826,6 +827,12 @@ cat trace > /tmp/tcp-trace.txt
 # disabling
 echo nop > current_tracer && echo > set_ftrace_filter
 ```
+
+### perf
+
+[Main project page](https://perfwiki.github.io/main/) | [Perf one-liners by Brendan Gregg](https://www.brendangregg.com/perf.html#OneLiners)
+
+WIP
 
 ### eBPF
 
